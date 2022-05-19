@@ -3,11 +3,13 @@ import { TextField } from "@mui/material";
 import { FormikProps } from "formik";
 import { FormikSignInValues } from "@/types/formikValues";
 
+type AllFormikValues = FormikSignInValues;
+
 type Props = {
   label: string;
-  name: string;
+  name: keyof AllFormikValues;
   type?: "email" | "text" | "password";
-  formik: FormikProps<FormikSignInValues>;
+  formik: FormikProps<AllFormikValues>;
 };
 
 const TextInput: FC<Props> = ({ label, type = "text", name, formik }) => {

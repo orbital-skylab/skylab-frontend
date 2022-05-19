@@ -1,4 +1,4 @@
-export type FormikSignInValues = {
+export interface FormikSignInValues {
   email: string;
   password: string;
-};
+}
