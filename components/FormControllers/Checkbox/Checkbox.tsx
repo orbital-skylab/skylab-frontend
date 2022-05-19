@@ -2,12 +2,13 @@ import {
   FormControlLabel,
   FormGroup,
   Checkbox as MuiCheckbox,
+  FormHelperText,
 } from "@mui/material";
 import { FormikProps } from "formik";
 
 type Props<FormValuesType> = {
   label: string;
-  name: string;
+  name: keyof FormValuesType;
   formik: FormikProps<FormValuesType>;
 };
 
@@ -16,12 +17,24 @@ function Checkbox<FormValuesType>({
   name,
   formik,
 }: Props<FormValuesType>) {
+  const { values, handleChange, handleBlur, errors, touched } = formik;
+
   return (
     <FormGroup>
       <FormControlLabel
-        control={<MuiCheckbox name={name} onChange={formik.handleChange} />}
+        control={
+          <MuiCheckbox
+            checked={!!values[name]}
+            name={name as string}
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
+        }
         label={label}
       />
+      {!!errors[name] && !!touched[name] ? (
+        <FormHelperText>{errors[name]}</FormHelperText>
+      ) : null}
     </FormGroup>
   );
 }

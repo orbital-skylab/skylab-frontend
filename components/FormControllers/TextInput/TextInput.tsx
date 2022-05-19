@@ -18,14 +18,18 @@ function TextInput<FormValuesType>({
   multiline = false,
   minRows = 3,
 }: Props<FormValuesType>) {
+  const { values, errors, handleChange, handleBlur, touched } = formik;
+
   return (
     <TextField
       label={label}
       type={type}
+      value={values[name]}
       name={name as string}
-      onChange={formik.handleChange}
-      error={!!formik.errors[name]}
-      helperText={formik.errors[name]}
+      onChange={handleChange}
+      onBlur={handleBlur}
+      error={!!errors[name] && !!touched[name]}
+      helperText={errors[name]}
       multiline={multiline}
       minRows={minRows}
     />
