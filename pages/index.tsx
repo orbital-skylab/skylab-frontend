@@ -10,7 +10,7 @@ interface Test {
 
 const Home: NextPage = () => {
   const initialValues: Test = { test: "" };
-  const handleSubmit = (values: any) => {
+  const handleSubmit = (values: Test) => {
     console.log(values);
   };
 
