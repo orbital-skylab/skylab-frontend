@@ -7,7 +7,7 @@
     "docker-run": "docker run -p 3000:3000 nextjs-docker",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "prettier": "prettier --check .",
     "prettier:write": "prettier --write .",
     "prepare": "husky install"
