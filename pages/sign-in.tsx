@@ -16,20 +16,20 @@ import {
 import Body from "@/components/Body";
 import TextInput from "@/components/FormControllers/TextInput";
 
-interface FormValuesType {
+interface SignInFormValuesType {
   email: string;
   password: string;
 }
 
 const SignIn: NextPage = () => {
-  const initialValues: FormValuesType = {
+  const initialValues: SignInFormValuesType = {
     email: "",
     password: "",
   };
 
   const handleSubmit = (
-    values: FormValuesType,
-    actions: FormikHelpers<FormValuesType>
+    values: SignInFormValuesType,
+    actions: FormikHelpers<SignInFormValuesType>
   ) => {
     console.log("Submitted", values);
     actions.setSubmitting(false);
@@ -58,8 +58,8 @@ const SignIn: NextPage = () => {
                     />
                     <Button
                       variant="contained"
-                      onClick={formik.submitForm}
                       disabled={formik.isSubmitting}
+                      type="submit"
                     >
                       Sign In
                     </Button>
