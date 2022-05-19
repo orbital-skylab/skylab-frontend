@@ -1,28 +1,37 @@
 import { FC } from "react";
 import { TextField } from "@mui/material";
 import { FormikProps } from "formik";
-import { FormikSignInValues } from "@/types/formikValues";
+import { AllFormikValues } from "@/types/formikValues";
 
-type AllFormikValues = FormikSignInValues;
-
-type Props = {
+type Props<FormValuesType> = {
   label: string;
-  name: keyof AllFormikValues;
+  name: keyof FormValuesType;
   type?: "email" | "text" | "password";
-  formik: FormikProps<AllFormikValues>;
+  formik: FormikProps<FormValuesType>;
+  multiline?: boolean;
+  minRows?: number;
 };
 
-const TextInput: FC<Props> = ({ label, type = "text", name, formik }) => {
+function TextInput<FormValuesType>({
+  label,
+  type = "text",
+  name,
+  formik,
+  multiline = false,
+  minRows = 3,
+}: Props<FormValuesType>) {
   return (
     <TextField
       label={label}
       type={type}
-      name={name}
+      name={name as string}
       onChange={formik.handleChange}
       error={!!formik.errors[name]}
       helperText={formik.errors[name]}
+      multiline={multiline}
+      minRows={minRows}
     />
   );
-};
+}
 
 export default TextInput;

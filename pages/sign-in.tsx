@@ -1,9 +1,9 @@
 import type { NextPage } from "next";
 import Link from "next/link";
 // Types
-import { FormikSignInValues } from "@/types/formikValues";
+import { AllFormikValues, FormikSignInValues } from "@/types/formikValues";
 // Libraries
-import { useFormik } from "formik";
+import { Formik, FormikHandlers, FormikHelpers, useFormik } from "formik";
 import {
   Button,
   Container,
@@ -16,39 +16,60 @@ import {
 import Body from "@/components/Body";
 import TextInput from "@/components/FormControllers/TextInput";
 
+interface FormValuesType {
+  email: string;
+  password: string;
+}
+
 const SignIn: NextPage = () => {
-  const formik = useFormik<FormikSignInValues>({
-    initialValues: {
-      email: "",
-      password: "",
-    },
-    onSubmit: (values) => {
-      console.log("Submitted", values);
-    },
-  });
-  console.log(formik.values);
+  const initialValues: FormValuesType = {
+    email: "",
+    password: "",
+  };
+
+  const handleSubmit = (
+    values: FormValuesType,
+    actions: FormikHelpers<FormValuesType>
+  ) => {
+    console.log("Submitted", values);
+    actions.setSubmitting(false);
+  };
 
   return (
     <>
       <Body>
         <Container maxWidth="xs">
           <Stack gap="1rem">
-            <TextInput
-              label="Email"
-              type="email"
-              name="email"
-              formik={formik}
-            />
-            <TextInput
-              label="Password"
-              type="password"
-              name="password"
-              formik={formik}
-            />
-            <Button variant="contained" onClick={formik.submitForm}>
-              Sign In
-            </Button>
+            <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+              {(formik) => (
+                <form onSubmit={formik.handleSubmit}>
+                  <Stack gap="1rem">
+                    <TextInput
+                      label="Email"
+                      type="email"
+                      name="email"
+                      formik={formik}
+                    />
+                    <TextInput
+                      label="Password"
+                      type="password"
+                      name="password"
+                      formik={formik}
+                    />
+                    <Button
+                      variant="contained"
+                      onClick={formik.submitForm}
+                      disabled={formik.isSubmitting}
+                    >
+                      Sign In
+                    </Button>
+                  </Stack>
+                </form>
+              )}
+            </Formik>
+
             <Divider />
+
             <Typography textAlign="center">
               Forgot your password?
               <br />
