@@ -1,19 +1,21 @@
-import { AllFormikValues } from "@/types/formikValues";
 import {
   FormControlLabel,
   FormGroup,
   Checkbox as MuiCheckbox,
 } from "@mui/material";
 import { FormikProps } from "formik";
-import { FC } from "react";
 
-type Props = {
+type Props<FormValuesType> = {
   label: string;
   name: string;
-  formik: FormikProps<AllFormikValues>;
+  formik: FormikProps<FormValuesType>;
 };
 
-const Checkbox: FC<Props> = ({ label, name, formik }) => {
+function Checkbox<FormValuesType>({
+  label,
+  name,
+  formik,
+}: Props<FormValuesType>) {
   return (
     <FormGroup>
       <FormControlLabel
@@ -22,5 +24,5 @@ const Checkbox: FC<Props> = ({ label, name, formik }) => {
       />
     </FormGroup>
   );
-};
+}
 export default Checkbox;
