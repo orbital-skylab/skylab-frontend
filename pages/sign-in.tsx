@@ -1,17 +1,8 @@
 import type { NextPage } from "next";
 import Link from "next/link";
-// Types
-import { AllFormikValues, FormikSignInValues } from "@/types/formikValues";
 // Libraries
-import { Formik, FormikHandlers, FormikHelpers, useFormik } from "formik";
-import {
-  Button,
-  Container,
-  Stack,
-  TextField,
-  Typography,
-  Divider,
-} from "@mui/material";
+import { Formik, FormikHelpers } from "formik";
+import { Button, Container, Stack, Typography, Divider } from "@mui/material";
 // Components
 import Body from "@/components/Body";
 import TextInput from "@/components/FormControllers/TextInput";

@@ -1,13 +1,6 @@
 import Body from "@/components/Body";
 import TextInput from "@/components/FormControllers/TextInput";
-import {
-  Button,
-  Container,
-  Divider,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Container, Divider, Stack, Typography } from "@mui/material";
 import { Formik, FormikHelpers } from "formik";
 import type { NextPage } from "next";
 import Link from "next/link";
@@ -25,7 +18,7 @@ const ForgotPassword: NextPage = () => {
     values: SignUpFormValuesType,
     actions: FormikHelpers<SignUpFormValuesType>
   ) => {
-    console.log("Submited", values);
+    console.log("Submitted", values);
     actions.setSubmitting(false);
   };
 

@@ -1,7 +1,5 @@
-import { FC } from "react";
 import { TextField } from "@mui/material";
 import { FormikProps } from "formik";
-import { AllFormikValues } from "@/types/formikValues";
 
 type Props<FormValuesType> = {
   label: string;
