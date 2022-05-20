@@ -10,6 +10,8 @@ import {
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { auth } from "../firebase";
 
+const usersApi = "https://skylab-backend.herokuapp.com/api/users"
+
 interface IAuth {
 	user: User | null;
 	signUp: (email: string, password: string) => Promise<void>;
@@ -40,7 +42,8 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
 	const [user, setUser] = useState<User | null>(null);
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState<boolean>(true);
+	const [error, setError] = useState<string>("");
 
 	useEffect(
 		() =>
@@ -53,7 +56,51 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 	);
 
 	const signUp = async (email: string, password: string) => {
-		await createUserWithEmailAndPassword(auth, email, password);
+		/**
+		 * attempt to create new user in postgres
+		 */
+		const createUserResponse = await fetch(usersApi, {
+			method: "POST",
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify({
+				user: {
+					email
+				}
+			})
+		})
+
+		/**
+		 * terminate sign up if postgres user creation fails and display error message
+		 */
+		if (!createUserResponse.ok) {
+			const errorMessage = await createUserResponse.text();
+			setError(errorMessage);
+			return;
+		}
+
+		/**
+		 * attempt to create new user in firebase
+		 */
+		await createUserWithEmailAndPassword(auth, email, password)
+			.catch(async (err) => {
+				/**
+				 * delete user in postgres if firebase user creation fails 
+				 */
+				const deleteUserResponse = await fetch(`${usersApi}/${email}`, {
+					method: "DELETE",
+				})
+
+				/**
+				 * terminate sign up after deleting user in postgres and display error message
+				 */
+				if (!deleteUserResponse.ok) {
+					const errorMessage = await deleteUserResponse.text();
+					setError(errorMessage);
+				} else {
+					console.log(err)
+					setError("Something went wrong while signing up")
+				}
+			});
 	};
 
 	const signIn = async (email: string, password: string) => {
@@ -69,9 +116,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 	};
 
 	const memoedValue = useMemo(
-		() => ({ user, signUp, signIn, logOut, resetPassword }),
+		() => ({ user, error, signUp, signIn, logOut, resetPassword }),
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[user, loading]
+		[user, error]
 	);
 
 	return (
