@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, FC } from "react";
 import {
   AppBar,
   Box,
@@ -19,9 +19,8 @@ import Link from "next/link";
 const pages = ["Home", "Projects"];
 const settings = ["Profile", "Logout"];
 
-const Navbar = () => {
-  let user = null;
-  let isAuthorized = false;
+const Navbar: FC = () => {
+  const isAuthorized = false;
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
@@ -118,7 +117,12 @@ const Navbar = () => {
             </Typography>
           </Link>
 
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "flex", md: "none" },
+            }}
+          >
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -175,7 +179,12 @@ const Navbar = () => {
           >
             Skylab
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", md: "flex" },
+            }}
+          >
             {pages.map((page) => (
               <Button
                 key={page}

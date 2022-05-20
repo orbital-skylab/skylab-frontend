@@ -1,0 +1,47 @@
+export enum STATUS {
+  IDLE,
+  FETCHING,
+  FETCHED,
+  ERROR,
+}
+
+export enum ACTION_TYPE {
+  SET_STATUS_FETCHING,
+  SET_FETCHED_DATA,
+  SET_ERROR,
+  MUTATE,
+}
+
+/**
+ * Mutate function takes in a callback which modifies the data optimistically.
+ */
+export type Mutator<T> = (data: T) => T;
+export type Mutate<T> = (mutator: Mutator<T>) => void;
+
+/**
+ * The state of the reducer with a generic data type.
+ */
+export interface State<T> {
+  status: STATUS;
+  error: unknown;
+  data: T | undefined;
+}
+
+/**
+ * Type of reducer actions with a generic data type.
+ */
+export interface Action<T> {
+  type: ACTION_TYPE;
+  payload?: {
+    data?: T;
+    error?: unknown;
+    mutator?: Mutator<T>;
+  };
+}
+
+/**
+ * The return type of the useFetch hook.
+ */
+export interface HookReturnType<T> extends State<T> {
+  mutate: Mutate<T>;
+}
