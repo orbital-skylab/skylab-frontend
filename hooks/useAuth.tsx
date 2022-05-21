@@ -9,11 +9,11 @@ import {
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { auth } from "../firebase";
-
-const usersApi = "https://skylab-backend.herokuapp.com/api/users"
+const usersApi = `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/users`
 
 interface IAuth {
-  user: User | null;
+	user: User | null;
+	error: string | null;
   signUp: (email: string, password: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   logOut: () => Promise<void>;
@@ -21,7 +21,8 @@ interface IAuth {
 }
 
 const AuthContext = createContext<IAuth>({
-  user: null,
+	user: null,
+	error: null,
   signUp: async () => {
     /* Placeholder for callback function */
   },
