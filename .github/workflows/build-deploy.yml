@@ -32,11 +32,11 @@ jobs:
 
       # Run ESLint
       - name: ESLint Check
-        run: npx eslint . --config .eslintrc --ext .js,.jsx,.ts,.tsx
+        run: npx eslint . --config .eslintrc.json --ext .js,.jsx,.ts,.tsx
 
       # Run Prettier
       - name: Prettier Check
-        run: npx prettier --check . --config .prettierrc
+        run: npx prettier --check . --config .prettierrc.json
 
       ## TODO: Add test scripts when Jest is configured
 
