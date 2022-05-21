@@ -1,5 +1,3 @@
-import { string } from "yup";
-
 /**
  * Constants
  */
@@ -17,28 +15,27 @@ export async function PostApiService(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      authorization: `Bearer ${}`
     },
     body: JSON.stringify(body),
   });
   return res;
 }
 
-
-export function curryPostApiService(url: string, body: {[key: string]: any}) {
-    function createServiceWithToken(token: string) {
-        async function postApiService() {
-            const res = await fetch(`${API_URL}${url}`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify(body),
-              });
-              return res;
-        }
-        return postApiService;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function curryPostApiService(url: string, body: { [key: string]: any }) {
+  function createServiceWithToken(token: string) {
+    async function postApiService() {
+      const res = await fetch(`${API_URL}${url}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      });
+      return res;
     }
-    return createServiceWithToken;
+    return postApiService;
+  }
+  return createServiceWithToken;
 }

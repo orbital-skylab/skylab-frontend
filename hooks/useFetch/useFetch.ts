@@ -7,8 +7,13 @@ import {
   Mutate,
   HookReturnType,
 } from "./useFetch.types";
-import { API_URL } from "@/lib/constants";
+import { API_URL } from "@/helpers/api";
 
+/**
+ * A custom wrapper hook to fetch data while providing state and the ability to update the fetched data manually.
+ * @param url The endpoint to fetch data from (automatically prepends the backend base API URL).
+ * @returns
+ */
 const useFetch = <T>(url: string): HookReturnType<T> => {
   const initialState: State<T> = {
     status: STATUS.IDLE,
