@@ -8,6 +8,7 @@ const Body: FC = ({ children }) => {
         sx={{
           minHeight: "100vh",
           paddingTop: { xs: "56px", sm: "64px", md: "68.5px" },
+          paddingX: "1rem",
           height: "100%",
           display: "flex",
           flexDirection: "column",

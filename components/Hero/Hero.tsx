@@ -1,6 +1,4 @@
-import { Translate } from "@mui/icons-material";
 import { Box, Typography, Stack } from "@mui/material";
-import Image from "next/image";
 import { FC } from "react";
 import styles from "./Hero.module.scss";
 
@@ -11,6 +9,7 @@ const Hero: FC = () => {
         backgroundColor: "primary.main",
         position: "relative",
         top: { xs: "-56px", sm: "-64px", md: "-68.5px" },
+        left: "-16px",
         height: "100vh",
         width: "100vw",
         overflow: "hidden",
