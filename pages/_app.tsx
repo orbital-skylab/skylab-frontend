@@ -1,7 +1,7 @@
 import type { AppProps } from "next/app";
 import Head from "next/head";
 // Libraries
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 // Components
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -10,17 +10,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 // Styling
 import "../styles/globals.scss";
 import "../styles/fonts.scss";
-
-const theme = createTheme({
-  typography: {
-    fontFamily: ["Inter", "Arial", "sans-serif"].join(","),
-  },
-  palette: {
-    primary: {
-      main: "#051529",
-    },
-  },
-});
+import { theme } from "@/styles/muiTheme";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
