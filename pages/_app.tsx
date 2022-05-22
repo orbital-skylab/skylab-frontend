@@ -2,19 +2,19 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 // Styling
 import "../styles/globals.css";
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
+import "../styles/fonts.css";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/hooks/useAuth";
 
 const theme = createTheme({
+  typography: {
+    fontFamily: ["Inter", "Arial", "sans-serif"].join(","),
+  },
   palette: {
     primary: {
-      main: "#14213D",
+      main: "#051529",
     },
   },
 });
