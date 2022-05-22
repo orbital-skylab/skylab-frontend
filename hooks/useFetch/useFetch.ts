@@ -24,15 +24,6 @@ const useFetch = <T>({
 }): HookReturnType<T> => {
   const token = "placeholderToken"; // TODO: Retrieve from useAuth
 
-  /* Building API service. */
-  const apiServiceBuilder = new ApiServiceBuilder();
-  apiServiceBuilder.setMethod(HTTP_METHOD.GET);
-  apiServiceBuilder.setEndpoint(endpoint);
-  if (requiresAuthorization) {
-    apiServiceBuilder.setToken(token);
-  }
-  const apiService = apiServiceBuilder.build();
-
   /* Initializing reducer. */
   const initialState: State<T> = {
     status: STATUS.IDLE,
@@ -48,6 +39,15 @@ const useFetch = <T>({
     const fetchData = async () => {
       dispatch({ type: ACTION_TYPE.SET_STATUS_FETCHING });
       try {
+        /* Building API service. */
+        const apiServiceBuilder = new ApiServiceBuilder();
+        apiServiceBuilder.setMethod(HTTP_METHOD.GET);
+        apiServiceBuilder.setEndpoint(endpoint);
+        if (requiresAuthorization) {
+          apiServiceBuilder.setToken(token);
+        }
+        const apiService = apiServiceBuilder.build();
+
         const response = await apiService();
         const data: T = await response.json();
         if (cancelRequest) return;
@@ -62,13 +62,12 @@ const useFetch = <T>({
         });
       }
     };
-
     fetchData();
 
     return function cleanup() {
       cancelRequest = true;
     };
-  }, [apiService, endpoint, requiresAuthorization]);
+  }, [endpoint, requiresAuthorization]);
 
   /* Mutate function to modify the state of the fetched data directly. */
   const mutate: Mutate<T> = async (mutator) => {
