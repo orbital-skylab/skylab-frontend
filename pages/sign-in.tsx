@@ -6,6 +6,7 @@ import { Button, Container, Stack, Typography, Divider } from "@mui/material";
 // Components
 import Body from "@/components/Body";
 import TextInput from "@/components/FormControllers/TextInput";
+import useAuth from "@/hooks/useAuth";
 
 interface SignInFormValuesType {
   email: string;
@@ -13,16 +14,26 @@ interface SignInFormValuesType {
 }
 
 const SignIn: NextPage = () => {
+  const { error, signUp } = useAuth();
+
   const initialValues: SignInFormValuesType = {
     email: "",
     password: "",
   };
 
-  const handleSubmit = (
+  const handleSubmit = async (
     values: SignInFormValuesType,
     actions: FormikHelpers<SignInFormValuesType>
   ) => {
-    console.log("Submitted", values);
+    const { email, password } = values;
+    await signUp(email, password);
+
+    if (error) {
+      alert(error);
+    } else {
+      console.log("Submitted: ", values);
+    }
+
     actions.setSubmitting(false);
   };
 
