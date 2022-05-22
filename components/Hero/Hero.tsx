@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import { FC } from "react";
-import styles from "./Hero.module.css";
+import styles from "./Hero.module.scss";
 
 const Hero: FC = () => {
   return (

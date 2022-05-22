@@ -1,12 +1,15 @@
 import type { AppProps } from "next/app";
 import Head from "next/head";
-// Styling
-import "../styles/globals.css";
-import "../styles/fonts.css";
+// Libraries
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+// Components
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+// Hooks
 import { AuthProvider } from "@/hooks/useAuth";
+// Styling
+import "../styles/globals.scss";
+import "../styles/fonts.scss";
 
 const theme = createTheme({
   typography: {
