@@ -32,11 +32,7 @@ export interface State<T> {
  */
 export interface Action<T> {
   type: ACTION_TYPE;
-  payload?: {
-    data?: T;
-    error?: unknown;
-    mutator?: Mutator<T>;
-  };
+  payload?: T | Mutator<T> | unknown;
 }
 
 /**

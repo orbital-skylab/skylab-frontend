@@ -1,8 +1,8 @@
-import { STATUS, ACTION_TYPE, State, Action } from "./useFetch.types";
+import { STATUS, ACTION_TYPE, State, Action, Mutator } from "./useFetch.types";
 
 export const createReducer =
-  <DataType>() =>
-  (state: State<DataType>, action: Action<DataType>): State<DataType> => {
+  <T>() =>
+  (state: State<T>, action: Action<T>): State<T> => {
     switch (action.type) {
       case ACTION_TYPE.SET_STATUS_FETCHING: {
         return { ...state, status: STATUS.FETCHING };
@@ -11,19 +11,19 @@ export const createReducer =
         return {
           ...state,
           status: STATUS.FETCHED,
-          data: action.payload?.data,
+          data: action.payload as T,
         };
       }
       case ACTION_TYPE.MUTATE: {
         const newState = { ...state };
-        const mutator = action.payload?.mutator;
+        const mutator = action.payload as Mutator<T>;
         if (mutator) {
-          newState.data = mutator(newState.data as DataType);
+          newState.data = mutator(newState.data as T);
         }
         return newState;
       }
       case ACTION_TYPE.SET_ERROR: {
-        return { ...state, status: STATUS.ERROR, error: action.payload?.error };
+        return { ...state, status: STATUS.ERROR, error: action.payload };
       }
       default: {
         return state;
