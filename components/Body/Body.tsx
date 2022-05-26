@@ -13,6 +13,7 @@ const Body: FC = ({ children }) => {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
+          overflow: "hidden",
         }}
       >
         {children}

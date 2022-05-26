@@ -15,11 +15,15 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const pages = ["Home", "Projects"];
 const settings = ["Profile", "Logout"];
 
 const Navbar: FC = () => {
+  const router = useRouter();
+  console.log(router);
+  const isLanding = router.asPath === "/";
   const isAuthorized = false;
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -86,7 +90,7 @@ const Navbar: FC = () => {
   }, [isAuthorized, anchorElUser]);
 
   return (
-    <AppBar position="absolute">
+    <AppBar position="absolute" sx={isLanding ? { boxShadow: "0" } : {}}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Link href="/" passHref>

@@ -1,6 +1,5 @@
 import { Box, Typography, Stack } from "@mui/material";
 import { FC } from "react";
-import styles from "./Hero.module.scss";
 
 const Hero: FC = () => {
   return (
@@ -15,13 +14,6 @@ const Hero: FC = () => {
         overflow: "hidden",
       }}
     >
-      <div className={styles.space}>
-        <div className={styles.stars}></div>
-        <div className={styles.stars}></div>
-        <div className={styles.stars}></div>
-        <div className={styles.stars}></div>
-        <div className={styles.stars}></div>
-      </div>
       <Stack
         sx={{ height: "100%", width: "100%", position: "absolute" }}
         direction="column"
@@ -31,7 +23,7 @@ const Hero: FC = () => {
       >
         <Typography
           color="primary.contrastText"
-          fontSize={{ xs: "3rem", md: "4rem", lg: "5rem" }}
+          fontSize={{ xs: "3rem", md: "4rem" }}
           fontWeight="800"
           variant="h1"
           textAlign="center"
@@ -45,7 +37,7 @@ const Hero: FC = () => {
         </Typography>
         <Typography
           color="primary.contrastText"
-          fontSize={{ xs: "1.2rem", md: "2rem", lg: "3rem" }}
+          fontSize={{ xs: "1.2rem", md: "2rem" }}
           fontWeight="600"
           variant="h2"
           textAlign="center"
