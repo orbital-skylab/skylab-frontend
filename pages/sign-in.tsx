@@ -14,7 +14,7 @@ interface SignInFormValuesType {
 }
 
 const SignIn: NextPage = () => {
-  const { user, error, signUp} = useAuth();
+  const { error, signUp } = useAuth();
 
   const initialValues: SignInFormValuesType = {
     email: "",
@@ -33,7 +33,7 @@ const SignIn: NextPage = () => {
     } else {
       console.log("Submitted: ", values);
     }
-    
+
     actions.setSubmitting(false);
   };
 
