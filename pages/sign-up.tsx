@@ -1,32 +1,31 @@
 import type { NextPage } from "next";
-import Link from "next/link";
 // Libraries
 import { Formik, FormikHelpers } from "formik";
-import { Button, Container, Stack, Typography, Divider } from "@mui/material";
+import { Button, Container, Stack, Typography } from "@mui/material";
 // Components
 import Body from "@/components/Body";
 import TextInput from "@/components/FormControllers/TextInput";
 import useAuth from "@/hooks/useAuth";
 
-interface SignInFormValuesType {
+interface SignUpFormValuesType {
   email: string;
   password: string;
 }
 
-const SignIn: NextPage = () => {
-  const { error, signIn } = useAuth();
+const SignUp: NextPage = () => {
+  const { error, signUp } = useAuth();
 
-  const initialValues: SignInFormValuesType = {
+  const initialValues: SignUpFormValuesType = {
     email: "",
     password: "",
   };
 
   const handleSubmit = async (
-    values: SignInFormValuesType,
-    actions: FormikHelpers<SignInFormValuesType>
+    values: SignUpFormValuesType,
+    actions: FormikHelpers<SignUpFormValuesType>
   ) => {
     const { email, password } = values;
-    await signIn(email, password);
+    await signUp(email, password);
 
     if (error) {
       alert(error);
@@ -42,6 +41,9 @@ const SignIn: NextPage = () => {
       <Body>
         <Container maxWidth="xs">
           <Stack gap="1rem">
+            <Typography textAlign="center">
+              Dev: For testing purposes
+            </Typography>
             <Formik initialValues={initialValues} onSubmit={handleSubmit}>
               {(formik) => (
                 <form onSubmit={formik.handleSubmit}>
@@ -69,18 +71,10 @@ const SignIn: NextPage = () => {
                 </form>
               )}
             </Formik>
-
-            <Divider />
-
-            <Typography textAlign="center">
-              Forgot your password?
-              <br />
-              <Link href="/forgot-password">Reset password</Link>
-            </Typography>
           </Stack>
         </Container>
       </Body>
     </>
   );
 };
-export default SignIn;
+export default SignUp;
