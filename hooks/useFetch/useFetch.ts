@@ -7,10 +7,11 @@ import {
   Mutate,
   HookReturnType,
 } from "./useFetch.types";
-import { ApiServiceBuilder, HTTP_METHOD } from "@/helpers/api";
+import { ApiServiceBuilder } from "@/helpers/api";
+import { HTTP_METHOD } from "@/types/api";
 
 /**
- * a custom wrapper hook to fetch data while providing state and the ability to update the fetched data manually.
+ * A custom wrapper hook to fetch data while providing state and the ability to update the fetched data manually.
  * @param {string} param0.endpoint the endpoint of where to fetch data from (the apiservicebuilder automatically prepends the backend api url).
  * @param {boolean} param0.requiresAuthorization whether the endpoint requires the user to be authorized.
  * @returns an object where status is the status of fetching the data, error is any encountered error (if any), data is the data fetched, and mutate is a function that takes in a callback to modify the data.
@@ -40,9 +41,10 @@ const useFetch = <T>({
       dispatch({ type: ACTION_TYPE.SET_STATUS_FETCHING });
       try {
         /* Building API service. */
-        const apiServiceBuilder = new ApiServiceBuilder();
-        apiServiceBuilder.setMethod(HTTP_METHOD.GET);
-        apiServiceBuilder.setEndpoint(endpoint);
+        const apiServiceBuilder = new ApiServiceBuilder({
+          method: HTTP_METHOD.GET,
+          endpoint,
+        });
         if (requiresAuthorization) {
           apiServiceBuilder.setToken(token);
         }
