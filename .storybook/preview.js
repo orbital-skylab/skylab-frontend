@@ -25,7 +25,7 @@ export const parameters = {
         "Components",
         ["Storybook"],
         "Timeline and Workflow",
-        ["Team Structure", "Issue Tracking", "Git Workflow", "Conventions"],
+        ["Team Structure", "Issue Tracking", "Git Workflow", "Work breakdown"],
       ],
     },
   },
