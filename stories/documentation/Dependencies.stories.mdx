@@ -4,4 +4,34 @@ import { Meta } from "@storybook/addon-docs";
 
 # Dependencies
 
-WIP...
+As per the non functional requirements, we should only depend on libraries/dependencies that fulfil some conditions:
+
+- They are well-maintained
+- They are well-documented
+- They are necessary
+
+By only depending on such libraries, we stand to gain the following benefits:
+
+- We do not have to worry about updating libraries that cause breaking changes
+- We do not unnecessarily increase the bundle size and slow down our application
+- We have a deeper understanding of how the code works instead of relying on (possibly overly complex) libraries
+
+## Dependencies and Justifications
+
+As such, this section is to document and justify the libraries that we are using
+
+### Dependencies
+
+| Dependency  | Version | Reason                                                                                                                                                                                                                                                                     |
+| ----------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Material UI | 5.7.0   | A UI library helps us develop faster while maintaing a cohesive visual design. Additionally, MUI is very widely used and well documented so many React developers should already be familiar with its usage.                                                               |
+| Formik      | 2.2.9   | Formik is a form management library. Skylab requires many forms, from pre-defined ones to dynamically generated ones, and having a form management library would provide many complex abstractions for such use cases that we would otherwise have to implement ourselves. |
+| Yup         | 0.32.11 | Yup is an object schema library that integrates extremely well with Formik for inline form validation. It is an extremely lightweight library that is very stable and widely used.                                                                                         |
+
+### Developer Dependencies
+
+| Dependency | Version | Reason                                                                                                                                                  |
+| ---------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ESLint     | 8.15.0  | ESLint is a (very) widely used industry standard for analyzing code. ESLint is explored further under the `ESLint and Prettier` section.                |
+| Prettier   | 2.6.2   | Prettier is another widely used industry standard for enforcing coding standards. Prettier is explored further under the `ESLint and Prettier` section. |
+| Storybook  | 6.5.5   | Storybook is a documentation library with many weekly users on npm. It provides a great UX for readers and developers alike.                            |
