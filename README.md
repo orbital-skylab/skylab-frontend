@@ -1,34 +1,32 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# NUS Skylab v2 - Frontend
 
-## Getting Started
+Skylab v2 is a student-developed project to support [NUS Orbital (CP2106)](https://orbital.comp.nus.edu.sg/) by allowing students, advisers, mentors, and administrators to use the platform to run the program.
 
-First, run the development server:
+> **Orbital** (a.k.a., CP2106: Independent Software Development Project) is the School of Computing’s 1st year summer self-directed, independent work course. This programme gives students the opportunity to pick up software development skills on their own, using sources on the web. All while receiving course credit in the form of 4 modular credits of Unrestricted Electives (UE). SoC provides the Orbital framework for helping students stay motivated and driven to complete a project of their own design, by structuring peer evaluation, critique and presentation milestones over the summer period.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+Skylab v2 has the intention of replacing the pre-existing [Skylab](https://nusskylab-dev.comp.nus.edu.sg/) for the following reasons:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. To use a modern tech stack to that it is easier for more students to be enrolled to maintain the platform
+   - Skylab v1 uses Ruby on Rails
+   - Skylab v2 uses PERN
+2. To improve pre-existing features to support the UX of administrators
+3. To revamp the existing UI to provide a more intuitive workflow for all users of the platform.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Installation
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+1. Install [Node.js](https://nodejs.org/en/) on your system
+   - You can type `node -v` into a terminal to check if you have it installed
+2. Clone the repo into a directory of your choice by typing `git clone https://github.com/orbital-skylab/skylab-frontend` into a terminal
+3. Navigate to the 'skylab-frontend' directory by typing `cd skylab-frontend`
+4. Install the packages by typing `npm install`
+5. Place the `.env` file in the root directory of the project
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Start the application
 
-## Learn More
+1. Ensure that you are in the `skylab-frontend` directory
+2. Type `npm run dev` into the terminal
+3. Navigate to http://localhost:3000 on your browser and you should see the application running
 
-To learn more about Next.js, take a look at the following resources:
+## Documentation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+// TODO: Add storybook documentation
