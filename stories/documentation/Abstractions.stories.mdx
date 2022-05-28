@@ -4,4 +4,52 @@ import { Meta } from "@storybook/addon-docs";
 
 # Abstractions
 
-WIP...
+According to the CS2103T textbook:
+
+> Abstraction is a technique for dealing with complexity. It works by establishing a level of complexity we are interested in, and suppressing the more complex details below that level.
+
+In this section, we will outline the abstractions that we have decided to use and any related design principles and considerations that influenced our choices.
+
+## Summary
+
+| Name              | Function                                                       |
+| ----------------- | -------------------------------------------------------------- |
+| ApiServiceBuilder | A wrapper for API requests and utilizes a builder pattern      |
+| useFetch          | A wrapper using generics for fetching data that provides state |
+| useApiCall        | A wrapper for making delayed API calls that provides state     |
+
+---
+
+## List of Abstractions
+
+### `APIServiceBuilder`
+
+> Located in `helpers/api.ts`
+
+**What**: The APIServiceBuilder is a wrapper for API requests and utilizes a builder design pattern.
+
+**Why**: We created this abstraction for two main reasons
+
+- To abstract away the low-level API library used to make API requests while standardizing the library used under the hood (eg. `fetch` vs `axios`). We are currently using the `fetch` library.
+- The bearer token used for making authenticated API requests is stored using React Context which requires a React hook to access the value. By using a builder pattern, we are able to delay the creation of the API service and only inject the bearer token in the wrapper hook calling the function (eg. `useFetch` or `useApiCall`)
+
+**How**:
+
+- The `api.ts` file has a typical class-based implementation of the builder pattern. The parameters are taken in as a JSON object instead of separate parameters so it is easier to call the function with the appropriate inputs.
+- The `#build` function parses the instance attributes and generates the request resource and init used for the `fetch` library
+
+### `useFetch`
+
+> Located in `hooks/useFetch/`
+
+**What**: TODO
+
+**Why**: TODO
+
+### `useApiCall`
+
+> Located in `hooks/useApiCall`
+
+**What**: TODO
+
+**Why**: TODO
