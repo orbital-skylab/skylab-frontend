@@ -1,219 +1,67 @@
 import { Meta } from "@storybook/addon-docs";
-import Code from "./assets/code-brackets.svg";
-import Colors from "./assets/colors.svg";
-import Comments from "./assets/comments.svg";
-import Direction from "./assets/direction.svg";
-import Flow from "./assets/flow.svg";
-import Plugin from "./assets/plugin.svg";
-import Repo from "./assets/repo.svg";
-import StackAlt from "./assets/stackalt.svg";
 
-<Meta title="Example/Introduction" />
+<Meta title="Introduction" />
 
-<style>
-  {`
-    .subheading {
-      --mediumdark: '#999999';
-      font-weight: 900;
-      font-size: 13px;
-      color: #999;
-      letter-spacing: 6px;
-      line-height: 24px;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      margin-top: 40px;
-    }
+# NUS Skylab v2
 
-    .link-list {
-      display: grid;
-      grid-template-columns: 1fr;
-      grid-template-rows: 1fr 1fr;
-      row-gap: 10px;
-    }
+Skylab v2 is a student-developed project to support [NUS Orbital (CP2106)](https://orbital.comp.nus.edu.sg/) by allowing students, advisers, mentors, and administrators to use the platform to run the program.
 
-    @media (min-width: 620px) {
-      .link-list {
-        row-gap: 20px;
-        column-gap: 20px;
-        grid-template-columns: 1fr 1fr;
-      }
-    }
+> **Orbital** (a.k.a., CP2106: Independent Software Development Project) is the School of Computing’s 1st year summer self-directed, independent work course. This programme gives students the opportunity to pick up software development skills on their own, using sources on the web. All while receiving course credit in the form of 4 modular credits of Unrestricted Electives (UE). SoC provides the Orbital framework for helping students stay motivated and driven to complete a project of their own design, by structuring peer evaluation, critique and presentation milestones over the summer period.
 
-    @media all and (-ms-high-contrast:none) {
-    .link-list {
-        display: -ms-grid;
-        -ms-grid-columns: 1fr 1fr;
-        -ms-grid-rows: 1fr 1fr;
-      }
-    }
+Skylab v2 has the intention of replacing the pre-existing [Skylab](https://nusskylab-dev.comp.nus.edu.sg/) for the following reasons:
 
-    .link-item {
-      display: block;
-      padding: 20px 30px 20px 15px;
-      border: 1px solid #00000010;
-      border-radius: 5px;
-      transition: background 150ms ease-out, border 150ms ease-out, transform 150ms ease-out;
-      color: #333333;
-      display: flex;
-      align-items: flex-start;
-    }
+1. To use a modern tech stack to that it is easier for more students to be enrolled to maintain the platform
+   - Skylab v1 uses Ruby on Rails
+   - Skylab v2 uses PERN
+2. To improve pre-existing features to support the UX of administrators
+3. To revamp the existing UI to provide a more intuitive workflow for all users of the platform.
 
-    .link-item:hover {
-      border-color: #1EA7FD50;
-      transform: translate3d(0, -3px, 0);
-      box-shadow: rgba(0, 0, 0, 0.08) 0 3px 10px 0;
-    }
+## Project Setup
 
-    .link-item:active {
-      border-color: #1EA7FD;
-      transform: translate3d(0, 0, 0);
-    }
+If you have not already setup the project on your system, please proceed to the [GitHub repo](https://github.com/orbital-skylab/skylab-frontend) and view the README's installation and startup guide on how to setup the project.
 
-    .link-item strong {
-      font-weight: 700;
-      display: block;
-      margin-bottom: 2px;
-    }
+## Storybook documentation structure
 
-    .link-item img {
-      height: 40px;
-      width: 40px;
-      margin-right: 15px;
-      flex: none;
-    }
+From the sidebar on the left side of the screen, there should be **3** main categories:
 
-    .link-item span {
-      font-size: 14px;
-      line-height: 20px;
-    }
+### 1. Documentation
 
-    .tip {
-      display: inline-block;
-      border-radius: 1em;
-      font-size: 11px;
-      line-height: 12px;
-      font-weight: 700;
-      background: #E7FDD8;
-      color: #66BF3C;
-      padding: 4px 12px;
-      margin-right: 10px;
-      vertical-align: top;
-    }
+> This category is for all documentation related to requirements and design choices of the application.
 
-    .tip-wrapper {
-      font-size: 13px;
-      line-height: 20px;
-      margin-top: 40px;
-      margin-bottom: 40px;
-    }
+This includes design choices such as:
 
-    .tip-wrapper code {
-      font-size: 12px;
-      display: inline-block;
-    }
-  `}
-</style>
+- Folder structure
+- Tech stack chosen
+- Abstractions utilized
+- Dependencies installed
 
-# Welcome to Storybook
+This includes requirements such as:
 
-Storybook helps you build UI components in isolation from your app's business logic, data, and context.
-That makes it easy to develop hard-to-reach states. Save these UI states as **stories** to revisit during development, testing, or QA.
+- Non functional requirements
+- Features of the application
 
-Browse example stories now by navigating to them in the sidebar.
-View their code in the `stories` directory to learn how they work.
-We recommend building UIs with a [**component-driven**](https://componentdriven.org) process starting with atomic components and ending with pages.
+### 2. Components
 
-<div className="subheading">Configure</div>
+> This category is for all documentation related to the UI of the application.
 
-<div className="link-list">
-  <a
-    className="link-item"
-    href="https://storybook.js.org/docs/react/addons/addon-types"
-    target="_blank"
-  >
-    <img src={Plugin} alt="plugin" />
-    <span>
-      <strong>Presets for popular tools</strong>
-      Easy setup for TypeScript, SCSS and more.
-    </span>
-  </a>
-  <a
-    className="link-item"
-    href="https://storybook.js.org/docs/react/configure/webpack"
-    target="_blank"
-  >
-    <img src={StackAlt} alt="Build" />
-    <span>
-      <strong>Build configuration</strong>
-      How to customize webpack and Babel
-    </span>
-  </a>
-  <a
-    className="link-item"
-    href="https://storybook.js.org/docs/react/configure/styling-and-css"
-    target="_blank"
-  >
-    <img src={Colors} alt="colors" />
-    <span>
-      <strong>Styling</strong>
-      How to load and configure CSS libraries
-    </span>
-  </a>
-  <a
-    className="link-item"
-    href="https://storybook.js.org/docs/react/get-started/setup#configure-storybook-for-your-stack"
-    target="_blank"
-  >
-    <img src={Flow} alt="flow" />
-    <span>
-      <strong>Data</strong>
-      Providers and mocking for data libraries
-    </span>
-  </a>
-</div>
+Before you create a new component, ask yourself whether you can either:
 
-<div className="subheading">Learn</div>
+- Reuse a component that has already been created and documented before hand; or
+- Use a component from [Material UI v5](https://mui.com/material-ui/react-button/)
 
-<div className="link-list">
-  <a className="link-item" href="https://storybook.js.org/docs" target="_blank">
-    <img src={Repo} alt="repo" />
-    <span>
-      <strong>Storybook documentation</strong>
-      Configure, customize, and extend
-    </span>
-  </a>
-  <a
-    className="link-item"
-    href="https://storybook.js.org/tutorials/"
-    target="_blank"
-  >
-    <img src={Direction} alt="direction" />
-    <span>
-      <strong>In-depth guides</strong>
-      Best practices from leading teams
-    </span>
-  </a>
-  <a
-    className="link-item"
-    href="https://github.com/storybookjs/storybook"
-    target="_blank"
-  >
-    <img src={Code} alt="code" />
-    <span>
-      <strong>GitHub project</strong>
-      View the source and add issues
-    </span>
-  </a>
-  <a className="link-item" href="https://discord.gg/storybook" target="_blank">
-    <img src={Comments} alt="comments" />
-    <span>
-      <strong>Discord chat</strong>
-      Chat with maintainers and the community
-    </span>
-  </a>
-</div>
+By doing so, this leads to the following benefits:
 
-<div className="tip-wrapper">
-  <span className="tip">Tip</span>Edit the Markdown in{" "}
-  <code>stories/Introduction.stories.mdx</code>
-</div>
+1. Less design/development work for you
+2. More visual cohesiveness across the platform
+3. Less opportunities for bugs as the component should have been used and tested before
+
+### 3. Timeline and Workflow
+
+> This category is _specifically_ for the initial development of Skylab v2 (May 2022 - July 2022)
+
+Here, we document the following:
+
+- Our team and team structure
+- Our Git workflow
+- Our issue tracking system
+- Our conventions (eg. branch naming, commit naming, etc.)
