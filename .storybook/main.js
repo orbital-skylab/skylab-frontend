@@ -10,6 +10,7 @@ module.exports = {
     "@storybook/addon-essentials",
     "@storybook/addon-interactions",
     "storybook-addon-next",
+    "storybook-addon-material-ui",
   ],
   framework: "@storybook/react",
   core: {

@@ -52,6 +52,7 @@
     "eslint-plugin-storybook": "^0.5.12",
     "husky": "^8.0.0",
     "prettier": "^2.6.2",
+    "storybook-addon-material-ui": "^0.9.0-alpha.24",
     "storybook-addon-next": "^1.6.4",
     "typescript": "^4.6.2"
   }
