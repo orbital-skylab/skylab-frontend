@@ -21,16 +21,24 @@ export class ApiServiceBuilder {
     token = "",
   }: {
     method?: HTTP_METHOD;
-    endpoint: string;
+    endpoint?: string;
     body?: Record<string, any>;
     contentType?: CONTENT_TYPE;
     token?: string;
-  }) {
+  } = {}) {
     this.method = method;
     this.endpoint = endpoint;
     this.body = body;
     this.contentType = contentType;
     this.token = token;
+  }
+
+  public checkParameters() {
+    console.log("Method:", this.method);
+    console.log("Endpoint:", this.endpoint);
+    console.log("Body:", this.body);
+    console.log("Content-Type:", this.contentType);
+    console.log("Token:", this.token);
   }
 
   setEndpoint(endpoint: string) {

@@ -1,12 +1,9 @@
-import { ApiServiceBuilder, HTTP_METHOD } from "@/helpers/api";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ApiServiceBuilder } from "@/helpers/api";
+import { HTTP_METHOD } from "@/types/api";
+import { STATUS } from "./useApiCall.types";
 import { useState } from "react";
 
-enum STATUS {
-  IDLE,
-  LOADING,
-  SUCCESS,
-  ERROR,
-}
 /**
  * A custom wrapper hook to make API requests while providing state.
  * @param {HTTP_METHOD} param0.method the HTTP method to invoke.
@@ -16,7 +13,6 @@ enum STATUS {
  * @returns an object where status is the status of the request, error is any encountered error (if any), call is the function to actually make the api request.
 
  */
-// TODO: Fix any
 const useApiCall = ({
   method = HTTP_METHOD.POST,
   endpoint = "",
@@ -24,25 +20,18 @@ const useApiCall = ({
   requiresAuthorization = true,
   onSuccess,
 }: {
-  method: HTTP_METHOD;
+  method?: HTTP_METHOD;
   endpoint: string;
-  // TODO: Fix any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  body: { [key: string]: any };
+  body?: { [key: string]: any };
   requiresAuthorization?: boolean;
-  // TODO: Define the function shape
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  onSuccess: Function;
+  onSuccess: <T>(data: T) => void;
 }) => {
   const token = "placeholderToken"; // TODO: Retrieve from useAuth
   const [status, setStatus] = useState<STATUS>(STATUS.IDLE);
   const [error, setError] = useState("");
 
   /* Building API service. */
-  const apiServiceBuilder = new ApiServiceBuilder();
-  apiServiceBuilder.setMethod(method);
-  apiServiceBuilder.setEndpoint(endpoint);
-  apiServiceBuilder.setBody(body);
+  const apiServiceBuilder = new ApiServiceBuilder({ method, endpoint, body });
   if (requiresAuthorization) {
     apiServiceBuilder.setToken(token);
   }
