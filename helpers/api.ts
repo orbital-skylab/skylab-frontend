@@ -1,24 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { CONTENT_TYPE, HTTP_METHOD } from "@/types/api";
 
 /**
  * Constants
  */
 export const API_URL = `${process.env.NEXT_PUBLIC_BASE_API_URL}`;
-
-/**
- * Helper functions
- */
-export enum HTTP_METHOD {
-  GET = "GET",
-  POST = "POST",
-  PUT = "PUT",
-  PATCH = "PATCH",
-  DELETE = "DELETE",
-}
-
-export enum CONTENT_TYPE {
-  JSON = "application/json",
-}
 
 export class ApiServiceBuilder {
   private endpoint: string;
@@ -27,18 +13,32 @@ export class ApiServiceBuilder {
   private contentType: CONTENT_TYPE;
   private token: string;
 
-  constructor(
+  constructor({
     method = HTTP_METHOD.GET,
     endpoint = "",
     body = {},
     contentType = CONTENT_TYPE.JSON,
-    token = ""
-  ) {
+    token = "",
+  }: {
+    method?: HTTP_METHOD;
+    endpoint?: string;
+    body?: Record<string, any>;
+    contentType?: CONTENT_TYPE;
+    token?: string;
+  } = {}) {
     this.method = method;
     this.endpoint = endpoint;
     this.body = body;
     this.contentType = contentType;
     this.token = token;
+  }
+
+  public checkParameters() {
+    console.log("Method:", this.method);
+    console.log("Endpoint:", this.endpoint);
+    console.log("Body:", this.body);
+    console.log("Content-Type:", this.contentType);
+    console.log("Token:", this.token);
   }
 
   setEndpoint(endpoint: string) {

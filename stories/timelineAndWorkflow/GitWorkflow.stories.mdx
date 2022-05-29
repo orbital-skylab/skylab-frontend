@@ -1,0 +1,61 @@
+import { Meta } from "@storybook/addon-docs";
+
+<Meta title="Timeline and Workflow/Git Workflow" />
+
+# Git Workflow
+
+### Protected Branches
+
+The industry standard is to always keep the `main` branch ready and to never push un-tested code directly to the `main` branch. As such, we have adopted a similar system.
+
+We will have two protected branches:
+
+1. `production`
+
+- The `production` branch will be the branch that deploys directly to the NUS SoC VM to be hosted on the official Skylab URL
+- The website will also be pointing to the production database where all the data of the Orbital programme are stored.
+- The `production` branch will only receive pull requests from the `staging` branch
+
+2. `staging`
+
+- The `staging` branch deploys directly to a staging site
+- The website will be pointing to a staging database where the data can be freely manipulated for testing
+- The `staging` branch is meant for developer and user testing before a new feature goes live on the `production` branch
+- The `staging` branch will receive pull requests from feature branches worked on by developers
+
+### Feature Branching
+
+Feature branch workflow is a workflow where all developers pull and push from the same remote repository.
+
+To develop a new feature/fix, developers will:
+
+1. Create a new branch from `staging` and develop within that branch, regularly merging/rebasing any new commits in staging back into the feature branch.
+2. Once the feature is complete, the developer should push their code and make a pull request to the `staging` branch.
+3. The pull request should be reviewed by at least one other developer and only be merged to `staging` once approved.
+
+This workflow allows developers to develop independently, ensure code quality, and minimize merge conflicts while simultaneously ensuring that the overhead is not as high as compared to a forking workflow.
+
+### Branch Naming Convention
+
+For easy tracking of how each branch and Jira ticket correspond to each other, we have decided to name our branches according to the Jira ticket number.
+
+An example:
+
+- Jira ticket is 23 with description of 'Create Projects table in Postgres DB'
+- The branch name would be something like `23-create-projects-table`
+
+This helps us easily identify the ticket that each branch is for and can help improve our efficiency.
+
+### Commit Naming Convention
+
+To ensure that our commits adequately provide context for other developers, we have decided to adopt [the following commit convention](https://www.conventionalcommits.org/en/v1.0.0/).
+
+This resource is very similar how CS2103T teaches us to write Git commits with the following additional change:
+
+> Prefix each commit with the commit's type
+
+Examples would be:
+
+- `fix: fix visual bug with profile page`
+- `feat: implement new hook that manages state while fetching data`
+- `docs: document new button component`

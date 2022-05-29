@@ -1,0 +1,74 @@
+import { Meta } from "@storybook/addon-docs";
+
+<Meta title="Documentation/Abstractions" />
+
+# Abstractions
+
+According to the CS2103T textbook:
+
+> Abstraction is a technique for dealing with complexity. It works by establishing a level of complexity we are interested in, and suppressing the more complex details below that level.
+
+In this section, we will outline the abstractions that we have decided to use and any related design principles and considerations that influenced our choices.
+
+## Summary
+
+| Name              | Function                                                       |
+| ----------------- | -------------------------------------------------------------- |
+| ApiServiceBuilder | A wrapper for API requests and utilizes a builder pattern      |
+| useFetch          | A wrapper using generics for fetching data that provides state |
+| useApiCall        | A wrapper for making delayed API calls that provides state     |
+
+---
+
+## List of Abstractions
+
+### `APIServiceBuilder`
+
+> Located in `helpers/api.ts`
+
+**What**: `APIServiceBuilder` is a wrapper for API requests and utilizes a builder design pattern.
+
+**Why**: We created this abstraction for two main reasons
+
+- To abstract away the low-level API library used to make API requests while standardizing the library used under the hood (eg. `fetch` vs `axios`). We are currently using the `fetch` library.
+- The bearer token used for making authenticated API requests is stored using React Context which requires a React hook to access the value. By using a builder pattern, we are able to delay the creation of the API service and only inject the bearer token in the wrapper hook calling the function (eg. `useFetch` or `useApiCall`).
+
+**How**:
+
+- The `api.ts` file has a typical class-based implementation of the builder pattern. The parameters are taken in as a JSON object instead of separate parameters so it is easier to call the function with the appropriate inputs.
+- The `#build` function parses the instance attributes and generates the request resource and init used for the `fetch` library.
+
+### `useFetch<T>`
+
+> Located in `hooks/useFetch/`
+
+**What**: `useFetch<T>` is a wrapper that utilizes generics for fetching data that provides state.
+
+**Why**: Directly utilizing React's `useEffect` within the component to fetch data has a few drawbacks:
+
+- You have to add multiple `useState`s into the component solely for fetching data (eg. data, error, isLoading). This makes the code difficult to read and understand especially if there are multiple endpoints being requested and other `useState`s are present.
+- Adding a `useEffect` for each requested endpoint adds to the LoC of the component and makes it more difficult to read and thus maintain.
+
+**How**:
+
+- `useFetch` internally uses `useEffect` and `useReducer` together with the `ApiServiceBuilder` in order to fetch data and all the component has to provide is the `<T>` (the expected type of data being fetched) and the endpoint being requested.
+- `useReducer` is used over `useState` as the state being stored is a JSON object with multiple entries, thus `useReducer` would be more performant and reduce the number of unnecessary re-renders.
+- More files such as `useFetch.types.ts` and `useFetch.helpers.ts` contain the enums and types used as well as the helper function to create the reducer respectively.
+- Furthermore, a `mutate` function is provided by the `useFetch` hook. A callback can be passed into the mutate function to modify the fetched data (eg. after a successful POST request is made to edit the name of a user, the mutate function can modify the user's name without refetching the data).
+
+### `useApiCall`
+
+> Located in `hooks/useApiCall`
+
+**What**: `useApiCall` is a wrapper for making delayed API calls that provides state
+
+**Why**: Directly making an API request in a component has similar drawbacks to that of `useFetch`
+
+- You have to add multiple `useState`s into the component (eg. isLoading and error). This makes the code difficult to read and understand especially if there are multiple possible API calls a user can make in the same component and other `useState`s are present.
+- The additional `useState`s and other lower level code such as `try catch` would increase the LoC of the component and make it more difficult ot read and thus maintain.
+
+**How**:
+
+- The implementation of this custom hook is inspired by `React Query`'s `useMutation` hook
+- `useApiCall` internally uses `useState` and `ApiServiceBuilder` to make the API call when the user calls the provided `#call` function.
+- Another file `useApiCall.types.ts` is used to store enums and types used in the hook such as status of the API call.

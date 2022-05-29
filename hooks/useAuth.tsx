@@ -1,3 +1,5 @@
+import { ApiServiceBuilder } from "@/helpers/api";
+import { HTTP_METHOD } from "@/types/api";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -9,7 +11,6 @@ import {
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { auth } from "../firebase";
-const usersApi = `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/users`;
 
 interface IAuth {
   user: User | null;
@@ -60,15 +61,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     /**
      * attempt to create new user in postgres
      */
-    const createUserResponse = await fetch(usersApi, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        user: {
-          email,
-        },
-      }),
+    const apiServiceBuilder = new ApiServiceBuilder({
+      method: HTTP_METHOD.POST,
+      endpoint: "/users",
+      body: { user: { email } },
     });
+    const apiService = apiServiceBuilder.build();
+    const createUserResponse = await apiService();
 
     /**
      * terminate sign up if postgres user creation fails and display error message
@@ -87,9 +86,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         /**
          * delete user in postgres if firebase user creation fails
          */
-        const deleteUserResponse = await fetch(`${usersApi}/${email}`, {
-          method: "DELETE",
+        const apiServiceBuilder = new ApiServiceBuilder({
+          method: HTTP_METHOD.DELETE,
+          endpoint: `/${email}`,
         });
+        const apiService = apiServiceBuilder.build();
+        const deleteUserResponse = await apiService();
 
         /**
          * terminate sign up after deleting user in postgres and display error message
