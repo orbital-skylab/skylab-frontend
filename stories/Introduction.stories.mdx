@@ -65,3 +65,12 @@ Here, we document the following:
 - Our issue tracking system
 - Our Git workflow and conventions (eg. branch and commit naming)
 - Our work breakdown structure
+
+## Storybook Publishing
+
+Storybook is automatically published upon every push. The CI is configured via `.github/workflows/chromatic.yml`. Chromatic a project meant for deployment, reviewing and testing of Storybook.
+
+After pushing to a branch with `branch_name`, the published Storybook should be visible from:
+https://<branch_name>--62937ed0318229004a51a095.chromatic.com/?path=/story/introduction--page).
+
+Additionally, the project page can be viewed [here](https://www.chromatic.com/builds?appId=62937ed0318229004a51a095) where you can see the build history.

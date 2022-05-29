@@ -33,6 +33,4 @@ Documentation for this project has been done with [Storybook](https://storybook.
 
 You can view the published documentation [here](https://staging--62937ed0318229004a51a095.chromatic.com/?path=/story/introduction--page).
 
-The publishing of the Storybook docs is managed by `Chromatic`. The project page can be viewed [here](https://www.chromatic.com/builds?appId=62937ed0318229004a51a095) where you can see the build history.
-
 To view the documentation in a local development environment (with hot reload), complete the installation as mentioned above. Then type, `npm run storybook`. A new window should open in `http://localhost:6006` with the Storybook documentation.
