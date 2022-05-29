@@ -14,11 +14,11 @@ jobs:
     # Job steps
     steps:
       - uses: actions/checkout@v1
+      - name: Install dependencies
       - run: yarn
         #👇 Adds Chromatic as a step in the workflow
+      - name: Publish to Chromatic
       - uses: chromaui/action@v1
-        # Options required for Chromatic's GitHub Action
         with:
           #👇 Chromatic projectToken,
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-          # token: ${{ secrets.GITHUB_TOKEN }}
