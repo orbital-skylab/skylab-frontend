@@ -1,0 +1,45 @@
+import { Meta } from "@storybook/addon-docs";
+
+<Meta title="Documentation/ESLint and Prettier" />
+
+# ESLint and Prettier
+
+According to the CS2103T textbook:
+
+> The aim of a coding standard is to make the entire code base look like it was written by one person.
+
+ESLint and Prettier help to enforce a coding standard with a set of rules to adhere to the laid out principle.
+
+ESLint and Prettier are **very widely used** in the software engineering industry and thus we have decided it would be good practice to adopt it as well as a good learning experience for all developers unfamiliar with it.
+
+## ESLint
+
+ESLint is a static code analysis tool for identifying problematic patterns found in JavaScript and TypeScriptcode. ESLint is configurable with configs, plugins, and individual rules can be customized.
+
+Currently, an automated check is run with `husky` during commits and a GitHub action is run when pushing code to ensure that the code adheres to the outlined standard.
+
+To modify the ESLint configuration (**only do this if you have a good reason**), you can view the `.eslintrc.json` config file in the root of the project folder. Here, you can see all the configs, plugins, and rules.
+
+The following are the list of plugins and configs utilized in the project:
+
+- `eslint-config-next` - Recommended by [Next.js Docs](https://nextjs.org/docs/basic-features/eslint) to integrate ESLint with Next.js
+- `eslint-config-prettier` - Turns off rules that might conflict with prettier
+- `eslint-plugin-import` - Supports linting of ES6+ import/export syntax
+- `eslint-plugin-jsx-a11y` - Static AST checker to ensure accessibility rules are being adhered to
+- `eslint-plugin-react` - React specific linting rules
+- `eslint-plugin-react-hooks` - Enforces the [Rules of Hooks](https://reactjs.org/docs/hooks-rules.html)
+- `eslint-plugin-storybook` - Best practice rules for Storybook
+
+## Prettier
+
+Prettier is an opinionated code formatter that helps to enforce consistent coding style in your codebase.
+
+Such coding styles include:
+
+- The width of tabs
+- Whether code should end with a semicolon
+- Whether strings should use single or double quotes
+- Whether trailing commas should be used
+- etc.
+
+To modify the Prettier configuration (**only do this if you have a good reason**), you can view the `.prettierrc.json` config file in the root of the project folder.
