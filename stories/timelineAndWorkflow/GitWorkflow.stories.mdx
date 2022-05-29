@@ -37,4 +37,25 @@ This workflow allows developers to develop independently, ensure code quality, a
 
 ### Branch Naming Convention
 
+For easy tracking of how each branch and Jira ticket correspond to each other, we have decided to name our branches according to the Jira ticket number.
+
+An example:
+
+- Jira ticket is 23 with description of 'Create Projects table in Postgres DB'
+- The branch name would be something like `23-create-projects-table`
+
+This helps us easily identify the ticket that each branch is for and can help improve our efficiency.
+
 ### Commit Naming Convention
+
+To ensure that our commits adequately provide context for other developers, we have decided to adopt [the following commit convention](https://www.conventionalcommits.org/en/v1.0.0/).
+
+This resource is very similar how CS2103T teaches us to write Git commits with the following additional change:
+
+> Prefix each commit with the commit's type
+
+Examples would be:
+
+- `fix: fix visual bug with profile page`
+- `feat: implement new hook that manages state while fetching data`
+- `docs: document new button component`
