@@ -31,7 +31,7 @@ Skylab v2 has the intention of replacing the pre-existing [Skylab](https://nussk
 
 Documentation for this project has been done with [Storybook](https://storybook.js.org/). Storybook allows for component-driven development and a quick and easy way to write interactive docs.
 
-You can view the published documentation [here](https://62937ed0318229004a51a095-znswhasqny.chromatic.com/).
+You can view the published documentation [here](https://staging--62937ed0318229004a51a095.chromatic.com/?path=/story/introduction--page).
 
 The publishing of the Storybook docs is managed by `Chromatic`. The project page can be viewed [here](https://www.chromatic.com/builds?appId=62937ed0318229004a51a095) where you can see the build history.
 
