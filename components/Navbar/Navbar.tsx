@@ -54,6 +54,7 @@ const Navbar: FC = () => {
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
               color="inherit"
+              sx={{ padding: 0 }}
             >
               <MenuIcon />
             </IconButton>
