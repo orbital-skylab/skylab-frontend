@@ -7,129 +7,49 @@ import {
   Typography,
   Menu,
   Container,
-  Avatar,
   Button,
-  Tooltip,
   MenuItem,
+  useScrollTrigger,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import Link from "next/link";
 import { useRouter } from "next/router";
-
-const pages = ["Home", "Projects"];
-const settings = ["Profile", "Logout"];
+import { LANDING_PAGE, NAVBAR_OPTIONS } from "@/helpers/navigation";
+import { NAVBAR_HEIGHT_REM } from "@/styles/constants";
 
 const Navbar: FC = () => {
   const router = useRouter();
-  console.log(router);
-  const isLanding = router.asPath === "/";
-  const isAuthorized = false;
+  const isAuthorized = true;
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const trigger = useScrollTrigger({ threshold: 0 });
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
   };
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
+  const renderNavigationButtons = useCallback(() => {
+    const pushRoute = (route: string) => {
+      if (router.asPath !== route) {
+        router.push(route);
+      }
+    };
 
-  const renderAvatar = useCallback(() => {
     if (isAuthorized) {
       return (
-        <Box sx={{ flexGrow: 0 }}>
-          <Tooltip title="Open settings">
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-            </IconButton>
-          </Tooltip>
-          <Menu
-            sx={{ mt: "45px" }}
-            id="menu-appbar"
-            anchorEl={anchorElUser}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            open={Boolean(anchorElUser)}
-            onClose={handleCloseUserMenu}
-          >
-            {settings.map((setting) => (
-              <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                <Typography textAlign="center">{setting}</Typography>
-              </MenuItem>
-            ))}
-          </Menu>
-        </Box>
-      );
-    } else {
-      return (
         <>
-          <Link href="/sign-in" passHref>
-            <Button variant="contained" color="secondary">
-              Sign In
-            </Button>
-          </Link>
-        </>
-      );
-    }
-  }, [isAuthorized, anchorElUser]);
-
-  return (
-    <AppBar position="absolute" sx={isLanding ? { boxShadow: "0" } : {}}>
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <Link href="/" passHref>
-            <RocketLaunchIcon
-              sx={{
-                display: { xs: "none", md: "flex" },
-                mr: 1,
-                cursor: "pointer",
-              }}
-            />
-          </Link>
-          <Link href="/" passHref>
-            <Typography
-              variant="h6"
-              noWrap
-              component="a"
-              sx={{
-                mr: 2,
-                display: { xs: "none", md: "flex" },
-                fontFamily: "monospace",
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "inherit",
-                textDecoration: "none",
-              }}
-            >
-              Skylab
-            </Typography>
-          </Link>
-
+          {/* Mobile Hamburger Icon */}
           <Box
             sx={{
-              flexGrow: 1,
               display: { xs: "flex", md: "none" },
             }}
           >
             <IconButton
               size="large"
-              aria-label="account of current user"
+              aria-label="button to view navigation"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
@@ -142,12 +62,12 @@ const Navbar: FC = () => {
               anchorEl={anchorElNav}
               anchorOrigin={{
                 vertical: "bottom",
-                horizontal: "left",
+                horizontal: "right",
               }}
               keepMounted
               transformOrigin={{
                 vertical: "top",
-                horizontal: "left",
+                horizontal: "right",
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
@@ -155,52 +75,74 @@ const Navbar: FC = () => {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+              {NAVBAR_OPTIONS.map(({ label, route }) => (
+                <MenuItem key={route} onClick={() => pushRoute(route)}>
+                  <Typography textAlign="center">{label}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
-          <RocketLaunchIcon
-            sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
-          />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: "flex", md: "none" },
-              flexGrow: 1,
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            Skylab
-          </Typography>
+          {/* Desktop list of navigation */}
           <Box
             sx={{
-              flexGrow: 1,
               display: { xs: "none", md: "flex" },
             }}
           >
-            {pages.map((page) => (
+            {NAVBAR_OPTIONS.map(({ label, route }) => (
               <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
+                key={route}
+                onClick={() => pushRoute(route)}
+                sx={{ my: 2, display: "block", color: "inherit" }}
               >
-                {page}
+                {label}
               </Button>
             ))}
           </Box>
+        </>
+      );
+    } else {
+      return (
+        <Box>
+          <Link href={LANDING_PAGE} passHref>
+            <Button variant="contained" color="secondary">
+              Sign In
+            </Button>
+          </Link>
+        </Box>
+      );
+    }
+  }, [anchorElNav, isAuthorized, router]);
 
-          {renderAvatar()}
+  return (
+    <AppBar
+      position="fixed"
+      color="transparent"
+      elevation={trigger ? 4 : 0}
+      sx={{
+        backdropFilter: "blur(0.3rem)",
+        height: NAVBAR_HEIGHT_REM,
+      }}
+    >
+      <Container maxWidth="xl" sx={{ marginY: "auto" }}>
+        <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
+          <Link href={LANDING_PAGE} passHref>
+            <Typography
+              variant="h6"
+              fontWeight={600}
+              noWrap
+              component="a"
+              sx={{
+                display: "flex",
+                letterSpacing: ".25rem",
+                color: "inherit",
+                textDecoration: "none",
+              }}
+            >
+              Skylab
+            </Typography>
+          </Link>
+
+          {renderNavigationButtons()}
         </Toolbar>
       </Container>
     </AppBar>
