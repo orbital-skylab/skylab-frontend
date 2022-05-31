@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { Box } from "@mui/system";
+import { NAVBAR_HEIGHT_REM } from "@/styles/constants";
 
 const Body: FC = ({ children }) => {
   return (
@@ -7,11 +8,13 @@ const Body: FC = ({ children }) => {
       <Box
         sx={{
           minHeight: "100vh",
-          paddingTop: { xs: "56px", sm: "64px", md: "68.5px" },
+          paddingTop: NAVBAR_HEIGHT_REM,
+          paddingX: "1rem",
           height: "100%",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
+          overflow: "hidden",
         }}
       >
         {children}

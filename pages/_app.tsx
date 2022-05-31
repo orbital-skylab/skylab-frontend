@@ -1,23 +1,16 @@
 import type { AppProps } from "next/app";
 import Head from "next/head";
-// Styling
-import "../styles/globals.css";
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+// Libraries
+import { ThemeProvider } from "@mui/material/styles";
+// Components
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+// Hooks
 import { AuthProvider } from "@/hooks/useAuth";
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#14213D",
-    },
-  },
-});
+// Styling
+import "../styles/globals.scss";
+import "../styles/fonts.scss";
+import { theme } from "@/styles/muiTheme";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
