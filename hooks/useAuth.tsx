@@ -1,4 +1,5 @@
 import { ApiServiceBuilder } from "@/helpers/api";
+import { PAGES } from "@/helpers/navigation";
 import { HTTP_METHOD } from "@/types/api";
 import {
   createUserWithEmailAndPassword,
@@ -8,13 +9,13 @@ import {
   signOut,
   User,
 } from "firebase/auth";
+import { useRouter } from "next/router";
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { auth } from "../firebase";
 
 interface IAuth {
   user: User | null;
-  error: string | null;
   signUp: (email: string, password: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   logOut: () => Promise<void>;
@@ -23,7 +24,6 @@ interface IAuth {
 
 const AuthContext = createContext<IAuth>({
   user: null,
-  error: null,
   signUp: async () => {
     /* Placeholder for callback function */
   },
@@ -45,7 +45,7 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
+  const router = useRouter();
 
   useEffect(
     () =>
@@ -57,13 +57,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     [auth]
   );
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string): Promise<void> => {
     /**
      * attempt to create new user in postgres
      */
     const apiServiceBuilder = new ApiServiceBuilder({
       method: HTTP_METHOD.POST,
-      endpoint: "/users",
+      endpoint: "/students",
       body: { user: { email } },
     });
     const apiService = apiServiceBuilder.build();
@@ -74,8 +74,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
      */
     if (!createUserResponse.ok) {
       const errorMessage = await createUserResponse.text();
-      setError(errorMessage);
-      return;
+      throw new Error(errorMessage);
     }
 
     /**
@@ -98,10 +97,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
          */
         if (!deleteUserResponse.ok) {
           const errorMessage = await deleteUserResponse.text();
-          setError(errorMessage);
+          throw new Error(errorMessage);
         } else {
-          console.log(err);
-          setError("Something went wrong while signing up");
+          throw new Error(
+            err instanceof Error
+              ? err.message
+              : "Something went wrong while signing up"
+          );
         }
       }
     );
@@ -113,6 +115,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logOut = async () => {
     await signOut(auth);
+    router.push(PAGES.LANDING);
   };
 
   const resetPassword = async (email: string) => {
@@ -120,9 +123,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const memoedValue = useMemo(
-    () => ({ user, error, signUp, signIn, logOut, resetPassword }),
+    () => ({ user, signUp, signIn, logOut, resetPassword }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [user, error]
+    [user]
   );
 
   return (
