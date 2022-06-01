@@ -2,10 +2,9 @@ import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 import { FULL_HEIGHT_MINUS_NAV } from "@/styles/constants";
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { FC, ReactElement } from "react";
+import { FC } from "react";
 
 type Props = {
-  children: ReactElement;
   isLoading: boolean;
   loadingText?: string;
 };

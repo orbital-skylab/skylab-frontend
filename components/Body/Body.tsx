@@ -1,10 +1,9 @@
-import { FC, ReactElement } from "react";
+import { FC } from "react";
 import { Box, SxProps } from "@mui/system";
 import { NAVBAR_HEIGHT_REM } from "@/styles/constants";
 import LoadingWrapper from "../wrapper/LoadingWrapper";
 
 type Props = {
-  children: ReactElement;
   flexColCenter?: boolean;
   isLoading?: boolean;
   loadingText?: string;
