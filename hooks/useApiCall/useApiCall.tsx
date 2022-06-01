@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ApiServiceBuilder } from "@/helpers/api";
 import { HTTP_METHOD } from "@/types/api";
-import { STATUS } from "./useApiCall.types";
+import { CALL_STATUS } from "./useApiCall.types";
 import { useState } from "react";
 
 /**
@@ -27,7 +27,7 @@ const useApiCall = ({
   onSuccess: <T>(data: T) => void;
 }) => {
   const token = "placeholderToken"; // TODO: Retrieve from useAuth
-  const [status, setStatus] = useState<STATUS>(STATUS.IDLE);
+  const [status, setStatus] = useState<CALL_STATUS>(CALL_STATUS.IDLE);
   const [error, setError] = useState("");
 
   /* Building API service. */
@@ -39,7 +39,7 @@ const useApiCall = ({
 
   /* Calls the actual API call with the specified api service. */
   async function call() {
-    setStatus(STATUS.LOADING);
+    setStatus(CALL_STATUS.LOADING);
 
     try {
       if (requiresAuthorization && !token) {
@@ -58,10 +58,10 @@ const useApiCall = ({
         onSuccess(data);
       }
 
-      setStatus(STATUS.SUCCESS);
+      setStatus(CALL_STATUS.SUCCESS);
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : (error as string));
-      setStatus(STATUS.ERROR);
+      setStatus(CALL_STATUS.ERROR);
     }
   }
 
