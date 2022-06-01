@@ -14,7 +14,6 @@ import { auth } from "../firebase";
 
 interface IAuth {
   user: User | null;
-  error: string | null;
   signUp: (email: string, password: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   logOut: () => Promise<void>;
@@ -23,7 +22,6 @@ interface IAuth {
 
 const AuthContext = createContext<IAuth>({
   user: null,
-  error: null,
   signUp: async () => {
     /* Placeholder for callback function */
   },
@@ -45,7 +43,6 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
 
   useEffect(
     () =>
@@ -74,8 +71,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
      */
     if (!createUserResponse.ok) {
       const errorMessage = await createUserResponse.text();
-      setError(errorMessage);
-      return;
+      throw errorMessage;
     }
 
     /**
@@ -98,11 +94,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
          */
         if (!deleteUserResponse.ok) {
           const errorMessage = await deleteUserResponse.text();
-          setError(errorMessage);
-        } else {
-          console.log(err);
-          setError("Something went wrong while signing up");
+          throw errorMessage;
         }
+
+        throw err;
       }
     );
   };
@@ -120,9 +115,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const memoedValue = useMemo(
-    () => ({ user, error, signUp, signIn, logOut, resetPassword }),
+    () => ({ user, signUp, signIn, logOut, resetPassword }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [user, error]
+    [user]
   );
 
   return (
