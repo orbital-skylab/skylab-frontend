@@ -21,7 +21,7 @@ const ProjectCard: FC<Props> = ({
   mentor,
 }) => {
   return (
-    <Stack style={{ margin: "auto" }}>
+    <Stack sx={{ margin: "auto" }}>
       <Typography variant="h6" align="center">
         {`Team ${teamId}: ${teamName}`}
       </Typography>
