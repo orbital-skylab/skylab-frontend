@@ -1,16 +1,18 @@
 import { SyntheticEvent, useState } from "react";
 import type { NextPage } from "next";
 // Libraries
-import { Grid, Stack, Tab, Tabs } from "@mui/material";
+import { Grid, Stack, Tab, Tabs, tabsClasses } from "@mui/material";
 // Components
 import Body from "@/components/Body";
 import StaffCard from "@/components/Card/StaffCard";
 // Constants
 import PlaceholderImage from "@/images/stickninja.png";
-import { placeholderStaff, staffTypes } from "@/constants/Staff.constants";
+import { STAFF_TYPES } from "@/types/staff";
 
 const Staff: NextPage = () => {
-  const [selectedType, setSelectedType] = useState<string>(staffTypes[0]);
+  const [selectedType, setSelectedType] = useState<string>(
+    STAFF_TYPES.FACILITATORS
+  );
 
   const handleTabChange = (event: SyntheticEvent, newType: string) => {
     setSelectedType(newType);
@@ -19,24 +21,39 @@ const Staff: NextPage = () => {
   return (
     <>
       <Body>
-        <Stack direction="row" justifyContent="center" px={20} pt={4}>
+        <Stack direction="row" justifyContent="center">
           <Tabs
             value={selectedType}
             onChange={handleTabChange}
             textColor="secondary"
             indicatorColor="secondary"
             aria-label="project-level-tabs"
+            variant="scrollable"
+            scrollButtons={true}
+            allowScrollButtonsMobile
+            sx={{
+              maxWidth: "75%",
+              [`& .${tabsClasses.scrollButtons}`]: {
+                color: "primary",
+                fill: "primary",
+              },
+            }}
           >
-            {staffTypes.map((type, index) => {
-              return <Tab key={index} value={type} label={type} />;
+            {Object.values(STAFF_TYPES).map((type) => {
+              return <Tab key={type} value={type} label={type} />;
             })}
           </Tabs>
         </Stack>
-        <Grid container p={8} gap={4} justifyContent="center">
-          {placeholderStaff.map((staff, index) => {
+        <Grid
+          container
+          sx={{ margin: "auto" }}
+          p={{ xs: 2, md: 4, xl: 8 }}
+          spacing={{ xs: 2, md: 4, xl: 8 }}
+        >
+          {Array.from(Array(10).keys()).map((staff) => {
             return (
-              <Grid item key={index} xs={2}>
-                <StaffCard name={staff} image={PlaceholderImage} />
+              <Grid item key={staff} xs={12} md={4} xl={3}>
+                <StaffCard name={staff.toString()} image={PlaceholderImage} />
               </Grid>
             );
           })}

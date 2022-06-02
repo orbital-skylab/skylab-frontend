@@ -13,7 +13,7 @@ interface SignUpFormValuesType {
 }
 
 const SignUp: NextPage = () => {
-  const { error, signUp } = useAuth();
+  const { signUp } = useAuth();
 
   const initialValues: SignUpFormValuesType = {
     email: "",
@@ -25,14 +25,14 @@ const SignUp: NextPage = () => {
     actions: FormikHelpers<SignUpFormValuesType>
   ) => {
     const { email, password } = values;
-    await signUp(email, password);
 
-    if (error) {
-      alert(error);
-    } else {
-      console.log("Submitted: ", values);
+    try {
+      await signUp(email, password);
+    } catch (error) {
+      console.log(error);
     }
 
+    console.log("Submitted: ", values);
     actions.setSubmitting(false);
   };
 

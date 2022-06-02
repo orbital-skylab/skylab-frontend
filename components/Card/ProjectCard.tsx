@@ -21,22 +21,30 @@ const ProjectCard: FC<Props> = ({
   mentor,
 }) => {
   return (
-    <Stack>
+    <Stack style={{ margin: "auto" }}>
       <Typography variant="h6" align="center">
-        Team {teamId}: {teamName}
+        {`Team ${teamId}: ${teamName}`}
       </Typography>
-      <Image
-        src={image}
-        alt={`${teamName}'s Project`}
-        layout="responsive"
-        width={1}
-        height={1}
-      />
-      <Stack direction="row">
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Image
+          src={image}
+          alt={`${teamName}'s Project`}
+          layout="intrinsic"
+          width={345}
+          height={345}
+        />
+      </div>
+      <Stack direction="row" justifyContent="center">
         <CardAction>Poster</CardAction>
         <CardAction>Video</CardAction>
       </Stack>
-      <Stack pl={2}>
+      <Stack pl={2} mt={2} alignItems="center">
         <NameList label="Students" names={students} />
         <NameList label="Advisors" names={advisor} />
         {mentor ? <NameList label="Mentors" names={mentor} /> : null}
@@ -49,10 +57,7 @@ const CardAction: FC = ({ children }) => {
   return (
     <Button
       sx={{
-        width: "50%",
-        "&.MuiButtonBase-root:hover": {
-          bgcolor: "transparent",
-        },
+        marginX: 2,
       }}
     >
       {children}

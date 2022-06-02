@@ -14,7 +14,15 @@ const StaffCard: FC<Props> = ({ name, image }) => {
       <Typography variant="h6" align="center">
         {name}
       </Typography>
-      <Image src={image} alt={name} layout="responsive" width={1} height={1} />
+      <div
+        style={{
+          width: "full",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Image src={image} alt={name} />
+      </div>
     </Stack>
   );
 };

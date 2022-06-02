@@ -1,7 +1,7 @@
 import { SyntheticEvent, useState } from "react";
 import type { NextPage } from "next";
 // Libraries
-import { Grid, Stack, Tab, Tabs } from "@mui/material";
+import { Grid, Stack, Tab, Tabs, tabsClasses } from "@mui/material";
 import { Formik, FormikHelpers } from "formik";
 // Components
 import Body from "@/components/Body";
@@ -9,24 +9,16 @@ import ProjectCard from "@/components/Card/ProjectCard";
 import Select from "@/components/FormControllers/Select";
 // Constants
 import PlaceholderImage from "@/images/stickninja.png";
-import {
-  cohorts,
-  getCurrentCohort,
-  getHighestLevelOfAchievement,
-  levelsOfAchievement,
-  placeholderProjects,
-} from "@/constants/Projects.constants";
+import { COHORTS, LEVELS_OF_ACHIEVEMENT } from "@/types/projects";
 
 interface CohortSelectFormValuesType {
   cohort: number;
 }
 
 const Projects: NextPage = () => {
-  const [selectedCohort, setSelectedCohort] = useState<number>(
-    getCurrentCohort()
-  );
+  const [selectedCohort, setSelectedCohort] = useState<number>(COHORTS.CURRENT);
   const [selectedLevel, setSelectedLevel] = useState<string>(
-    getHighestLevelOfAchievement()
+    LEVELS_OF_ACHIEVEMENT.ARTEMIS
   );
 
   const initialValues: CohortSelectFormValuesType = {
@@ -46,7 +38,7 @@ const Projects: NextPage = () => {
     setSelectedLevel(newLevel);
   };
 
-  const selectOptions = cohorts.map((cohort) => {
+  const selectOptions = [COHORTS.CURRENT, COHORTS.PREVIOUS].map((cohort) => {
     return {
       label: cohort.toString(),
       value: cohort.toString(),
@@ -56,7 +48,12 @@ const Projects: NextPage = () => {
   return (
     <>
       <Body>
-        <Stack direction="row" justifyContent="space-between" px={20} pt={4}>
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          alignItems="center"
+          justifyContent="space-evenly"
+          pt={4}
+        >
           <Formik initialValues={initialValues} onSubmit={handleSubmit}>
             {(formik) => (
               <form onSubmit={formik.handleSubmit}>
@@ -75,18 +72,31 @@ const Projects: NextPage = () => {
             textColor="secondary"
             indicatorColor="secondary"
             aria-label="project-level-tabs"
+            variant="scrollable"
+            scrollButtons={true}
+            allowScrollButtonsMobile
+            sx={{
+              maxWidth: "75%",
+              [`& .${tabsClasses.scrollButtons}`]: { color: "primary" },
+              marginY: { xs: 2, md: 0 },
+            }}
           >
-            {levelsOfAchievement.map((level, key) => {
+            {Object.values(LEVELS_OF_ACHIEVEMENT).map((level, key) => {
               return <Tab key={key} value={level} label={level} />;
             })}
           </Tabs>
         </Stack>
-        <Grid container p={8} gap={4} justifyContent="center">
-          {placeholderProjects.map((project, index) => {
+        <Grid
+          container
+          sx={{ margin: "auto" }}
+          p={{ xs: 2, md: 4, xl: 8 }}
+          spacing={{ xs: 2, md: 4, xl: 8 }}
+        >
+          {Array.from(Array(10).keys()).map((project) => {
             return (
-              <Grid item key={index} xs={6} sm={4} md={3} xl={2}>
+              <Grid item key={project} xs={12} md={4} xl={3}>
                 <ProjectCard
-                  teamId={index}
+                  teamId={project}
                   teamName={`Team Name ${project}`}
                   image={PlaceholderImage}
                   students="Super Long Name 1, Super Long Name 2"
