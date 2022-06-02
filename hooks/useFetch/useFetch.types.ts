@@ -1,4 +1,4 @@
-export enum STATUS {
+export enum FETCH_STATUS {
   IDLE,
   FETCHING,
   FETCHED,
@@ -22,7 +22,7 @@ export type Mutate<T> = (mutator: Mutator<T>) => void;
  * The state of the reducer with a generic data type.
  */
 export interface State<T> {
-  status: STATUS;
+  status: FETCH_STATUS;
   error: unknown;
   data: T | undefined;
 }

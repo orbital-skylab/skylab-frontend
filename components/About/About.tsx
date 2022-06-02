@@ -7,8 +7,8 @@ const About: FC = () => {
       <Typography
         variant="h2"
         fontWeight={600}
-        fontSize={{ xs: 36, md: 60 }}
-        marginBottom="1rem"
+        fontSize={{ xs: 36, md: 52 }}
+        marginBottom="2rem"
         color="primary"
       >
         About Orbital

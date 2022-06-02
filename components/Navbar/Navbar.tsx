@@ -14,12 +14,13 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { LANDING_PAGE, NAVBAR_OPTIONS } from "@/helpers/navigation";
-import { NAVBAR_HEIGHT_REM } from "@/styles/constants";
+import { PAGES, NAVBAR_ACTIONS, NAVBAR_OPTIONS } from "@/helpers/navigation";
+import { BASE_TRANSITION, NAVBAR_HEIGHT_REM } from "@/styles/constants";
+import useAuth from "@/hooks/useAuth";
 
 const Navbar: FC = () => {
   const router = useRouter();
-  const isAuthorized = true;
+  const { user, logOut } = useAuth();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const trigger = useScrollTrigger({ threshold: 0 });
 
@@ -38,7 +39,7 @@ const Navbar: FC = () => {
       }
     };
 
-    if (isAuthorized) {
+    if (user) {
       return (
         <>
           {/* Mobile Hamburger Icon */}
@@ -76,9 +77,21 @@ const Navbar: FC = () => {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {NAVBAR_OPTIONS.map(({ label, route }) => (
-                <MenuItem key={route} onClick={() => pushRoute(route)}>
-                  <Typography textAlign="center">{label}</Typography>
+              {NAVBAR_OPTIONS.map((option) => (
+                <MenuItem
+                  key={option.label}
+                  // TOOD: Clean up this ternary operation
+                  onClick={
+                    option.route
+                      ? () => pushRoute(option.route)
+                      : option.action === NAVBAR_ACTIONS.SIGN_OUT
+                      ? logOut
+                      : () => {
+                          alert("Invalid action");
+                        }
+                  }
+                >
+                  <Typography textAlign="center">{option.label}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -89,13 +102,22 @@ const Navbar: FC = () => {
               display: { xs: "none", md: "flex" },
             }}
           >
-            {NAVBAR_OPTIONS.map(({ label, route }) => (
+            {NAVBAR_OPTIONS.map((option) => (
               <Button
-                key={route}
-                onClick={() => pushRoute(route)}
+                key={option.label}
+                // TOOD: Clean up this ternary operation
+                onClick={
+                  option.route
+                    ? () => pushRoute(option.route)
+                    : option.action === NAVBAR_ACTIONS.SIGN_OUT
+                    ? logOut
+                    : () => {
+                        alert("Invalid action");
+                      }
+                }
                 sx={{ my: 2, display: "block", color: "inherit" }}
               >
-                {label}
+                {option.label}
               </Button>
             ))}
           </Box>
@@ -104,15 +126,14 @@ const Navbar: FC = () => {
     } else {
       return (
         <Box>
-          <Link href={LANDING_PAGE} passHref>
-            <Button variant="contained" color="secondary">
-              Sign In
-            </Button>
+          <Link href={PAGES.LANDING} passHref>
+            <Button variant="contained">Sign In</Button>
           </Link>
         </Box>
       );
     }
-  }, [anchorElNav, isAuthorized, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [anchorElNav, user]);
 
   return (
     <AppBar
@@ -126,7 +147,7 @@ const Navbar: FC = () => {
     >
       <Container maxWidth="xl" sx={{ marginY: "auto" }}>
         <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
-          <Link href={LANDING_PAGE} passHref>
+          <Link href={PAGES.LANDING} passHref>
             <Typography
               variant="h6"
               fontWeight={600}
@@ -137,6 +158,8 @@ const Navbar: FC = () => {
                 letterSpacing: ".25rem",
                 color: "inherit",
                 textDecoration: "none",
+                "&:hover": { color: "secondary.main" },
+                transition: BASE_TRANSITION,
               }}
             >
               Skylab

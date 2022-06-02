@@ -1,4 +1,4 @@
-export enum STATUS {
+export enum CALL_STATUS {
   IDLE,
   LOADING,
   SUCCESS,
