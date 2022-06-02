@@ -9,7 +9,6 @@ import Footer from "@/components/Footer";
 import { AuthProvider } from "@/hooks/useAuth";
 // Styling
 import "../styles/globals.scss";
-import "../styles/fonts.scss";
 import { theme } from "@/styles/muiTheme";
 
 function MyApp({ Component, pageProps }: AppProps) {

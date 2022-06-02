@@ -65,7 +65,7 @@ const SignUp: NextPage = () => {
                       disabled={formik.isSubmitting}
                       type="submit"
                     >
-                      Sign In
+                      Sign Up
                     </Button>
                   </Stack>
                 </form>

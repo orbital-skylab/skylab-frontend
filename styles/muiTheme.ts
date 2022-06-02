@@ -2,14 +2,15 @@ import { createTheme } from "@mui/material";
 
 export const theme = createTheme({
   typography: {
-    fontFamily: ["Inter", "Arial", "sans-serif"].join(","),
+    fontFamily: ["Lato", "Arial", "sans-serif"].join(","),
   },
   palette: {
-    // primary: {
-    //   main: "#051529",
-    // },
-    // secondary: {
-    //   main: "#02c0eb",
-    // },
+    primary: {
+      main: "#0d0d0d",
+      dark: "#336699",
+    },
+    secondary: {
+      main: "#336699",
+    },
   },
 });

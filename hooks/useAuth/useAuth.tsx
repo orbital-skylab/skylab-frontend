@@ -1,4 +1,5 @@
 import { ApiServiceBuilder } from "@/helpers/api";
+import { PAGES } from "@/helpers/navigation";
 import { HTTP_METHOD } from "@/types/api";
 import {
   createUserWithEmailAndPassword,
@@ -8,6 +9,7 @@ import {
   signOut,
   User,
 } from "firebase/auth";
+import { useRouter } from "next/router";
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { auth } from "../../firebase";
@@ -43,6 +45,7 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const router = useRouter();
 
   useEffect(
     () =>
@@ -54,13 +57,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     [auth]
   );
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string): Promise<void> => {
     /**
      * attempt to create new user in postgres
      */
     const apiServiceBuilder = new ApiServiceBuilder({
       method: HTTP_METHOD.POST,
-      endpoint: "/users",
+      endpoint: "/students",
       body: { user: { email } },
     });
     const apiService = apiServiceBuilder.build();
@@ -71,7 +74,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
      */
     if (!createUserResponse.ok) {
       const errorMessage = await createUserResponse.text();
-      throw errorMessage;
+      throw new Error(errorMessage);
     }
 
     /**
@@ -94,7 +97,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
          */
         if (!deleteUserResponse.ok) {
           const errorMessage = await deleteUserResponse.text();
-          throw errorMessage;
+          throw new Error(errorMessage);
+        } else {
+          throw new Error(
+            err instanceof Error
+              ? err.message
+              : "Something went wrong while signing up"
+          );
         }
 
         throw err;
@@ -108,6 +117,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logOut = async () => {
     await signOut(auth);
+    router.push(PAGES.LANDING);
   };
 
   const resetPassword = async (email: string) => {

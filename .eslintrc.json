@@ -16,6 +16,7 @@
   "rules": {
     "react/react-in-jsx-scope": "off",
     "import/ignore": "off",
-    "import/named": "off"
+    "import/named": "off",
+    "@next/next/no-img-element": "off"
   }
 }

@@ -1,7 +1,7 @@
 import { useEffect, useReducer } from "react";
 import { createReducer } from "./useFetch.helpers";
 import {
-  STATUS,
+  FETCH_STATUS,
   ACTION_TYPE,
   State,
   Mutate,
@@ -27,7 +27,7 @@ const useFetch = <T>({
 
   /* Initializing reducer. */
   const initialState: State<T> = {
-    status: STATUS.IDLE,
+    status: FETCH_STATUS.IDLE,
     error: null,
     data: undefined,
   };

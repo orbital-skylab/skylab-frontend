@@ -1,7 +1,18 @@
-export const LANDING_PAGE = "/";
-export const PROJECTS_PAGE = "/projects";
-export const STAFF_PAGE = "/staff";
+export enum PAGES {
+  LANDING = "/",
+  PROJECTS = "/projects",
+  STAFF = "/staff",
+  PROFILE = "/profile",
+  FORGOT_PASSWORD = "/forgot-password",
+}
+
+export enum NAVBAR_ACTIONS {
+  SIGN_OUT = "signOut",
+}
+
 export const NAVBAR_OPTIONS = [
-  { label: "Projects", route: PROJECTS_PAGE },
-  { label: "Staff", route: STAFF_PAGE },
+  { label: "Profile", route: PAGES.PROFILE },
+  { label: "Projects", route: PAGES.PROJECTS },
+  { label: "Staff", route: PAGES.STAFF },
+  { label: "Sign Out", action: NAVBAR_ACTIONS.SIGN_OUT },
 ];
