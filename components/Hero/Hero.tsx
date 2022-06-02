@@ -27,7 +27,10 @@ const Hero: FC = () => {
                 height: FULL_HEIGHT_MINUS_NAV,
                 paddingBottom: { xs: NAVBAR_HEIGHT_REM, md: 0 },
                 display: "grid",
-                placeItems: { xs: "center", md: "center left" },
+                placeItems: {
+                  xs: "center",
+                  md: user ? "center" : "center left",
+                },
               }}
             >
               <Stack

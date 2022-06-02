@@ -15,7 +15,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { PAGES, NAVBAR_ACTIONS, NAVBAR_OPTIONS } from "@/helpers/navigation";
-import { NAVBAR_HEIGHT_REM } from "@/styles/constants";
+import { BASE_TRANSITION, NAVBAR_HEIGHT_REM } from "@/styles/constants";
 import useAuth from "@/hooks/useAuth";
 
 const Navbar: FC = () => {
@@ -159,6 +159,7 @@ const Navbar: FC = () => {
                 color: "inherit",
                 textDecoration: "none",
                 "&:hover": { color: "secondary.main" },
+                transition: BASE_TRANSITION,
               }}
             >
               Skylab
