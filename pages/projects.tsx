@@ -5,11 +5,10 @@ import { Grid, Stack, Tab, Tabs, tabsClasses } from "@mui/material";
 import { Formik, FormikHelpers } from "formik";
 // Components
 import Body from "@/components/Body";
-import ProjectCard from "@/components/Card/ProjectCard";
+import ProjectCard from "@/components/cards/ProjectCard";
 import Select from "@/components/FormControllers/Select";
 // Constants
-import PlaceholderImage from "@/images/stickninja.png";
-import { COHORTS, LEVELS_OF_ACHIEVEMENT } from "@/types/projects";
+import { COHORTS, LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
 
 interface CohortSelectFormValuesType {
   cohort: number;
@@ -51,8 +50,8 @@ const Projects: NextPage = () => {
         <Stack
           direction={{ xs: "column", md: "row" }}
           alignItems="center"
-          justifyContent="space-evenly"
-          pt={4}
+          justifyContent="space-between"
+          my={4}
         >
           <Formik initialValues={initialValues} onSubmit={handleSubmit}>
             {(formik) => (
@@ -76,7 +75,7 @@ const Projects: NextPage = () => {
             scrollButtons={true}
             allowScrollButtonsMobile
             sx={{
-              maxWidth: "75%",
+              maxWidth: { xs: "100%", md: "75%" },
               [`& .${tabsClasses.scrollButtons}`]: { color: "primary" },
               marginY: { xs: 2, md: 0 },
             }}
@@ -86,22 +85,11 @@ const Projects: NextPage = () => {
             })}
           </Tabs>
         </Stack>
-        <Grid
-          container
-          sx={{ margin: "auto" }}
-          p={{ xs: 2, md: 4, xl: 8 }}
-          spacing={{ xs: 2, md: 4, xl: 8 }}
-        >
-          {Array.from(Array(10).keys()).map((project) => {
+        <Grid container spacing={{ xs: 2, md: 4, xl: 8 }}>
+          {DUMMY_PROJECTS.map((project) => {
             return (
-              <Grid item key={project} xs={12} md={4} xl={3}>
-                <ProjectCard
-                  teamId={project}
-                  teamName={`Team Name ${project}`}
-                  image={PlaceholderImage}
-                  students="Super Long Name 1, Super Long Name 2"
-                  advisor="Super Long Name 3"
-                />
+              <Grid item key={project.id} xs={12} md={4} xl={3}>
+                <ProjectCard project={project} />
               </Grid>
             );
           })}
@@ -111,3 +99,45 @@ const Projects: NextPage = () => {
   );
 };
 export default Projects;
+
+const DUMMY_PROJECTS: Project[] = [
+  {
+    id: 1,
+    name: "Test Team",
+    posterUrl: "https://nusskylab-dev.comp.nus.edu.sg/posters/2021/2680.jpg",
+    students: [
+      { id: 1, email: "1@gmail.com", name: "Student 1", cohortId: 0 },
+      { id: 2, email: "2@gmail.com", name: "Student 2", cohortId: 0 },
+    ],
+    adviser: { id: 3, email: "3@gmail.com", name: "Adviser 3", cohortId: 0 },
+    achievement: LEVELS_OF_ACHIEVEMENT.APOLLO,
+    cohortId: 0,
+  },
+  {
+    id: 2,
+    name: "Test Team 2",
+    posterUrl: "https://nusskylab-dev.comp.nus.edu.sg/posters/2021/2670.jpg",
+    students: [
+      {
+        id: 1,
+        email: "1@gmail.com",
+        name: "Student with a very long name",
+        cohortId: 0,
+      },
+      {
+        id: 2,
+        email: "2@gmail.com",
+        name: "Another student with an even longer name",
+        cohortId: 0,
+      },
+    ],
+    adviser: {
+      id: 3,
+      email: "3@gmail.com",
+      name: "Adviser who also happens to have a really long name",
+      cohortId: 0,
+    },
+    achievement: LEVELS_OF_ACHIEVEMENT.APOLLO,
+    cohortId: 0,
+  },
+];

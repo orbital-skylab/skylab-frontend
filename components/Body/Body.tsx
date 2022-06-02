@@ -2,6 +2,7 @@ import { FC } from "react";
 import { Box, SxProps } from "@mui/system";
 import { NAVBAR_HEIGHT_REM } from "@/styles/constants";
 import LoadingWrapper from "../wrapper/LoadingWrapper";
+import { Container } from "@mui/material";
 
 type Props = {
   flexColCenter?: boolean;
@@ -32,9 +33,11 @@ const Body: FC<Props> = ({
   return (
     <>
       <Box sx={boxSx}>
-        <LoadingWrapper isLoading={!!isLoading} loadingText={loadingText}>
-          {children}
-        </LoadingWrapper>
+        <Container maxWidth="xl">
+          <LoadingWrapper isLoading={!!isLoading} loadingText={loadingText}>
+            {children}
+          </LoadingWrapper>
+        </Container>
       </Box>
     </>
   );

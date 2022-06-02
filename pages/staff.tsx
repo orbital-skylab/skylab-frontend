@@ -4,7 +4,7 @@ import type { NextPage } from "next";
 import { Grid, Stack, Tab, Tabs, tabsClasses } from "@mui/material";
 // Components
 import Body from "@/components/Body";
-import StaffCard from "@/components/Card/StaffCard";
+import StaffCard from "@/components/cards/StaffCard";
 // Constants
 import PlaceholderImage from "@/images/stickninja.png";
 import { STAFF_TYPES } from "@/types/staff";
