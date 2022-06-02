@@ -28,10 +28,6 @@ const LoadingWrapper: FC<Props> = ({ children, isLoading, loadingText }) => {
     );
   }
 
-  return (
-    <>
-      <div>{children}</div>
-    </>
-  );
+  return <>{children}</>;
 };
 export default LoadingWrapper;
