@@ -12,7 +12,7 @@ import {
 import { useRouter } from "next/router";
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { auth } from "../firebase";
+import { auth } from "../../firebase";
 
 interface IAuth {
   user: User | null;
@@ -105,6 +105,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
               : "Something went wrong while signing up"
           );
         }
+
+        throw err;
       }
     );
   };

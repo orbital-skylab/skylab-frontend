@@ -33,6 +33,7 @@ function Select<FormValuesType>({
           value={values[name]}
           onChange={handleChange}
           onBlur={handleBlur}
+          MenuProps={{ disableScrollLock: true }}
         >
           {options.map(({ value, label }) => (
             <MenuItem key={value} value={value}>

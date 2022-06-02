@@ -25,8 +25,14 @@ const SignUp: NextPage = () => {
     actions: FormikHelpers<SignUpFormValuesType>
   ) => {
     const { email, password } = values;
-    await signUp(email, password);
 
+    try {
+      await signUp(email, password);
+    } catch (error) {
+      console.log(error);
+    }
+
+    console.log("Submitted: ", values);
     actions.setSubmitting(false);
   };
 
