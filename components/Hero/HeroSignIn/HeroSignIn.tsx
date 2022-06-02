@@ -1,7 +1,9 @@
 import TextInput from "@/components/FormControllers/TextInput";
+import { PAGES } from "@/helpers/navigation";
 import useAuth from "@/hooks/useAuth";
 import { Box, Stack, Typography, Button, Alert, Snackbar } from "@mui/material";
 import { Formik, FormikHelpers } from "formik";
+import Link from "next/link";
 import { FC, useState } from "react";
 
 interface SignInFormValuesType {
@@ -61,9 +63,14 @@ const HeroSignIn: FC = () => {
             {(formik) => (
               <form onSubmit={formik.handleSubmit}>
                 <Stack gap="1rem" width="100%">
-                  <Typography variant="h6" fontWeight={400} marginBottom="1rem">
-                    Involved in Orbital? Sign in here
-                  </Typography>
+                  <Box>
+                    <Typography variant="caption" fontWeight={400}>
+                      Involved in Orbital?
+                    </Typography>
+                    <Typography variant="h6" fontWeight={600}>
+                      Sign In Here!
+                    </Typography>
+                  </Box>
                   <TextInput
                     label="Email"
                     type="email"
@@ -83,6 +90,21 @@ const HeroSignIn: FC = () => {
                   >
                     Sign In
                   </Button>
+                  <Link href={PAGES.FORGOT_PASSWORD} passHref>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{
+                        "&:hover": {
+                          color: "secondary.main",
+                          textDecoration: "underline",
+                          cursor: "pointer",
+                          transitionDuration: "150ms",
+                        },
+                      }}
+                    >
+                      Forgot your password?
+                    </Typography>
+                  </Link>
                 </Stack>
               </form>
             )}

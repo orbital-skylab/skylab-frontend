@@ -127,9 +127,7 @@ const Navbar: FC = () => {
       return (
         <Box>
           <Link href={PAGES.LANDING} passHref>
-            <Button variant="contained" color="primary">
-              Sign In
-            </Button>
+            <Button variant="contained">Sign In</Button>
           </Link>
         </Box>
       );
@@ -160,6 +158,7 @@ const Navbar: FC = () => {
                 letterSpacing: ".25rem",
                 color: "inherit",
                 textDecoration: "none",
+                "&:hover": { color: "secondary.main" },
               }}
             >
               Skylab

@@ -17,7 +17,7 @@ const Hero: FC = () => {
           paddingBottom: { md: NAVBAR_HEIGHT_REM },
         }}
       >
-        <Container maxWidth="lg">
+        <Container maxWidth="md">
           <Grid container>
             <Grid
               item
@@ -27,17 +27,16 @@ const Hero: FC = () => {
                 height: FULL_HEIGHT_MINUS_NAV,
                 paddingBottom: { xs: NAVBAR_HEIGHT_REM, md: 0 },
                 display: "grid",
-                placeItems: "center",
+                placeItems: { xs: "center", md: "center left" },
               }}
             >
               <Stack
                 direction="column"
-                spacing="1rem"
                 alignItems={{ xs: "center", md: user ? "center" : "start" }}
               >
                 <Typography
                   variant="h1"
-                  fontSize={{ xs: 64, md: 96 }}
+                  fontSize={88}
                   fontWeight={600}
                   sx={{
                     letterSpacing: "0.25rem",
@@ -49,7 +48,7 @@ const Hero: FC = () => {
                 </Typography>
                 <Typography
                   variant="body1"
-                  fontSize={{ xs: 18, md: 24 }}
+                  fontSize={20}
                   sx={{ textAlign: { xs: "center", md: "left" } }}
                 >
                   The platform powering{" "}
@@ -63,6 +62,7 @@ const Hero: FC = () => {
                   sx={{
                     width: "fit-content",
                     alignSelf: { xs: "center", md: !user ? "start" : "center" },
+                    marginTop: "1.5rem",
                   }}
                   onClick={() => router.push(PAGES.PROJECTS)}
                 >

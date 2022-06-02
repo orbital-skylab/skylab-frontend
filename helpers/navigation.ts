@@ -2,6 +2,7 @@ export enum PAGES {
   LANDING = "/",
   PROJECTS = "/projects",
   PROFILE = "/profile",
+  FORGOT_PASSWORD = "/forgot-password",
 }
 
 export enum NAVBAR_ACTIONS {
