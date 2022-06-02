@@ -1,5 +1,5 @@
 import { FC } from "react";
-import Image, { StaticImageData } from "next/image";
+import { StaticImageData } from "next/image";
 // Libraries
 import { Button, Stack, Typography } from "@mui/material";
 
@@ -32,12 +32,11 @@ const ProjectCard: FC<Props> = ({
           justifyContent: "center",
         }}
       >
-        <Image
-          src={image}
-          alt={`${teamName}'s Project`}
-          layout="intrinsic"
-          width={345}
+        <img
+          src={image.src}
+          alt={`${teamName}s Project`}
           height={345}
+          width={345}
         />
       </div>
       <Stack direction="row" justifyContent="center">

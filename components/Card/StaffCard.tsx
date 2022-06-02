@@ -1,5 +1,5 @@
 import { FC } from "react";
-import Image, { StaticImageData } from "next/image";
+import { StaticImageData } from "next/image";
 // Libraries
 import { Stack, Typography } from "@mui/material";
 
@@ -21,7 +21,7 @@ const StaffCard: FC<Props> = ({ name, image }) => {
           justifyContent: "center",
         }}
       >
-        <Image src={image} alt={name} />
+        <img src={image.src} alt={name} height={345} width={345} />
       </div>
     </Stack>
   );
