@@ -38,12 +38,12 @@ export const createReducer =
     }
   };
 
-export function parseQueryParams(queryParams: QueryParams): string {
-  const queryParamsCopy = { ...queryParams };
-
-  if (queryParamsCopy === undefined || queryParamsCopy === null) {
+export function parseQueryParams(queryParams: QueryParams | undefined): string {
+  if (queryParams === undefined) {
     return "";
   }
+
+  const queryParamsCopy = { ...queryParams };
 
   const noActualParams = Object.values(queryParamsCopy).reduce(
     (acc, val) => (acc && val instanceof Array ? val.length === 0 : val === ""),

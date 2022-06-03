@@ -18,6 +18,7 @@ import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
 import { COHORTS, COHORTS_VALUES } from "@/types/cohorts";
 import useFetch, { FETCH_STATUS } from "@/hooks/useFetch";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
+import NoProjectFound from "@/components/emptyStates/NoProjectsFound";
 
 const Projects: NextPage = () => {
   const [selectedCohort, setSelectedCohort] = useState<COHORTS>(
@@ -90,17 +91,19 @@ const Projects: NextPage = () => {
           </Tabs>
         </Stack>
         <NoDataWrapper
-          noDataCondition={projects?.length === 0}
-          message="No projects were found"
+          noDataCondition={projects === undefined || projects?.length === 0}
+          fallback={<NoProjectFound />}
         >
           <Grid container spacing={{ xs: 2, md: 4, xl: 8 }}>
-            {(projects as Project[]).map((project) => {
-              return (
-                <Grid item key={project.id} xs={12} md={4} xl={3}>
-                  <ProjectCard project={project} />
-                </Grid>
-              );
-            })}
+            {projects
+              ? projects.map((project) => {
+                  return (
+                    <Grid item key={project.id} xs={12} md={4} xl={3}>
+                      <ProjectCard project={project} />
+                    </Grid>
+                  );
+                })
+              : null}
           </Grid>
         </NoDataWrapper>
       </Body>

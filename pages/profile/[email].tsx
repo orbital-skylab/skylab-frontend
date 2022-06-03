@@ -17,6 +17,7 @@ import NextLink from "next/link";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { PAGES } from "@/helpers/navigation";
+import NoUserFound from "@/components/emptyStates/NoUserFound";
 
 const Profile: NextPage = () => {
   const router = useRouter();
@@ -26,7 +27,7 @@ const Profile: NextPage = () => {
     endpoint: `/users/${email}`,
   });
 
-  const isCurrentUser = useAuth()?.user?.email === user?.email || true; // TODO: Remove || true
+  const isCurrentUser = useAuth()?.user?.email === user?.email;
 
   const attributes = [
     {
@@ -43,10 +44,9 @@ const Profile: NextPage = () => {
       isLoading={status === FETCH_STATUS.FETCHING}
       loadingText="Loading user..."
     >
-      {/* TODO: Remove && false */}
       <NoDataWrapper
-        noDataCondition={user === undefined && false}
-        message="No user found"
+        noDataCondition={user === undefined}
+        fallback={<NoUserFound />}
       >
         <Stack direction="column" alignItems="center">
           <Avatar

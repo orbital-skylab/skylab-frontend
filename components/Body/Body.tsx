@@ -36,7 +36,7 @@ const Body: FC<Props> = ({
   return (
     <>
       <Box sx={boxSx}>
-        <Container maxWidth="xl">
+        <Container maxWidth="xl" sx={{ padding: 0 }}>
           <LoadingWrapper isLoading={!!isLoading} loadingText={loadingText}>
             <ErrorWrapper isError={!!isError}>{children}</ErrorWrapper>
           </LoadingWrapper>

@@ -21,14 +21,13 @@ import { HTTP_METHOD } from "@/types/api";
 const useFetch = <T>({
   endpoint = "",
   requiresAuthorization = false,
-  queryParams = {},
+  queryParams,
 }: {
   endpoint: string;
   requiresAuthorization?: boolean;
   queryParams?: QueryParams;
 }): HookReturnType<T> => {
   const token = "placeholderToken"; // TODO: Retrieve from useAuth
-
   /* Initializing reducer. */
   const initialState: State<T> = {
     status: FETCH_STATUS.IDLE,
