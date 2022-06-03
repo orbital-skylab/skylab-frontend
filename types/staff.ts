@@ -1,7 +1,7 @@
 export enum STAFF_TYPES {
   FACILITATORS = "Facilitators",
   MENTORS = "Mentors",
-  ADVISORS = "Advisors",
+  ADVISERS = "Advisers",
   TUTORS = "Tutors",
 }
 
