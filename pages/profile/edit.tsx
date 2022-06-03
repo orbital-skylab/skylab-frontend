@@ -4,6 +4,7 @@ import { SNACKBAR_ALERT_INITIAL } from "@/helpers/forms";
 import useApiCall from "@/hooks/useApiCall";
 import useAuth from "@/hooks/useAuth";
 import { HTTP_METHOD } from "@/types/api";
+import { SnackbarAlertType } from "@/types/forms";
 import {
   Button,
   Card,
@@ -30,7 +31,7 @@ const EditProfile: NextPage = () => {
     method: HTTP_METHOD.PUT,
     endpoint: `/users/${user?.email}`,
   });
-  const [snackbar, setSnackbar] = useState<SnackbarAlert>(
+  const [snackbar, setSnackbar] = useState<SnackbarAlertType>(
     SNACKBAR_ALERT_INITIAL
   );
 
