@@ -42,6 +42,7 @@ const Profile: NextPage = () => {
   return (
     <Body
       isLoading={status === FETCH_STATUS.FETCHING}
+      isError={status === FETCHING_STATUS.ERROR}
       loadingText="Loading user..."
     >
       <NoDataWrapper
