@@ -10,6 +10,8 @@ import {
 } from "@mui/material";
 import styles from "./ProjectCard.module.scss";
 import { Project } from "@/types/projects";
+import Link from "next/link";
+import { PAGES } from "@/helpers/navigation";
 
 type Props = {
   project: Project;
@@ -34,7 +36,10 @@ const ProjectCard: FC<Props> = ({ project }) => {
             }}
           >
             <img
-              src={project.posterUrl}
+              src={
+                project.posterUrl ??
+                "https://nusskylab-dev.comp.nus.edu.sg/posters/2021/2680.jpg"
+              }
               alt={`${project.name} Project`}
               className={styles.projectImage}
             />
@@ -45,35 +50,35 @@ const ProjectCard: FC<Props> = ({ project }) => {
               <Box>
                 <Typography fontWeight={600}>Orbitees</Typography>
                 {project.students.map((student) => (
-                  <UsersName key={student.userId}>
-                    {student.user.name}
-                  </UsersName>
+                  <UsersName key={student.id}>{student.name}</UsersName>
                 ))}
               </Box>
             ) : null}
             {project.adviser ? (
               <Box>
                 <Typography fontWeight={600}>Adviser</Typography>
-                <UsersName> {project.adviser.user.name}</UsersName>
+                <UsersName> {project.adviser.name}</UsersName>
               </Box>
             ) : null}
             {project.mentor ? (
               <Box>
                 <Typography fontWeight={600}>Mentor</Typography>
-                <UsersName>{project.mentor.user.name}</UsersName>
+                <UsersName>{project.mentor.name}</UsersName>
               </Box>
             ) : null}
           </Stack>
-          <Button
-            variant="contained"
-            sx={{
-              textTransform: "none",
-              width: "fit-content",
-              alignSelf: "center",
-            }}
-          >
-            View Submissions
-          </Button>
+          <Link href={`${PAGES.PROJECTS}/${project.id}`} passHref>
+            <Button
+              variant="contained"
+              sx={{
+                textTransform: "none",
+                width: "fit-content",
+                alignSelf: "center",
+              }}
+            >
+              View Submissions
+            </Button>
+          </Link>
         </Stack>
       </CardContent>
     </Card>
