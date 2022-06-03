@@ -93,7 +93,6 @@ const Staff: NextPage = () => {
           <Grid
             container
             sx={{ margin: "auto" }}
-            p={{ xs: 2, md: 4, xl: 8 }}
             spacing={{ xs: 2, md: 4, xl: 8 }}
           >
             {staff
