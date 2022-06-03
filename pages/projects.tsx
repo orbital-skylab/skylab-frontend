@@ -1,4 +1,4 @@
-import { SyntheticEvent, useMemo, useState } from "react";
+import { SyntheticEvent, useCallback, useMemo, useState } from "react";
 import type { NextPage } from "next";
 // Libraries
 import {
@@ -10,6 +10,7 @@ import {
   Tabs,
   tabsClasses,
   TextField,
+  debounce,
 } from "@mui/material";
 // Components
 import Body from "@/components/Body";
@@ -23,19 +24,28 @@ import NoProjectFound from "@/components/emptyStates/NoProjectsFound";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 
 const Projects: NextPage = () => {
+  const [searchTextInput, setSearchTextInput] = useState("");
   const [selectedCohort, setSelectedCohort] = useState<COHORTS>(
     COHORTS_VALUES[0]
   );
   const [selectedLevel, setSelectedLevel] = useState<LEVELS_OF_ACHIEVEMENT>(
     LEVELS_OF_ACHIEVEMENT.ARTEMIS
   );
-  const [query, setQuery] = useState("");
+  const [querySearch, setQuerySearch] = useState("");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSetQuerySearch = useCallback(
+    debounce((val) => {
+      setQuerySearch(val);
+    }, 500),
+    []
+  );
   const memoQueryParams = useMemo(() => {
     return {
       cohortYear: selectedCohort,
       achievement: selectedLevel,
+      search: querySearch,
     };
-  }, [selectedCohort, selectedLevel]);
+  }, [selectedCohort, selectedLevel, querySearch]);
 
   const { data: projects, status } = useFetch<Project[]>({
     endpoint: `/projects`,
@@ -62,8 +72,11 @@ const Projects: NextPage = () => {
           >
             <TextField
               label="Search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              value={searchTextInput}
+              onChange={(e) => {
+                setSearchTextInput(e.target.value);
+                debouncedSetQuerySearch(e.target.value);
+              }}
               size="small"
             />
             <Select
