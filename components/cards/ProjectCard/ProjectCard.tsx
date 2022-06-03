@@ -28,7 +28,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
           <Box
             sx={{
               width: "100%",
-              aspectRatio: "3 / 4",
+              aspectRatio: "1 / 1.4142", //A4 Paper Ratio
               display: "flex",
               justifyContent: "center",
               overflow: "hidden",
