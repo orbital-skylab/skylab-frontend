@@ -12,6 +12,7 @@ import styles from "./ProjectCard.module.scss";
 import { Project } from "@/types/projects";
 import Link from "next/link";
 import { PAGES } from "@/helpers/navigation";
+import { A4_ASPECT_RATIO } from "@/styles/constants";
 
 type Props = {
   project: Project;
@@ -28,7 +29,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
           <Box
             sx={{
               width: "100%",
-              aspectRatio: "1 / 1.4142", //A4 Paper Ratio
+              aspectRatio: A4_ASPECT_RATIO,
               display: "flex",
               justifyContent: "center",
               overflow: "hidden",
