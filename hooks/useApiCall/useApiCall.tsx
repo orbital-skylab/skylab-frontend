@@ -24,7 +24,7 @@ const useApiCall = ({
   endpoint: string;
   body?: { [key: string]: any };
   requiresAuthorization?: boolean;
-  onSuccess: <T>(data: T) => void;
+  onSuccess?: <T>(data: T) => void;
 }) => {
   const token = "placeholderToken"; // TODO: Retrieve from useAuth
   const [status, setStatus] = useState<CALL_STATUS>(CALL_STATUS.IDLE);
@@ -35,17 +35,20 @@ const useApiCall = ({
   if (requiresAuthorization) {
     apiServiceBuilder.setToken(token);
   }
-  const apiService = apiServiceBuilder.build();
 
   /* Calls the actual API call with the specified api service. */
-  async function call() {
+  async function call(body?: { [key: string]: any }) {
     setStatus(CALL_STATUS.LOADING);
 
     try {
       if (requiresAuthorization && !token) {
         throw new Error("User is unauthorized");
       }
+      if (body) {
+        apiServiceBuilder.setBody(body);
+      }
 
+      const apiService = apiServiceBuilder.build();
       const res = await apiService();
 
       if (!res.ok) {

@@ -4,7 +4,7 @@ import { FC } from "react";
 const Footer: FC = () => {
   return (
     <Box sx={{ backgroundColor: "primary.main" }}>
-      <Container maxWidth="xl">
+      <Container maxWidth="xl" sx={{ paddingX: "1rem" }}>
         <Stack direction="row" justifyContent="space-between" paddingY="1rem">
           <Typography color="primary.contrastText">©NUS SoC</Typography>
           <Typography color="primary.contrastText">Orbital Program</Typography>

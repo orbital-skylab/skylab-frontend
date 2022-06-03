@@ -17,6 +17,7 @@ import { useRouter } from "next/router";
 import { PAGES, NAVBAR_ACTIONS, NAVBAR_OPTIONS } from "@/helpers/navigation";
 import { BASE_TRANSITION, NAVBAR_HEIGHT_REM } from "@/styles/constants";
 import useAuth from "@/hooks/useAuth";
+import { LANDING_SIGN_IN_ID } from "../Hero/HeroSignIn/HeroSignIn";
 
 const Navbar: FC = () => {
   const router = useRouter();
@@ -124,13 +125,7 @@ const Navbar: FC = () => {
         </>
       );
     } else {
-      return (
-        <Box>
-          <Link href={PAGES.LANDING} passHref>
-            <Button variant="contained">Sign In</Button>
-          </Link>
-        </Box>
-      );
+      return <SignInButton />;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [anchorElNav, user]);
@@ -173,3 +168,32 @@ const Navbar: FC = () => {
   );
 };
 export default Navbar;
+
+const SignInButton = () => {
+  const router = useRouter();
+
+  if (router.pathname === PAGES.LANDING) {
+    return (
+      <Button
+        variant="contained"
+        onClick={() => {
+          if (router.pathname === PAGES.LANDING) {
+            const heroSignIn = document.querySelector("#" + LANDING_SIGN_IN_ID);
+            heroSignIn?.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+          }
+        }}
+      >
+        Sign In
+      </Button>
+    );
+  } else {
+    return (
+      <Link href={PAGES.LANDING} passHref>
+        <Button variant="contained">Sign In</Button>
+      </Link>
+    );
+  }
+};
