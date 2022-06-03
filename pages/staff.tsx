@@ -79,7 +79,6 @@ const Staff: NextPage = () => {
               scrollButtons={true}
               allowScrollButtonsMobile
               sx={{
-                maxWidth: "75%",
                 [`& .${tabsClasses.scrollButtons}`]: {
                   color: "primary",
                   fill: "primary",
