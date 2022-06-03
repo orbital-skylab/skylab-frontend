@@ -76,10 +76,9 @@ const Staff: NextPage = () => {
               indicatorColor="secondary"
               aria-label="project-level-tabs"
               variant="scrollable"
-              scrollButtons={true}
+              scrollButtons="auto"
               allowScrollButtonsMobile
               sx={{
-                maxWidth: "75%",
                 [`& .${tabsClasses.scrollButtons}`]: {
                   color: "primary",
                   fill: "primary",
@@ -94,7 +93,6 @@ const Staff: NextPage = () => {
           <Grid
             container
             sx={{ margin: "auto" }}
-            p={{ xs: 2, md: 4, xl: 8 }}
             spacing={{ xs: 2, md: 4, xl: 8 }}
           >
             {staff

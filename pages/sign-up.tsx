@@ -57,7 +57,7 @@ const SignUp: NextPage = () => {
   const seedUsers = async () => {
     const promises = [];
     /** STUDENTS */
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 8; i++) {
       promises.push(
         signUp({
           name: `Student ${i}`,
@@ -74,7 +74,7 @@ const SignUp: NextPage = () => {
       });
     }
     /** ADVISERS */
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 2; i++) {
       promises.push(
         signUp({
           name: `Adviser ${i}`,
@@ -90,7 +90,7 @@ const SignUp: NextPage = () => {
     }
 
     /** MENTORS */
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 2; i++) {
       promises.push(
         signUp({
           name: `Mentor ${i}`,
@@ -109,20 +109,8 @@ const SignUp: NextPage = () => {
       return [...log, "Waiting for responses..."];
     });
 
-    const reses: any[] = await Promise.all(promises);
+    await Promise.all(promises);
 
-    for (const idx in reses) {
-      const res = reses[idx];
-      if (res.ok) {
-        setLog((log) => {
-          return [...log, `Successfully seeded user of index ${idx}`];
-        });
-      } else {
-        setLog((log) => {
-          return [...log, `Failed to seed user of index ${idx}`];
-        });
-      }
-    }
     setLog((log) => {
       return [...log, "Seeding completed"];
     });

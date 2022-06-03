@@ -1,4 +1,4 @@
-import React, { useCallback, useState, FC } from "react";
+import React, { useState, FC } from "react";
 import {
   AppBar,
   Box,
@@ -25,6 +25,19 @@ const Navbar: FC = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const trigger = useScrollTrigger({ threshold: 0 });
 
+  const isCurrentPage = (path: string | undefined) => {
+    if (path === undefined) {
+      return false;
+    }
+    return router.asPath.includes(path);
+  };
+
+  const pushRoute = (route: string) => {
+    if (router.pathname !== route) {
+      router.push(route);
+    }
+  };
+
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -33,13 +46,7 @@ const Navbar: FC = () => {
     setAnchorElNav(null);
   };
 
-  const renderNavigationButtons = useCallback(() => {
-    const pushRoute = (route: string) => {
-      if (router.pathname !== route) {
-        router.push(route);
-      }
-    };
-
+  const renderNavigationButtons = () => {
     const generateAction = ({
       route,
       action,
@@ -48,9 +55,15 @@ const Navbar: FC = () => {
       action?: string;
     }) => {
       if (route) {
-        return () => pushRoute(route);
+        return () => {
+          pushRoute(route);
+          handleCloseNavMenu();
+        };
       } else if (action === NAVBAR_ACTIONS.SIGN_OUT) {
-        return logOut;
+        return () => {
+          logOut();
+          handleCloseNavMenu();
+        };
       } else {
         return () => alert("Invalid action");
       }
@@ -97,8 +110,9 @@ const Navbar: FC = () => {
               {NAVBAR_OPTIONS.map((option) => (
                 <MenuItem
                   key={option.label}
-                  // TOOD: Clean up this ternary operation
                   onClick={generateAction(option)}
+                  selected={isCurrentPage(option.route)}
+                  disabled={isCurrentPage(option.route)}
                 >
                   <Typography textAlign="center">{option.label}</Typography>
                 </MenuItem>
@@ -115,7 +129,15 @@ const Navbar: FC = () => {
               <Button
                 key={option.label}
                 onClick={generateAction(option)}
-                sx={{ my: 2, display: "block", color: "inherit" }}
+                sx={{
+                  my: 2,
+                  display: "block",
+                  color: "inherit",
+                  background: isCurrentPage(option.route)
+                    ? "rgba(13, 13, 13, 0.08)"
+                    : "inherit",
+                }}
+                disabled={isCurrentPage(option.route)}
               >
                 {option.label}
               </Button>
@@ -126,8 +148,7 @@ const Navbar: FC = () => {
     } else {
       return <SignInButton />;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [anchorElNav, user]);
+  };
 
   return (
     <AppBar
