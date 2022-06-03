@@ -1,5 +1,5 @@
 import Body from "@/components/Body";
-import NoDataWrapper from "@/components/wrapper/NoDataWrapper";
+import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import useAuth from "@/hooks/useAuth";
 import useFetch, { FETCH_STATUS } from "@/hooks/useFetch";
 import { User } from "@/types/users";
@@ -17,6 +17,7 @@ import NextLink from "next/link";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { PAGES } from "@/helpers/navigation";
+import NoUserFound from "@/components/emptyStates/NoUserFound";
 
 const Profile: NextPage = () => {
   const router = useRouter();
@@ -26,7 +27,7 @@ const Profile: NextPage = () => {
     endpoint: `/users/${email}`,
   });
 
-  const isCurrentUser = useAuth()?.user?.email === user?.email || true; // TODO: Remove || true
+  const isCurrentUser = useAuth()?.user?.email === user?.email;
 
   const attributes = [
     {
@@ -41,10 +42,13 @@ const Profile: NextPage = () => {
   return (
     <Body
       isLoading={status === FETCH_STATUS.FETCHING}
+      isError={status === FETCH_STATUS.ERROR}
       loadingText="Loading user..."
     >
-      {/* TODO: Remove && false */}
-      <NoDataWrapper noDataCondition={user === undefined && false}>
+      <NoDataWrapper
+        noDataCondition={user === undefined}
+        fallback={<NoUserFound />}
+      >
         <Stack direction="column" alignItems="center">
           <Avatar
             variant="circular"

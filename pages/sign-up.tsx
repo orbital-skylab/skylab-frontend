@@ -6,7 +6,7 @@ import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import Body from "@/components/Body";
 import TextInput from "@/components/FormControllers/TextInput";
 import useAuth from "@/hooks/useAuth";
-import { COHORTS } from "@/types/projects";
+import { COHORTS_VALUES } from "@/types/cohorts";
 
 interface SignUpFormValuesType {
   email: string;
@@ -32,7 +32,7 @@ const SignUp: NextPage = () => {
     const { email, password, matricNo, nusnetId } = values;
 
     try {
-      await signUp(email, password, matricNo, nusnetId, COHORTS.CURRENT);
+      await signUp(email, password, matricNo, nusnetId, COHORTS_VALUES[0]);
     } catch (error) {
       console.log(error);
     }

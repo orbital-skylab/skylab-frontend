@@ -1,8 +1,8 @@
 export enum FETCH_STATUS {
-  IDLE,
-  FETCHING,
-  FETCHED,
-  ERROR,
+  IDLE = "IDLE",
+  FETCHING = "FETCHING",
+  FETCHED = "FETCHED",
+  ERROR = "ERROR",
 }
 
 export enum ACTION_TYPE {
@@ -41,3 +41,10 @@ export interface Action<T> {
 export interface HookReturnType<T> extends State<T> {
   mutate: Mutate<T>;
 }
+
+/**
+ * The type of query params.
+ */
+export type QueryParams = {
+  [key: string]: string | string[] | number;
+};
