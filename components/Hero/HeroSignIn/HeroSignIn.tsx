@@ -9,6 +9,8 @@ import { Formik, FormikHelpers } from "formik";
 import Link from "next/link";
 import { FC, useState } from "react";
 
+export const LANDING_SIGN_IN_ID = "landingSignIn";
+
 interface SignInFormValuesType {
   email: string;
   password: string;
@@ -50,7 +52,7 @@ const HeroSignIn: FC = () => {
     <>
       <SnackbarAlert snackbar={snackbar} setSnackbar={setSnackbar} />
       {!user ? (
-        <Box sx={{ width: "100%" }}>
+        <Box sx={{ width: "100%" }} id={LANDING_SIGN_IN_ID}>
           <Formik initialValues={initialValues} onSubmit={handleSubmit}>
             {(formik) => (
               <form onSubmit={formik.handleSubmit}>

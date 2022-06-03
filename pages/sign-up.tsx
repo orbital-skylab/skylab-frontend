@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 // Libraries
 import { Formik, FormikHelpers } from "formik";
-import { Button, Container, Stack, Typography } from "@mui/material";
+import { Box, Button, Container, Stack, Typography } from "@mui/material";
 // Components
 import Body from "@/components/Body";
 import TextInput from "@/components/FormControllers/TextInput";
@@ -10,6 +10,8 @@ import useAuth from "@/hooks/useAuth";
 interface SignUpFormValuesType {
   email: string;
   password: string;
+  matricNo: string;
+  nusnetId: string;
 }
 
 const SignUp: NextPage = () => {
@@ -18,16 +20,18 @@ const SignUp: NextPage = () => {
   const initialValues: SignUpFormValuesType = {
     email: "",
     password: "",
+    matricNo: "",
+    nusnetId: "",
   };
 
   const handleSubmit = async (
     values: SignUpFormValuesType,
     actions: FormikHelpers<SignUpFormValuesType>
   ) => {
-    const { email, password } = values;
+    const { email, password, matricNo, nusnetId } = values;
 
     try {
-      await signUp(email, password);
+      await signUp(email, password, matricNo, nusnetId, 2022);
     } catch (error) {
       console.log(error);
     }
@@ -41,9 +45,14 @@ const SignUp: NextPage = () => {
       <Body>
         <Container maxWidth="xs">
           <Stack gap="1rem">
-            <Typography textAlign="center">
-              Dev: For testing purposes
-            </Typography>
+            <Box>
+              <Typography variant="caption" fontWeight={400}>
+                Dev: For testing purposes
+              </Typography>
+              <Typography variant="h6" fontWeight={600}>
+                Create a new student here!
+              </Typography>
+            </Box>
             <Formik initialValues={initialValues} onSubmit={handleSubmit}>
               {(formik) => (
                 <form onSubmit={formik.handleSubmit}>
@@ -58,6 +67,16 @@ const SignUp: NextPage = () => {
                       label="Password"
                       type="password"
                       name="password"
+                      formik={formik}
+                    />
+                    <TextInput
+                      label="Matric Number"
+                      name="matricNo"
+                      formik={formik}
+                    />
+                    <TextInput
+                      label="NUSNet ID"
+                      name="nusnetId"
                       formik={formik}
                     />
                     <Button

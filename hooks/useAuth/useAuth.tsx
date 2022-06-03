@@ -16,7 +16,13 @@ import { auth } from "../../firebase";
 
 interface IAuth {
   user: User | null;
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (
+    email: string,
+    password: string,
+    matricNo: string,
+    nusnetId: string,
+    cohortYear: number
+  ) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   logOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
@@ -57,14 +63,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     [auth]
   );
 
-  const signUp = async (email: string, password: string): Promise<void> => {
+  /**
+   * TODO: ONLY FOR TESTING PURPOSES
+   */
+  const signUp = async (
+    email: string,
+    password: string,
+    matricNo: string,
+    nusnetId: string,
+    cohortYear: number
+  ): Promise<void> => {
     /**
      * attempt to create new user in postgres
      */
     const apiServiceBuilder = new ApiServiceBuilder({
       method: HTTP_METHOD.POST,
       endpoint: "/students",
-      body: { user: { email } },
+      body: { user: { email, matricNo, nusnetId, cohortYear } },
     });
     const apiService = apiServiceBuilder.build();
     const createUserResponse = await apiService();

@@ -1,6 +1,8 @@
 import Body from "@/components/Body";
+import TextInput from "@/components/FormControllers/TextInput";
 import SnackbarAlert from "@/components/SnackbarAlert";
 import { SNACKBAR_ALERT_INITIAL } from "@/helpers/forms";
+import { PAGES } from "@/helpers/navigation";
 import useApiCall from "@/hooks/useApiCall";
 import useAuth from "@/hooks/useAuth";
 import { HTTP_METHOD } from "@/types/api";
@@ -13,9 +15,11 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { Formik, FormikHelpers } from "formik";
+import { Formik, FormikHelpers, FormikProps } from "formik";
 import type { NextPage } from "next";
+import Link from "next/link";
 import { useState } from "react";
+import { LoadingButton } from "@mui/lab";
 
 interface EditProfileFormValues {
   profilePicUrl: string;
@@ -34,6 +38,8 @@ const EditProfile: NextPage = () => {
   const [snackbar, setSnackbar] = useState<SnackbarAlertType>(
     SNACKBAR_ALERT_INITIAL
   );
+  const [hasSuccessfullySubmitted, setHasSuccessfullySubmitted] =
+    useState(false);
 
   const initialValues: EditProfileFormValues = {
     profilePicUrl: "",
@@ -58,6 +64,8 @@ const EditProfile: NextPage = () => {
         severity: "success",
         message: "You have successfully edited your profile",
       });
+      setHasSuccessfullySubmitted(true);
+      actions.resetForm();
     } catch (error) {
       setSnackbar({
         severity: "error",
@@ -68,11 +76,15 @@ const EditProfile: NextPage = () => {
     actions.setSubmitting(false);
   };
 
+  function hasNoneSelected(formik: FormikProps<EditProfileFormValues>) {
+    return Object.values(formik.values).reduce((a, b) => a && b === "", true);
+  }
+
   return (
     <>
       <SnackbarAlert snackbar={snackbar} setSnackbar={setSnackbar} />
       <Body flexColCenter>
-        <Container maxWidth="sm">
+        <Container maxWidth="sm" sx={{ padding: 0 }}>
           <Typography variant="h5" fontWeight={600} mb="1rem">
             Edit your profile
           </Typography>
@@ -82,11 +94,50 @@ const EditProfile: NextPage = () => {
                 {(formik) => {
                   return (
                     <form onSubmit={formik.handleSubmit}>
-                      <Stack direction="row" justifyContent="space-between">
-                        <Button variant="contained">Back</Button>
-                        <Button type="submit" variant="contained">
-                          Edit
-                        </Button>
+                      <Stack direction="column" spacing="0.5rem">
+                        <TextInput
+                          name="profilePicUrl"
+                          label="Profile Picture URL"
+                          formik={formik}
+                        />
+                        <TextInput
+                          name="githubUrl"
+                          label="GitHub URL"
+                          formik={formik}
+                        />
+                        <TextInput
+                          name="linkedinUrl"
+                          label="LinkedIn URL"
+                          formik={formik}
+                        />
+                        <TextInput
+                          name="personalSiteUrl"
+                          label="Personal Site URL"
+                          formik={formik}
+                        />
+                        <TextInput
+                          name="selfIntro"
+                          label="Self Introduction"
+                          multiline
+                          minRows={3}
+                          formik={formik}
+                        />
+                        <Stack direction="row" justifyContent="space-between">
+                          <Link href={PAGES.PROFILE} passHref>
+                            <Button variant="contained">Back</Button>
+                          </Link>
+                          <LoadingButton
+                            type="submit"
+                            variant="contained"
+                            disabled={
+                              hasNoneSelected(formik) ||
+                              hasSuccessfullySubmitted
+                            }
+                            loading={formik.isSubmitting}
+                          >
+                            Edit
+                          </LoadingButton>
+                        </Stack>
                       </Stack>
                     </form>
                   );
