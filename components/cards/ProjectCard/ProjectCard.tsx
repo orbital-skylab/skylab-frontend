@@ -10,6 +10,9 @@ import {
 } from "@mui/material";
 import styles from "./ProjectCard.module.scss";
 import { Project } from "@/types/projects";
+import Link from "next/link";
+import { PAGES } from "@/helpers/navigation";
+import { A4_ASPECT_RATIO } from "@/styles/constants";
 
 type Props = {
   project: Project;
@@ -26,7 +29,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
           <Box
             sx={{
               width: "100%",
-              aspectRatio: "3 / 4",
+              aspectRatio: A4_ASPECT_RATIO,
               display: "flex",
               justifyContent: "center",
               overflow: "hidden",
@@ -34,7 +37,10 @@ const ProjectCard: FC<Props> = ({ project }) => {
             }}
           >
             <img
-              src={project.posterUrl}
+              src={
+                project.posterUrl ??
+                "https://nusskylab-dev.comp.nus.edu.sg/posters/2021/2680.jpg"
+              }
               alt={`${project.name} Project`}
               className={styles.projectImage}
             />
@@ -62,16 +68,18 @@ const ProjectCard: FC<Props> = ({ project }) => {
               </Box>
             ) : null}
           </Stack>
-          <Button
-            variant="contained"
-            sx={{
-              textTransform: "none",
-              width: "fit-content",
-              alignSelf: "center",
-            }}
-          >
-            View Submissions
-          </Button>
+          <Link href={`${PAGES.PROJECTS}/${project.id}`} passHref>
+            <Button
+              variant="contained"
+              sx={{
+                textTransform: "none",
+                width: "fit-content",
+                alignSelf: "center",
+              }}
+            >
+              View Submissions
+            </Button>
+          </Link>
         </Stack>
       </CardContent>
     </Card>

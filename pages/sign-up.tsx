@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { NextPage } from "next";
 // Libraries
 import { Formik, FormikHelpers } from "formik";
@@ -7,8 +8,10 @@ import Body from "@/components/Body";
 import TextInput from "@/components/FormControllers/TextInput";
 import useAuth from "@/hooks/useAuth";
 import { COHORTS_VALUES } from "@/types/cohorts";
+import { useState } from "react";
 
 interface SignUpFormValuesType {
+  name: string;
   email: string;
   password: string;
   matricNo: string;
@@ -17,8 +20,10 @@ interface SignUpFormValuesType {
 
 const SignUp: NextPage = () => {
   const { signUp } = useAuth();
+  const [log, setLog] = useState<string[]>([]);
 
   const initialValues: SignUpFormValuesType = {
+    name: "",
     email: "",
     password: "",
     matricNo: "",
@@ -29,16 +34,86 @@ const SignUp: NextPage = () => {
     values: SignUpFormValuesType,
     actions: FormikHelpers<SignUpFormValuesType>
   ) => {
-    const { email, password, matricNo, nusnetId } = values;
+    const { name, email, password, matricNo, nusnetId } = values;
 
     try {
-      await signUp(email, password, matricNo, nusnetId, COHORTS_VALUES[0]);
+      await signUp({
+        name,
+        email,
+        password,
+        matricNo,
+        nusnetId,
+        role: "students",
+        cohortYear: COHORTS_VALUES[0],
+      });
+      alert("Success");
     } catch (error) {
-      console.log(error);
+      alert(error instanceof Error ? error.message : String(error));
     }
 
-    console.log("Submitted: ", values);
     actions.setSubmitting(false);
+  };
+
+  const seedUsers = async () => {
+    const promises = [];
+    /** STUDENTS */
+    for (let i = 0; i < 8; i++) {
+      promises.push(
+        signUp({
+          name: `Student ${i}`,
+          email: `student${i}@gmail.com`,
+          password: "test1234",
+          cohortYear: COHORTS_VALUES[0],
+          role: "students",
+          matricNo: `A000000${i}X`,
+          nusnetId: `e000000${i}`,
+        })
+      );
+      setLog((log) => {
+        return [...log, `Added student ${i} to promises`];
+      });
+    }
+    /** ADVISERS */
+    for (let i = 0; i < 2; i++) {
+      promises.push(
+        signUp({
+          name: `Adviser ${i}`,
+          email: `adviser${i}@gmail.com`,
+          password: "test1234",
+          cohortYear: COHORTS_VALUES[0],
+          role: "advisers",
+        })
+      );
+      setLog((log) => {
+        return [...log, `Added adviser ${i} to promises`];
+      });
+    }
+
+    /** MENTORS */
+    for (let i = 0; i < 2; i++) {
+      promises.push(
+        signUp({
+          name: `Mentor ${i}`,
+          email: `mentor${i}@gmail.com`,
+          password: "test1234",
+          cohortYear: COHORTS_VALUES[0],
+          role: "mentors",
+        })
+      );
+      setLog((log) => {
+        return [...log, `Added mentor ${i} to promises`];
+      });
+    }
+
+    setLog((log) => {
+      return [...log, "Waiting for responses..."];
+    });
+
+    await Promise.all(promises);
+
+    setLog((log) => {
+      return [...log, "Seeding completed"];
+    });
   };
 
   return (
@@ -58,6 +133,7 @@ const SignUp: NextPage = () => {
               {(formik) => (
                 <form onSubmit={formik.handleSubmit}>
                   <Stack gap="1rem">
+                    <TextInput label="Name" name="name" formik={formik} />
                     <TextInput
                       label="Email"
                       type="email"
@@ -91,6 +167,17 @@ const SignUp: NextPage = () => {
                 </form>
               )}
             </Formik>
+            <Button onClick={seedUsers}>Seed Users</Button>
+            {log.length > 0 ? (
+              <>
+                <Typography variant="h6" mt="1rem">
+                  Logs:
+                </Typography>
+                {log.map((entry) => (
+                  <Typography key={entry}>{entry}</Typography>
+                ))}
+              </>
+            ) : null}
           </Stack>
         </Container>
       </Body>
