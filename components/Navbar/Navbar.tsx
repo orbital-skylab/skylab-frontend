@@ -17,7 +17,7 @@ import { useRouter } from "next/router";
 import { PAGES, NAVBAR_ACTIONS, NAVBAR_OPTIONS } from "@/helpers/navigation";
 import { BASE_TRANSITION, NAVBAR_HEIGHT_REM } from "@/styles/constants";
 import useAuth from "@/hooks/useAuth";
-import { LANDING_SIGN_IN_ID } from "../Hero/HeroSignIn/HeroSignIn";
+import { LANDING_SIGN_IN_ID } from "../Hero/HeroSignIn";
 
 const Navbar: FC = () => {
   const router = useRouter();
@@ -35,8 +35,24 @@ const Navbar: FC = () => {
 
   const renderNavigationButtons = useCallback(() => {
     const pushRoute = (route: string) => {
-      if (router.asPath !== route) {
+      if (router.pathname !== route) {
         router.push(route);
+      }
+    };
+
+    const generateAction = ({
+      route,
+      action,
+    }: {
+      route?: string;
+      action?: string;
+    }) => {
+      if (route) {
+        return () => pushRoute(route);
+      } else if (action === NAVBAR_ACTIONS.SIGN_OUT) {
+        return logOut;
+      } else {
+        return () => alert("Invalid action");
       }
     };
 
@@ -82,15 +98,7 @@ const Navbar: FC = () => {
                 <MenuItem
                   key={option.label}
                   // TOOD: Clean up this ternary operation
-                  onClick={
-                    option.route
-                      ? () => pushRoute(option.route)
-                      : option.action === NAVBAR_ACTIONS.SIGN_OUT
-                      ? logOut
-                      : () => {
-                          alert("Invalid action");
-                        }
-                  }
+                  onClick={generateAction(option)}
                 >
                   <Typography textAlign="center">{option.label}</Typography>
                 </MenuItem>
@@ -106,16 +114,7 @@ const Navbar: FC = () => {
             {NAVBAR_OPTIONS.map((option) => (
               <Button
                 key={option.label}
-                // TOOD: Clean up this ternary operation
-                onClick={
-                  option.route
-                    ? () => pushRoute(option.route)
-                    : option.action === NAVBAR_ACTIONS.SIGN_OUT
-                    ? logOut
-                    : () => {
-                        alert("Invalid action");
-                      }
-                }
+                onClick={generateAction(option)}
                 sx={{ my: 2, display: "block", color: "inherit" }}
               >
                 {option.label}

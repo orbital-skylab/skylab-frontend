@@ -3,7 +3,7 @@ import { FC } from "react";
 
 const About: FC = () => {
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" sx={{ padding: 0 }}>
       <Typography
         variant="h2"
         fontWeight={600}
