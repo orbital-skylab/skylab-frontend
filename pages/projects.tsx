@@ -31,7 +31,7 @@ const Projects: NextPage = () => {
   const [selectedLevel, setSelectedLevel] = useState<LEVELS_OF_ACHIEVEMENT>(
     LEVELS_OF_ACHIEVEMENT.ARTEMIS
   );
-  const [querySearch, setQuerySearch] = useState("");
+  const [, setQuerySearch] = useState("");
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSetQuerySearch = useCallback(
     debounce((val) => {
@@ -43,9 +43,8 @@ const Projects: NextPage = () => {
     return {
       cohortYear: selectedCohort,
       achievement: selectedLevel,
-      search: querySearch,
     };
-  }, [selectedCohort, selectedLevel, querySearch]);
+  }, [selectedCohort, selectedLevel]);
 
   const { data: projects, status } = useFetch<Project[]>({
     endpoint: `/projects`,
