@@ -1,15 +1,7 @@
 import { SyntheticEvent, useMemo, useState } from "react";
 import type { NextPage } from "next";
 // Libraries
-import {
-  Grid,
-  MenuItem,
-  Select,
-  Stack,
-  Tab,
-  Tabs,
-  tabsClasses,
-} from "@mui/material";
+import { Grid, MenuItem, Select, Stack, Tab, Tabs } from "@mui/material";
 // Components
 import Body from "@/components/Body";
 import StaffCard from "@/components/cards/StaffCard";
@@ -40,6 +32,8 @@ const Staff: NextPage = () => {
   const handleTabChange = (event: SyntheticEvent, newType: string) => {
     setSelectedType(newType);
   };
+
+  console.log(staff);
 
   return (
     <>
@@ -78,12 +72,6 @@ const Staff: NextPage = () => {
               variant="scrollable"
               scrollButtons="auto"
               allowScrollButtonsMobile
-              sx={{
-                [`& .${tabsClasses.scrollButtons}`]: {
-                  color: "primary",
-                  fill: "primary",
-                },
-              }}
             >
               {Object.values(STAFF_TYPES).map((type) => {
                 return <Tab key={type} value={type} label={type} />;
@@ -94,6 +82,7 @@ const Staff: NextPage = () => {
             container
             sx={{ margin: "auto" }}
             spacing={{ xs: 2, md: 4, xl: 8 }}
+            pb="1rem"
           >
             {staff
               ? staff.map((person) => {
