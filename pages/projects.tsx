@@ -19,6 +19,7 @@ import { COHORTS, COHORTS_VALUES } from "@/types/cohorts";
 import useFetch, { FETCH_STATUS } from "@/hooks/useFetch";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import NoProjectFound from "@/components/emptyStates/NoProjectsFound";
+import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 
 const Projects: NextPage = () => {
   const [selectedCohort, setSelectedCohort] = useState<COHORTS>(
@@ -48,10 +49,7 @@ const Projects: NextPage = () => {
 
   return (
     <>
-      <Body
-        isLoading={status === FETCH_STATUS.FETCHING}
-        isError={status === FETCH_STATUS.ERROR}
-      >
+      <Body isError={status === FETCH_STATUS.ERROR}>
         <Stack
           direction={{ xs: "column", md: "row" }}
           alignItems="center"
@@ -90,22 +88,27 @@ const Projects: NextPage = () => {
             })}
           </Tabs>
         </Stack>
-        <NoDataWrapper
-          noDataCondition={projects === undefined || projects?.length === 0}
-          fallback={<NoProjectFound />}
+        <LoadingWrapper
+          isLoading={status === FETCH_STATUS.FETCHING}
+          loadingText="Loading projects..."
         >
-          <Grid container spacing={{ xs: 2, md: 4, xl: 8 }}>
-            {projects
-              ? projects.map((project) => {
-                  return (
-                    <Grid item key={project.id} xs={12} md={4} xl={3}>
-                      <ProjectCard project={project} />
-                    </Grid>
-                  );
-                })
-              : null}
-          </Grid>
-        </NoDataWrapper>
+          <NoDataWrapper
+            noDataCondition={projects === undefined || projects?.length === 0}
+            fallback={<NoProjectFound />}
+          >
+            <Grid container spacing={{ xs: 2, md: 4, xl: 8 }}>
+              {projects
+                ? projects.map((project) => {
+                    return (
+                      <Grid item key={project.id} xs={12} md={4} xl={3}>
+                        <ProjectCard project={project} />
+                      </Grid>
+                    );
+                  })
+                : null}
+            </Grid>
+          </NoDataWrapper>
+        </LoadingWrapper>
       </Body>
     </>
   );

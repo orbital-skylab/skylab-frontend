@@ -7,23 +7,32 @@ import { FC } from "react";
 type Props = {
   isLoading: boolean;
   loadingText?: string;
+  fullScreen?: boolean;
 };
 
-const LoadingWrapper: FC<Props> = ({ children, isLoading, loadingText }) => {
+const LoadingWrapper: FC<Props> = ({
+  children,
+  isLoading,
+  loadingText,
+  fullScreen,
+}) => {
   if (isLoading) {
     return (
       <Box
         sx={{
-          height: FULL_HEIGHT_MINUS_NAV,
+          height: fullScreen ? FULL_HEIGHT_MINUS_NAV : "auto",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
           gap: "1rem",
+          marginY: fullScreen ? 0 : "15vh",
         }}
       >
         <LoadingSpinner />
-        <Typography variant="subtitle1">{loadingText}</Typography>
+        <Typography variant="subtitle1" fontWeight={600}>
+          {loadingText}
+        </Typography>
       </Box>
     );
   }
