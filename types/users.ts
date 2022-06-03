@@ -7,28 +7,24 @@ export interface User {
   linkedinUrl?: string;
   personalSiteUrl?: string;
   selfIntro?: string;
-  cohortId: number;
+  cohortYear?: number;
 }
 
-export interface Student {
-  userId: number;
-  teamId: number;
-  nusnetId: string;
-  matricNo: string;
-  user: User;
+export interface Student extends User {
+  placeholder?: string;
 }
 
-export interface Adviser {
-  user: User;
+export interface Adviser extends User {
+  placeholder?: string;
 }
 
-export interface Mentor {
-  user: User;
+export interface Mentor extends User {
+  placeholder?: string;
 }
 
-export interface Administator {
-  user: User;
+export interface Administator extends User {
+  placeholder?: string;
 }
-export interface Facilitator {
-  user: User;
+export interface Facilitator extends User {
+  placeholder?: string;
 }

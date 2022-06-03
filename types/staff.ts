@@ -4,3 +4,5 @@ export enum STAFF_TYPES {
   ADVISORS = "Advisors",
   TUTORS = "Tutors",
 }
+
+export const STAFF_VALUES = Object.values(STAFF_TYPES);
