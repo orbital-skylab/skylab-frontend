@@ -45,22 +45,20 @@ const ProjectCard: FC<Props> = ({ project }) => {
               <Box>
                 <Typography fontWeight={600}>Orbitees</Typography>
                 {project.students.map((student) => (
-                  <UsersName key={student.userId}>
-                    {student.user.name}
-                  </UsersName>
+                  <UsersName key={student.id}>{student.name}</UsersName>
                 ))}
               </Box>
             ) : null}
             {project.adviser ? (
               <Box>
                 <Typography fontWeight={600}>Adviser</Typography>
-                <UsersName> {project.adviser.user.name}</UsersName>
+                <UsersName> {project.adviser.name}</UsersName>
               </Box>
             ) : null}
             {project.mentor ? (
               <Box>
                 <Typography fontWeight={600}>Mentor</Typography>
-                <UsersName>{project.mentor.user.name}</UsersName>
+                <UsersName>{project.mentor.name}</UsersName>
               </Box>
             ) : null}
           </Stack>
