@@ -1,6 +1,6 @@
-import { SnackbarAlert } from "@/types/forms";
+import { SnackbarAlertType } from "@/types/forms";
 
-export const SNACKBAR_ALERT_INITIAL: SnackbarAlert = {
+export const SNACKBAR_ALERT_INITIAL: SnackbarAlertType = {
   severity: "info",
   message: "",
 };
