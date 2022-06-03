@@ -7,11 +7,13 @@ export interface User {
   linkedinUrl?: string;
   personalSiteUrl?: string;
   selfIntro?: string;
-  cohortYear?: number;
+  cohortYear: number;
 }
 
 export interface Student extends User {
-  placeholder?: string;
+  teamId: number;
+  nusnetId: string;
+  matricNo: string;
 }
 
 export interface Adviser extends User {

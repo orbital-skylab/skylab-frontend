@@ -16,13 +16,23 @@ import { auth } from "../../firebase";
 
 interface IAuth {
   user: User | null;
-  signUp: (
-    email: string,
-    password: string,
-    matricNo: string,
-    nusnetId: string,
-    cohortYear: number
-  ) => Promise<void>;
+  signUp: ({
+    name,
+    email,
+    password,
+    matricNo,
+    nusnetId,
+    cohortYear,
+    role,
+  }: {
+    name?: string;
+    email: string;
+    password: string;
+    matricNo?: string;
+    nusnetId?: string;
+    cohortYear: number;
+    role: "students" | "mentors" | "advisers";
+  }) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   logOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
@@ -66,20 +76,36 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   /**
    * TODO: ONLY FOR TESTING PURPOSES
    */
-  const signUp = async (
-    email: string,
-    password: string,
-    matricNo: string,
-    nusnetId: string,
-    cohortYear: number
-  ): Promise<void> => {
+  const signUp = async ({
+    name,
+    email,
+    password,
+    cohortYear,
+    role,
+    matricNo,
+    nusnetId,
+  }: {
+    name?: string;
+    email: string;
+    password: string;
+    cohortYear: number;
+    role: "students" | "advisers" | "mentors";
+    matricNo?: string;
+    nusnetId?: string;
+  }): Promise<void> => {
+    const body: { user: { [key: string]: string | number } } = {
+      user: { email, cohortYear },
+    };
+    if (name) body.user = { ...body.user, name };
+    if (matricNo) body.user = { ...body.user, matricNo };
+    if (nusnetId) body.user = { ...body.user, nusnetId };
     /**
      * attempt to create new user in postgres
      */
     const apiServiceBuilder = new ApiServiceBuilder({
       method: HTTP_METHOD.POST,
-      endpoint: "/students",
-      body: { user: { email, matricNo, nusnetId, cohortYear } },
+      endpoint: `/${role}`,
+      body,
     });
     const apiService = apiServiceBuilder.build();
     const createUserResponse = await apiService();

@@ -9,6 +9,7 @@ import {
   Tab,
   Tabs,
   tabsClasses,
+  TextField,
 } from "@mui/material";
 // Components
 import Body from "@/components/Body";
@@ -28,6 +29,7 @@ const Projects: NextPage = () => {
   const [selectedLevel, setSelectedLevel] = useState<LEVELS_OF_ACHIEVEMENT>(
     LEVELS_OF_ACHIEVEMENT.ARTEMIS
   );
+  const [query, setQuery] = useState("");
   const memoQueryParams = useMemo(() => {
     return {
       cohortYear: selectedCohort,
@@ -50,24 +52,34 @@ const Projects: NextPage = () => {
   return (
     <>
       <Body isError={status === FETCH_STATUS.ERROR}>
-        <Stack
-          direction={{ xs: "column", md: "row" }}
-          alignItems="center"
-          justifyContent="space-between"
-          my={4}
-        >
-          <Select
-            name="cohort"
-            label="Cohort"
-            value={selectedCohort}
-            onChange={(e) => setSelectedCohort(e.target.value as COHORTS)}
+        <Stack direction="column" mt={{ md: "0.5rem" }} mb="1rem">
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            width="100%"
+            mb={{ md: "0.5rem" }}
           >
-            {COHORTS_VALUES.map((value) => (
-              <MenuItem key={value} value={value}>
-                {value}
-              </MenuItem>
-            ))}
-          </Select>
+            <TextField
+              label="Search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              size="small"
+            />
+            <Select
+              name="cohort"
+              label="Cohort"
+              value={selectedCohort}
+              onChange={(e) => setSelectedCohort(e.target.value as COHORTS)}
+              size="small"
+            >
+              {COHORTS_VALUES.map((value) => (
+                <MenuItem key={value} value={value}>
+                  {value}
+                </MenuItem>
+              ))}
+            </Select>
+          </Stack>
           <Tabs
             value={selectedLevel}
             onChange={handleTabChange}
@@ -75,7 +87,7 @@ const Projects: NextPage = () => {
             indicatorColor="secondary"
             aria-label="project-level-tabs"
             variant="scrollable"
-            scrollButtons={true}
+            scrollButtons="auto"
             allowScrollButtonsMobile
             sx={{
               maxWidth: { xs: "100%", md: "75%" },
