@@ -76,7 +76,7 @@ const Staff: NextPage = () => {
               indicatorColor="secondary"
               aria-label="project-level-tabs"
               variant="scrollable"
-              scrollButtons={true}
+              scrollButtons="auto"
               allowScrollButtonsMobile
               sx={{
                 [`& .${tabsClasses.scrollButtons}`]: {
