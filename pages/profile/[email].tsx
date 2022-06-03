@@ -1,5 +1,5 @@
 import Body from "@/components/Body";
-import NoDataWrapper from "@/components/wrapper/NoDataWrapper";
+import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import useAuth from "@/hooks/useAuth";
 import useFetch, { FETCH_STATUS } from "@/hooks/useFetch";
 import { User } from "@/types/users";
@@ -44,7 +44,10 @@ const Profile: NextPage = () => {
       loadingText="Loading user..."
     >
       {/* TODO: Remove && false */}
-      <NoDataWrapper noDataCondition={user === undefined && false}>
+      <NoDataWrapper
+        noDataCondition={user === undefined && false}
+        message="No user found"
+      >
         <Stack direction="column" alignItems="center">
           <Avatar
             variant="circular"

@@ -1,70 +1,74 @@
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useMemo, useState } from "react";
 import type { NextPage } from "next";
 // Libraries
-import { Grid, Stack, Tab, Tabs, tabsClasses } from "@mui/material";
-import { Formik, FormikHelpers } from "formik";
+import {
+  Grid,
+  Select,
+  MenuItem,
+  Stack,
+  Tab,
+  Tabs,
+  tabsClasses,
+} from "@mui/material";
 // Components
 import Body from "@/components/Body";
 import ProjectCard from "@/components/cards/ProjectCard";
-import Select from "@/components/FormControllers/Select";
 // Constants
-import { COHORTS, LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
-
-interface CohortSelectFormValuesType {
-  cohort: number;
-}
+import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
+import { COHORTS, COHORTS_VALUES } from "@/types/cohorts";
+import useFetch, { FETCH_STATUS } from "@/hooks/useFetch";
+import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 
 const Projects: NextPage = () => {
-  const [selectedCohort, setSelectedCohort] = useState<number>(COHORTS.CURRENT);
-  const [selectedLevel, setSelectedLevel] = useState<string>(
+  const [selectedCohort, setSelectedCohort] = useState<COHORTS>(
+    COHORTS_VALUES[0]
+  );
+  const [selectedLevel, setSelectedLevel] = useState<LEVELS_OF_ACHIEVEMENT>(
     LEVELS_OF_ACHIEVEMENT.ARTEMIS
   );
+  const memoQueryParams = useMemo(() => {
+    return {
+      cohortYear: selectedCohort,
+      achievement: selectedLevel,
+    };
+  }, [selectedCohort, selectedLevel]);
 
-  const initialValues: CohortSelectFormValuesType = {
-    cohort: selectedCohort,
-  };
+  const { data: projects, status } = useFetch<Project[]>({
+    endpoint: `/projects`,
+    queryParams: memoQueryParams,
+  });
 
-  const handleSubmit = async (
-    values: CohortSelectFormValuesType,
-    actions: FormikHelpers<CohortSelectFormValuesType>
+  const handleTabChange = (
+    event: SyntheticEvent,
+    newLevel: LEVELS_OF_ACHIEVEMENT
   ) => {
-    const { cohort } = values;
-    setSelectedCohort(cohort);
-    actions.setSubmitting(false);
-  };
-
-  const handleTabChange = (event: SyntheticEvent, newLevel: string) => {
     setSelectedLevel(newLevel);
   };
 
-  const selectOptions = [COHORTS.CURRENT, COHORTS.PREVIOUS].map((cohort) => {
-    return {
-      label: cohort.toString(),
-      value: cohort.toString(),
-    };
-  });
-
   return (
     <>
-      <Body>
+      <Body
+        isLoading={status === FETCH_STATUS.FETCHING}
+        isError={status === FETCH_STATUS.ERROR}
+      >
         <Stack
           direction={{ xs: "column", md: "row" }}
           alignItems="center"
           justifyContent="space-between"
           my={4}
         >
-          <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-            {(formik) => (
-              <form onSubmit={formik.handleSubmit}>
-                <Select
-                  name="cohort"
-                  label="Cohort"
-                  options={selectOptions}
-                  formik={formik}
-                />
-              </form>
-            )}
-          </Formik>
+          <Select
+            name="cohort"
+            label="Cohort"
+            value={selectedCohort}
+            onChange={(e) => setSelectedCohort(e.target.value as COHORTS)}
+          >
+            {COHORTS_VALUES.map((value) => (
+              <MenuItem key={value} value={value}>
+                {value}
+              </MenuItem>
+            ))}
+          </Select>
           <Tabs
             value={selectedLevel}
             onChange={handleTabChange}
@@ -80,64 +84,27 @@ const Projects: NextPage = () => {
               marginY: { xs: 2, md: 0 },
             }}
           >
-            {Object.values(LEVELS_OF_ACHIEVEMENT).map((level, key) => {
-              return <Tab key={key} value={level} label={level} />;
+            {Object.values(LEVELS_OF_ACHIEVEMENT).map((level) => {
+              return <Tab key={level} value={level} label={level} />;
             })}
           </Tabs>
         </Stack>
-        <Grid container spacing={{ xs: 2, md: 4, xl: 8 }}>
-          {DUMMY_PROJECTS.map((project) => {
-            return (
-              <Grid item key={project.id} xs={12} md={4} xl={3}>
-                <ProjectCard project={project} />
-              </Grid>
-            );
-          })}
-        </Grid>
+        <NoDataWrapper
+          noDataCondition={projects?.length === 0}
+          message="No projects were found"
+        >
+          <Grid container spacing={{ xs: 2, md: 4, xl: 8 }}>
+            {(projects as Project[]).map((project) => {
+              return (
+                <Grid item key={project.id} xs={12} md={4} xl={3}>
+                  <ProjectCard project={project} />
+                </Grid>
+              );
+            })}
+          </Grid>
+        </NoDataWrapper>
       </Body>
     </>
   );
 };
 export default Projects;
-
-const DUMMY_PROJECTS: Project[] = [
-  {
-    id: 1,
-    name: "Test Team",
-    posterUrl: "https://nusskylab-dev.comp.nus.edu.sg/posters/2021/2680.jpg",
-    students: [
-      { id: 1, email: "1@gmail.com", name: "Student 1", cohortId: 0 },
-      { id: 2, email: "2@gmail.com", name: "Student 2", cohortId: 0 },
-    ],
-    adviser: { id: 3, email: "3@gmail.com", name: "Adviser 3", cohortId: 0 },
-    achievement: LEVELS_OF_ACHIEVEMENT.APOLLO,
-    cohortId: 0,
-  },
-  {
-    id: 2,
-    name: "Test Team 2",
-    posterUrl: "https://nusskylab-dev.comp.nus.edu.sg/posters/2021/2670.jpg",
-    students: [
-      {
-        id: 1,
-        email: "1@gmail.com",
-        name: "Student with a very long name",
-        cohortId: 0,
-      },
-      {
-        id: 2,
-        email: "2@gmail.com",
-        name: "Another student with an even longer name",
-        cohortId: 0,
-      },
-    ],
-    adviser: {
-      id: 3,
-      email: "3@gmail.com",
-      name: "Adviser who also happens to have a really long name",
-      cohortId: 0,
-    },
-    achievement: LEVELS_OF_ACHIEVEMENT.APOLLO,
-    cohortId: 0,
-  },
-];

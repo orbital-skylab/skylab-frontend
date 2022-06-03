@@ -41,22 +41,26 @@ const ProjectCard: FC<Props> = ({ project }) => {
           </Box>
 
           <Stack mt={2} spacing="0.5rem">
-            <Box>
-              <Typography fontWeight={600}>Orbitees</Typography>
-              {project.students.map((student) => (
-                <UsersName key={student.id}>{student.name}</UsersName>
-              ))}
-            </Box>
+            {project.students && project.students.length ? (
+              <Box>
+                <Typography fontWeight={600}>Orbitees</Typography>
+                {project.students.map((student) => (
+                  <UsersName key={student.userId}>
+                    {student.user.name}
+                  </UsersName>
+                ))}
+              </Box>
+            ) : null}
             {project.adviser ? (
               <Box>
                 <Typography fontWeight={600}>Adviser</Typography>
-                <UsersName> {project.adviser.name}</UsersName>
+                <UsersName> {project.adviser.user.name}</UsersName>
               </Box>
             ) : null}
             {project.mentor ? (
               <Box>
                 <Typography fontWeight={600}>Mentor</Typography>
-                <UsersName>{project.mentor.name}</UsersName>
+                <UsersName>{project.mentor.user.name}</UsersName>
               </Box>
             ) : null}
           </Stack>

@@ -4,6 +4,7 @@ import {
   State,
   Action,
   Mutator,
+  QueryParams,
 } from "./useFetch.types";
 
 export const createReducer =
@@ -36,3 +37,35 @@ export const createReducer =
       }
     }
   };
+
+export function parseQueryParams(queryParams: QueryParams): string {
+  const queryParamsCopy = { ...queryParams };
+
+  if (queryParamsCopy === undefined || queryParamsCopy === null) {
+    return "";
+  }
+
+  const noActualParams = Object.values(queryParamsCopy).reduce(
+    (acc, val) => (acc && val instanceof Array ? val.length === 0 : val === ""),
+    true
+  );
+
+  if (noActualParams) {
+    return "";
+  }
+
+  let parsedQueryParams = "?";
+
+  for (const [query, param] of Object.entries(queryParamsCopy)) {
+    if (param instanceof Array) {
+      for (const val of param) {
+        parsedQueryParams += `${query}=${val}&`;
+      }
+    } else if (param !== "") {
+      parsedQueryParams += `${query}=${param}&`;
+    }
+  }
+
+  // To remove the last '&'
+  return parsedQueryParams.slice(0, parsedQueryParams.length - 1);
+}

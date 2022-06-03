@@ -1,13 +1,15 @@
 import { FC } from "react";
 import { Box, SxProps } from "@mui/system";
 import { NAVBAR_HEIGHT_REM } from "@/styles/constants";
-import LoadingWrapper from "../wrapper/LoadingWrapper";
+import LoadingWrapper from "../wrappers/LoadingWrapper";
 import { Container } from "@mui/material";
+import ErrorWrapper from "../wrappers/ErrorWrapper";
 
 type Props = {
   flexColCenter?: boolean;
   isLoading?: boolean;
   loadingText?: string;
+  isError?: boolean;
 };
 
 const Body: FC<Props> = ({
@@ -15,6 +17,7 @@ const Body: FC<Props> = ({
   flexColCenter,
   isLoading,
   loadingText,
+  isError,
 }) => {
   const boxSx: SxProps = {
     minHeight: "100vh",
@@ -35,7 +38,7 @@ const Body: FC<Props> = ({
       <Box sx={boxSx}>
         <Container maxWidth="xl">
           <LoadingWrapper isLoading={!!isLoading} loadingText={loadingText}>
-            {children}
+            <ErrorWrapper isError={!!isError}>{children}</ErrorWrapper>
           </LoadingWrapper>
         </Container>
       </Box>

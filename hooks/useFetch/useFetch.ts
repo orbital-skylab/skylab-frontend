@@ -1,11 +1,12 @@
 import { useEffect, useReducer } from "react";
-import { createReducer } from "./useFetch.helpers";
+import { createReducer, parseQueryParams } from "./useFetch.helpers";
 import {
   FETCH_STATUS,
   ACTION_TYPE,
   State,
   Mutate,
   HookReturnType,
+  QueryParams,
 } from "./useFetch.types";
 import { ApiServiceBuilder } from "@/helpers/api";
 import { HTTP_METHOD } from "@/types/api";
@@ -14,14 +15,17 @@ import { HTTP_METHOD } from "@/types/api";
  * A custom wrapper hook to fetch data while providing state and the ability to update the fetched data manually.
  * @param {string} param0.endpoint the endpoint of where to fetch data from (the apiservicebuilder automatically prepends the backend api url).
  * @param {boolean} param0.requiresAuthorization whether the endpoint requires the user to be authorized.
+ * @param {QueryParam} param0.queryParam the parameter queries to be sent
  * @returns an object where status is the status of fetching the data, error is any encountered error (if any), data is the data fetched, and mutate is a function that takes in a callback to modify the data.
  */
 const useFetch = <T>({
   endpoint = "",
   requiresAuthorization = false,
+  queryParams = {},
 }: {
   endpoint: string;
   requiresAuthorization?: boolean;
+  queryParams?: QueryParams;
 }): HookReturnType<T> => {
   const token = "placeholderToken"; // TODO: Retrieve from useAuth
 
@@ -41,9 +45,12 @@ const useFetch = <T>({
       dispatch({ type: ACTION_TYPE.SET_STATUS_FETCHING });
       try {
         /* Building API service. */
+        const endpointWithQueryParams =
+          endpoint + parseQueryParams(queryParams);
+
         const apiServiceBuilder = new ApiServiceBuilder({
           method: HTTP_METHOD.GET,
-          endpoint,
+          endpoint: endpointWithQueryParams,
         });
         if (requiresAuthorization) {
           apiServiceBuilder.setToken(token);
@@ -69,7 +76,7 @@ const useFetch = <T>({
     return function cleanup() {
       cancelRequest = true;
     };
-  }, [endpoint, requiresAuthorization]);
+  }, [endpoint, requiresAuthorization, queryParams]);
 
   /* Mutate function to modify the state of the fetched data directly. */
   const mutate: Mutate<T> = async (mutator) => {
