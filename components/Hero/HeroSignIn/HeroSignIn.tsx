@@ -1,7 +1,10 @@
 import TextInput from "@/components/FormControllers/TextInput";
+import SnackbarAlert from "@/components/SnackbarAlert/SnackbarAlert";
+import { SNACKBAR_ALERT_INITIAL } from "@/helpers/forms";
 import { PAGES } from "@/helpers/navigation";
 import useAuth from "@/hooks/useAuth";
-import { Box, Stack, Typography, Button, Alert, Snackbar } from "@mui/material";
+import { SnackbarAlertType } from "@/types/forms";
+import { Box, Stack, Typography, Button } from "@mui/material";
 import { Formik, FormikHelpers } from "formik";
 import Link from "next/link";
 import { FC, useState } from "react";
@@ -13,8 +16,9 @@ interface SignInFormValuesType {
 
 const HeroSignIn: FC = () => {
   const { user, signIn } = useAuth();
-  const [signInError, setSignInError] = useState("");
-  const [hasSignedInSuccessfully, setHasSignedInSuccessfully] = useState(false);
+  const [snackbar, setSnackbar] = useState<SnackbarAlertType>(
+    SNACKBAR_ALERT_INITIAL
+  );
 
   const initialValues: SignInFormValuesType = {
     email: "",
@@ -28,35 +32,23 @@ const HeroSignIn: FC = () => {
     const { email, password } = values;
     try {
       await signIn(email, password);
-      setHasSignedInSuccessfully(true);
+      setSnackbar({
+        severity: "success",
+        message: "You have signed in successfully!",
+      });
     } catch (error) {
-      setSignInError(error instanceof Error ? error.message : String(error));
+      setSnackbar({
+        severity: "error",
+        message: error instanceof Error ? error.message : String(error),
+      });
     }
 
     actions.setSubmitting(false);
   };
 
-  const handleCloseSnackbar = () => {
-    setSignInError("");
-    setHasSignedInSuccessfully(false);
-  };
-
   return (
     <>
-      <Snackbar
-        open={!!signInError}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert severity="error">{signInError}</Alert>
-      </Snackbar>
-      <Snackbar
-        open={hasSignedInSuccessfully}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert severity="success">You have signed in successfully</Alert>
-      </Snackbar>
+      <SnackbarAlert snackbar={snackbar} setSnackbar={setSnackbar} />
       {!user ? (
         <Box sx={{ width: "100%" }}>
           <Formik initialValues={initialValues} onSubmit={handleSubmit}>
