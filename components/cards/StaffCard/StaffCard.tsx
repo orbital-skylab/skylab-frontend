@@ -1,32 +1,33 @@
 import { FC } from "react";
-import { StaticImageData } from "next/image";
 // Libraries
 import { Box, Stack, Typography } from "@mui/material";
+import styles from "./StaffCard.module.scss";
+import { User } from "@/types/users";
 
 type Props = {
-  name: string;
-  image: StaticImageData;
+  staff: User;
 };
 
-const StaffCard: FC<Props> = ({ name, image }) => {
+const StaffCard: FC<Props> = ({ staff }) => {
   return (
     <Stack>
       <Typography variant="h6" align="center">
-        {name}
+        {staff.name}
       </Typography>
       <Box
         sx={{
-          width: "full",
+          width: "100%",
+          aspectRatio: "3 / 4",
           display: "flex",
           justifyContent: "center",
+          overflow: "hidden",
+          borderRadius: "0.5rem",
         }}
       >
         <img
-          src={image.src}
-          alt={name}
-          height={345}
-          width={345}
-          // style={{ paddingTop: "100%" }}
+          src={staff.profilePicUrl}
+          alt={staff.name}
+          className={styles.staffImage}
         />
       </Box>
     </Stack>
