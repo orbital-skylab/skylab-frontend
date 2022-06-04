@@ -12,6 +12,7 @@ import styles from "./StaffCard.module.scss";
 import { User } from "@/types/users";
 import Link from "next/link";
 import { PAGES } from "@/helpers/navigation";
+import { SQUARE_ASPECT_RATIO } from "@/styles/constants";
 
 type Props = {
   staff: User;
@@ -27,13 +28,11 @@ const StaffCard: FC<Props> = ({ staff }) => {
           </Typography>
           <Box
             sx={{
+              aspectRatio: SQUARE_ASPECT_RATIO,
               width: "100%",
-              aspectRatio: "1 / 1",
               display: "flex",
               justifyContent: "center",
               overflow: "hidden",
-              borderRadius: "50%",
-              border: "1px solid black",
             }}
           >
             <img
@@ -45,7 +44,7 @@ const StaffCard: FC<Props> = ({ staff }) => {
               className={styles.staffImage}
             />
           </Box>
-          <Link href={`${PAGES.STAFF}/${staff.email}`} passHref>
+          <Link href={`${PAGES.PROFILE}/${staff.email}`} passHref replace>
             <Button
               variant="contained"
               sx={{
