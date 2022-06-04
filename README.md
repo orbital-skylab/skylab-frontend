@@ -29,8 +29,4 @@ Skylab v2 has the intention of replacing the pre-existing [Skylab](https://nussk
 
 ## Documentation
 
-Documentation for this project has been done with [Storybook](https://storybook.js.org/). Storybook allows for component-driven development and a quick and easy way to write interactive docs.
-
-You can view the published documentation [here](https://staging--62937ed0318229004a51a095.chromatic.com/?path=/story/introduction--page).
-
-To view the documentation in a local development environment (with hot reload), complete the installation as mentioned above. Then type, `npm run storybook`. A new window should open in `http://localhost:6006` with the Storybook documentation.
+Documentation for this project has been done with [GitHub Wiki]([url](https://github.com/orbital-skylab/skylab-frontend/wiki))
