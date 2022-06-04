@@ -29,4 +29,4 @@ Skylab v2 has the intention of replacing the pre-existing [Skylab](https://nussk
 
 ## Documentation
 
-Documentation for this project has been done with [GitHub Wiki](https://github.com/orbital-skylab/skylab-frontend/wiki/Introduction)
+Documentation for this project has been done with [GitHub Wiki](https://github.com/orbital-skylab/skylab-frontend/wiki)
