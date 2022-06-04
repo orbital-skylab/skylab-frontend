@@ -1,17 +1,19 @@
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 // Libraries
 import {
-  Box,
-  Button,
   Card,
+  CardActions,
   CardContent,
+  CardMedia,
+  IconButton,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
-import styles from "./StaffCard.module.scss";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import LinkIcon from "@mui/icons-material/Link";
 import { User } from "@/types/users";
-import Link from "next/link";
-import { PAGES } from "@/helpers/navigation";
 import { SQUARE_ASPECT_RATIO } from "@/styles/constants";
 
 type Props = {
@@ -20,45 +22,59 @@ type Props = {
 
 const StaffCard: FC<Props> = ({ staff }) => {
   return (
-    <Card>
+    <Card raised>
+      <CardMedia
+        component="img"
+        image={staff.profilePicUrl}
+        alt={staff.name}
+        sx={{
+          objectFit: "cover",
+          aspectRatio: SQUARE_ASPECT_RATIO,
+          borderRadius: "4px",
+        }}
+      />
       <CardContent>
-        <Stack spacing="0.5rem">
-          <Typography variant="h5" align="center" fontWeight={600}>
-            {staff.name}
-          </Typography>
-          <Box
-            sx={{
-              aspectRatio: SQUARE_ASPECT_RATIO,
-              width: "100%",
-              display: "flex",
-              justifyContent: "center",
-              overflow: "hidden",
-            }}
-          >
-            <img
-              src={
-                staff.profilePicUrl ??
-                "https://secure.gravatar.com/avatar/c82a148955fb775cc59952b99503470d.png?r=PG&s=150"
-              }
-              alt={staff.name}
-              className={styles.staffImage}
-            />
-          </Box>
-          <Link href={`${PAGES.PROFILE}/${staff.email}`} passHref replace>
-            <Button
-              variant="contained"
-              sx={{
-                textTransform: "none",
-                width: "fit-content",
-                alignSelf: "center",
-              }}
-            >
-              View Profile
-            </Button>
-          </Link>
-        </Stack>
+        <Typography variant="h5" align="center" fontWeight={600}>
+          {staff.name}
+        </Typography>
       </CardContent>
+      <CardActions sx={{ paddingTop: 0 }}>
+        <Stack direction="row" sx={{ width: "100%" }} justifyContent="end">
+          <SocialButton
+            title="Github"
+            icon={<GitHubIcon />}
+            url={String(staff.githubUrl)}
+          />
+          <SocialButton
+            title="LinkedIn"
+            icon={<LinkedInIcon />}
+            url={String(staff.linkedinUrl)}
+          />
+          <SocialButton
+            title="Personal Portfolio"
+            icon={<LinkIcon />}
+            url={String(staff.personalSiteUrl)}
+          />
+        </Stack>
+      </CardActions>
     </Card>
   );
 };
+
+type SocialButtonProps = {
+  title: string;
+  icon: ReactNode;
+  url: string;
+};
+
+const SocialButton: FC<SocialButtonProps> = ({ title, icon, url }) => {
+  return (
+    <a href={url} target="_blank" rel="noopener noreferrer">
+      <Tooltip title={title}>
+        <IconButton>{icon}</IconButton>
+      </Tooltip>
+    </a>
+  );
+};
+
 export default StaffCard;
