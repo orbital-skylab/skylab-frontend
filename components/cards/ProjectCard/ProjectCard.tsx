@@ -11,7 +11,7 @@ import {
 import styles from "./ProjectCard.module.scss";
 import { Project } from "@/types/projects";
 import { A4_ASPECT_RATIO } from "@/styles/constants";
-import ProjectSubmissionModal from "./ProjectSubmissionModal/ProjectSubmissionModal";
+import ProjectSubmissionModal from "./ProjectSubmissionModal";
 
 type Props = {
   project: Project;
