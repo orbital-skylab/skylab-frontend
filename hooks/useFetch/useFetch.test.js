@@ -1,9 +1,16 @@
+/* eslint-disable no-undef */
 import { parseQueryParams } from "./useFetch.helpers";
-import { describe, it, expect } from "jest";
+import "jest";
 
 describe("#parseQueryParams", () => {
   it("can transform zero params", () => {
     const parsed = parseQueryParams({});
+    const expected = "";
+    expect(parsed).toBe(expected);
+  });
+
+  it("returns nothing if all params are invalid", () => {
+    const parsed = parseQueryParams({ a: "", b: undefined, c: null, d: [] });
     const expected = "";
     expect(parsed).toBe(expected);
   });
@@ -68,6 +75,21 @@ describe("#parseQueryParams", () => {
     });
     const expected =
       "?query=HelloThere&achievement=Vostok&achievement=Artemis&jedi=Obiwan";
+    expect(parsed).toBe(expected);
+  });
+
+  it("strips invalid values", () => {
+    const parsed = parseQueryParams({
+      shdExist1: "0",
+      shdExist2: 0,
+      shdExist3: "1",
+      shdExist4: 1,
+      shdNotExist1: "",
+      shdNotExist2: null,
+      shdNotExist3: undefined,
+      shdNotExist4: [],
+    });
+    const expected = "?shdExist1=0&shdExist2=0&shdExist3=1&shdExist4=1";
     expect(parsed).toBe(expected);
   });
 });

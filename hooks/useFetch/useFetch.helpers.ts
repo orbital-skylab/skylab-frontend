@@ -45,25 +45,23 @@ export function parseQueryParams(queryParams: QueryParams | undefined): string {
 
   const queryParamsCopy = { ...queryParams };
 
-  const noActualParams = Object.values(queryParamsCopy).reduce(
-    (acc, val) => (acc && val instanceof Array ? val.length === 0 : val === ""),
-    true
-  );
-
-  if (noActualParams) {
-    return "";
-  }
-
   let parsedQueryParams = "?";
+  let numberOfInvalidParams = 0;
 
   for (const [query, param] of Object.entries(queryParamsCopy)) {
     if (param instanceof Array) {
       for (const val of param) {
         parsedQueryParams += `${query}=${val}&`;
       }
-    } else if (param !== "") {
+    } else if (typeof param === "number" || param) {
       parsedQueryParams += `${query}=${param}&`;
+    } else {
+      numberOfInvalidParams++;
     }
+  }
+
+  if (numberOfInvalidParams === Object.keys(queryParams).length) {
+    return "";
   }
 
   // To remove the last '&'
