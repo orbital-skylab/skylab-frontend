@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 // Libraries
 import {
   Box,
@@ -10,65 +10,71 @@ import {
 } from "@mui/material";
 import styles from "./ProjectCard.module.scss";
 import { Project } from "@/types/projects";
-import Link from "next/link";
-import { PAGES } from "@/helpers/navigation";
 import { A4_ASPECT_RATIO } from "@/styles/constants";
+import ProjectSubmissionModal from "./ProjectSubmissionModal/ProjectSubmissionModal";
 
 type Props = {
   project: Project;
 };
 
 const ProjectCard: FC<Props> = ({ project }) => {
-  return (
-    <Card>
-      <CardContent>
-        <Stack spacing="0.5rem">
-          <Typography variant="h5" align="center" fontWeight={600}>
-            {project.name}
-          </Typography>
-          <Box
-            sx={{
-              width: "100%",
-              aspectRatio: A4_ASPECT_RATIO,
-              display: "flex",
-              justifyContent: "center",
-              overflow: "hidden",
-              borderRadius: "0.5rem",
-            }}
-          >
-            <img
-              src={
-                project.posterUrl ??
-                "https://nusskylab-dev.comp.nus.edu.sg/posters/2021/2680.jpg"
-              }
-              alt={`${project.name} Project`}
-              className={styles.projectImage}
-            />
-          </Box>
+  const [isProjectModalOpen, setProjectModalOpen] = useState(false);
 
-          <Stack mt={2} spacing="0.5rem">
-            {project.students && project.students.length ? (
-              <Box>
-                <Typography fontWeight={600}>Orbitees</Typography>
-                {project.students.map((student) => (
-                  <UsersName key={student.id}>{student.name}</UsersName>
-                ))}
-              </Box>
-            ) : null}
-            {project.adviser ? (
-              <Box>
-                <Typography fontWeight={600}>Adviser</Typography>
-                <UsersName> {project.adviser.name}</UsersName>
-              </Box>
-            ) : null}
-            {project.mentor ? (
-              <Box>
-                <Typography fontWeight={600}>Mentor</Typography>
-                <UsersName>{project.mentor.name}</UsersName>
-              </Box>
-            ) : null}
-          </Stack>
-          <Link href={`${PAGES.PROJECTS}/${project.id}`} passHref>
+  return (
+    <>
+      <ProjectSubmissionModal
+        open={isProjectModalOpen}
+        setOpen={setProjectModalOpen}
+        project={project}
+      />
+      <Card>
+        <CardContent>
+          <Stack spacing="0.5rem">
+            <Typography variant="h5" align="center" fontWeight={600}>
+              {project.name}
+            </Typography>
+            <Box
+              sx={{
+                width: "100%",
+                aspectRatio: A4_ASPECT_RATIO,
+                display: "flex",
+                justifyContent: "center",
+                overflow: "hidden",
+                borderRadius: "0.5rem",
+              }}
+            >
+              <img
+                src={
+                  project.posterUrl ??
+                  "https://nusskylab-dev.comp.nus.edu.sg/posters/2021/2680.jpg"
+                }
+                alt={`${project.name} Project`}
+                className={styles.projectImage}
+              />
+            </Box>
+
+            <Stack mt={2} spacing="0.5rem">
+              {project.students && project.students.length ? (
+                <Box>
+                  <Typography fontWeight={600}>Orbitees</Typography>
+                  {project.students.map((student) => (
+                    <UsersName key={student.id}>{student.name}</UsersName>
+                  ))}
+                </Box>
+              ) : null}
+              {project.adviser ? (
+                <Box>
+                  <Typography fontWeight={600}>Adviser</Typography>
+                  <UsersName> {project.adviser.name}</UsersName>
+                </Box>
+              ) : null}
+              {project.mentor ? (
+                <Box>
+                  <Typography fontWeight={600}>Mentor</Typography>
+                  <UsersName>{project.mentor.name}</UsersName>
+                </Box>
+              ) : null}
+            </Stack>
             <Button
               variant="contained"
               sx={{
@@ -76,13 +82,14 @@ const ProjectCard: FC<Props> = ({ project }) => {
                 width: "fit-content",
                 alignSelf: "center",
               }}
+              onClick={() => setProjectModalOpen(true)}
             >
               View Submissions
             </Button>
-          </Link>
-        </Stack>
-      </CardContent>
-    </Card>
+          </Stack>
+        </CardContent>
+      </Card>
+    </>
   );
 };
 
