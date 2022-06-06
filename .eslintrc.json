@@ -8,11 +8,9 @@
     "plugin:react/recommended",
     "plugin:import/recommended",
     "plugin:react-hooks/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:storybook/recommended"
+    "plugin:@typescript-eslint/recommended"
   ],
   "plugins": ["@typescript-eslint", "jsx-a11y"],
-  "ignorePatterns": ["storybook-static"],
   "rules": {
     "react/react-in-jsx-scope": "off",
     "import/ignore": "off",
