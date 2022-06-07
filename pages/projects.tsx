@@ -100,7 +100,7 @@ const Projects: NextPage = () => {
               name="cohort"
               label="Cohort"
               value={selectedCohortYear}
-              onChange={(e) => setSelectedCohortYear(e.target.value)}
+              onChange={(e) => setSelectedCohortYear(e.target.value as number)}
               size="small"
             >
               {cohorts &&
