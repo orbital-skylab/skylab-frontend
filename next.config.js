@@ -4,9 +4,6 @@ const nextConfig = {
   experimental: {
     outputStandalone: true,
   },
-  images: {
-    domains: ["*"],
-  },
 };
 
 module.exports = nextConfig;
