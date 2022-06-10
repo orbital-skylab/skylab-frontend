@@ -1,4 +1,4 @@
-import { COHORTS } from "./cohorts";
+import { Cohort } from "./cohorts";
 import { Adviser, Mentor, Student } from "./users";
 
 export enum LEVELS_OF_ACHIEVEMENT {
@@ -18,5 +18,5 @@ export type Project = {
   mentor?: Mentor;
   mentorId?: number;
   achievement: LEVELS_OF_ACHIEVEMENT;
-  cohortYear: COHORTS;
+  cohortYear: Cohort["academicYear"];
 };

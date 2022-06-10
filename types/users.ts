@@ -1,3 +1,5 @@
+import { Cohort } from "./cohorts";
+
 export interface User {
   id: number;
   name: string;
@@ -7,7 +9,7 @@ export interface User {
   linkedinUrl?: string;
   personalSiteUrl?: string;
   selfIntro?: string;
-  cohortYear: number;
+  cohortYear: Cohort["academicYear"];
 }
 
 export interface Student extends User {

@@ -17,36 +17,48 @@ import Body from "@/components/Body";
 import ProjectCard from "@/components/cards/ProjectCard";
 // Constants
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
-import { COHORTS, COHORTS_VALUES } from "@/types/cohorts";
+import { Cohort } from "@/types/cohorts";
 import useFetch, { FETCH_STATUS } from "@/hooks/useFetch";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import NoProjectFound from "@/components/emptyStates/NoProjectsFound";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 
 const Projects: NextPage = () => {
-  const [searchTextInput, setSearchTextInput] = useState("");
-  const [selectedCohort, setSelectedCohort] = useState<COHORTS>(
-    COHORTS_VALUES[0]
-  );
   const [selectedLevel, setSelectedLevel] = useState<LEVELS_OF_ACHIEVEMENT>(
     LEVELS_OF_ACHIEVEMENT.ARTEMIS
   );
-  const [, setQuerySearch] = useState("");
+
+  /** For fetching cohorts and setting default as latest cohort */
+  const [selectedCohortYear, setSelectedCohortYear] = useState<
+    Cohort["academicYear"] | null
+  >(null);
+  const { data: cohorts, status: fetchCohortsStatus } = useFetch<Cohort[]>({
+    endpoint: "/cohorts",
+    onFetch: (cohorts) =>
+      setSelectedCohortYear(cohorts.length ? cohorts[0].academicYear : null),
+  });
+
+  /** For query searching with string pattern matching */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [querySearch, setQuerySearch] = useState("");
+  const [searchTextInput, setSearchTextInput] = useState("");
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSetQuerySearch = useCallback(
     debounce((val) => {
       setQuerySearch(val);
-    }, 500),
+    }),
     []
   );
+
+  /** For fetching projects based on filters */
   const memoQueryParams = useMemo(() => {
     return {
-      cohortYear: selectedCohort,
+      cohortYear: selectedCohortYear,
       achievement: selectedLevel,
+      search: querySearch,
     };
-  }, [selectedCohort, selectedLevel]);
-
-  const { data: projects, status } = useFetch<Project[]>({
+  }, [selectedCohortYear, selectedLevel, querySearch]);
+  const { data: projects, status: fetchProjectStatus } = useFetch<Project[]>({
     endpoint: `/projects`,
     queryParams: memoQueryParams,
   });
@@ -60,7 +72,13 @@ const Projects: NextPage = () => {
 
   return (
     <>
-      <Body isError={status === FETCH_STATUS.ERROR}>
+      <Body
+        isError={
+          fetchProjectStatus === FETCH_STATUS.ERROR ||
+          fetchCohortsStatus === FETCH_STATUS.ERROR
+        }
+        isLoading={fetchCohortsStatus === FETCH_STATUS.FETCHING}
+      >
         <Stack direction="column" mt={{ md: "0.5rem" }} mb="1rem">
           <Stack
             direction="row"
@@ -81,15 +99,16 @@ const Projects: NextPage = () => {
             <Select
               name="cohort"
               label="Cohort"
-              value={selectedCohort}
-              onChange={(e) => setSelectedCohort(e.target.value as COHORTS)}
+              value={selectedCohortYear}
+              onChange={(e) => setSelectedCohortYear(e.target.value as number)}
               size="small"
             >
-              {COHORTS_VALUES.map((value) => (
-                <MenuItem key={value} value={value}>
-                  {value}
-                </MenuItem>
-              ))}
+              {cohorts &&
+                cohorts.map(({ academicYear }) => (
+                  <MenuItem key={academicYear} value={academicYear}>
+                    {academicYear}
+                  </MenuItem>
+                ))}
             </Select>
           </Stack>
           <Tabs
@@ -113,7 +132,7 @@ const Projects: NextPage = () => {
           </Tabs>
         </Stack>
         <LoadingWrapper
-          isLoading={status === FETCH_STATUS.FETCHING}
+          isLoading={fetchProjectStatus === FETCH_STATUS.FETCHING}
           loadingText="Loading projects..."
         >
           <NoDataWrapper
