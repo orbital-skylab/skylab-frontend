@@ -1,4 +1,4 @@
-import { SyntheticEvent, useCallback, useMemo, useState } from "react";
+import { SyntheticEvent, useCallback, useMemo, useRef, useState } from "react";
 import type { NextPage } from "next";
 // Libraries
 import {
@@ -12,18 +12,20 @@ import {
   TextField,
   debounce,
 } from "@mui/material";
+// Hooks
+import useInfiniteFetch from "@/hooks/useInfiniteFetch";
+import useFetch, { FETCH_STATUS } from "@/hooks/useFetch";
+import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
+import NoProjectFound from "@/components/emptyStates/NoProjectsFound";
+// Types
+import { Cohort } from "@/types/cohorts";
 // Components
 import Body from "@/components/Body";
 import ProjectCard from "@/components/cards/ProjectCard";
-import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
-import NoProjectFound from "@/components/emptyStates/NoProjectsFound";
-import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
-// Hooks
-import useFetch from "@/hooks/useFetch";
-// Types
+import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
+// Constants
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
-import { FETCH_STATUS } from "@/hooks/useFetch";
-import { Cohort } from "@/types/cohorts";
+// const LIMIT = 16; // TODO
 
 const Projects: NextPage = () => {
   const [selectedLevel, setSelectedLevel] = useState<LEVELS_OF_ACHIEVEMENT>(
@@ -52,15 +54,24 @@ const Projects: NextPage = () => {
     []
   );
 
+  /* For infinite scroll */
+  const [page, setPage] = useState(0);
+
   /** For fetching projects based on filters */
   const memoQueryParams = useMemo(() => {
     return {
       cohortYear: selectedCohortYear,
       achievement: selectedLevel,
       search: querySearch,
+      page,
+      // limit: LIMIT, // TODO
     };
-  }, [selectedCohortYear, selectedLevel, querySearch]);
-  const { data: projects, status: fetchProjectStatus } = useFetch<Project[]>({
+  }, [selectedCohortYear, selectedLevel, querySearch, page]);
+  const {
+    data: projects,
+    status: fetchProjectStatus,
+    hasMore,
+  } = useInfiniteFetch<Project>({
     endpoint: `/projects`,
     queryParams: memoQueryParams,
   });
@@ -72,6 +83,26 @@ const Projects: NextPage = () => {
     setSelectedLevel(newLevel);
   };
 
+  const observer = useRef<IntersectionObserver | null>(null);
+  const fetchMoreProjectsRef = useCallback(
+    (node) => {
+      if (fetchProjectStatus === FETCH_STATUS.FETCHING) {
+        return;
+      }
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      });
+      if (node) {
+        observer.current.observe(node);
+      }
+    },
+    [fetchProjectStatus, hasMore]
+  );
   return (
     <>
       <Body
@@ -135,27 +166,26 @@ const Projects: NextPage = () => {
             })}
           </Tabs>
         </Stack>
-        <LoadingWrapper
-          isLoading={fetchProjectStatus === FETCH_STATUS.FETCHING}
-          loadingText="Loading projects..."
+        <NoDataWrapper
+          noDataCondition={projects === undefined || projects?.length === 0}
+          fallback={<NoProjectFound />}
         >
-          <NoDataWrapper
-            noDataCondition={projects === undefined || projects?.length === 0}
-            fallback={<NoProjectFound />}
-          >
-            <Grid container spacing={{ xs: 2, md: 4, xl: 8 }}>
-              {projects
-                ? projects.map((project) => {
-                    return (
-                      <Grid item key={project.id} xs={12} md={4} xl={3}>
-                        <ProjectCard project={project} />
-                      </Grid>
-                    );
-                  })
-                : null}
-            </Grid>
-          </NoDataWrapper>
-        </LoadingWrapper>
+          <Grid container spacing={{ xs: 2, md: 4, xl: 8 }}>
+            {projects
+              ? projects.map((project) => {
+                  return (
+                    <Grid item key={project.id} xs={12} md={4} xl={3}>
+                      <ProjectCard project={project} />
+                    </Grid>
+                  );
+                })
+              : null}
+          </Grid>
+          <div ref={fetchMoreProjectsRef} />
+          {fetchProjectStatus === FETCH_STATUS.FETCHING ? (
+            <LoadingSpinner />
+          ) : null}
+        </NoDataWrapper>
       </Body>
     </>
   );

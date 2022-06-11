@@ -42,7 +42,6 @@ const useFetch = <T>({
 
   useEffect(() => {
     let cancelRequest = false;
-    console.log(queryParams);
     const fetchData = async () => {
       dispatch({ type: ACTION_TYPE.SET_STATUS_FETCHING });
       try {
