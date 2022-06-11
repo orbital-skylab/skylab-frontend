@@ -1,7 +1,8 @@
-import { SyntheticEvent, useMemo, useState } from "react";
+import { SyntheticEvent, useCallback, useMemo, useState } from "react";
 import type { NextPage } from "next";
 // Libraries
 import {
+  debounce,
   Grid,
   MenuItem,
   Select,
@@ -20,22 +21,40 @@ import useFetch, { FETCH_STATUS } from "@/hooks/useFetch";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import NoStaffFound from "@/components/emptyStates/NoStaffFound";
 import { User } from "@/types/users";
-import { COHORTS, COHORTS_VALUES } from "@/types/cohorts";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
+import { Cohort } from "@/types/cohorts";
 
 const Staff: NextPage = () => {
-  const [searchTextInput, setSearchTextInput] = useState<string>("");
-  const [selectedCohort, setSelectedCohort] = useState<COHORTS>(
-    COHORTS_VALUES[0]
+  /** For query searching with string pattern matching */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [querySearch, setQuerySearch] = useState("");
+  const [searchTextInput, setSearchTextInput] = useState("");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSetQuerySearch = useCallback(
+    debounce((val) => {
+      setQuerySearch(val);
+    }),
+    []
   );
+
+  /** For fetching cohorts and setting default as latest cohort */
+  const [selectedCohortYear, setSelectedCohortYear] = useState<
+    Cohort["academicYear"] | null
+  >(null);
+  const { data: cohorts, status: fetchCohortsStatus } = useFetch<Cohort[]>({
+    endpoint: "/cohorts",
+    onFetch: (cohorts) =>
+      setSelectedCohortYear(cohorts.length ? cohorts[0].academicYear : null),
+  });
+
   const [selectedType, setSelectedType] = useState<string>(STAFF_VALUES[0]);
   const memoQueryParams = useMemo(() => {
     return {
-      cohortYear: selectedCohort,
+      cohortYear: selectedCohortYear,
     };
-  }, [selectedCohort]);
+  }, [selectedCohortYear]);
 
-  const { data: staff, status } = useFetch<User[]>({
+  const { data: staff, status: fetchStaffStatus } = useFetch<User[]>({
     endpoint: `/${selectedType.toLowerCase()}`,
     queryParams: memoQueryParams,
   });
@@ -46,7 +65,13 @@ const Staff: NextPage = () => {
 
   return (
     <>
-      <Body isError={status === FETCH_STATUS.ERROR}>
+      <Body
+        isError={
+          fetchStaffStatus === FETCH_STATUS.ERROR ||
+          fetchCohortsStatus === FETCH_STATUS.ERROR
+        }
+        isLoading={fetchCohortsStatus === FETCH_STATUS.FETCHING}
+      >
         <Stack direction="column" mt={{ md: "0.5rem" }} mb="1rem">
           <Stack
             direction="row"
@@ -60,21 +85,25 @@ const Staff: NextPage = () => {
               value={searchTextInput}
               onChange={(e) => {
                 setSearchTextInput(e.target.value);
+                debouncedSetQuerySearch(e.target.value);
               }}
               size="small"
             />
             <Select
               name="cohort"
               label="Cohort"
-              value={selectedCohort}
-              onChange={(e) => setSelectedCohort(e.target.value as COHORTS)}
+              value={selectedCohortYear}
+              onChange={(e) =>
+                setSelectedCohortYear(e.target.value as Cohort["academicYear"])
+              }
               size="small"
             >
-              {COHORTS_VALUES.map((value) => (
-                <MenuItem key={value} value={value}>
-                  {value}
-                </MenuItem>
-              ))}
+              {cohorts &&
+                cohorts.map(({ academicYear }) => (
+                  <MenuItem key={academicYear} value={academicYear}>
+                    {academicYear}
+                  </MenuItem>
+                ))}
             </Select>
           </Stack>
           <Tabs
@@ -97,7 +126,7 @@ const Staff: NextPage = () => {
           </Tabs>
         </Stack>
         <LoadingWrapper
-          isLoading={status === FETCH_STATUS.FETCHING}
+          isLoading={fetchStaffStatus === FETCH_STATUS.FETCHING}
           loadingText="Loading projects..."
         >
           <NoDataWrapper

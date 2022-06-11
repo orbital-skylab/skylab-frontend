@@ -15,13 +15,15 @@ import {
 // Components
 import Body from "@/components/Body";
 import ProjectCard from "@/components/cards/ProjectCard";
-// Constants
-import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
-import { Cohort } from "@/types/cohorts";
-import useFetch, { FETCH_STATUS } from "@/hooks/useFetch";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import NoProjectFound from "@/components/emptyStates/NoProjectsFound";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
+// Hooks
+import useFetch from "@/hooks/useFetch";
+// Types
+import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
+import { FETCH_STATUS } from "@/hooks/useFetch";
+import { Cohort } from "@/types/cohorts";
 
 const Projects: NextPage = () => {
   const [selectedLevel, setSelectedLevel] = useState<LEVELS_OF_ACHIEVEMENT>(
@@ -100,7 +102,9 @@ const Projects: NextPage = () => {
               name="cohort"
               label="Cohort"
               value={selectedCohortYear}
-              onChange={(e) => setSelectedCohortYear(e.target.value as number)}
+              onChange={(e) =>
+                setSelectedCohortYear(e.target.value as Cohort["academicYear"])
+              }
               size="small"
             >
               {cohorts &&

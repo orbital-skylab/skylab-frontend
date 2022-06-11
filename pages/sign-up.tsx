@@ -7,8 +7,10 @@ import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import Body from "@/components/Body";
 import TextInput from "@/components/FormControllers/TextInput";
 import useAuth from "@/hooks/useAuth";
-import { COHORTS_VALUES } from "@/types/cohorts";
 import { useState } from "react";
+import useFetch, { FETCH_STATUS } from "@/hooks/useFetch";
+// Types
+import { Cohort } from "@/types/cohorts";
 
 interface SignUpFormValuesType {
   name: string;
@@ -21,6 +23,10 @@ interface SignUpFormValuesType {
 const SignUp: NextPage = () => {
   const { signUp } = useAuth();
   const [log, setLog] = useState<string[]>([]);
+  const { data: cohort, status: fetchCohortStatus } = useFetch<Cohort>({
+    endpoint: "/cohorts/latest",
+  });
+  const { academicYear: cohortYear } = cohort ?? { academicYear: 0 };
 
   const initialValues: SignUpFormValuesType = {
     name: "",
@@ -35,7 +41,10 @@ const SignUp: NextPage = () => {
     actions: FormikHelpers<SignUpFormValuesType>
   ) => {
     const { name, email, password, matricNo, nusnetId } = values;
-
+    if (fetchCohortStatus === FETCH_STATUS.FETCHING) {
+      alert("Still fetching latest cohort... Please try again");
+      return;
+    }
     try {
       await signUp({
         name,
@@ -44,7 +53,7 @@ const SignUp: NextPage = () => {
         matricNo,
         nusnetId,
         role: "students",
-        cohortYear: COHORTS_VALUES[0],
+        cohortYear,
       });
       alert("Success");
     } catch (error) {
@@ -63,7 +72,7 @@ const SignUp: NextPage = () => {
           name: `Student ${i}`,
           email: `student${i}@gmail.com`,
           password: "test1234",
-          cohortYear: COHORTS_VALUES[0],
+          cohortYear,
           role: "students",
           matricNo: `A000000${i}X`,
           nusnetId: `e000000${i}`,
@@ -80,7 +89,7 @@ const SignUp: NextPage = () => {
           name: `Adviser ${i}`,
           email: `adviser${i}@gmail.com`,
           password: "test1234",
-          cohortYear: COHORTS_VALUES[0],
+          cohortYear,
           role: "advisers",
         })
       );
@@ -96,7 +105,7 @@ const SignUp: NextPage = () => {
           name: `Mentor ${i}`,
           email: `mentor${i}@gmail.com`,
           password: "test1234",
-          cohortYear: COHORTS_VALUES[0],
+          cohortYear,
           role: "mentors",
         })
       );
