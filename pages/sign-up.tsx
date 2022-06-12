@@ -4,7 +4,7 @@ import type { NextPage } from "next";
 import { Formik, FormikHelpers } from "formik";
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
 // Components
-import Body from "@/components/Body";
+import Body from "@/components/layout/Body";
 import TextInput from "@/components/FormControllers/TextInput";
 import useAuth from "@/hooks/useAuth";
 import { useState } from "react";

@@ -17,7 +17,7 @@ import { useRouter } from "next/router";
 import { PAGES, NAVBAR_ACTIONS, NAVBAR_OPTIONS } from "@/helpers/navigation";
 import { BASE_TRANSITION, NAVBAR_HEIGHT_REM } from "@/styles/constants";
 import useAuth from "@/hooks/useAuth";
-import { LANDING_SIGN_IN_ID } from "../Hero/HeroSignIn";
+import { LANDING_SIGN_IN_ID } from "../../Hero/HeroSignIn";
 
 const Navbar: FC = () => {
   const router = useRouter();

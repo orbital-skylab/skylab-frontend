@@ -13,7 +13,7 @@ import {
   TextField,
 } from "@mui/material";
 // Components
-import Body from "@/components/Body";
+import Body from "@/components/layout/Body";
 import StaffCard from "@/components/cards/StaffCard";
 // Constants
 import { STAFF_VALUES } from "@/types/staff";

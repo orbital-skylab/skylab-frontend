@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import Body from "@/components/Body";
+import Body from "@/components/layout/Body";
 import { Box } from "@mui/system";
 import Hero from "@/components/Hero";
 import About from "@/components/About";

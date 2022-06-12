@@ -1,9 +1,9 @@
 import { FC } from "react";
 import { Box, SxProps } from "@mui/system";
 import { NAVBAR_HEIGHT_REM } from "@/styles/constants";
-import LoadingWrapper from "../wrappers/LoadingWrapper";
+import LoadingWrapper from "../../wrappers/LoadingWrapper";
 import { Container } from "@mui/material";
-import ErrorWrapper from "../wrappers/ErrorWrapper";
+import ErrorWrapper from "../../wrappers/ErrorWrapper";
 
 type Props = {
   flexColCenter?: boolean;

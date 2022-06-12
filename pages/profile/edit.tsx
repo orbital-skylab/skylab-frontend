@@ -1,4 +1,4 @@
-import Body from "@/components/Body";
+import Body from "@/components/layout/Body";
 import TextInput from "@/components/FormControllers/TextInput";
 import SnackbarAlert from "@/components/SnackbarAlert";
 import { SNACKBAR_ALERT_INITIAL } from "@/helpers/forms";

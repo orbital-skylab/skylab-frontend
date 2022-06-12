@@ -1,4 +1,4 @@
-import Body from "@/components/Body";
+import Body from "@/components/layout/Body";
 import TextInput from "@/components/FormControllers/TextInput";
 import { PAGES } from "@/helpers/navigation";
 import useAuth from "@/hooks/useAuth";

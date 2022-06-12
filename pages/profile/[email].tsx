@@ -1,4 +1,4 @@
-import Body from "@/components/Body";
+import Body from "@/components/layout/Body";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import useAuth from "@/hooks/useAuth";
 import useFetch, { FETCH_STATUS } from "@/hooks/useFetch";

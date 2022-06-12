@@ -1,4 +1,4 @@
-import Body from "@/components/Body";
+import Body from "@/components/layout/Body";
 import type { NextPage } from "next";
 
 const Users: NextPage = () => {

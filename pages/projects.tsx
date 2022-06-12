@@ -29,7 +29,7 @@ import NoProjectFound from "@/components/emptyStates/NoProjectsFound";
 // Types
 import { Cohort } from "@/types/cohorts";
 // Components
-import Body from "@/components/Body";
+import Body from "@/components/layout/Body";
 import ProjectCard from "@/components/cards/ProjectCard";
 import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 // Constants
