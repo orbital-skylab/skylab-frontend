@@ -67,3 +67,17 @@ export function parseQueryParams(queryParams: QueryParams | undefined): string {
   // To remove the last '&'
   return parsedQueryParams.slice(0, parsedQueryParams.length - 1);
 }
+
+export function isFetching(...statuses: FETCH_STATUS[]) {
+  return statuses.reduce(
+    (acc, val) => acc || val === FETCH_STATUS.FETCHING,
+    false
+  );
+}
+
+export function isError(...statuses: FETCH_STATUS[]) {
+  return statuses.reduce(
+    (acc, val) => acc || val === FETCH_STATUS.ERROR,
+    false
+  );
+}

@@ -17,7 +17,7 @@ import Body from "@/components/layout/Body";
 import StaffCard from "@/components/cards/StaffCard";
 // Constants
 import { STAFF_VALUES } from "@/types/staff";
-import useFetch, { FETCH_STATUS } from "@/hooks/useFetch";
+import useFetch, { isFetching, isError } from "@/hooks/useFetch";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import NoStaffFound from "@/components/emptyStates/NoStaffFound";
 import { User } from "@/types/users";
@@ -66,11 +66,8 @@ const Staff: NextPage = () => {
   return (
     <>
       <Body
-        isError={
-          fetchStaffStatus === FETCH_STATUS.ERROR ||
-          fetchCohortsStatus === FETCH_STATUS.ERROR
-        }
-        isLoading={fetchCohortsStatus === FETCH_STATUS.FETCHING}
+        isError={isError(fetchStaffStatus, fetchCohortsStatus)}
+        isLoading={isFetching(fetchCohortsStatus)}
       >
         <Stack direction="column" mt={{ md: "0.5rem" }} mb="1rem">
           <Stack
@@ -126,8 +123,8 @@ const Staff: NextPage = () => {
           </Tabs>
         </Stack>
         <LoadingWrapper
-          isLoading={fetchStaffStatus === FETCH_STATUS.FETCHING}
-          loadingText="Loading projects..."
+          isLoading={isFetching(fetchStaffStatus)}
+          loadingText="Loading staff..."
         >
           <NoDataWrapper
             noDataCondition={staff === undefined || staff?.length === 0}

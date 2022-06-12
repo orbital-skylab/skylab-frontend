@@ -23,7 +23,7 @@ import {
 } from "@mui/material";
 // Hooks
 import useInfiniteFetch from "@/hooks/useInfiniteFetch";
-import useFetch, { FETCH_STATUS } from "@/hooks/useFetch";
+import useFetch, { isError, isFetching } from "@/hooks/useFetch";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import NoProjectFound from "@/components/emptyStates/NoProjectsFound";
 // Types
@@ -105,7 +105,7 @@ const Projects: NextPage = () => {
   const observer = useRef<IntersectionObserver | null>(null);
   const fetchMoreProjectsRef = useCallback(
     (node) => {
-      if (fetchProjectStatus === FETCH_STATUS.FETCHING) {
+      if (isFetching(fetchProjectStatus)) {
         return;
       }
       if (observer.current) {
@@ -126,11 +126,8 @@ const Projects: NextPage = () => {
   return (
     <>
       <Body
-        isError={
-          fetchProjectStatus === FETCH_STATUS.ERROR ||
-          fetchCohortsStatus === FETCH_STATUS.ERROR
-        }
-        isLoading={fetchCohortsStatus === FETCH_STATUS.FETCHING}
+        isError={isError(fetchProjectStatus, fetchCohortsStatus)}
+        isLoading={isFetching(fetchCohortsStatus)}
       >
         <Stack direction="column" mt={{ md: "0.5rem" }} mb="1rem">
           <Stack
@@ -184,7 +181,7 @@ const Projects: NextPage = () => {
         <NoDataWrapper
           noDataCondition={
             (projects === undefined || projects?.length === 0) &&
-            fetchProjectStatus !== FETCH_STATUS.FETCHING
+            !isFetching(fetchProjectStatus)
           }
           fallback={<NoProjectFound />}
         >
@@ -200,7 +197,7 @@ const Projects: NextPage = () => {
               : null}
           </Grid>
           <div ref={fetchMoreProjectsRef} />
-          {fetchProjectStatus === FETCH_STATUS.FETCHING ? (
+          {isFetching(fetchProjectStatus) ? (
             <Box
               sx={{
                 display: "grid",
