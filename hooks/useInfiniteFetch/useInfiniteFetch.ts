@@ -1,7 +1,7 @@
 import { ApiServiceBuilder } from "@/helpers/api";
 import { HTTP_METHOD } from "@/types/api";
 import { useEffect, useState } from "react";
-import { FETCH_STATUS, parseQueryParams, QueryParams } from "./useFetch";
+import { FETCH_STATUS, parseQueryParams, QueryParams } from "@/hooks/useFetch";
 
 export default function useInfiniteFetch<T>({
   endpoint,

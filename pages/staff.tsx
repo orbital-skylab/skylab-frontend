@@ -1,4 +1,10 @@
-import { SyntheticEvent, useCallback, useMemo, useState } from "react";
+import {
+  ChangeEvent,
+  SyntheticEvent,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import type { NextPage } from "next";
 // Libraries
 import {
@@ -6,6 +12,7 @@ import {
   Grid,
   MenuItem,
   Select,
+  SelectChangeEvent,
   Stack,
   Tab,
   Tabs,
@@ -15,20 +22,49 @@ import {
 // Components
 import Body from "@/components/layout/Body";
 import StaffCard from "@/components/cards/StaffCard";
-// Constants
-import { STAFF_VALUES } from "@/types/staff";
-import useFetch, { isFetching, isError } from "@/hooks/useFetch";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
-import NoStaffFound from "@/components/emptyStates/NoStaffFound";
-import { User } from "@/types/users";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
+import NoneFound from "@/components/emptyStates/NoneFound";
+// Hooks
+import useFetch, { isFetching, isError } from "@/hooks/useFetch";
+// Types
+import { STAFF_VALUES } from "@/types/staff";
+import { User } from "@/types/users";
 import { Cohort } from "@/types/cohorts";
+import NoneFound from "@/components/emptyStates/NoneFound";
 
 const Staff: NextPage = () => {
-  /** For query searching with string pattern matching */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [selectedCohortYear, setSelectedCohortYear] = useState<
+    Cohort["academicYear"] | null
+  >(null);
   const [querySearch, setQuerySearch] = useState("");
   const [searchTextInput, setSearchTextInput] = useState("");
+  const [selectedType, setSelectedType] = useState<string>(STAFF_VALUES[0]);
+
+  /** Fetching cohorts and setting latest cohort */
+  const { data: cohorts, status: fetchCohortsStatus } = useFetch<Cohort[]>({
+    endpoint: "/cohorts",
+    onFetch: (cohorts) =>
+      setSelectedCohortYear(cohorts.length ? cohorts[0].academicYear : null),
+  });
+
+  /** Fetching staff based on filters */
+  const memoQueryParams = useMemo(() => {
+    return {
+      cohortYear: selectedCohortYear,
+      search: querySearch,
+    };
+  }, [selectedCohortYear, querySearch]);
+  const { data: staff, status: fetchStaffStatus } = useFetch<User[]>({
+    endpoint: `/${selectedType.toLowerCase()}`,
+    queryParams: memoQueryParams,
+  });
+
+  /** Input Change Handlers */
+  const handleTabChange = (event: SyntheticEvent, newType: string) => {
+    setSelectedType(newType);
+  };
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSetQuerySearch = useCallback(
     debounce((val) => {
@@ -37,30 +73,13 @@ const Staff: NextPage = () => {
     []
   );
 
-  /** For fetching cohorts and setting default as latest cohort */
-  const [selectedCohortYear, setSelectedCohortYear] = useState<
-    Cohort["academicYear"] | null
-  >(null);
-  const { data: cohorts, status: fetchCohortsStatus } = useFetch<Cohort[]>({
-    endpoint: "/cohorts",
-    onFetch: (cohorts) =>
-      setSelectedCohortYear(cohorts.length ? cohorts[0].academicYear : null),
-  });
+  const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchTextInput(e.target.value);
+    debouncedSetQuerySearch(e.target.value);
+  };
 
-  const [selectedType, setSelectedType] = useState<string>(STAFF_VALUES[0]);
-  const memoQueryParams = useMemo(() => {
-    return {
-      cohortYear: selectedCohortYear,
-    };
-  }, [selectedCohortYear]);
-
-  const { data: staff, status: fetchStaffStatus } = useFetch<User[]>({
-    endpoint: `/${selectedType.toLowerCase()}`,
-    queryParams: memoQueryParams,
-  });
-
-  const handleTabChange = (event: SyntheticEvent, newType: string) => {
-    setSelectedType(newType);
+  const handleCohortYearChange = (e: SelectChangeEvent<number | null>) => {
+    setSelectedCohortYear(e.target.value as Cohort["academicYear"]);
   };
 
   return (
@@ -69,7 +88,7 @@ const Staff: NextPage = () => {
         isError={isError(fetchStaffStatus, fetchCohortsStatus)}
         isLoading={isFetching(fetchCohortsStatus)}
       >
-        <Stack direction="column" mt={{ md: "0.5rem" }} mb="1rem">
+        <Stack direction="column" mt="0.5rem" mb="1rem">
           <Stack
             direction="row"
             justifyContent="space-between"
@@ -80,19 +99,14 @@ const Staff: NextPage = () => {
             <TextField
               label="Search"
               value={searchTextInput}
-              onChange={(e) => {
-                setSearchTextInput(e.target.value);
-                debouncedSetQuerySearch(e.target.value);
-              }}
+              onChange={handleSearchInputChange}
               size="small"
             />
             <Select
               name="cohort"
               label="Cohort"
               value={selectedCohortYear}
-              onChange={(e) =>
-                setSelectedCohortYear(e.target.value as Cohort["academicYear"])
-              }
+              onChange={handleCohortYearChange}
               size="small"
             >
               {cohorts &&
@@ -128,7 +142,7 @@ const Staff: NextPage = () => {
         >
           <NoDataWrapper
             noDataCondition={staff === undefined || staff?.length === 0}
-            fallback={<NoStaffFound />}
+            fallback={<NoneFound message="No such staff found" />}
           >
             <Grid container spacing={{ xs: 2, md: 4, xl: 8 }} pb={"2rem"}>
               {staff

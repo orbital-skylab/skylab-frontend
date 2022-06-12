@@ -25,7 +25,8 @@ import {
 import useInfiniteFetch from "@/hooks/useInfiniteFetch";
 import useFetch, { isError, isFetching } from "@/hooks/useFetch";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
-import NoProjectFound from "@/components/emptyStates/NoProjectsFound";
+// Helpers
+import { createBottomOfPageRef } from "@/hooks/useInfiniteFetch";
 // Types
 import { Cohort } from "@/types/cohorts";
 // Components
@@ -34,6 +35,7 @@ import ProjectCard from "@/components/cards/ProjectCard";
 import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 // Constants
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
+import NoneFound from "@/components/emptyStates/NoneFound";
 const LIMIT = 16;
 
 const Projects: NextPage = () => {
@@ -103,24 +105,11 @@ const Projects: NextPage = () => {
 
   /** To fetch more projects when the bottom of the page is reached */
   const observer = useRef<IntersectionObserver | null>(null);
-  const fetchMoreProjectsRef = useCallback(
-    (node) => {
-      if (isFetching(fetchProjectStatus)) {
-        return;
-      }
-      if (observer.current) {
-        observer.current.disconnect();
-      }
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          setPage((prevPage) => prevPage + 1);
-        }
-      });
-      if (node) {
-        observer.current.observe(node);
-      }
-    },
-    [fetchProjectStatus, hasMore]
+  const bottomOfPageRef = createBottomOfPageRef(
+    isFetching(fetchProjectStatus),
+    hasMore,
+    setPage,
+    observer
   );
 
   return (
@@ -129,7 +118,7 @@ const Projects: NextPage = () => {
         isError={isError(fetchProjectStatus, fetchCohortsStatus)}
         isLoading={isFetching(fetchCohortsStatus)}
       >
-        <Stack direction="column" mt={{ md: "0.5rem" }} mb="1rem">
+        <Stack direction="column" mt="0.5rem" mb="1rem">
           <Stack
             direction="row"
             justifyContent="space-between"
@@ -168,7 +157,6 @@ const Projects: NextPage = () => {
             scrollButtons="auto"
             allowScrollButtonsMobile
             sx={{
-              maxWidth: { xs: "100%", md: "75%" },
               [`& .${tabsClasses.scrollButtons}`]: { color: "primary" },
               marginY: { xs: 2, md: 0 },
             }}
@@ -183,7 +171,7 @@ const Projects: NextPage = () => {
             (projects === undefined || projects?.length === 0) &&
             !isFetching(fetchProjectStatus)
           }
-          fallback={<NoProjectFound />}
+          fallback={<NoneFound message="No such projects found" />}
         >
           <Grid container spacing={{ xs: 2, md: 4, xl: 8 }}>
             {projects
@@ -196,7 +184,7 @@ const Projects: NextPage = () => {
                 })
               : null}
           </Grid>
-          <div ref={fetchMoreProjectsRef} />
+          <div ref={bottomOfPageRef} />
           {isFetching(fetchProjectStatus) ? (
             <Box
               sx={{

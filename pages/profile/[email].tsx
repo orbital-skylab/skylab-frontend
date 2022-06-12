@@ -17,7 +17,7 @@ import NextLink from "next/link";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { PAGES } from "@/helpers/navigation";
-import NoUserFound from "@/components/emptyStates/NoUserFound";
+import NoneFound from "@/components/emptyStates/NoneFound/NoneFound";
 
 const Profile: NextPage = () => {
   const router = useRouter();
@@ -46,7 +46,12 @@ const Profile: NextPage = () => {
     >
       <NoDataWrapper
         noDataCondition={user === undefined}
-        fallback={<NoUserFound />}
+        fallback={
+          <NoneFound
+            showReturnHome
+            message="There is no such user with that email"
+          />
+        }
       >
         <Stack direction="column" alignItems="center">
           <Avatar
