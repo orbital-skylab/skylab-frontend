@@ -1,47 +1,15 @@
 import { ApiServiceBuilder } from "@/helpers/api";
 import { PAGES } from "@/helpers/navigation";
 import { HTTP_METHOD } from "@/types/api";
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-  signOut,
-  User,
-} from "firebase/auth";
 import { useRouter } from "next/router";
-
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { auth } from "../../firebase";
-
-interface IAuth {
-  user: User | null;
-  signUp: ({
-    name,
-    email,
-    password,
-    matricNo,
-    nusnetId,
-    cohortYear,
-    role,
-  }: {
-    name?: string;
-    email: string;
-    password: string;
-    matricNo?: string;
-    nusnetId?: string;
-    cohortYear: number;
-    role: "students" | "mentors" | "advisers";
-  }) => Promise<void>;
-  signIn: (email: string, password: string) => Promise<void>;
-  logOut: () => Promise<void>;
-  resetPassword: (email: string) => Promise<void>;
-}
+import { createContext, useContext, useMemo, useState } from "react";
+import { IAuth, SimpleUser, User } from "./useAuth.types";
 
 const AuthContext = createContext<IAuth>({
   user: null,
+  loading: false,
   signUp: async () => {
-    /* Placeholder for callback function */
+    return { email: "", password: "" }; /* Placeholder for callback function */
   },
   signIn: async () => {
     /* Placeholder for callback function */
@@ -63,16 +31,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
 
-  useEffect(
-    () =>
-      onAuthStateChanged(auth, (currentUser) => {
-        setUser(currentUser);
-        setLoading(false);
-      }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [auth]
-  );
-
   /**
    * TODO: ONLY FOR TESTING PURPOSES
    */
@@ -92,13 +50,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     role: "students" | "advisers" | "mentors";
     matricNo?: string;
     nusnetId?: string;
-  }): Promise<void> => {
+  }) => {
+    setLoading(true);
     const body: { user: { [key: string]: string | number } } = {
       user: { email, cohortYear },
     };
     if (name) body.user = { ...body.user, name };
     if (matricNo) body.user = { ...body.user, matricNo };
     if (nusnetId) body.user = { ...body.user, nusnetId };
+    if (password) body.user = { ...body.user, password };
+
     /**
      * attempt to create new user in postgres
      */
@@ -111,62 +72,64 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const createUserResponse = await apiService();
 
     /**
-     * terminate sign up if postgres user creation fails and display error message
+     * postgres user creation failed
      */
     if (!createUserResponse.ok) {
       const errorMessage = await createUserResponse.text();
+      setLoading(false);
       throw new Error(errorMessage);
     }
 
     /**
-     * attempt to create new user in firebase
+     * successful user creation returns the users' randomly generated password
      */
-    await createUserWithEmailAndPassword(auth, email, password).catch(
-      async (err) => {
-        /**
-         * delete user in postgres if firebase user creation fails
-         */
-        const apiServiceBuilder = new ApiServiceBuilder({
-          method: HTTP_METHOD.DELETE,
-          endpoint: `/${email}`,
-        });
-        const apiService = apiServiceBuilder.build();
-        const deleteUserResponse = await apiService();
-
-        /**
-         * terminate sign up after deleting user in postgres and display error message
-         */
-        if (!deleteUserResponse.ok) {
-          const errorMessage = await deleteUserResponse.text();
-          throw new Error(errorMessage);
-        } else {
-          throw new Error(
-            err instanceof Error
-              ? err.message
-              : "Something went wrong while signing up"
-          );
-        }
-
-        throw err;
-      }
-    );
+    const createUserResponseJson = await createUserResponse.json();
+    setLoading(false);
+    return createUserResponseJson as SimpleUser;
   };
 
   const signIn = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password);
+    setLoading(true);
+    const apiServiceBuilder = new ApiServiceBuilder({
+      method: HTTP_METHOD.POST,
+      endpoint: `/${email}`,
+      body: { password },
+    });
+    const apiService = apiServiceBuilder.build();
+    const loginResponse = await apiService();
+
+    if (!loginResponse.ok) {
+      const errorMessage = await loginResponse.text();
+      setLoading(false);
+      throw new Error(errorMessage);
+    }
+
+    /**
+     * successful user login returns the users' jwt token
+     */
+    const { user, token } = await loginResponse.json();
+    if (token) {
+      localStorage.setItem("jwt_token", token);
+      setUser(user as User);
+    }
+    setLoading(false);
   };
 
   const logOut = async () => {
-    await signOut(auth);
+    setLoading(true);
+    setUser(null);
+    localStorage.removeItem("jwt_token");
+    setLoading(false);
     router.push(PAGES.LANDING);
   };
 
   const resetPassword = async (email: string) => {
-    await sendPasswordResetEmail(auth, email);
+    console.log(email);
+    // TODO: sendinblue
   };
 
   const memoedValue = useMemo(
-    () => ({ user, signUp, signIn, logOut, resetPassword }),
+    () => ({ user, loading, signUp, signIn, logOut, resetPassword }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [user]
   );
