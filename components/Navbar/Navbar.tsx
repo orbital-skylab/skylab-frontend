@@ -123,6 +123,7 @@ const Navbar: FC = () => {
           <Box
             sx={{
               display: { xs: "none", md: "flex" },
+              gap: "0.5rem",
             }}
           >
             {NAVBAR_OPTIONS.map((option) => (
