@@ -1,4 +1,11 @@
-import { SyntheticEvent, useCallback, useMemo, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  SyntheticEvent,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { NextPage } from "next";
 // Libraries
 import {
@@ -11,6 +18,8 @@ import {
   tabsClasses,
   TextField,
   debounce,
+  SelectChangeEvent,
+  Box,
 } from "@mui/material";
 // Hooks
 import useInfiniteFetch from "@/hooks/useInfiniteFetch";
@@ -25,27 +34,54 @@ import ProjectCard from "@/components/cards/ProjectCard";
 import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 // Constants
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
-// const LIMIT = 16; // TODO
+const LIMIT = 16;
 
 const Projects: NextPage = () => {
   const [selectedLevel, setSelectedLevel] = useState<LEVELS_OF_ACHIEVEMENT>(
     LEVELS_OF_ACHIEVEMENT.ARTEMIS
   );
-
-  /** For fetching cohorts and setting default as latest cohort */
+  const [page, setPage] = useState(0);
+  const [searchTextInput, setSearchTextInput] = useState(""); // The input value
+  const [querySearch, setQuerySearch] = useState(""); // The debounced input value for searching
   const [selectedCohortYear, setSelectedCohortYear] = useState<
     Cohort["academicYear"] | null
   >(null);
+
+  /** For fetching cohorts and setting default as latest cohort */
   const { data: cohorts, status: fetchCohortsStatus } = useFetch<Cohort[]>({
     endpoint: "/cohorts",
     onFetch: (cohorts) =>
       setSelectedCohortYear(cohorts.length ? cohorts[0].academicYear : null),
   });
 
-  /** For query searching with string pattern matching */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [querySearch, setQuerySearch] = useState("");
-  const [searchTextInput, setSearchTextInput] = useState("");
+  /** For fetching projects based on filters */
+  const memoQueryParams = useMemo(() => {
+    return {
+      cohortYear: selectedCohortYear,
+      achievement: selectedLevel,
+      search: querySearch,
+      limit: LIMIT,
+    };
+  }, [selectedCohortYear, selectedLevel, querySearch]);
+  const {
+    data: projects,
+    status: fetchProjectStatus,
+    hasMore,
+  } = useInfiniteFetch<Project>({
+    endpoint: `/projects`,
+    queryParams: memoQueryParams,
+    page,
+  });
+
+  /** Input Change Handlers */
+  const handleTabChange = (
+    event: SyntheticEvent,
+    newLevel: LEVELS_OF_ACHIEVEMENT
+  ) => {
+    setSelectedLevel(newLevel);
+    setPage(0);
+  };
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSetQuerySearch = useCallback(
     debounce((val) => {
@@ -54,35 +90,18 @@ const Projects: NextPage = () => {
     []
   );
 
-  /* For infinite scroll */
-  const [page, setPage] = useState(0);
-
-  /** For fetching projects based on filters */
-  const memoQueryParams = useMemo(() => {
-    return {
-      cohortYear: selectedCohortYear,
-      achievement: selectedLevel,
-      search: querySearch,
-      page,
-      // limit: LIMIT, // TODO
-    };
-  }, [selectedCohortYear, selectedLevel, querySearch, page]);
-  const {
-    data: projects,
-    status: fetchProjectStatus,
-    hasMore,
-  } = useInfiniteFetch<Project>({
-    endpoint: `/projects`,
-    queryParams: memoQueryParams,
-  });
-
-  const handleTabChange = (
-    event: SyntheticEvent,
-    newLevel: LEVELS_OF_ACHIEVEMENT
-  ) => {
-    setSelectedLevel(newLevel);
+  const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchTextInput(e.target.value);
+    debouncedSetQuerySearch(e.target.value);
+    setPage(0);
   };
 
+  const handleCohortYearChange = (e: SelectChangeEvent<number | null>) => {
+    setSelectedCohortYear(e.target.value as Cohort["academicYear"]);
+    setPage(0);
+  };
+
+  /** To fetch more projects when the bottom of the page is reached */
   const observer = useRef<IntersectionObserver | null>(null);
   const fetchMoreProjectsRef = useCallback(
     (node) => {
@@ -103,6 +122,7 @@ const Projects: NextPage = () => {
     },
     [fetchProjectStatus, hasMore]
   );
+
   return (
     <>
       <Body
@@ -123,19 +143,14 @@ const Projects: NextPage = () => {
             <TextField
               label="Search"
               value={searchTextInput}
-              onChange={(e) => {
-                setSearchTextInput(e.target.value);
-                debouncedSetQuerySearch(e.target.value);
-              }}
+              onChange={handleSearchInputChange}
               size="small"
             />
             <Select
               name="cohort"
               label="Cohort"
               value={selectedCohortYear}
-              onChange={(e) =>
-                setSelectedCohortYear(e.target.value as Cohort["academicYear"])
-              }
+              onChange={handleCohortYearChange}
               size="small"
             >
               {cohorts &&
@@ -167,7 +182,10 @@ const Projects: NextPage = () => {
           </Tabs>
         </Stack>
         <NoDataWrapper
-          noDataCondition={projects === undefined || projects?.length === 0}
+          noDataCondition={
+            (projects === undefined || projects?.length === 0) &&
+            fetchProjectStatus !== FETCH_STATUS.FETCHING
+          }
           fallback={<NoProjectFound />}
         >
           <Grid container spacing={{ xs: 2, md: 4, xl: 8 }}>
@@ -183,7 +201,15 @@ const Projects: NextPage = () => {
           </Grid>
           <div ref={fetchMoreProjectsRef} />
           {fetchProjectStatus === FETCH_STATUS.FETCHING ? (
-            <LoadingSpinner />
+            <Box
+              sx={{
+                display: "grid",
+                placeItems: "center",
+                marginY: projects.length === 0 ? "15vh" : 0,
+              }}
+            >
+              <LoadingSpinner />
+            </Box>
           ) : null}
         </NoDataWrapper>
       </Body>

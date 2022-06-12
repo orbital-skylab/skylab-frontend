@@ -6,10 +6,12 @@ import { FETCH_STATUS, parseQueryParams, QueryParams } from "./useFetch";
 export default function useInfiniteFetch<T>({
   endpoint,
   queryParams,
+  page,
   requiresAuthorization = false,
 }: {
   endpoint: string;
   queryParams: QueryParams;
+  page: number;
   requiresAuthorization?: boolean;
 }) {
   const token = "placeholderToken"; // TODO: Retrieve from useAuth
@@ -30,7 +32,7 @@ export default function useInfiniteFetch<T>({
       try {
         /* Building API service. */
         const endpointWithQueryParams =
-          endpoint + parseQueryParams(queryParams);
+          endpoint + parseQueryParams({ ...queryParams, page });
 
         const apiServiceBuilder = new ApiServiceBuilder({
           method: HTTP_METHOD.GET,
@@ -52,7 +54,7 @@ export default function useInfiniteFetch<T>({
       }
     };
     fetchData();
-  }, [endpoint, requiresAuthorization, queryParams]);
+  }, [endpoint, requiresAuthorization, queryParams, page]);
 
   return { status, error, data, hasMore };
 }
