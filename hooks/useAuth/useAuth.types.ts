@@ -5,7 +5,6 @@ export type SimpleUser = {
 
 export type User = {
   email: string;
-  password: string;
   name?: string;
   profilePicUrl?: string;
   githubUrl?: string;

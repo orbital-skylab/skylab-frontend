@@ -2,7 +2,7 @@ import { ApiServiceBuilder } from "@/helpers/api";
 import { PAGES } from "@/helpers/navigation";
 import { HTTP_METHOD } from "@/types/api";
 import { useRouter } from "next/router";
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { IAuth, SimpleUser, User } from "./useAuth.types";
 
 const AuthContext = createContext<IAuth>({
@@ -30,6 +30,30 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
+
+  useEffect(() => {
+    const checkUserAuthorization = async (email: string) => {
+      const token = localStorage.getItem("jwt_token");
+      if (!token) return setUser(null);
+
+      const apiServiceBuilder = new ApiServiceBuilder({
+        method: HTTP_METHOD.GET,
+        endpoint: `/users/${email}`,
+        token,
+      });
+      const apiService = apiServiceBuilder.build();
+
+      const response = await apiService();
+      if (!response.ok) setUser(null);
+
+      const user = await response.json();
+      setUser(user as User);
+    };
+
+    if (user) {
+      checkUserAuthorization(user.email);
+    }
+  }, [user]);
 
   /**
    * TODO: ONLY FOR TESTING PURPOSES
@@ -98,6 +122,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const apiService = apiServiceBuilder.build();
     const loginResponse = await apiService();
 
+    /**
+     * Unsuccessful user login
+     */
     if (!loginResponse.ok) {
       const errorMessage = await loginResponse.text();
       setLoading(false);
@@ -105,13 +132,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
 
     /**
-     * successful user login returns the users' jwt token
+     * successful user login
      */
-    const { user, token } = await loginResponse.json();
-    if (token) {
-      localStorage.setItem("jwt_token", token);
-      setUser(user as User);
-    }
+    const user = await loginResponse.json();
+    setUser(user as User);
     setLoading(false);
   };
 
