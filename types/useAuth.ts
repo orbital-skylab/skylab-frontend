@@ -1,20 +1,9 @@
-export type SimpleUser = {
+export interface User {
   email: string;
-  password: string;
-};
-
-export type User = {
-  email: string;
-  name?: string;
-  profilePicUrl?: string;
-  githubUrl?: string;
-  linkedinUrl?: string;
-  personalSiteUrl?: string;
-  selfIntro?: string;
-};
+}
 
 export interface IAuth {
-  user: User | null;
+  user: User;
   loading: boolean;
   signUp: ({
     name,
@@ -32,7 +21,7 @@ export interface IAuth {
     nusnetId?: string;
     cohortYear: number;
     role: "students" | "mentors" | "advisers";
-  }) => Promise<SimpleUser>;
+  }) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   logOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
