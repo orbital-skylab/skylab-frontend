@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import type { NextPage } from "next";
 // Libraries
 import { MenuItem, Select, SelectChangeEvent, Stack } from "@mui/material";
@@ -8,13 +8,13 @@ import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import NoneFound from "@/components/emptyStates/NoneFound";
 // Hooks
-import useFetch, { isFetching, isError } from "@/hooks/useFetch";
+import useFetch, { isFetching, isError, FETCH_STATUS } from "@/hooks/useFetch";
 // Types
 import { Cohort } from "@/types/cohorts";
-import { Milestone } from "@/types/milestones";
-import MilestoneCard from "@/components/cards/MilestoneCard";
+import { Deadline } from "@/types/deadlines";
+import DeadlineCard from "@/components/cards/DeadlineCard";
 
-const Milestones: NextPage = () => {
+const Deadlines: NextPage = () => {
   const [selectedCohortYear, setSelectedCohortYear] = useState<
     Cohort["academicYear"] | null
   >(null);
@@ -27,17 +27,19 @@ const Milestones: NextPage = () => {
   });
 
   /** Fetching staff based on filters */
-  const memoQueryParams = useMemo(() => {
-    return {
-      cohortYear: selectedCohortYear,
-    };
-  }, [selectedCohortYear]);
-  const { data: milestones, status: fetchMilestonesStatus } = useFetch<
-    Milestone[]
-  >({
-    endpoint: `/milestones`,
-    queryParams: memoQueryParams,
-  });
+  // const memoQueryParams = useMemo(() => {
+  //   return {
+  //     cohortYear: selectedCohortYear,
+  //   };
+  // }, [selectedCohortYear]);
+  // const { data: deadlines, status: fetchDeadlinesStatus } = useFetch<
+  //   Deadline[]
+  // >({
+  //   endpoint: `/deadlines`,
+  //   queryParams: memoQueryParams,
+  // });
+  const deadlines: Deadline[] = [];
+  const fetchDeadlinesStatus = FETCH_STATUS.FETCHED;
 
   /** Input Change Handlers */
   const handleCohortYearChange = (e: SelectChangeEvent<number | null>) => {
@@ -47,7 +49,7 @@ const Milestones: NextPage = () => {
   return (
     <>
       <Body
-        isError={isError(fetchMilestonesStatus, fetchCohortsStatus)}
+        isError={isError(fetchDeadlinesStatus, fetchCohortsStatus)}
         isLoading={isFetching(fetchCohortsStatus)}
       >
         <Stack
@@ -73,22 +75,20 @@ const Milestones: NextPage = () => {
           </Select>
         </Stack>
         <LoadingWrapper
-          isLoading={isFetching(fetchMilestonesStatus)}
-          loadingText="Loading milestones..."
+          isLoading={isFetching(fetchDeadlinesStatus)}
+          loadingText="Loading deadlines..."
         >
           <NoDataWrapper
-            noDataCondition={
-              milestones === undefined || milestones?.length === 0
-            }
-            fallback={<NoneFound message="No milestones found" />}
+            noDataCondition={deadlines === undefined || deadlines?.length === 0}
+            fallback={<NoneFound message="No deadlines found" />}
           >
             <Stack spacing="0.5rem">
-              {milestones
-                ? milestones.map((milestone) => {
+              {deadlines
+                ? deadlines.map((deadline) => {
                     return (
-                      <MilestoneCard
-                        milestone={milestone}
-                        key={milestone.name + milestone.cohort.academicYear}
+                      <DeadlineCard
+                        deadline={deadline}
+                        key={deadline.name + deadline.cohortYear}
                       />
                     );
                   })
@@ -101,4 +101,4 @@ const Milestones: NextPage = () => {
   );
 };
 
-export default Milestones;
+export default Deadlines;
