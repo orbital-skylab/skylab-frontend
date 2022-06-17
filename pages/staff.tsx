@@ -31,7 +31,6 @@ import useFetch, { isFetching, isError } from "@/hooks/useFetch";
 import { STAFF_VALUES } from "@/types/staff";
 import { User } from "@/types/users";
 import { Cohort } from "@/types/cohorts";
-import NoneFound from "@/components/emptyStates/NoneFound";
 
 const Staff: NextPage = () => {
   const [selectedCohortYear, setSelectedCohortYear] = useState<
