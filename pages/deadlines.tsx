@@ -1,18 +1,24 @@
 import { useState } from "react";
 import type { NextPage } from "next";
 // Libraries
-import { MenuItem, Select, SelectChangeEvent, Stack } from "@mui/material";
+import {
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Stack,
+  Typography,
+} from "@mui/material";
 // Components
 import Body from "@/components/layout/Body";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import NoneFound from "@/components/emptyStates/NoneFound";
+import DeadlineTable from "@/components/tables/DeadlineTable";
 // Hooks
 import useFetch, { isFetching, isError, FETCH_STATUS } from "@/hooks/useFetch";
 // Types
 import { Cohort } from "@/types/cohorts";
 import { Deadline } from "@/types/deadlines";
-import DeadlineCard from "@/components/cards/DeadlineCard";
 
 const Deadlines: NextPage = () => {
   const [selectedCohortYear, setSelectedCohortYear] = useState<
@@ -38,7 +44,14 @@ const Deadlines: NextPage = () => {
   //   endpoint: `/deadlines`,
   //   queryParams: memoQueryParams,
   // });
-  const deadlines: Deadline[] = [];
+  const deadlines: Deadline[] = [
+    {
+      name: "Milestone 1",
+      cohortYear: 2022,
+      createdOn: "2022-06-10T04:34:58.839Z",
+      dueBy: "2022-06-27T04:34:58.839Z",
+    },
+  ];
   const fetchDeadlinesStatus = FETCH_STATUS.FETCHED;
 
   /** Input Change Handlers */
@@ -82,18 +95,16 @@ const Deadlines: NextPage = () => {
             noDataCondition={deadlines === undefined || deadlines?.length === 0}
             fallback={<NoneFound message="No deadlines found" />}
           >
-            <Stack spacing="0.5rem">
-              {deadlines
-                ? deadlines.map((deadline) => {
-                    return (
-                      <DeadlineCard
-                        deadline={deadline}
-                        key={deadline.name + deadline.cohortYear}
-                      />
-                    );
-                  })
-                : null}
-            </Stack>
+            <Typography
+              variant="h3"
+              sx={{
+                textAlign: { xs: "center", md: "left" },
+                marginBottom: "1rem",
+              }}
+            >
+              Deadlines
+            </Typography>
+            <DeadlineTable deadlines={deadlines as Deadline[]} />
           </NoDataWrapper>
         </LoadingWrapper>
       </Body>

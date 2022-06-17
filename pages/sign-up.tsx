@@ -5,7 +5,7 @@ import { Formik, FormikHelpers } from "formik";
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
 // Components
 import Body from "@/components/layout/Body";
-import TextInput from "@/components/FormControllers/TextInput";
+import TextInput from "@/components/formControllers/TextInput";
 import useAuth from "@/hooks/useAuth";
 import { useState } from "react";
 import useFetch, { FETCH_STATUS } from "@/hooks/useFetch";

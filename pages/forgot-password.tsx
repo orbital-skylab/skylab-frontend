@@ -1,5 +1,5 @@
 import Body from "@/components/layout/Body";
-import TextInput from "@/components/FormControllers/TextInput";
+import TextInput from "@/components/formControllers/TextInput";
 import { PAGES } from "@/helpers/navigation";
 import useAuth from "@/hooks/useAuth";
 import {
