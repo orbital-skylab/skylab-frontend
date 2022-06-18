@@ -1,7 +1,10 @@
-import { Cohort } from "./cohorts";
-import { Project } from "./projects";
+import { AdministratorMetadata } from "./administrators";
+import { AdviserMetadata } from "./advisers";
+import { FacilitatorMetadata } from "./facilitators";
+import { MentorMetadata } from "./mentors";
+import { StudentMetadata } from "./students";
 
-export interface User {
+export type UserMetadata = {
   id: number;
   name: string;
   email: string;
@@ -10,41 +13,21 @@ export interface User {
   linkedinUrl?: string;
   personalSiteUrl?: string;
   selfIntro?: string;
-  student?: Student;
-  adviser?: Adviser;
-  mentor?: Mentor;
-  administrator?: Administator;
-  facilitator?: Facilitator;
-}
+};
 
-export interface Student {
-  id: number;
-  cohortYear: Cohort["academicYear"];
-  projectId: Project["id"];
-  nusnetId: string;
-  matricNo: string;
-}
+export type User = UserMetadata & RoleMetadata;
 
-export interface Adviser {
-  id: number;
-  cohortYear: Cohort["academicYear"];
-  projectIds: Project["id"][];
-  nusnetId: string;
-  matricNo: string;
-}
+type RoleMetadata = {
+  student?: StudentRole;
+  adviser?: AdviserRole;
+  mentor?: MentorRole;
+  administrator?: AdministatorRole;
+  facilitator?: FacilitatorRole;
+};
 
-export interface Mentor {
-  id: number;
-  cohortYear: Cohort["academicYear"];
-  projectIds: Project["id"][];
-}
-
-export interface Administator {
-  id: number;
-  startDate: string;
-  endDate: string;
-}
-export interface Facilitator {
-  id: number;
-  cohortYear: Cohort["academicYear"];
-}
+type WithRoleSpecificId<T> = T & { id: number };
+type StudentRole = WithRoleSpecificId<StudentMetadata>;
+type AdviserRole = WithRoleSpecificId<AdviserMetadata>;
+type MentorRole = WithRoleSpecificId<MentorMetadata>;
+type AdministatorRole = WithRoleSpecificId<AdministratorMetadata>;
+type FacilitatorRole = WithRoleSpecificId<FacilitatorMetadata>;

@@ -1,6 +1,6 @@
 import { Option } from "./deadlines";
 
-type SubmissionMetaData = {
+type SubmissionMetadata = {
   submitter: number;
   evaluatee?: number;
 };
@@ -11,6 +11,6 @@ type Answer = {
 };
 
 export type Submission = {
-  submission: SubmissionMetaData;
+  submission: SubmissionMetadata;
   answers: Answer[];
 };

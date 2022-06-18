@@ -1,5 +1,7 @@
+import { Adviser } from "./advisers";
 import { Cohort } from "./cohorts";
-import { Adviser, Mentor, Student } from "./users";
+import { Mentor } from "./mentors";
+import { Student } from "./students";
 
 export enum LEVELS_OF_ACHIEVEMENT {
   ARTEMIS = "Artemis",
@@ -13,10 +15,8 @@ export type Project = {
   name: string;
   posterUrl: string;
   students: Student[];
-  adviser?: Adviser;
-  adviserId?: number;
+  adviser: Adviser;
   mentor?: Mentor;
-  mentorId?: number;
   achievement: LEVELS_OF_ACHIEVEMENT;
   cohortYear: Cohort["academicYear"];
 };
