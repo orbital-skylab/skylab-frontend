@@ -24,16 +24,15 @@ const DeadlineTable: FC<Props> = ({ deadlines }) => {
         <TableHead>
           <TableRow>
             {ColumnHeadings.map((heading) => (
-              <TableCell key={heading}>{heading}</TableCell>
+              <TableCell key={heading} width="33.33%">
+                {heading}
+              </TableCell>
             ))}
           </TableRow>
         </TableHead>
         <TableBody>
           {deadlines.map((deadline) => (
-            <DeadlineRow
-              key={deadline.name + deadline.cohortYear}
-              deadline={deadline}
-            />
+            <DeadlineRow key={deadline.id} deadline={deadline} />
           ))}
         </TableBody>
       </Table>

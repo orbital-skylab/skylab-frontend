@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 // Components
-import { Button, TableCell, TableRow } from "@mui/material";
+import { Button, Stack, TableCell, TableRow } from "@mui/material";
 // Helpers
 import {
   formatDateForDateTimeLocalInput,
@@ -10,6 +10,8 @@ import {
 import { Deadline } from "@/types/deadlines";
 import { Formik, FormikHelpers } from "formik";
 import TextInput from "@/components/formControllers/TextInput";
+import Link from "next/link";
+import { PAGES } from "@/helpers/navigation";
 
 interface EditDeadlineFormValuesType {
   name: string;
@@ -56,25 +58,27 @@ const DeadlineRow: FC<Props> = ({ deadline }) => {
               />
             </TableCell>
             <TableCell>
-              <Button
-                size="small"
-                variant="contained"
-                color="error"
-                onClick={() => {
-                  toggleEditMode();
-                  formik.resetForm();
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                size="small"
-                variant="contained"
-                color="success"
-                onClick={formik.submitForm}
-              >
-                Save
-              </Button>
+              <Stack direction="row" spacing="0.5rem">
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="error"
+                  onClick={() => {
+                    toggleEditMode();
+                    formik.resetForm();
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="success"
+                  onClick={formik.submitForm}
+                >
+                  Save
+                </Button>
+              </Stack>
             </TableCell>
           </TableRow>
         )}
@@ -87,17 +91,25 @@ const DeadlineRow: FC<Props> = ({ deadline }) => {
       <TableCell>{deadline.name}</TableCell>
       <TableCell>{formatFullDateWithTime(deadline.dueBy)}</TableCell>
       <TableCell>
-        <Button
-          size="small"
-          variant="contained"
-          color="warning"
-          onClick={toggleEditMode}
-        >
-          Edit
-        </Button>
-        <Button size="small" variant="contained" color="error">
-          Delete
-        </Button>
+        <Stack direction="row" spacing="0.5rem">
+          <Link href={`${PAGES.DEADLINES}/${deadline.id}`} passHref>
+            <Button size="small" variant="contained" color="info">
+              View Questions
+            </Button>
+          </Link>
+
+          <Button
+            size="small"
+            variant="contained"
+            color="warning"
+            onClick={toggleEditMode}
+          >
+            Edit
+          </Button>
+          <Button size="small" variant="contained" color="error">
+            Delete
+          </Button>
+        </Stack>
       </TableCell>
     </TableRow>
   );

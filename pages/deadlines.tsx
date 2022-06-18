@@ -18,7 +18,7 @@ import DeadlineTable from "@/components/tables/DeadlineTable";
 import useFetch, { isFetching, isError, FETCH_STATUS } from "@/hooks/useFetch";
 // Types
 import { Cohort } from "@/types/cohorts";
-import { Deadline } from "@/types/deadlines";
+import { Deadline, DEADLINE_TYPE } from "@/types/deadlines";
 
 const Deadlines: NextPage = () => {
   const [selectedCohortYear, setSelectedCohortYear] = useState<
@@ -46,10 +46,18 @@ const Deadlines: NextPage = () => {
   // });
   const deadlines: Deadline[] = [
     {
+      id: 1,
       name: "Milestone 1",
       cohortYear: 2022,
-      createdOn: "2022-06-10T04:34:58.839Z",
-      dueBy: "2022-06-27T04:34:58.839Z",
+      dueBy: "2022-06-27T15:59:00.000Z",
+      type: DEADLINE_TYPE.MILESTONE,
+    },
+    {
+      id: 2,
+      name: "Milestone 2",
+      cohortYear: 2022,
+      dueBy: "2022-07-27T15:59:00.000Z",
+      type: DEADLINE_TYPE.MILESTONE,
     },
   ];
   const fetchDeadlinesStatus = FETCH_STATUS.FETCHED;
