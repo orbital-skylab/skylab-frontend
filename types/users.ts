@@ -1,6 +1,10 @@
-import { Cohort } from "./cohorts";
+import { AdministratorMetadata } from "./administrators";
+import { AdviserMetadata } from "./advisers";
+import { FacilitatorMetadata } from "./facilitators";
+import { MentorMetadata } from "./mentors";
+import { StudentMetadata } from "./students";
 
-export interface User {
+export type UserMetadata = {
   id: number;
   name: string;
   email: string;
@@ -9,26 +13,21 @@ export interface User {
   linkedinUrl?: string;
   personalSiteUrl?: string;
   selfIntro?: string;
-  cohortYear: Cohort["academicYear"];
-}
+};
 
-export interface Student extends User {
-  teamId: number;
-  nusnetId: string;
-  matricNo: string;
-}
+export type User = UserMetadata & RoleMetadata;
 
-export interface Adviser extends User {
-  placeholder?: string;
-}
+type RoleMetadata = {
+  student?: StudentRole;
+  adviser?: AdviserRole;
+  mentor?: MentorRole;
+  administrator?: AdministatorRole;
+  facilitator?: FacilitatorRole;
+};
 
-export interface Mentor extends User {
-  placeholder?: string;
-}
-
-export interface Administator extends User {
-  placeholder?: string;
-}
-export interface Facilitator extends User {
-  placeholder?: string;
-}
+type WithRoleSpecificId<T> = T & { id: number };
+type StudentRole = WithRoleSpecificId<StudentMetadata>;
+type AdviserRole = WithRoleSpecificId<AdviserMetadata>;
+type MentorRole = WithRoleSpecificId<MentorMetadata>;
+type AdministatorRole = WithRoleSpecificId<AdministratorMetadata>;
+type FacilitatorRole = WithRoleSpecificId<FacilitatorMetadata>;
