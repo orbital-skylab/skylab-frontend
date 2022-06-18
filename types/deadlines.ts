@@ -1,10 +1,10 @@
 import { Cohort } from "./cohorts";
 
-export enum DeadlineType {
-  Milestone = "Milestone",
-  Evaluation = "Evaluation",
-  Survey = "Survey",
-  Other = "Other",
+export enum DEADLINE_TYPE {
+  MILESTONE = "Milestone",
+  EVALUATION = "Evaluation",
+  SURVEY = "Survey",
+  OTHER = "Other",
 }
 
 export type Deadline = {
@@ -12,18 +12,18 @@ export type Deadline = {
   cohortYear: Cohort["academicYear"];
   name: string;
   dueBy: string;
-  type: DeadlineType;
+  type: DEADLINE_TYPE;
 };
 
-export enum QuestionType {
-  ShortAnswer = "ShortAnswer",
-  Paragraph = "Paragraph",
-  MultipleChoice = "MultipleChoice",
-  Checkboxes = "Checkboxes",
-  Dropdown = "Dropdown",
-  Url = "Url",
-  Date = "Date",
-  Time = "Time",
+export enum QUESTION_TYPE {
+  SHORT_ANSWER = "ShortAnswer",
+  PARAGRAPH = "Paragraph",
+  MULTIPLE_CHOICE = "MultipleChoice",
+  CHECKBOXES = "Checkboxes",
+  DROPDOWN = "Dropdown",
+  URL = "Url",
+  DATE = "Date",
+  TIME = "Time",
 }
 
 export type Question = {
@@ -32,7 +32,7 @@ export type Question = {
   questionNumber: number;
   question: string;
   desc: string;
-  type: QuestionType;
+  type: QUESTION_TYPE;
   options?: Option[];
 };
 
