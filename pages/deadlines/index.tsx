@@ -2,11 +2,11 @@ import { useState } from "react";
 import type { NextPage } from "next";
 // Libraries
 import {
+  Button,
   MenuItem,
   Select,
   SelectChangeEvent,
   Stack,
-  Typography,
 } from "@mui/material";
 // Components
 import Body from "@/components/layout/Body";
@@ -19,8 +19,12 @@ import useFetch, { isFetching, isError, FETCH_STATUS } from "@/hooks/useFetch";
 // Types
 import { Cohort } from "@/types/cohorts";
 import { Deadline, DEADLINE_TYPE } from "@/types/deadlines";
+import { Add } from "@mui/icons-material";
+import AddDeadlineModal from "@/components/modals/AddDeadlineModal";
 
 const Deadlines: NextPage = () => {
+  const [isAddDeadlineOpen, setIsAddDeadlineOpen] = useState(false);
+
   const [selectedCohortYear, setSelectedCohortYear] = useState<
     Cohort["academicYear"] | null
   >(null);
@@ -38,12 +42,13 @@ const Deadlines: NextPage = () => {
   //     cohortYear: selectedCohortYear,
   //   };
   // }, [selectedCohortYear]);
-  // const { data: deadlines, status: fetchDeadlinesStatus } = useFetch<
-  //   Deadline[]
-  // >({
+  // const { data: response, status: fetchDeadlinesStatus } = useFetch<{
+  //   deadlines: Deadline[];
+  // }>({
   //   endpoint: `/deadlines`,
   //   queryParams: memoQueryParams,
   // });
+
   const deadlines: Deadline[] = [
     {
       id: 1,
@@ -67,19 +72,37 @@ const Deadlines: NextPage = () => {
     setSelectedCohortYear(e.target.value as Cohort["academicYear"]);
   };
 
+  const handleOpenAddMilestoneModal = () => {
+    setIsAddDeadlineOpen(true);
+  };
+
+  // const deadlines: Deadline[] = response ? response.deadlines : [];
+
   return (
     <>
+      <AddDeadlineModal
+        open={isAddDeadlineOpen}
+        setOpen={setIsAddDeadlineOpen}
+      />
       <Body
         isError={isError(fetchDeadlinesStatus, fetchCohortsStatus)}
         isLoading={isFetching(fetchCohortsStatus)}
       >
         <Stack
           direction="row"
-          justifyContent="end"
+          justifyContent="space-between"
           width="100%"
           mt="0.5rem"
           mb="1rem"
         >
+          <Button
+            variant="contained"
+            size="small"
+            onClick={handleOpenAddMilestoneModal}
+          >
+            <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
+            Deadline
+          </Button>
           <Select
             name="cohort"
             label="Cohort"
@@ -103,15 +126,6 @@ const Deadlines: NextPage = () => {
             noDataCondition={deadlines === undefined || deadlines?.length === 0}
             fallback={<NoneFound message="No deadlines found" />}
           >
-            <Typography
-              variant="h3"
-              sx={{
-                textAlign: { xs: "center", md: "left" },
-                marginBottom: "1rem",
-              }}
-            >
-              Deadlines
-            </Typography>
             <DeadlineTable deadlines={deadlines as Deadline[]} />
           </NoDataWrapper>
         </LoadingWrapper>

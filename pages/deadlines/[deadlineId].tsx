@@ -1,6 +1,7 @@
+import Body from "@/components/layout/Body";
 import type { NextPage } from "next";
 
 const DeadlineQuestions: NextPage = () => {
-  return <></>;
+  return <Body></Body>;
 };
 export default DeadlineQuestions;
