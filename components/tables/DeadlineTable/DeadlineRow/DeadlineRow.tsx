@@ -13,7 +13,7 @@ import { GetDeadlinesResponse } from "@/pages/deadlines";
 
 type Props = { deadline: Deadline; mutate: Mutate<GetDeadlinesResponse> };
 
-const DeadlineRow: FC<Props> = ({ deadline }) => {
+const DeadlineRow: FC<Props> = ({ deadline, mutate }) => {
   const [isEditDeadlineOpen, setIsEditDeadlineOpen] = useState(false);
 
   const handleOpenModal = () => {
