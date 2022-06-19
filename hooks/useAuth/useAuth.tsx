@@ -1,15 +1,23 @@
 import { ApiServiceBuilder } from "@/helpers/api";
 import { PAGES } from "@/helpers/navigation";
 import { HTTP_METHOD } from "@/types/api";
-import { IAuth, User } from "@/types/useAuth";
+import { IAuth } from "@/types/auth";
+import { User } from "@/types/users";
 import { useRouter } from "next/router";
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-const defaultUser: User = { email: "" };
+const defaultCohortYear = 2022;
+const defaultUser: User = {
+  id: 0,
+  name: "",
+  email: "",
+  cohortYear: defaultCohortYear,
+};
 
 const AuthContext = createContext<IAuth>({
   user: defaultUser,
   loading: false,
+  currentCohortYear: defaultCohortYear,
   signUp: async () => {
     /* Placeholder for callback function */
   },
@@ -31,7 +39,47 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User>(defaultUser);
   const [loading, setLoading] = useState<boolean>(true);
+  const [currentCohortYear, setCurrentCohortYear] =
+    useState<number>(defaultCohortYear);
   const router = useRouter();
+
+  useEffect(() => {
+    const getUserInfo = async (id: number) => {
+      const apiServiceBuilder = new ApiServiceBuilder({
+        method: HTTP_METHOD.GET,
+        endpoint: `/auth/${id}/info`,
+      });
+      const apiService = apiServiceBuilder.build();
+      const userInfoResponse = await apiService();
+
+      if (userInfoResponse.ok) {
+        const userInfo = await userInfoResponse.json();
+        setUser(userInfo as User);
+      }
+    };
+
+    if (user) {
+      getUserInfo(user.id);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    const getCurrentCohortYear = async () => {
+      const apiServiceBuilder = new ApiServiceBuilder({
+        method: HTTP_METHOD.GET,
+        endpoint: "/cohorts/latest",
+      });
+      const apiService = apiServiceBuilder.build();
+      const latestCohortYearResponse = await apiService();
+
+      if (latestCohortYearResponse.ok) {
+        const { latestCohortYear } = await latestCohortYearResponse.json();
+        setCurrentCohortYear(Number(latestCohortYear));
+      }
+    };
+
+    getCurrentCohortYear();
+  }, []);
 
   /**
    * TODO: ONLY FOR TESTING PURPOSES
@@ -39,7 +87,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const signUp = async ({
     name,
     email,
-    password,
     cohortYear,
     role,
     matricNo,
@@ -49,25 +96,58 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     email: string;
     password: string;
     cohortYear: number;
-    role: "students" | "advisers" | "mentors";
+    role: "students" | "advisers" | "mentors" | "facilitators";
     matricNo?: string;
     nusnetId?: string;
   }) => {
     setLoading(true);
-    const body: { user: { [key: string]: string | number } } = {
-      user: { email, cohortYear },
+    const body: {
+      user: { [key: string]: string | number };
+      student?: { nusnetId: string; matricNo: string; cohortYear: number };
+      mentor?: { cohortYear: number };
+      adviser?: { cohortYear: number };
+      facilitator?: { cohortYear: number };
+    } = {
+      user: { email },
     };
-    if (name) body.user = { ...body.user, name };
-    if (matricNo) body.user = { ...body.user, matricNo };
-    if (nusnetId) body.user = { ...body.user, nusnetId };
-    if (password) body.user = { ...body.user, password };
+
+    if (name) {
+      user.name = name;
+    }
+
+    switch (role) {
+      case "students":
+        body.student = {
+          nusnetId: nusnetId ?? "",
+          matricNo: matricNo ?? "",
+          cohortYear,
+        };
+        break;
+      case "mentors":
+        body.mentor = {
+          cohortYear,
+        };
+        break;
+      case "advisers":
+        body.adviser = {
+          cohortYear,
+        };
+        break;
+      case "facilitators":
+        body.facilitator = {
+          cohortYear,
+        };
+        break;
+      default:
+        break;
+    }
 
     /**
      * attempt to create new user in postgres
      */
     const apiServiceBuilder = new ApiServiceBuilder({
       method: HTTP_METHOD.POST,
-      endpoint: `/${role}`,
+      endpoint: `/users/create-${role.slice(0, role.length - 2)}`, // remove the last "s" in the role name
       body,
     });
     const apiService = apiServiceBuilder.build();
@@ -113,7 +193,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logOut = async () => {
     setLoading(true);
-    // TODO: make cookie expire
+
+    const apiServiceBuilder = new ApiServiceBuilder({
+      method: HTTP_METHOD.GET,
+      endpoint: `/auth/${user.id}/sign-out`,
+    });
+    const apiService = apiServiceBuilder.build();
+    const logoutResponse = await apiService();
+
+    if (!logoutResponse.ok) {
+      const errorMessage = await logoutResponse.text();
+      setLoading(false);
+      throw new Error(errorMessage);
+    }
+
     setUser(defaultUser);
     setLoading(false);
     router.push(PAGES.LANDING);
@@ -125,7 +218,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const memoedValue = useMemo(
-    () => ({ user, loading, signUp, signIn, logOut, resetPassword }),
+    () => ({
+      user,
+      loading,
+      currentCohortYear,
+      signUp,
+      signIn,
+      logOut,
+      resetPassword,
+    }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [user]
   );
