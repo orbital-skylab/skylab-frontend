@@ -12,8 +12,10 @@ import DeadlineRow from "./DeadlineRow";
 
 // Types
 import { Deadline } from "@/types/deadlines";
+import { Mutate } from "@/hooks/useFetch";
+import { GetDeadlinesResponse } from "@/pages/deadlines";
 
-type Props = { deadlines: Deadline[] };
+type Props = { deadlines: Deadline[]; mutate: Mutate<GetDeadlinesResponse> };
 
 const ColumnHeadings = ["Deadline Name", "Due By", "Actions"];
 
@@ -32,7 +34,11 @@ const DeadlineTable: FC<Props> = ({ deadlines }) => {
         </TableHead>
         <TableBody>
           {deadlines.map((deadline) => (
-            <DeadlineRow key={deadline.id} deadline={deadline} />
+            <DeadlineRow
+              key={deadline.id}
+              deadline={deadline}
+              mutate={mutate}
+            />
           ))}
         </TableBody>
       </Table>

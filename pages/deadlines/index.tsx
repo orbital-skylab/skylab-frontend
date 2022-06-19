@@ -22,6 +22,10 @@ import { Deadline } from "@/types/deadlines";
 import { Add } from "@mui/icons-material";
 import AddDeadlineModal from "@/components/modals/AddDeadlineModal";
 
+export type GetDeadlinesResponse = {
+  deadlines: Deadline[];
+};
+
 const Deadlines: NextPage = () => {
   const [isAddDeadlineOpen, setIsAddDeadlineOpen] = useState(false);
 
@@ -42,29 +46,14 @@ const Deadlines: NextPage = () => {
       cohortYear: selectedCohortYear,
     };
   }, [selectedCohortYear]);
-  const { data: response, status: fetchDeadlinesStatus } = useFetch<{
-    deadlines: Deadline[];
-  }>({
+  const {
+    data: response,
+    status: fetchDeadlinesStatus,
+    mutate,
+  } = useFetch<GetDeadlinesResponse>({
     endpoint: `/deadlines`,
     queryParams: memoQueryParams,
   });
-  // const deadlines: Deadline[] = [
-  //   {
-  //     id: 1,
-  //     name: "Milestone 1",
-  //     cohortYear: 2022,
-  //     dueBy: "2022-06-27T15:59:00.000Z",
-  //     type: DEADLINE_TYPE.MILESTONE,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Milestone 2",
-  //     cohortYear: 2022,
-  //     dueBy: "2022-07-27T15:59:00.000Z",
-  //     type: DEADLINE_TYPE.MILESTONE,
-  //   },
-  // ];
-  // const fetchDeadlinesStatus = FETCH_STATUS.FETCHED;
 
   /** Input Change Handlers */
   const handleCohortYearChange = (e: SelectChangeEvent<number | null>) => {
@@ -81,6 +70,7 @@ const Deadlines: NextPage = () => {
         open={isAddDeadlineOpen}
         setOpen={setIsAddDeadlineOpen}
         cohortYear={selectedCohortYear as Cohort["academicYear"]}
+        mutate={mutate}
       />
       <Body
         isError={isError(fetchDeadlinesStatus, fetchCohortsStatus)}
@@ -128,7 +118,10 @@ const Deadlines: NextPage = () => {
             )}
             fallback={<NoneFound message="No deadlines found" />}
           >
-            <DeadlineTable deadlines={response?.deadlines ?? []} />
+            <DeadlineTable
+              deadlines={response?.deadlines ?? []}
+              mutate={mutate}
+            />
           </NoDataWrapper>
         </LoadingWrapper>
       </Body>

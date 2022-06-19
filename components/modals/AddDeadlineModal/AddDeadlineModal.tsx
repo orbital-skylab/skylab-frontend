@@ -7,8 +7,9 @@ import Modal from "../Modal";
 import { Button, Stack } from "@mui/material";
 // Helpers
 import {
-  formatDateForDateTimeLocalInput,
+  isoDateToDateTimeLocalInput,
   getTodayAtTimeIso,
+  dateTimeLocalInputToIsoDate,
 } from "@/helpers/dates";
 import { Formik, FormikHelpers } from "formik";
 // Hooks
@@ -17,6 +18,8 @@ import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
 // Types
 import { HTTP_METHOD } from "@/types/api";
 import { DEADLINE_TYPE } from "@/types/deadlines";
+import { Mutate } from "@/hooks/useFetch";
+import { GetDeadlinesResponse } from "@/pages/deadlines";
 
 interface AddDeadlineFormValuesType {
   name: string;
@@ -28,19 +31,29 @@ type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   cohortYear: number;
+  mutate: Mutate<GetDeadlinesResponse>;
 };
 
-const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear }) => {
+const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
   const [snackbar, setSnackbar] = useSnackbarAlert();
 
   const addDeadline = useApiCall({
     method: HTTP_METHOD.POST,
     endpoint: `/deadlines`,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onSuccess: ({ deadline }: any) => {
+      // TODO: Fix the any
+      mutate((data) => {
+        const newDeadlines = [...data.deadlines];
+        newDeadlines.push(deadline);
+        return { deadlines: newDeadlines };
+      });
+    },
   });
 
   const initialValues: AddDeadlineFormValuesType = {
     name: "",
-    dueBy: formatDateForDateTimeLocalInput(getTodayAtTimeIso(23, 59)),
+    dueBy: isoDateToDateTimeLocalInput(getTodayAtTimeIso(23, 59)),
     type: DEADLINE_TYPE.MILESTONE,
   };
 
@@ -48,9 +61,15 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear }) => {
     values: AddDeadlineFormValuesType,
     actions: FormikHelpers<AddDeadlineFormValuesType>
   ) => {
+    const processedValues = {
+      ...values,
+      dueBy: dateTimeLocalInputToIsoDate(values.dueBy),
+      cohortYear,
+    };
+
     try {
       await addDeadline.call({
-        deadline: { ...values, cohortYear },
+        deadline: processedValues,
       });
       setSnackbar({
         severity: "success",

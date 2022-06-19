@@ -2,14 +2,16 @@ import { FC, useState } from "react";
 // Components
 import { Button, Stack, TableCell, TableRow } from "@mui/material";
 // Helpers
-import { formatFullDateWithTime } from "@/helpers/dates";
+import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
 // Types
 import { Deadline } from "@/types/deadlines";
 import Link from "next/link";
 import { PAGES } from "@/helpers/navigation";
 import EditDeadlineModal from "@/components/modals/EditDeadlineModal";
+import { Mutate } from "@/hooks/useFetch";
+import { GetDeadlinesResponse } from "@/pages/deadlines";
 
-type Props = { deadline: Deadline };
+type Props = { deadline: Deadline; mutate: Mutate<GetDeadlinesResponse> };
 
 const DeadlineRow: FC<Props> = ({ deadline }) => {
   const [isEditDeadlineOpen, setIsEditDeadlineOpen] = useState(false);
@@ -24,10 +26,11 @@ const DeadlineRow: FC<Props> = ({ deadline }) => {
         deadline={deadline}
         open={isEditDeadlineOpen}
         setOpen={setIsEditDeadlineOpen}
+        mutate={mutate}
       />
       <TableRow>
         <TableCell>{deadline.name}</TableCell>
-        <TableCell>{formatFullDateWithTime(deadline.dueBy)}</TableCell>
+        <TableCell>{isoDateToLocaleDateWithTime(deadline.dueBy)}</TableCell>
         <TableCell>
           <Stack direction="row" spacing="0.5rem">
             <Link href={`${PAGES.DEADLINES}/${deadline.id}`} passHref>

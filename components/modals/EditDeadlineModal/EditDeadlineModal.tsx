@@ -6,7 +6,10 @@ import SnackbarAlert from "@/components/SnackbarAlert";
 import Modal from "../Modal";
 import { Button, Stack } from "@mui/material";
 // Helpers
-import { formatDateForDateTimeLocalInput } from "@/helpers/dates";
+import {
+  dateTimeLocalInputToIsoDate,
+  isoDateToDateTimeLocalInput,
+} from "@/helpers/dates";
 import { Formik, FormikHelpers } from "formik";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
@@ -14,6 +17,8 @@ import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Types
 import { HTTP_METHOD } from "@/types/api";
 import { Deadline, DEADLINE_TYPE } from "@/types/deadlines";
+import { GetDeadlinesResponse } from "@/pages/deadlines";
+import { Mutate } from "@/hooks/useFetch";
 
 interface EditDeadlineFormValuesType {
   name: string;
@@ -25,19 +30,32 @@ type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   deadline: Deadline;
+  mutate: Mutate<GetDeadlinesResponse>;
 };
 
-const EditDeadlineModal: FC<Props> = ({ open, setOpen, deadline }) => {
+const EditDeadlineModal: FC<Props> = ({ open, setOpen, deadline, mutate }) => {
   const [snackbar, setSnackbar] = useSnackbarAlert();
 
   const editDeadline = useApiCall({
     method: HTTP_METHOD.PUT,
     endpoint: `/deadlines/${deadline.id}`,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onSuccess: ({ newDeadline }: any) => {
+      // TODO: Fix the any
+      mutate((data) => {
+        const oldDeadlineIdx = data.deadlines.findIndex(
+          (deadline) => deadline.id === newDeadline.id
+        );
+        const newDeadlines = [...data.deadlines];
+        newDeadlines.splice(oldDeadlineIdx, 1, newDeadline);
+        return { deadlines: newDeadlines };
+      });
+    },
   });
 
   const initialValues: EditDeadlineFormValuesType = {
     name: deadline.name,
-    dueBy: formatDateForDateTimeLocalInput(deadline.dueBy),
+    dueBy: isoDateToDateTimeLocalInput(deadline.dueBy),
     type: deadline.type,
   };
 
@@ -45,9 +63,14 @@ const EditDeadlineModal: FC<Props> = ({ open, setOpen, deadline }) => {
     values: EditDeadlineFormValuesType,
     actions: FormikHelpers<EditDeadlineFormValuesType>
   ) => {
+    const processedValues = {
+      ...values,
+      dueBy: dateTimeLocalInputToIsoDate(values.dueBy),
+    };
+
     try {
       await editDeadline.call({
-        deadline: values,
+        deadline: processedValues,
       });
       setSnackbar({
         severity: "success",
