@@ -6,19 +6,16 @@ import SnackbarAlert from "@/components/SnackbarAlert";
 import Modal from "../Modal";
 import { Button, Stack } from "@mui/material";
 // Helpers
-import {
-  formatDateForDateTimeLocalInput,
-  getTodayAtTimeIso,
-} from "@/helpers/dates";
+import { formatDateForDateTimeLocalInput } from "@/helpers/dates";
 import { Formik, FormikHelpers } from "formik";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
+import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Types
 import { HTTP_METHOD } from "@/types/api";
-import { DEADLINE_TYPE } from "@/types/deadlines";
+import { Deadline, DEADLINE_TYPE } from "@/types/deadlines";
 
-interface AddDeadlineFormValuesType {
+interface EditDeadlineFormValuesType {
   name: string;
   dueBy: string;
   type: DEADLINE_TYPE;
@@ -27,40 +24,40 @@ interface AddDeadlineFormValuesType {
 type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  cohortYear: number;
+  deadline: Deadline;
 };
 
-const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear }) => {
+const EditDeadlineModal: FC<Props> = ({ open, setOpen, deadline }) => {
   const [snackbar, setSnackbar] = useSnackbarAlert();
 
-  const addDeadline = useApiCall({
-    method: HTTP_METHOD.POST,
-    endpoint: `/deadlines`,
+  const editDeadline = useApiCall({
+    method: HTTP_METHOD.PUT,
+    endpoint: `/deadlines/${deadline.id}`,
   });
 
-  const initialValues: AddDeadlineFormValuesType = {
-    name: "",
-    dueBy: formatDateForDateTimeLocalInput(getTodayAtTimeIso(23, 59)),
-    type: DEADLINE_TYPE.MILESTONE,
+  const initialValues: EditDeadlineFormValuesType = {
+    name: deadline.name,
+    dueBy: formatDateForDateTimeLocalInput(deadline.dueBy),
+    type: deadline.type,
   };
 
   const handleSubmit = async (
-    values: AddDeadlineFormValuesType,
-    actions: FormikHelpers<AddDeadlineFormValuesType>
+    values: EditDeadlineFormValuesType,
+    actions: FormikHelpers<EditDeadlineFormValuesType>
   ) => {
     try {
-      await addDeadline.call({
-        deadline: { ...values, cohortYear },
+      await editDeadline.call({
+        deadline: values,
       });
       setSnackbar({
         severity: "success",
-        message: `You have successfully created a new deadline ${values.name}!`,
+        message: `You have successfully edited the deadline ${values.name}!`,
       });
       actions.resetForm();
     } catch (error) {
       setSnackbar({
         severity: "error",
-        message: addDeadline.error,
+        message: editDeadline.error,
       });
     }
 
@@ -74,7 +71,12 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear }) => {
   return (
     <>
       <SnackbarAlert snackbar={snackbar} setSnackbar={setSnackbar} />
-      <Modal open={open} handleClose={handleClose} title={`Add Deadline`}>
+      <Modal
+        open={open}
+        handleClose={handleClose}
+        title={`Edit Deadline`}
+        subheader={`You are editing: ${deadline.name}`}
+      >
         <Formik initialValues={initialValues} onSubmit={handleSubmit}>
           {(formik) => (
             <>
@@ -115,7 +117,7 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear }) => {
                   onClick={formik.submitForm}
                   disabled={formik.isSubmitting}
                 >
-                  Add
+                  Edit
                 </Button>
               </Stack>
             </>
@@ -125,4 +127,4 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear }) => {
     </>
   );
 };
-export default AddDeadlineModal;
+export default EditDeadlineModal;

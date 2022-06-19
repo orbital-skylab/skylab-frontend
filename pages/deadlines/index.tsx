@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { NextPage } from "next";
 // Libraries
 import {
@@ -15,10 +15,10 @@ import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import DeadlineTable from "@/components/tables/DeadlineTable";
 // Hooks
-import useFetch, { isFetching, isError, FETCH_STATUS } from "@/hooks/useFetch";
+import useFetch, { isFetching, isError } from "@/hooks/useFetch";
 // Types
 import { Cohort } from "@/types/cohorts";
-import { Deadline, DEADLINE_TYPE } from "@/types/deadlines";
+import { Deadline } from "@/types/deadlines";
 import { Add } from "@mui/icons-material";
 import AddDeadlineModal from "@/components/modals/AddDeadlineModal";
 
@@ -37,35 +37,34 @@ const Deadlines: NextPage = () => {
   });
 
   /** Fetching staff based on filters */
-  // const memoQueryParams = useMemo(() => {
-  //   return {
-  //     cohortYear: selectedCohortYear,
-  //   };
-  // }, [selectedCohortYear]);
-  // const { data: response, status: fetchDeadlinesStatus } = useFetch<{
-  //   deadlines: Deadline[];
-  // }>({
-  //   endpoint: `/deadlines`,
-  //   queryParams: memoQueryParams,
-  // });
-
-  const deadlines: Deadline[] = [
-    {
-      id: 1,
-      name: "Milestone 1",
-      cohortYear: 2022,
-      dueBy: "2022-06-27T15:59:00.000Z",
-      type: DEADLINE_TYPE.MILESTONE,
-    },
-    {
-      id: 2,
-      name: "Milestone 2",
-      cohortYear: 2022,
-      dueBy: "2022-07-27T15:59:00.000Z",
-      type: DEADLINE_TYPE.MILESTONE,
-    },
-  ];
-  const fetchDeadlinesStatus = FETCH_STATUS.FETCHED;
+  const memoQueryParams = useMemo(() => {
+    return {
+      cohortYear: selectedCohortYear,
+    };
+  }, [selectedCohortYear]);
+  const { data: response, status: fetchDeadlinesStatus } = useFetch<{
+    deadlines: Deadline[];
+  }>({
+    endpoint: `/deadlines`,
+    queryParams: memoQueryParams,
+  });
+  // const deadlines: Deadline[] = [
+  //   {
+  //     id: 1,
+  //     name: "Milestone 1",
+  //     cohortYear: 2022,
+  //     dueBy: "2022-06-27T15:59:00.000Z",
+  //     type: DEADLINE_TYPE.MILESTONE,
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Milestone 2",
+  //     cohortYear: 2022,
+  //     dueBy: "2022-07-27T15:59:00.000Z",
+  //     type: DEADLINE_TYPE.MILESTONE,
+  //   },
+  // ];
+  // const fetchDeadlinesStatus = FETCH_STATUS.FETCHED;
 
   /** Input Change Handlers */
   const handleCohortYearChange = (e: SelectChangeEvent<number | null>) => {
@@ -76,13 +75,12 @@ const Deadlines: NextPage = () => {
     setIsAddDeadlineOpen(true);
   };
 
-  // const deadlines: Deadline[] = response ? response.deadlines : [];
-
   return (
     <>
       <AddDeadlineModal
         open={isAddDeadlineOpen}
         setOpen={setIsAddDeadlineOpen}
+        cohortYear={selectedCohortYear as Cohort["academicYear"]}
       />
       <Body
         isError={isError(fetchDeadlinesStatus, fetchCohortsStatus)}
@@ -123,10 +121,14 @@ const Deadlines: NextPage = () => {
           loadingText="Loading deadlines..."
         >
           <NoDataWrapper
-            noDataCondition={deadlines === undefined || deadlines?.length === 0}
+            noDataCondition={Boolean(
+              response &&
+                (response.deadlines === undefined ||
+                  response.deadlines?.length === 0)
+            )}
             fallback={<NoneFound message="No deadlines found" />}
           >
-            <DeadlineTable deadlines={deadlines as Deadline[]} />
+            <DeadlineTable deadlines={response?.deadlines ?? []} />
           </NoDataWrapper>
         </LoadingWrapper>
       </Body>

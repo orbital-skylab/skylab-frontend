@@ -10,6 +10,8 @@ import { useState } from "react";
  * @param {string} param0.endpoint the endpoint of where to make the request to (the apiservicebuilder automatically prepends the backend api url).
  * @param {{key: string}: any} param0.body the body of the request.
  * @param {boolean} param0.requiresAuthorization whether the endpoint requires the user to be authorized.
+ * @param {Function} param0.onSuccess the function called when the function is successful
+ * @param {Function} param0.onError the function called when the function has an error
  * @returns an object where status is the status of the request, error is any encountered error (if any), call is the function to actually make the api request.
 
  */
@@ -19,12 +21,14 @@ const useApiCall = ({
   body = {},
   requiresAuthorization = true,
   onSuccess,
+  onError,
 }: {
   method?: HTTP_METHOD;
   endpoint: string;
   body?: { [key: string]: any };
   requiresAuthorization?: boolean;
   onSuccess?: <T>(data: T) => void;
+  onError?: (error: string) => void;
 }) => {
   const token = "placeholderToken"; // TODO: Retrieve from useAuth
   const [status, setStatus] = useState<CALL_STATUS>(CALL_STATUS.IDLE);
@@ -63,8 +67,14 @@ const useApiCall = ({
 
       setStatus(CALL_STATUS.SUCCESS);
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : (error as string));
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      if (onError) {
+        onError(errorMessage);
+      }
+      setError(errorMessage);
       setStatus(CALL_STATUS.ERROR);
+      throw errorMessage;
     }
   }
 

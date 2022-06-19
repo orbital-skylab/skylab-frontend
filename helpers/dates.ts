@@ -11,6 +11,11 @@ export const formatDateForDateTimeLocalInput = (isoDate: string) => {
   const timeString = d.toLocaleTimeString().slice(0, 5);
   const formattedDate = `${dateString}T${timeString}`;
 
-  console.log(formattedDate);
   return formattedDate;
+};
+
+export const getTodayAtTimeIso = (hours: number, minutes?: number) => {
+  const today = new Date();
+  today.setHours(hours, minutes);
+  return today.toISOString();
 };
