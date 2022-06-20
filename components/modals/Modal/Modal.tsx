@@ -14,6 +14,7 @@ type Props = {
   handleClose: () => void;
   title?: string;
   subheader?: string;
+  sx?: Record<string, string>;
 };
 
 const Modal: FC<Props> = ({
@@ -22,6 +23,7 @@ const Modal: FC<Props> = ({
   children,
   title,
   subheader,
+  sx,
 }) => {
   return (
     <MUIModal
@@ -39,7 +41,9 @@ const Modal: FC<Props> = ({
         <Card
           sx={{
             ...ABSOLUTE_CENTER,
+            minWidth: "400px",
             maxWidth: "600px",
+            ...sx,
           }}
         >
           {title || subheader ? (

@@ -17,7 +17,7 @@ import useApiCall from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
 // Types
 import { HTTP_METHOD } from "@/types/api";
-import { DEADLINE_TYPE } from "@/types/deadlines";
+import { Deadline, DEADLINE_TYPE } from "@/types/deadlines";
 import { Mutate } from "@/hooks/useFetch";
 import { GetDeadlinesResponse } from "@/pages/deadlines";
 
@@ -35,14 +35,17 @@ type Props = {
 };
 
 const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
-  const [snackbar, setSnackbar] = useSnackbarAlert();
+  const {
+    snackbar,
+    handleClose: handleCloseSnackbar,
+    setSuccess,
+    setError,
+  } = useSnackbarAlert();
 
   const addDeadline = useApiCall({
     method: HTTP_METHOD.POST,
     endpoint: `/deadlines`,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onSuccess: ({ deadline }: any) => {
-      // TODO: Fix the any
+    onSuccess: ({ deadline }: { deadline: Deadline }) => {
       mutate((data) => {
         const newDeadlines = [...data.deadlines];
         newDeadlines.push(deadline);
@@ -71,29 +74,24 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
       await addDeadline.call({
         deadline: processedValues,
       });
-      setSnackbar({
-        severity: "success",
-        message: `You have successfully created a new deadline ${values.name}!`,
-      });
+      setSuccess(
+        `You have successfully created a new deadline ${values.name}!`
+      );
+      handleCloseModal();
       actions.resetForm();
     } catch (error) {
-      setSnackbar({
-        severity: "error",
-        message: addDeadline.error,
-      });
+      setError(addDeadline.error);
     }
-
-    actions.setSubmitting(false);
   };
 
-  const handleClose = () => {
+  const handleCloseModal = () => {
     setOpen(false);
   };
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} setSnackbar={setSnackbar} />
-      <Modal open={open} handleClose={handleClose} title={`Add Deadline`}>
+      <SnackbarAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
+      <Modal open={open} handleClose={handleCloseModal} title={`Add Deadline`}>
         <Formik initialValues={initialValues} onSubmit={handleSubmit}>
           {(formik) => (
             <>
@@ -125,7 +123,7 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
                 justifyContent="space-between"
                 marginTop="2rem"
               >
-                <Button size="small" onClick={handleClose}>
+                <Button size="small" onClick={handleCloseModal}>
                   Cancel
                 </Button>
                 <Button

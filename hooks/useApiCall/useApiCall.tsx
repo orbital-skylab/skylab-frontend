@@ -27,7 +27,7 @@ const useApiCall = ({
   endpoint: string;
   body?: { [key: string]: any };
   requiresAuthorization?: boolean;
-  onSuccess?: <T>(data: T) => void;
+  onSuccess?: (data: any) => void;
   onError?: (error: string) => void;
 }) => {
   const token = "placeholderToken"; // TODO: Retrieve from useAuth
@@ -60,12 +60,13 @@ const useApiCall = ({
         throw error;
       }
 
+      const data = await res.json();
       if (onSuccess) {
-        const data = await res.json();
         onSuccess(data);
       }
 
       setStatus(CALL_STATUS.SUCCESS);
+      return data;
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);

@@ -2,7 +2,6 @@ import { Dispatch, FC, SetStateAction } from "react";
 // Components
 import Select from "@/components/formControllers/Select";
 import TextInput from "@/components/formControllers/TextInput";
-import SnackbarAlert from "@/components/SnackbarAlert";
 import Modal from "../Modal";
 import { Button, Stack } from "@mui/material";
 // Helpers
@@ -13,7 +12,6 @@ import {
 import { Formik, FormikHelpers } from "formik";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Types
 import { HTTP_METHOD } from "@/types/api";
 import { Deadline, DEADLINE_TYPE } from "@/types/deadlines";
@@ -31,17 +29,22 @@ type Props = {
   setOpen: Dispatch<SetStateAction<boolean>>;
   deadline: Deadline;
   mutate: Mutate<GetDeadlinesResponse>;
+  setSuccess: (message: string) => void;
+  setError: (message: string) => void;
 };
 
-const EditDeadlineModal: FC<Props> = ({ open, setOpen, deadline, mutate }) => {
-  const [snackbar, setSnackbar] = useSnackbarAlert();
-
+const EditDeadlineModal: FC<Props> = ({
+  open,
+  setOpen,
+  deadline,
+  mutate,
+  setSuccess,
+  setError,
+}) => {
   const editDeadline = useApiCall({
     method: HTTP_METHOD.PUT,
     endpoint: `/deadlines/${deadline.id}`,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onSuccess: ({ newDeadline }: any) => {
-      // TODO: Fix the any
+    onSuccess: ({ deadline: newDeadline }: { deadline: Deadline }) => {
       mutate((data) => {
         const oldDeadlineIdx = data.deadlines.findIndex(
           (deadline) => deadline.id === newDeadline.id
@@ -72,31 +75,23 @@ const EditDeadlineModal: FC<Props> = ({ open, setOpen, deadline, mutate }) => {
       await editDeadline.call({
         deadline: processedValues,
       });
-      setSnackbar({
-        severity: "success",
-        message: `You have successfully edited the deadline ${values.name}!`,
-      });
+      setSuccess(`You have successfully edited the deadline ${values.name}!`);
+      handleCloseModal();
       actions.resetForm();
     } catch (error) {
-      setSnackbar({
-        severity: "error",
-        message: editDeadline.error,
-      });
+      setError(editDeadline.error);
     }
-
-    actions.setSubmitting(false);
   };
 
-  const handleClose = () => {
+  const handleCloseModal = () => {
     setOpen(false);
   };
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} setSnackbar={setSnackbar} />
       <Modal
         open={open}
-        handleClose={handleClose}
+        handleClose={handleCloseModal}
         title={`Edit Deadline`}
         subheader={`You are editing: ${deadline.name}`}
       >
@@ -131,7 +126,7 @@ const EditDeadlineModal: FC<Props> = ({ open, setOpen, deadline, mutate }) => {
                 justifyContent="space-between"
                 marginTop="2rem"
               >
-                <Button size="small" onClick={handleClose}>
+                <Button size="small" onClick={handleCloseModal}>
                   Cancel
                 </Button>
                 <Button

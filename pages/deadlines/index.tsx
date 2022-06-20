@@ -109,6 +109,7 @@ const Deadlines: NextPage = () => {
         <LoadingWrapper
           isLoading={isFetching(fetchDeadlinesStatus)}
           loadingText="Loading deadlines..."
+          fullScreen
         >
           <NoDataWrapper
             noDataCondition={Boolean(
