@@ -22,6 +22,7 @@ interface EditDeadlineFormValuesType {
   name: string;
   dueBy: string;
   type: DEADLINE_TYPE;
+  desc?: string;
 }
 
 type Props = {
@@ -60,6 +61,7 @@ const EditDeadlineModal: FC<Props> = ({
     name: deadline.name,
     dueBy: isoDateToDateTimeLocalInput(deadline.dueBy),
     type: deadline.type,
+    desc: deadline.desc ?? "",
   };
 
   const handleSubmit = async (
@@ -70,6 +72,10 @@ const EditDeadlineModal: FC<Props> = ({
       ...values,
       dueBy: dateTimeLocalInputToIsoDate(values.dueBy),
     };
+
+    if (values.desc === "") {
+      delete processedValues.desc;
+    }
 
     try {
       await editDeadline.call({
@@ -119,6 +125,14 @@ const EditDeadlineModal: FC<Props> = ({
                   options={Object.values(DEADLINE_TYPE).map((val) => {
                     return { label: val, value: val };
                   })}
+                />
+                <TextInput
+                  name="desc"
+                  label="Description (Optional)"
+                  size="small"
+                  formik={formik}
+                  multiline
+                  minRows={3}
                 />
               </Stack>
               <Stack

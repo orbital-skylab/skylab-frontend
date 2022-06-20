@@ -28,9 +28,28 @@ import NoneFound from "@/components/emptyStates/NoneFound";
 // Hooks
 import useFetch, { isFetching, isError } from "@/hooks/useFetch";
 // Types
-import { STAFF_VALUES } from "@/types/staff";
-import { User } from "@/types/users";
+import { STAFF_TYPES, STAFF_VALUES } from "@/types/staff";
 import { Cohort } from "@/types/cohorts";
+import { Facilitator } from "@/types/facilitators";
+import { Adviser } from "@/types/advisers";
+import { Mentor } from "@/types/mentors";
+
+type GetFacilitatorsResponse = {
+  facilitators: Facilitator[];
+};
+
+type GetAdvisersResponse = {
+  advisers: Adviser[];
+};
+
+type GetMentorsResponse = {
+  mentors: Mentor[];
+};
+
+type GetStaffResponse =
+  | GetFacilitatorsResponse
+  | GetAdvisersResponse
+  | GetMentorsResponse;
 
 const Staff: NextPage = () => {
   const [selectedCohortYear, setSelectedCohortYear] = useState<
@@ -38,7 +57,9 @@ const Staff: NextPage = () => {
   >(null);
   const [querySearch, setQuerySearch] = useState("");
   const [searchTextInput, setSearchTextInput] = useState("");
-  const [selectedType, setSelectedType] = useState<string>(STAFF_VALUES[0]);
+  const [selectedType, setSelectedType] = useState<STAFF_TYPES>(
+    STAFF_VALUES[0]
+  );
 
   /** Fetching cohorts and setting latest cohort */
   const { data: cohorts, status: fetchCohortsStatus } = useFetch<Cohort[]>({
@@ -54,10 +75,33 @@ const Staff: NextPage = () => {
       search: querySearch,
     };
   }, [selectedCohortYear, querySearch]);
-  const { data: staff, status: fetchStaffStatus } = useFetch<User[]>({
+  const { data: staff, status: fetchStaffStatus } = useFetch<GetStaffResponse>({
     endpoint: `/${selectedType.toLowerCase()}`,
     queryParams: memoQueryParams,
   });
+
+  const unwrapStaff = (staff: GetStaffResponse, selectedType: STAFF_TYPES) => {
+    switch (selectedType) {
+      case STAFF_TYPES.ADVISERS:
+        staff = staff as GetAdvisersResponse;
+        if (!staff.advisers) {
+          return [];
+        }
+        return staff.advisers;
+      case STAFF_TYPES.MENTORS:
+        staff = staff as GetMentorsResponse;
+        if (!staff.mentors) {
+          return [];
+        }
+        return staff.mentors;
+      case STAFF_TYPES.FACILITATORS:
+        staff = staff as GetFacilitatorsResponse;
+        if (!staff.facilitators) {
+          return [];
+        }
+        return staff.facilitators;
+    }
+  };
 
   /** Input Change Handlers */
   const handleTabChange = (event: SyntheticEvent, newType: string) => {
@@ -140,12 +184,16 @@ const Staff: NextPage = () => {
           loadingText="Loading staff..."
         >
           <NoDataWrapper
-            noDataCondition={staff === undefined || staff?.length === 0}
+            noDataCondition={
+              !staff ||
+              !Object.keys(staff) ||
+              !unwrapStaff(staff, selectedType).length
+            }
             fallback={<NoneFound message="No such staff found" />}
           >
             <Grid container spacing={{ xs: 2, md: 4, xl: 8 }} pb={"2rem"}>
               {staff
-                ? staff.map((person) => {
+                ? unwrapStaff(staff, selectedType).map((person) => {
                     return (
                       <Grid item key={person.id} xs={6} md={3} xl={12 / 5}>
                         <StaffCard staff={person} />

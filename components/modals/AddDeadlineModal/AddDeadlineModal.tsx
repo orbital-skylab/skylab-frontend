@@ -25,6 +25,7 @@ interface AddDeadlineFormValuesType {
   name: string;
   dueBy: string;
   type: DEADLINE_TYPE;
+  desc?: string;
 }
 
 type Props = {
@@ -58,6 +59,7 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
     name: "",
     dueBy: isoDateToDateTimeLocalInput(getTodayAtTimeIso(23, 59)),
     type: DEADLINE_TYPE.MILESTONE,
+    desc: "",
   };
 
   const handleSubmit = async (
@@ -69,6 +71,10 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
       dueBy: dateTimeLocalInputToIsoDate(values.dueBy),
       cohortYear,
     };
+
+    if (values.desc === "") {
+      delete processedValues.desc;
+    }
 
     try {
       await addDeadline.call({
@@ -116,6 +122,14 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
                   options={Object.values(DEADLINE_TYPE).map((val) => {
                     return { label: val, value: val };
                   })}
+                />
+                <TextInput
+                  name="desc"
+                  label="Description (Optional)"
+                  size="small"
+                  formik={formik}
+                  multiline
+                  minRows={3}
                 />
               </Stack>
               <Stack

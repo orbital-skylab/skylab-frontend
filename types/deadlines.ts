@@ -11,6 +11,7 @@ export type Deadline = {
   id: number;
   cohortYear: Cohort["academicYear"];
   name: string;
+  desc?: string;
   dueBy: string;
   type: DEADLINE_TYPE;
 };

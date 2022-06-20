@@ -29,7 +29,10 @@ const Navbar: FC = () => {
     if (path === undefined) {
       return false;
     }
-    return router.asPath.includes(path);
+    return (
+      router.asPath.split("/")[1].toLowerCase() ===
+      path.split("/")[1].toLowerCase()
+    );
   };
 
   const pushRoute = (route: string) => {
