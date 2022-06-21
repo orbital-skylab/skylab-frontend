@@ -37,8 +37,13 @@ const Staff: NextPage = () => {
   const [querySearch, setQuerySearch] = useState("");
   const [searchTextInput, setSearchTextInput] = useState("");
   const [selectedType, setSelectedType] = useState<string>(STAFF_VALUES[0]);
-  const { currentCohortYear, cohorts, isLoading: isLoadingCohorts } = useCohort();
-  const [selectedCohortYear, setSelectedCohortYear] = useState<Cohort["academicYear"]>(currentCohortYear);
+  const {
+    currentCohortYear,
+    cohorts,
+    isLoading: isLoadingCohorts,
+  } = useCohort();
+  const [selectedCohortYear, setSelectedCohortYear] =
+    useState<Cohort["academicYear"]>(currentCohortYear);
 
   /** Fetching staff based on filters */
   const memoQueryParams = useMemo(() => {
@@ -76,10 +81,7 @@ const Staff: NextPage = () => {
 
   return (
     <>
-      <Body
-        isError={isError(fetchStaffStatus)}
-        isLoading={isLoadingCohorts}
-      >
+      <Body isError={isError(fetchStaffStatus)} isLoading={isLoadingCohorts}>
         <Stack direction="column" mt="0.5rem" mb="1rem">
           <Stack
             direction="row"

@@ -23,7 +23,7 @@ import {
 } from "@mui/material";
 // Hooks
 import useInfiniteFetch from "@/hooks/useInfiniteFetch";
-import useFetch, { isError, isFetching } from "@/hooks/useFetch";
+import { isError, isFetching } from "@/hooks/useFetch";
 import useCohort from "@/hooks/useCohort";
 // Helpers
 import { createBottomOfPageRef } from "@/hooks/useInfiniteFetch";
