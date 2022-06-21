@@ -1,25 +1,23 @@
 import { createContext, useState, useEffect, useMemo, useContext } from "react";
 import { ApiServiceBuilder } from "@/helpers/api";
 import { HTTP_METHOD } from "@/types/api";
-import {
-  ICohort,
-  CohortProviderProps,
-  DEFAULT_COHORT_YEAR,
-} from "@/types/useCohort";
+import { ICohort, CohortProviderProps } from "@/types/useCohort";
+import { Cohort } from "@/types/cohorts";
 
 const CohortContext = createContext<ICohort>({
-  currentCohortYear: DEFAULT_COHORT_YEAR,
-  loading: false,
+  currentCohortYear: null,
+  isLoading: false,
 });
 
 export const CohortProvider = ({ children }: CohortProviderProps) => {
-  const [currentCohortYear, setCurrentCohortYear] =
-    useState<number>(DEFAULT_COHORT_YEAR);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [currentCohortYear, setCurrentCohortYear] = useState<
+    Cohort["academicYear"] | null
+  >(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const getCurrentCohortYear = async () => {
-      setLoading(true);
+      setIsLoading(true);
       const apiServiceBuilder = new ApiServiceBuilder({
         method: HTTP_METHOD.GET,
         endpoint: "/cohorts/latest",
@@ -31,7 +29,7 @@ export const CohortProvider = ({ children }: CohortProviderProps) => {
         const { academicYear } = await latestCohortYearResponse.json();
         setCurrentCohortYear(Number(academicYear));
       }
-      setLoading(false);
+      setIsLoading(false);
     };
 
     getCurrentCohortYear();
@@ -40,7 +38,7 @@ export const CohortProvider = ({ children }: CohortProviderProps) => {
   const memoedValue = useMemo(
     () => ({
       currentCohortYear,
-      loading,
+      isLoading,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentCohortYear]
@@ -48,7 +46,7 @@ export const CohortProvider = ({ children }: CohortProviderProps) => {
 
   return (
     <CohortContext.Provider value={memoedValue}>
-      {!loading && children}
+      {!isLoading && children}
     </CohortContext.Provider>
   );
 };

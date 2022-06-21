@@ -25,7 +25,7 @@ const AuthContext = createContext<IAuth>({
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -69,7 +69,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     matricNo?: string;
     nusnetId?: string;
   }) => {
-    setIsLoading(true);
     const body: {
       user: { [key: string]: string | number };
       student?: { nusnetId: string; matricNo: string; cohortYear: number };
@@ -129,12 +128,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const errorMessage = await createUserResponse.text();
       throw new Error(errorMessage);
     }
-
-    setIsLoading(false);
   };
 
   const signIn = async (email: string, password: string) => {
-    setIsLoading(true);
     const apiServiceBuilder = new ApiServiceBuilder({
       method: HTTP_METHOD.POST,
       endpoint: "/auth/sign-in",
@@ -148,7 +144,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
      */
     if (!loginResponse.ok) {
       const errorMessage = await loginResponse.text();
-      setIsLoading(false);
       throw new Error(errorMessage);
     }
 
@@ -157,12 +152,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
      */
     const user = await loginResponse.json();
     setUser(user as User);
-    setIsLoading(false);
   };
 
   const logOut = async () => {
-    setIsLoading(true);
-
     const apiServiceBuilder = new ApiServiceBuilder({
       method: HTTP_METHOD.GET,
       endpoint: "/auth/sign-out",
@@ -172,12 +164,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     if (!logoutResponse.ok) {
       const errorMessage = await logoutResponse.text();
-      setIsLoading(false);
       throw new Error(errorMessage);
     }
 
     setUser(null);
-    setIsLoading(false);
     router.push(PAGES.LANDING);
   };
 
