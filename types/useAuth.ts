@@ -1,9 +1,12 @@
 import { User } from "./users";
 
+export interface AuthProviderProps {
+  children?: React.ReactNode;
+}
+
 export interface IAuth {
-  user: User;
-  loading: boolean;
-  currentCohortYear: number;
+  user: User | null;
+  isLoading: boolean;
   signUp: ({
     name,
     email,

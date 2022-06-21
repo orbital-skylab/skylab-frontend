@@ -1,23 +1,14 @@
 import { ApiServiceBuilder } from "@/helpers/api";
 import { PAGES } from "@/helpers/navigation";
 import { HTTP_METHOD } from "@/types/api";
-import { IAuth } from "@/types/auth";
+import { AuthProviderProps, IAuth } from "@/types/useAuth";
 import { User } from "@/types/users";
 import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-const defaultCohortYear = 2022;
-const defaultUser: User = {
-  id: 0,
-  name: "",
-  email: "",
-  cohortYear: defaultCohortYear,
-};
-
 const AuthContext = createContext<IAuth>({
-  user: defaultUser,
-  loading: false,
-  currentCohortYear: defaultCohortYear,
+  user: null,
+  isLoading: false,
   signUp: async () => {
     /* Placeholder for callback function */
   },
@@ -32,22 +23,18 @@ const AuthContext = createContext<IAuth>({
   },
 });
 
-interface AuthProviderProps {
-  children?: React.ReactNode;
-}
-
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User>(defaultUser);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [currentCohortYear, setCurrentCohortYear] =
-    useState<number>(defaultCohortYear);
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
-    const getUserInfo = async (id: number) => {
+    const getUserInfo = async () => {
+      setIsLoading(true);
+
       const apiServiceBuilder = new ApiServiceBuilder({
         method: HTTP_METHOD.GET,
-        endpoint: `/auth/${id}/info`,
+        endpoint: "/auth/info",
       });
       const apiService = apiServiceBuilder.build();
       const userInfoResponse = await apiService();
@@ -56,30 +43,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const userInfo = await userInfoResponse.json();
         setUser(userInfo as User);
       }
+
+      setIsLoading(false);
     };
 
-    if (user) {
-      getUserInfo(user.id);
-    }
+    getUserInfo();
   }, [user]);
-
-  useEffect(() => {
-    const getCurrentCohortYear = async () => {
-      const apiServiceBuilder = new ApiServiceBuilder({
-        method: HTTP_METHOD.GET,
-        endpoint: "/cohorts/latest",
-      });
-      const apiService = apiServiceBuilder.build();
-      const latestCohortYearResponse = await apiService();
-
-      if (latestCohortYearResponse.ok) {
-        const { latestCohortYear } = await latestCohortYearResponse.json();
-        setCurrentCohortYear(Number(latestCohortYear));
-      }
-    };
-
-    getCurrentCohortYear();
-  }, []);
 
   /**
    * TODO: ONLY FOR TESTING PURPOSES
@@ -100,7 +69,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     matricNo?: string;
     nusnetId?: string;
   }) => {
-    setLoading(true);
+    setIsLoading(true);
     const body: {
       user: { [key: string]: string | number };
       student?: { nusnetId: string; matricNo: string; cohortYear: number };
@@ -111,7 +80,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       user: { email },
     };
 
-    if (name) {
+    if (user && name) {
       user.name = name;
     }
 
@@ -161,15 +130,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       throw new Error(errorMessage);
     }
 
-    setLoading(false);
+    setIsLoading(false);
   };
 
   const signIn = async (email: string, password: string) => {
-    setLoading(true);
+    setIsLoading(true);
     const apiServiceBuilder = new ApiServiceBuilder({
       method: HTTP_METHOD.POST,
-      endpoint: `/${email}`,
-      body: { password },
+      endpoint: "/auth/sign-in",
+      body: { email, password },
     });
     const apiService = apiServiceBuilder.build();
     const loginResponse = await apiService();
@@ -179,7 +148,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
      */
     if (!loginResponse.ok) {
       const errorMessage = await loginResponse.text();
-      setLoading(false);
+      setIsLoading(false);
       throw new Error(errorMessage);
     }
 
@@ -188,27 +157,27 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
      */
     const user = await loginResponse.json();
     setUser(user as User);
-    setLoading(false);
+    setIsLoading(false);
   };
 
   const logOut = async () => {
-    setLoading(true);
+    setIsLoading(true);
 
     const apiServiceBuilder = new ApiServiceBuilder({
       method: HTTP_METHOD.GET,
-      endpoint: `/auth/${user.id}/sign-out`,
+      endpoint: "/auth/sign-out",
     });
     const apiService = apiServiceBuilder.build();
     const logoutResponse = await apiService();
 
     if (!logoutResponse.ok) {
       const errorMessage = await logoutResponse.text();
-      setLoading(false);
+      setIsLoading(false);
       throw new Error(errorMessage);
     }
 
-    setUser(defaultUser);
-    setLoading(false);
+    setUser(null);
+    setIsLoading(false);
     router.push(PAGES.LANDING);
   };
 
@@ -220,8 +189,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const memoedValue = useMemo(
     () => ({
       user,
-      loading,
-      currentCohortYear,
+      isLoading,
       signUp,
       signIn,
       logOut,
@@ -233,7 +201,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   return (
     <AuthContext.Provider value={memoedValue}>
-      {!loading && children}
+      {!isLoading && children}
     </AuthContext.Provider>
   );
 };
