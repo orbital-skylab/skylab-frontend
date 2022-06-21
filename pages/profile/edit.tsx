@@ -1,5 +1,5 @@
 import Body from "@/components/layout/Body";
-import TextInput from "@/components/placeholderfc/TextInput";
+import TextInput from "@/components/formControllers/TextInput";
 import SnackbarAlert from "@/components/SnackbarAlert";
 import { SNACKBAR_ALERT_INITIAL } from "@/helpers/forms";
 import { PAGES } from "@/helpers/navigation";
