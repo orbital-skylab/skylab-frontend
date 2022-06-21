@@ -47,8 +47,14 @@ const Projects: NextPage = () => {
   const [page, setPage] = useState(0);
   const [searchTextInput, setSearchTextInput] = useState(""); // The input value
   const [querySearch, setQuerySearch] = useState(""); // The debounced input value for searching
-  const { currentCohortYear, cohorts, isLoading: isLoadingCohorts } = useCohort();
-  const [selectedCohortYear, setSelectedCohortYear] = useState<Cohort["academicYear"]>(currentCohortYear);
+  const {
+    currentCohortYear,
+    cohorts,
+    isLoading: isLoadingCohorts,
+  } = useCohort();
+  const [selectedCohortYear, setSelectedCohortYear] = useState<
+    Cohort["academicYear"] | undefined
+  >(currentCohortYear);
 
   /** For fetching projects based on filters */
   const memoQueryParams = useMemo(() => {
@@ -108,10 +114,7 @@ const Projects: NextPage = () => {
 
   return (
     <>
-      <Body
-        isError={isError(fetchProjectStatus)}
-        isLoading={isLoadingCohorts}
-      >
+      <Body isError={isError(fetchProjectStatus)} isLoading={isLoadingCohorts}>
         <Stack direction="column" mt="0.5rem" mb="1rem">
           <Stack
             direction="row"

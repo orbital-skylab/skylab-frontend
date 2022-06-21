@@ -1,5 +1,8 @@
+import { Cohort } from "./cohorts";
+
 export interface ICohort {
-  currentCohortYear: number | null;
+  cohorts: Cohort[] | undefined;
+  currentCohortYear: number | undefined;
   isLoading: boolean;
 }
 

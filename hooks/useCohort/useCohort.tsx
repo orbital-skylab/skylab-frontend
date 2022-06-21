@@ -1,42 +1,26 @@
-import { createContext, useState, useEffect, useMemo, useContext } from "react";
-import { ApiServiceBuilder } from "@/helpers/api";
-import { HTTP_METHOD } from "@/types/api";
+import { createContext, useMemo, useContext } from "react";
 import { ICohort, CohortProviderProps } from "@/types/useCohort";
 import { Cohort } from "@/types/cohorts";
+import useFetch, { isFetching } from "../useFetch";
 
 const CohortContext = createContext<ICohort>({
-  currentCohortYear: null,
+  cohorts: undefined,
+  currentCohortYear: undefined,
   isLoading: false,
 });
 
 export const CohortProvider = ({ children }: CohortProviderProps) => {
-  const [currentCohortYear, setCurrentCohortYear] = useState<
-    Cohort["academicYear"] | null
-  >(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    const getCurrentCohortYear = async () => {
-      setIsLoading(true);
-      const apiServiceBuilder = new ApiServiceBuilder({
-        method: HTTP_METHOD.GET,
-        endpoint: "/cohorts/latest",
-      });
-      const apiService = apiServiceBuilder.build();
-      const latestCohortYearResponse = await apiService();
-
-      if (latestCohortYearResponse.ok) {
-        const { academicYear } = await latestCohortYearResponse.json();
-        setCurrentCohortYear(Number(academicYear));
-      }
-      setIsLoading(false);
-    };
-
-    getCurrentCohortYear();
-  }, []);
+  const { data: currentCohort, status: currentCohortYearStatus } =
+    useFetch<Cohort>({ endpoint: "/cohorts/latest" });
+  const { data: cohorts, status: cohortsStatus } = useFetch<Cohort[]>({
+    endpoint: "/cohorts",
+  });
+  const currentCohortYear = currentCohort?.academicYear;
+  const isLoading = isFetching(currentCohortYearStatus, cohortsStatus);
 
   const memoedValue = useMemo(
     () => ({
+      cohorts,
       currentCohortYear,
       isLoading,
     }),
