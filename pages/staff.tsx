@@ -104,7 +104,7 @@ const Staff: NextPage = () => {
   };
 
   /** Input Change Handlers */
-  const handleTabChange = (event: SyntheticEvent, newType: string) => {
+  const handleTabChange = (event: SyntheticEvent, newType: STAFF_TYPES) => {
     setSelectedType(newType);
   };
 
