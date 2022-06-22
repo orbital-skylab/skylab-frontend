@@ -9,7 +9,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 const AuthContext = createContext<IAuth>({
   user: undefined,
-  isLoading: true,
+  isLoading: false,
   signUp: async () => {
     /* Placeholder for callback function */
   },
@@ -34,10 +34,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   // const isLoading = isFetching(status);
 
   const [user, setUser] = useState<User | undefined>();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
+      setIsLoading(true);
       const apiServiceBuilder = new ApiServiceBuilder({
         method: HTTP_METHOD.GET,
         endpoint: "/auth/info",
@@ -54,7 +55,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setIsLoading(false);
     };
 
-    user ? setIsLoading(false) : fetchUserInfo();
+    if (!user) fetchUserInfo();
   }, [user]);
 
   /**
