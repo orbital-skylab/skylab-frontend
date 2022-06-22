@@ -25,12 +25,12 @@ export const CohortProvider = ({ children }: CohortProviderProps) => {
       isLoading,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentCohortYear]
+    [cohorts, currentCohortYear]
   );
 
   return (
     <CohortContext.Provider value={memoedValue}>
-      {!isLoading && children}
+      {children}
     </CohortContext.Provider>
   );
 };
