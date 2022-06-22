@@ -42,8 +42,9 @@ const Staff: NextPage = () => {
     cohorts,
     isLoading: isLoadingCohorts,
   } = useCohort();
-  const [selectedCohortYear, setSelectedCohortYear] =
-    useState<Cohort["academicYear"]>(currentCohortYear);
+  const [selectedCohortYear, setSelectedCohortYear] = useState<
+    Cohort["academicYear"] | undefined
+  >(currentCohortYear);
 
   /** Fetching staff based on filters */
   const memoQueryParams = useMemo(() => {
