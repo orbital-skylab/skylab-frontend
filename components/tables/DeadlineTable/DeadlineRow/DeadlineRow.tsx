@@ -51,6 +51,7 @@ const DeadlineRow: FC<Props> = ({ deadline, mutate }) => {
       <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <TableRow>
         <TableCell>{deadline.name}</TableCell>
+        <TableCell>{deadline.type}</TableCell>
         <TableCell>{isoDateToLocaleDateWithTime(deadline.dueBy)}</TableCell>
         <TableCell>
           <Stack direction="row" spacing="0.5rem">

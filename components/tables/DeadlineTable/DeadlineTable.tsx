@@ -17,7 +17,7 @@ import { GetDeadlinesResponse } from "@/pages/deadlines";
 
 type Props = { deadlines: Deadline[]; mutate: Mutate<GetDeadlinesResponse> };
 
-const ColumnHeadings = ["Deadline Name", "Due By", "Actions"];
+const ColumnHeadings = ["Deadline Name", "Type", "Due By", "Actions"];
 
 const DeadlineTable: FC<Props> = ({ deadlines, mutate }) => {
   return (
@@ -26,7 +26,7 @@ const DeadlineTable: FC<Props> = ({ deadlines, mutate }) => {
         <TableHead>
           <TableRow>
             {ColumnHeadings.map((heading) => (
-              <TableCell key={heading} width="33.33%">
+              <TableCell key={heading} width="25%">
                 {heading}
               </TableCell>
             ))}
