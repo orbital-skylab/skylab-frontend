@@ -5,17 +5,18 @@ import { AuthProviderProps, IAuth } from "@/types/useAuth";
 import { User } from "@/types/users";
 import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+// import useFetch, { isFetching } from "../useFetch";
 
 const AuthContext = createContext<IAuth>({
-  user: null,
-  isLoading: false,
+  user: undefined,
+  isLoading: true,
   signUp: async () => {
     /* Placeholder for callback function */
   },
   signIn: async () => {
     /* Placeholder for callback function */
   },
-  logOut: async () => {
+  signOut: async () => {
     /* Placeholder for callback function */
   },
   resetPassword: async () => {
@@ -24,30 +25,36 @@ const AuthContext = createContext<IAuth>({
 });
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  // const { data: user, status } = useFetch<User>({
+  //   endpoint: "/auth/info",
+  //   requiresAuthorization: true,
+  // });
+
+  // const isLoading = isFetching(status);
+
+  const [user, setUser] = useState<User | undefined>();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const getUserInfo = async () => {
-      setIsLoading(true);
-
+    const fetchUserInfo = async () => {
       const apiServiceBuilder = new ApiServiceBuilder({
         method: HTTP_METHOD.GET,
         endpoint: "/auth/info",
+        requiresAuthorization: true,
       });
       const apiService = apiServiceBuilder.build();
-      const userInfoResponse = await apiService();
+      const response = await apiService();
 
-      if (userInfoResponse.ok) {
-        const userInfo = await userInfoResponse.json();
-        setUser(userInfo as User);
+      if (response.ok) {
+        const _user = await response.json();
+        setUser(_user as User);
       }
 
       setIsLoading(false);
     };
 
-    getUserInfo();
+    user ? setIsLoading(false) : fetchUserInfo();
   }, [user]);
 
   /**
@@ -135,6 +142,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       method: HTTP_METHOD.POST,
       endpoint: "/auth/sign-in",
       body: { email, password },
+      requiresAuthorization: true,
     });
     const apiService = apiServiceBuilder.build();
     const loginResponse = await apiService();
@@ -147,27 +155,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       throw new Error(errorMessage);
     }
 
-    /**
-     * successful user login
-     */
-    const user = await loginResponse.json();
-    setUser(user as User);
+    const _user = await loginResponse.json();
+    setUser(_user as User);
   };
 
-  const logOut = async () => {
+  const signOut = async () => {
     const apiServiceBuilder = new ApiServiceBuilder({
       method: HTTP_METHOD.GET,
       endpoint: "/auth/sign-out",
+      requiresAuthorization: true,
     });
     const apiService = apiServiceBuilder.build();
-    const logoutResponse = await apiService();
+    const signOutResponse = await apiService();
 
-    if (!logoutResponse.ok) {
-      const errorMessage = await logoutResponse.text();
+    if (!signOutResponse.ok) {
+      const errorMessage = await signOutResponse.text();
       throw new Error(errorMessage);
     }
 
-    setUser(null);
+    setUser(undefined);
     router.push(PAGES.LANDING);
   };
 
@@ -182,7 +188,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       isLoading,
       signUp,
       signIn,
-      logOut,
+      signOut,
       resetPassword,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -190,9 +196,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   );
 
   return (
-    <AuthContext.Provider value={memoedValue}>
-      {!isLoading && children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={memoedValue}>{children}</AuthContext.Provider>
   );
 };
 

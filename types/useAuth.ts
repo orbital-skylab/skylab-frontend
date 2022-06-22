@@ -5,7 +5,7 @@ export interface AuthProviderProps {
 }
 
 export interface IAuth {
-  user: User | null;
+  user: User | undefined;
   isLoading: boolean;
   signUp: ({
     name,
@@ -25,6 +25,6 @@ export interface IAuth {
     role: "students" | "mentors" | "advisers" | "facilitators";
   }) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
-  logOut: () => Promise<void>;
+  signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
 }
