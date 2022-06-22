@@ -1,21 +1,23 @@
 import { PAGES } from "@/helpers/navigation";
 import useAuth from "@/hooks/useAuth";
 import { FULL_HEIGHT_MINUS_NAV, NAVBAR_HEIGHT_REM } from "@/styles/constants";
-import { Box, Typography, Stack, Grid, Button, Container } from "@mui/material";
+import { Typography, Stack, Grid, Button, Container } from "@mui/material";
 import { useRouter } from "next/router";
 import { FC } from "react";
+import Body from "../layout/Body";
 import HeroSignIn from "./HeroSignIn";
 
 const Hero: FC = () => {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const router = useRouter();
 
   return (
     <>
-      <Box
-        sx={{
-          paddingBottom: { md: NAVBAR_HEIGHT_REM },
-        }}
+      <Body
+        isLoading={isLoading}
+        // sx={{
+        //   paddingBottom: { md: NAVBAR_HEIGHT_REM },
+        // }}
       >
         <Container maxWidth="md">
           <Grid container>
@@ -88,7 +90,7 @@ const Hero: FC = () => {
             </Grid>
           </Grid>
         </Container>
-      </Box>
+      </Body>
     </>
   );
 };
