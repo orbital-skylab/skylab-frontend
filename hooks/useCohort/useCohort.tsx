@@ -30,7 +30,7 @@ export const CohortProvider = ({ children }: CohortProviderProps) => {
 
   return (
     <CohortContext.Provider value={memoedValue}>
-      {!isLoading && children}
+      {children}
     </CohortContext.Provider>
   );
 };

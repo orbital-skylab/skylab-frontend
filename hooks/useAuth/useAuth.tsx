@@ -15,7 +15,7 @@ const AuthContext = createContext<IAuth>({
   signIn: async () => {
     /* Placeholder for callback function */
   },
-  logOut: async () => {
+  signOut: async () => {
     /* Placeholder for callback function */
   },
   resetPassword: async () => {
@@ -154,7 +154,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setUser(user as User);
   };
 
-  const logOut = async () => {
+  const signOut = async () => {
     const apiServiceBuilder = new ApiServiceBuilder({
       method: HTTP_METHOD.GET,
       endpoint: "/auth/sign-out",
@@ -182,7 +182,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       isLoading,
       signUp,
       signIn,
-      logOut,
+      signOut,
       resetPassword,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -190,9 +190,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   );
 
   return (
-    <AuthContext.Provider value={memoedValue}>
-      {!isLoading && children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={memoedValue}>{children}</AuthContext.Provider>
   );
 };
 

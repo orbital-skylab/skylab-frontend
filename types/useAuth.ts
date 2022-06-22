@@ -25,6 +25,6 @@ export interface IAuth {
     role: "students" | "mentors" | "advisers" | "facilitators";
   }) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
-  logOut: () => Promise<void>;
+  signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
 }

@@ -21,7 +21,7 @@ import { LANDING_SIGN_IN_ID } from "../../Hero/HeroSignIn";
 
 const Navbar: FC = () => {
   const router = useRouter();
-  const { user, logOut } = useAuth();
+  const { user, signOut } = useAuth();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const trigger = useScrollTrigger({ threshold: 0 });
 
@@ -61,7 +61,7 @@ const Navbar: FC = () => {
         };
       } else if (action === NAVBAR_ACTIONS.SIGN_OUT) {
         return () => {
-          logOut();
+          signOut();
           handleCloseNavMenu();
         };
       } else {
