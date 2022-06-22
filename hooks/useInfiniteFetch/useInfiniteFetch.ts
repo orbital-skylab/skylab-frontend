@@ -14,7 +14,6 @@ export default function useInfiniteFetch<T>({
   page: number;
   requiresAuthorization?: boolean;
 }) {
-  const token = "placeholderToken"; // TODO: Retrieve from useAuth
   const [status, setStatus] = useState<FETCH_STATUS>(FETCH_STATUS.IDLE);
   const [error, setError] = useState("");
   const [data, setData] = useState<T[]>([]);
@@ -37,10 +36,8 @@ export default function useInfiniteFetch<T>({
         const apiServiceBuilder = new ApiServiceBuilder({
           method: HTTP_METHOD.GET,
           endpoint: endpointWithQueryParams,
+          requiresAuthorization,
         });
-        if (requiresAuthorization) {
-          apiServiceBuilder.setToken(token);
-        }
         const apiService = apiServiceBuilder.build();
 
         const response = await apiService();
