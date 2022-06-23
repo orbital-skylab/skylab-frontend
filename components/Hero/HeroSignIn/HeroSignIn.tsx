@@ -1,13 +1,12 @@
 import TextInput from "@/components/formControllers/TextInput";
 import SnackbarAlert from "@/components/SnackbarAlert/SnackbarAlert";
-import { SNACKBAR_ALERT_INITIAL } from "@/helpers/forms";
 import { PAGES } from "@/helpers/navigation";
 import useAuth from "@/hooks/useAuth";
-import { SnackbarAlertType } from "@/types/forms";
+import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 import { Box, Stack, Typography, Button } from "@mui/material";
 import { Formik, FormikHelpers } from "formik";
 import Link from "next/link";
-import { FC, useState } from "react";
+import { FC } from "react";
 
 export const LANDING_SIGN_IN_ID = "landingSignIn";
 
@@ -18,9 +17,7 @@ interface SignInFormValuesType {
 
 const HeroSignIn: FC = () => {
   const { user, signIn } = useAuth();
-  const [snackbar, setSnackbar] = useState<SnackbarAlertType>(
-    SNACKBAR_ALERT_INITIAL
-  );
+  const { snackbar, setSuccess, setError, handleClose } = useSnackbarAlert();
 
   const initialValues: SignInFormValuesType = {
     email: "",
@@ -34,15 +31,9 @@ const HeroSignIn: FC = () => {
     const { email, password } = values;
     try {
       await signIn(email, password);
-      setSnackbar({
-        severity: "success",
-        message: "You have signed in successfully!",
-      });
+      setSuccess("You have signed in successfully!");
     } catch (error) {
-      setSnackbar({
-        severity: "error",
-        message: error instanceof Error ? error.message : String(error),
-      });
+      setError(error instanceof Error ? error.message : String(error));
     }
 
     actions.setSubmitting(false);
@@ -50,7 +41,7 @@ const HeroSignIn: FC = () => {
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} setSnackbar={setSnackbar} />
+      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       {!user ? (
         <Box sx={{ width: "100%" }} id={LANDING_SIGN_IN_ID}>
           <Formik initialValues={initialValues} onSubmit={handleSubmit}>

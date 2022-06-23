@@ -10,6 +10,8 @@ import { useState } from "react";
  * @param {string} param0.endpoint the endpoint of where to make the request to (the apiservicebuilder automatically prepends the backend api url).
  * @param {{key: string}: any} param0.body the body of the request.
  * @param {boolean} param0.requiresAuthorization whether the endpoint requires the user to be authorized.
+ * @param {Function} param0.onSuccess the function called when the function is successful
+ * @param {Function} param0.onError the function called when the function has an error
  * @returns an object where status is the status of the request, error is any encountered error (if any), call is the function to actually make the api request.
 
  */
@@ -17,18 +19,27 @@ const useApiCall = ({
   method = HTTP_METHOD.POST,
   endpoint = "",
   body = {},
+  requiresAuthorization,
   onSuccess,
+  onError,
 }: {
   method?: HTTP_METHOD;
   endpoint: string;
   body?: { [key: string]: any };
-  onSuccess?: <T>(data: T) => void;
+  requiresAuthorization?: boolean;
+  onSuccess?: (data: any) => void;
+  onError?: (error: string) => void;
 }) => {
   const [status, setStatus] = useState<CALL_STATUS>(CALL_STATUS.IDLE);
   const [error, setError] = useState("");
 
   /* Building API service. */
-  const apiServiceBuilder = new ApiServiceBuilder({ method, endpoint, body });
+  const apiServiceBuilder = new ApiServiceBuilder({
+    method,
+    endpoint,
+    body,
+    requiresAuthorization,
+  });
 
   /* Calls the actual API call with the specified api service. */
   async function call(body?: { [key: string]: any }) {
@@ -47,15 +58,22 @@ const useApiCall = ({
         throw error;
       }
 
+      const data = await res.json();
       if (onSuccess) {
-        const data = await res.json();
         onSuccess(data);
       }
 
       setStatus(CALL_STATUS.SUCCESS);
+      return data;
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : (error as string));
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      if (onError) {
+        onError(errorMessage);
+      }
+      setError(errorMessage);
       setStatus(CALL_STATUS.ERROR);
+      throw errorMessage;
     }
   }
 

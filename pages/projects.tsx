@@ -2,6 +2,7 @@ import {
   ChangeEvent,
   SyntheticEvent,
   useCallback,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -111,6 +112,12 @@ const Projects: NextPage = () => {
     setPage,
     observer
   );
+
+  useEffect(() => {
+    if (currentCohortYear) {
+      setSelectedCohortYear(currentCohortYear);
+    }
+  }, [currentCohortYear]);
 
   return (
     <>

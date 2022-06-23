@@ -7,9 +7,14 @@ import { FC } from "react";
 type Props = {
   message: string;
   showReturnHome?: boolean;
+  actionPrompt?: React.ReactNode;
 };
 
-const NoneFound: FC<Props> = ({ message, showReturnHome = false }) => {
+const NoneFound: FC<Props> = ({
+  message,
+  showReturnHome = false,
+  actionPrompt,
+}) => {
   return (
     <>
       <Box
@@ -31,6 +36,7 @@ const NoneFound: FC<Props> = ({ message, showReturnHome = false }) => {
             <Button variant="contained">Return Home</Button>
           </Link>
         ) : null}
+        {actionPrompt}
       </Box>
     </>
   );

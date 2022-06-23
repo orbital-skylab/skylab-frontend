@@ -70,7 +70,8 @@ export function parseQueryParams(queryParams: QueryParams | undefined): string {
 
 export function isFetching(...statuses: FETCH_STATUS[]) {
   return statuses.reduce(
-    (acc, val) => acc || val === FETCH_STATUS.FETCHING,
+    (acc, val) =>
+      acc || val === FETCH_STATUS.FETCHING || val === FETCH_STATUS.IDLE,
     false
   );
 }

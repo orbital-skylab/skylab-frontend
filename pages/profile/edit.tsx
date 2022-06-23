@@ -1,12 +1,10 @@
 import Body from "@/components/layout/Body";
 import TextInput from "@/components/formControllers/TextInput";
 import SnackbarAlert from "@/components/SnackbarAlert";
-import { SNACKBAR_ALERT_INITIAL } from "@/helpers/forms";
 import { PAGES } from "@/helpers/navigation";
 import useApiCall from "@/hooks/useApiCall";
 import useAuth from "@/hooks/useAuth";
 import { HTTP_METHOD } from "@/types/api";
-import { SnackbarAlertType } from "@/types/forms";
 import {
   Button,
   Card,
@@ -20,6 +18,7 @@ import type { NextPage } from "next";
 import Link from "next/link";
 import { useState } from "react";
 import { LoadingButton } from "@mui/lab";
+import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 
 interface EditProfileFormValues {
   profilePicUrl: string;
@@ -35,9 +34,7 @@ const EditProfile: NextPage = () => {
     method: HTTP_METHOD.PUT,
     endpoint: `/users/${user?.email}`,
   });
-  const [snackbar, setSnackbar] = useState<SnackbarAlertType>(
-    SNACKBAR_ALERT_INITIAL
-  );
+  const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
   const [hasSuccessfullySubmitted, setHasSuccessfullySubmitted] =
     useState(false);
 
@@ -60,17 +57,11 @@ const EditProfile: NextPage = () => {
     try {
       const res = await editProfile.call({ user: processedValues });
       console.log(res);
-      setSnackbar({
-        severity: "success",
-        message: "You have successfully edited your profile",
-      });
+      setSuccess("You have successfully edited your profile");
       setHasSuccessfullySubmitted(true);
       actions.resetForm();
     } catch (error) {
-      setSnackbar({
-        severity: "error",
-        message: error instanceof Error ? error.message : String(error),
-      });
+      setError(error instanceof Error ? error.message : String(error));
     }
 
     actions.setSubmitting(false);
@@ -82,7 +73,7 @@ const EditProfile: NextPage = () => {
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} setSnackbar={setSnackbar} />
+      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <Body flexColCenter>
         <Container maxWidth="sm" sx={{ padding: 0 }}>
           <Typography variant="h5" fontWeight={600} mb="1rem">

@@ -5,7 +5,6 @@ import { AuthProviderProps, IAuth } from "@/hooks/useAuth/useAuth.types";
 import { User } from "@/types/users";
 import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-// import useFetch, { isFetching } from "../useFetch";
 
 const AuthContext = createContext<IAuth>({
   user: undefined,
@@ -26,12 +25,6 @@ const AuthContext = createContext<IAuth>({
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const router = useRouter();
-  // const { data: user, status } = useFetch<User>({
-  //   endpoint: "/auth/info",
-  //   requiresAuthorization: true,
-  // });
-
-  // const isLoading = isFetching(status);
 
   const [user, setUser] = useState<User | undefined>();
   const [isLoading, setIsLoading] = useState(false);
@@ -64,6 +57,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const signUp = async ({
     name,
     email,
+    password,
     cohortYear,
     role,
     matricNo,
@@ -71,6 +65,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }: {
     name?: string;
     email: string;
+    password?: string;
     cohortYear: number;
     role: "students" | "advisers" | "mentors" | "facilitators";
     matricNo?: string;
@@ -87,7 +82,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
 
     if (user && name) {
-      user.name = name;
+      body.user.name = name;
+    }
+    if (user && password) {
+      body.user.password = password;
     }
 
     switch (role) {
