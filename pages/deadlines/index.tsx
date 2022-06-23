@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { NextPage } from "next";
 // Libraries
 import {
@@ -21,6 +21,7 @@ import { Cohort } from "@/types/cohorts";
 import { Deadline } from "@/types/deadlines";
 import { Add } from "@mui/icons-material";
 import AddDeadlineModal from "@/components/modals/AddDeadlineModal";
+import useCohort from "@/hooks/useCohort";
 
 export type GetDeadlinesResponse = {
   deadlines: Deadline[];
@@ -28,17 +29,14 @@ export type GetDeadlinesResponse = {
 
 const Deadlines: NextPage = () => {
   const [isAddDeadlineOpen, setIsAddDeadlineOpen] = useState(false);
-
+  const {
+    cohorts,
+    currentCohortYear,
+    isLoading: isLoadingCohorts,
+  } = useCohort();
   const [selectedCohortYear, setSelectedCohortYear] = useState<
     Cohort["academicYear"] | null
   >(null);
-
-  /** Fetching cohorts and setting latest cohort */
-  const { data: cohorts, status: fetchCohortsStatus } = useFetch<Cohort[]>({
-    endpoint: "/cohorts",
-    onFetch: (cohorts) =>
-      setSelectedCohortYear(cohorts.length ? cohorts[0].academicYear : null),
-  });
 
   /** Fetching staff based on filters */
   const memoQueryParams = useMemo(() => {
@@ -64,6 +62,12 @@ const Deadlines: NextPage = () => {
     setIsAddDeadlineOpen(true);
   };
 
+  useEffect(() => {
+    if (currentCohortYear) {
+      setSelectedCohortYear(currentCohortYear);
+    }
+  }, [currentCohortYear]);
+
   return (
     <>
       <AddDeadlineModal
@@ -73,8 +77,8 @@ const Deadlines: NextPage = () => {
         mutate={mutate}
       />
       <Body
-        isError={isError(fetchDeadlinesStatus, fetchCohortsStatus)}
-        isLoading={isFetching(fetchCohortsStatus)}
+        isError={isError(fetchDeadlinesStatus)}
+        isLoading={isLoadingCohorts}
       >
         <Stack
           direction="row"
