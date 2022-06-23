@@ -1,52 +1,22 @@
 import { ApiServiceBuilder } from "@/helpers/api";
 import { PAGES } from "@/helpers/navigation";
 import { HTTP_METHOD } from "@/types/api";
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-  signOut,
-  User,
-} from "firebase/auth";
+import { AuthProviderProps, IAuth } from "@/hooks/useAuth/useAuth.types";
+import { User } from "@/types/users";
 import { useRouter } from "next/router";
-
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { auth } from "../../firebase";
-
-interface IAuth {
-  user: User | null;
-  signUp: ({
-    name,
-    email,
-    password,
-    matricNo,
-    nusnetId,
-    cohortYear,
-    role,
-  }: {
-    name?: string;
-    email: string;
-    password: string;
-    matricNo?: string;
-    nusnetId?: string;
-    cohortYear: number;
-    role: "students" | "mentors" | "advisers";
-  }) => Promise<void>;
-  signIn: (email: string, password: string) => Promise<void>;
-  logOut: () => Promise<void>;
-  resetPassword: (email: string) => Promise<void>;
-}
+// import useFetch, { isFetching } from "../useFetch";
 
 const AuthContext = createContext<IAuth>({
-  user: null,
+  user: undefined,
+  isLoading: false,
   signUp: async () => {
     /* Placeholder for callback function */
   },
   signIn: async () => {
     /* Placeholder for callback function */
   },
-  logOut: async () => {
+  signOut: async () => {
     /* Placeholder for callback function */
   },
   resetPassword: async () => {
@@ -54,24 +24,39 @@ const AuthContext = createContext<IAuth>({
   },
 });
 
-interface AuthProviderProps {
-  children?: React.ReactNode;
-}
-
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
+  // const { data: user, status } = useFetch<User>({
+  //   endpoint: "/auth/info",
+  //   requiresAuthorization: true,
+  // });
 
-  useEffect(
-    () =>
-      onAuthStateChanged(auth, (currentUser) => {
-        setUser(currentUser);
-        setLoading(false);
-      }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [auth]
-  );
+  // const isLoading = isFetching(status);
+
+  const [user, setUser] = useState<User | undefined>();
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      setIsLoading(true);
+      const apiServiceBuilder = new ApiServiceBuilder({
+        method: HTTP_METHOD.GET,
+        endpoint: "/auth/info",
+        requiresAuthorization: true,
+      });
+      const apiService = apiServiceBuilder.build();
+      const response = await apiService();
+
+      if (response.ok) {
+        const _user = await response.json();
+        setUser(_user as User);
+      }
+
+      setIsLoading(false);
+    };
+
+    if (!user) fetchUserInfo();
+  }, [user]);
 
   /**
    * TODO: ONLY FOR TESTING PURPOSES
@@ -79,7 +64,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const signUp = async ({
     name,
     email,
-    password,
     cohortYear,
     role,
     matricNo,
@@ -87,94 +71,132 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }: {
     name?: string;
     email: string;
-    password: string;
     cohortYear: number;
-    role: "students" | "advisers" | "mentors";
+    role: "students" | "advisers" | "mentors" | "facilitators";
     matricNo?: string;
     nusnetId?: string;
-  }): Promise<void> => {
-    const body: { user: { [key: string]: string | number } } = {
-      user: { email, cohortYear },
+  }) => {
+    const body: {
+      user: { [key: string]: string | number };
+      student?: { nusnetId: string; matricNo: string; cohortYear: number };
+      mentor?: { cohortYear: number };
+      adviser?: { cohortYear: number };
+      facilitator?: { cohortYear: number };
+    } = {
+      user: { email },
     };
-    if (name) body.user = { ...body.user, name };
-    if (matricNo) body.user = { ...body.user, matricNo };
-    if (nusnetId) body.user = { ...body.user, nusnetId };
+
+    if (user && name) {
+      user.name = name;
+    }
+
+    switch (role) {
+      case "students":
+        body.student = {
+          nusnetId: nusnetId ?? "",
+          matricNo: matricNo ?? "",
+          cohortYear,
+        };
+        break;
+      case "mentors":
+        body.mentor = {
+          cohortYear,
+        };
+        break;
+      case "advisers":
+        body.adviser = {
+          cohortYear,
+        };
+        break;
+      case "facilitators":
+        body.facilitator = {
+          cohortYear,
+        };
+        break;
+      default:
+        break;
+    }
+
     /**
      * attempt to create new user in postgres
      */
     const apiServiceBuilder = new ApiServiceBuilder({
       method: HTTP_METHOD.POST,
-      endpoint: `/${role}`,
+      endpoint: `/users/create-${role.slice(0, role.length - 1)}`, // remove the last "s" in the role name
       body,
     });
     const apiService = apiServiceBuilder.build();
     const createUserResponse = await apiService();
 
     /**
-     * terminate sign up if postgres user creation fails and display error message
+     * throw error if postgres user creation failed
      */
     if (!createUserResponse.ok) {
       const errorMessage = await createUserResponse.text();
       throw new Error(errorMessage);
     }
-
-    /**
-     * attempt to create new user in firebase
-     */
-    await createUserWithEmailAndPassword(auth, email, password).catch(
-      async (err) => {
-        /**
-         * delete user in postgres if firebase user creation fails
-         */
-        const apiServiceBuilder = new ApiServiceBuilder({
-          method: HTTP_METHOD.DELETE,
-          endpoint: `/${email}`,
-        });
-        const apiService = apiServiceBuilder.build();
-        const deleteUserResponse = await apiService();
-
-        /**
-         * terminate sign up after deleting user in postgres and display error message
-         */
-        if (!deleteUserResponse.ok) {
-          const errorMessage = await deleteUserResponse.text();
-          throw new Error(errorMessage);
-        } else {
-          throw new Error(
-            err instanceof Error
-              ? err.message
-              : "Something went wrong while signing up"
-          );
-        }
-
-        throw err;
-      }
-    );
   };
 
   const signIn = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password);
+    const apiServiceBuilder = new ApiServiceBuilder({
+      method: HTTP_METHOD.POST,
+      endpoint: "/auth/sign-in",
+      body: { email, password },
+      requiresAuthorization: true,
+    });
+    const apiService = apiServiceBuilder.build();
+    const loginResponse = await apiService();
+
+    /**
+     * Unsuccessful user login
+     */
+    if (!loginResponse.ok) {
+      const errorMessage = await loginResponse.text();
+      throw new Error(errorMessage);
+    }
+
+    const _user = await loginResponse.json();
+    setUser(_user as User);
   };
 
-  const logOut = async () => {
-    await signOut(auth);
+  const signOut = async () => {
+    const apiServiceBuilder = new ApiServiceBuilder({
+      method: HTTP_METHOD.GET,
+      endpoint: "/auth/sign-out",
+      requiresAuthorization: true,
+    });
+    const apiService = apiServiceBuilder.build();
+    const signOutResponse = await apiService();
+
+    if (!signOutResponse.ok) {
+      const errorMessage = await signOutResponse.text();
+      throw new Error(errorMessage);
+    }
+
+    setUser(undefined);
     router.push(PAGES.LANDING);
   };
 
   const resetPassword = async (email: string) => {
-    await sendPasswordResetEmail(auth, email);
+    console.log(email);
+    // TODO: sendinblue
   };
 
   const memoedValue = useMemo(
-    () => ({ user, signUp, signIn, logOut, resetPassword }),
+    () => ({
+      user,
+      isLoading,
+      signUp,
+      signIn,
+      signOut,
+      resetPassword,
+    }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [user]
   );
 
   return (
-    <AuthContext.Provider value={memoedValue}>
-      {!loading && children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={memoedValue}>{children}</AuthContext.Provider>
   );
 };
 
