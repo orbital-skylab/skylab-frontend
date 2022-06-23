@@ -123,7 +123,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
      */
     const apiServiceBuilder = new ApiServiceBuilder({
       method: HTTP_METHOD.POST,
-      endpoint: `/users/create-${role.slice(0, role.length - 2)}`, // remove the last "s" in the role name
+      endpoint: `/users/create-${role.slice(0, role.length - 1)}`, // remove the last "s" in the role name
       body,
     });
     const apiService = apiServiceBuilder.build();
