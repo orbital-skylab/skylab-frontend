@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=0",
+    "typecheck": "tsc --noemit",
     "prettier": "prettier --check .",
     "prettier:write": "prettier --write .",
     "prepare": "husky install",
