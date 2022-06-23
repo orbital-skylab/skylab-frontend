@@ -68,7 +68,7 @@ const Projects: NextPage = () => {
   }, [selectedCohortYear, selectedLevel, querySearch]);
   const {
     data: projects,
-    status: fetchProjectStatus,
+    status: fetchProjectsStatus,
     hasMore,
   } = useInfiniteFetch<Project>({
     endpoint: `/projects`,
@@ -89,7 +89,7 @@ const Projects: NextPage = () => {
   const debouncedSetQuerySearch = useCallback(
     debounce((val) => {
       setQuerySearch(val);
-    }),
+    }, 500),
     []
   );
 
@@ -107,7 +107,7 @@ const Projects: NextPage = () => {
   /** To fetch more projects when the bottom of the page is reached */
   const observer = useRef<IntersectionObserver | null>(null);
   const bottomOfPageRef = createBottomOfPageRef(
-    isFetching(fetchProjectStatus),
+    isFetching(fetchProjectsStatus),
     hasMore,
     setPage,
     observer
@@ -121,7 +121,7 @@ const Projects: NextPage = () => {
 
   return (
     <>
-      <Body isError={isError(fetchProjectStatus)} isLoading={isLoadingCohorts}>
+      <Body isError={isError(fetchProjectsStatus)} isLoading={isLoadingCohorts}>
         <Stack direction="column" mt="0.5rem" mb="1rem">
           <Stack
             direction="row"
@@ -173,7 +173,7 @@ const Projects: NextPage = () => {
         <NoDataWrapper
           noDataCondition={
             (projects === undefined || projects?.length === 0) &&
-            !isFetching(fetchProjectStatus)
+            !isFetching(fetchProjectsStatus)
           }
           fallback={<NoneFound message="No such projects found" />}
         >
@@ -189,7 +189,7 @@ const Projects: NextPage = () => {
               : null}
           </Grid>
           <div ref={bottomOfPageRef} />
-          {isFetching(fetchProjectStatus) ? (
+          {isFetching(fetchProjectsStatus) ? (
             <Box
               sx={{
                 display: "grid",
