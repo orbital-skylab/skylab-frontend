@@ -1,18 +1,27 @@
 import { ApiServiceBuilder } from "@/helpers/api";
 import { HTTP_METHOD } from "@/types/api";
 import { useEffect, useState } from "react";
-import { FETCH_STATUS, parseQueryParams, QueryParams } from "@/hooks/useFetch";
-
-export default function useInfiniteFetch<T>({
+import {
+  FETCH_STATUS,
+  Mutate,
+  parseQueryParams,
+  QueryParams,
+} from "@/hooks/useFetch";
+/**
+ * U is the shape of the API response, T is the shape of a single element
+ */
+export default function useInfiniteFetch<U, T>({
   endpoint,
   queryParams,
   page,
   requiresAuthorization = false,
+  responseToData,
 }: {
   endpoint: string;
   queryParams: QueryParams;
   page: number;
   requiresAuthorization?: boolean;
+  responseToData: (response: U) => T[];
 }) {
   const [status, setStatus] = useState<FETCH_STATUS>(FETCH_STATUS.IDLE);
   const [error, setError] = useState("");
@@ -40,8 +49,8 @@ export default function useInfiniteFetch<T>({
         });
         const apiService = apiServiceBuilder.build();
 
-        const response = await apiService();
-        const data: T[] = await response.json();
+        const response = await (await apiService()).json();
+        const data = responseToData(response);
         setData((prevData) => [...prevData, ...data]);
         setHasMore(data.length > 0);
         setStatus(FETCH_STATUS.FETCHED);
@@ -51,7 +60,14 @@ export default function useInfiniteFetch<T>({
       }
     };
     fetchData();
-  }, [endpoint, requiresAuthorization, queryParams, page]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [endpoint, queryParams, page]);
 
-  return { status, error, data, hasMore };
+  /* Mutate function to modify the state of the fetched data directly. */
+  const mutate: Mutate<T[]> = async (mutator) => {
+    const mutatedData = mutator([...data]);
+    setData(mutatedData);
+  };
+
+  return { status, error, data, hasMore, mutate };
 }

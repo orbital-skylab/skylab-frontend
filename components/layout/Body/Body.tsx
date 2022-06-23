@@ -23,7 +23,6 @@ const Body: FC<Props> = ({
     minHeight: "100vh",
     height: "100%",
     paddingTop: NAVBAR_HEIGHT_REM,
-    paddingX: "1rem",
   };
 
   if (flexColCenter) {
@@ -36,7 +35,7 @@ const Body: FC<Props> = ({
   return (
     <>
       <Box sx={boxSx}>
-        <Container maxWidth="xl" sx={{ padding: 0 }}>
+        <Container maxWidth="xl">
           <LoadingWrapper
             isLoading={!!isLoading}
             loadingText={loadingText}

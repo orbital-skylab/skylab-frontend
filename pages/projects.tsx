@@ -54,8 +54,8 @@ const Projects: NextPage = () => {
     isLoading: isLoadingCohorts,
   } = useCohort();
   const [selectedCohortYear, setSelectedCohortYear] = useState<
-    Cohort["academicYear"] | undefined
-  >(currentCohortYear);
+    Cohort["academicYear"] | string
+  >("");
 
   /** For fetching projects based on filters */
   const memoQueryParams = useMemo(() => {
@@ -70,10 +70,11 @@ const Projects: NextPage = () => {
     data: projects,
     status: fetchProjectsStatus,
     hasMore,
-  } = useInfiniteFetch<Project>({
+  } = useInfiniteFetch<Project[], Project>({
     endpoint: `/projects`,
     queryParams: memoQueryParams,
     page,
+    responseToData: (response) => response,
   });
 
   /** Input Change Handlers */
@@ -99,7 +100,9 @@ const Projects: NextPage = () => {
     setPage(0);
   };
 
-  const handleCohortYearChange = (e: SelectChangeEvent<number | null>) => {
+  const handleCohortYearChange = (
+    e: SelectChangeEvent<number | string | null>
+  ) => {
     setSelectedCohortYear(e.target.value as Cohort["academicYear"]);
     setPage(0);
   };
@@ -137,7 +140,6 @@ const Projects: NextPage = () => {
               size="small"
             />
             <Select
-              name="cohort"
               label="Cohort"
               value={selectedCohortYear}
               onChange={handleCohortYearChange}

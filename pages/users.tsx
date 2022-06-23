@@ -1,6 +1,7 @@
 import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import Body from "@/components/layout/Body";
+import UserTable from "@/components/tables/UserTable";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import useCohort from "@/hooks/useCohort";
 import { isFetching } from "@/hooks/useFetch";
@@ -69,6 +70,10 @@ const users: User[] = [
   },
 ];
 
+export type GetUsersResponse = {
+  users: User[];
+};
+
 const LIMIT = 50;
 
 enum ROLES {
@@ -89,8 +94,8 @@ const Users: NextPage = () => {
     isLoading: isLoadingCohorts,
   } = useCohort();
   const [selectedCohortYear, setSelectedCohortYear] = useState<
-    Cohort["academicYear"] | undefined
-  >(currentCohortYear);
+    Cohort["academicYear"] | string
+  >("");
 
   /** For fetching users based on filters */
   const memoQueryParams = useMemo(() => {
@@ -102,13 +107,16 @@ const Users: NextPage = () => {
     };
   }, [selectedCohortYear, selectedRole, querySearch]);
   const {
-    data: usersTODO,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    data: usersToDo,
     status: fetchUsersStatus,
     hasMore,
-  } = useInfiniteFetch<User>({
+    mutate,
+  } = useInfiniteFetch<GetUsersResponse, User>({
     endpoint: `/users`,
     queryParams: memoQueryParams,
     page,
+    responseToData: (response) => response.users,
   });
 
   /** Input Change Handlers */
@@ -131,7 +139,9 @@ const Users: NextPage = () => {
     setPage(0);
   };
 
-  const handleCohortYearChange = (e: SelectChangeEvent<number | null>) => {
+  const handleCohortYearChange = (
+    e: SelectChangeEvent<number | string | null>
+  ) => {
     setSelectedCohortYear(e.target.value as Cohort["academicYear"]);
     setPage(0);
   };
@@ -202,9 +212,10 @@ const Users: NextPage = () => {
         </Tabs>
       </Stack>
       <NoDataWrapper
-        noDataCondition={users.length === 0}
+        noDataCondition={users === undefined || users.length === 0}
         fallback={<NoneFound message="No such users found" />}
       >
+        <UserTable users={users} mutate={mutate} />
         <div ref={bottomOfPageRef} />
         {isFetching(fetchUsersStatus) ? (
           <Box

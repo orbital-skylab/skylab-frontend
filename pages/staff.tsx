@@ -65,8 +65,8 @@ const Staff: NextPage = () => {
     isLoading: isLoadingCohorts,
   } = useCohort();
   const [selectedCohortYear, setSelectedCohortYear] = useState<
-    Cohort["academicYear"] | undefined
-  >(currentCohortYear);
+    Cohort["academicYear"] | string
+  >("");
 
   /** Fetching staff based on filters */
   const memoQueryParams = useMemo(() => {
@@ -121,7 +121,9 @@ const Staff: NextPage = () => {
     debouncedSetQuerySearch(e.target.value);
   };
 
-  const handleCohortYearChange = (e: SelectChangeEvent<number | null>) => {
+  const handleCohortYearChange = (
+    e: SelectChangeEvent<number | string | null>
+  ) => {
     setSelectedCohortYear(e.target.value as Cohort["academicYear"]);
   };
 

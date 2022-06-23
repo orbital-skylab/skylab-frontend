@@ -2,7 +2,7 @@ import { Cohort } from "../../types/cohorts";
 
 export interface ICohort {
   cohorts: Cohort[] | undefined;
-  currentCohortYear: number | undefined;
+  currentCohortYear: Cohort["academicYear"] | undefined;
   isLoading: boolean;
 }
 
