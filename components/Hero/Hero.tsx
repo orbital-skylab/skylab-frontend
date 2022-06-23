@@ -1,7 +1,7 @@
 import { PAGES } from "@/helpers/navigation";
 import useAuth from "@/hooks/useAuth";
 import { FULL_HEIGHT_MINUS_NAV, NAVBAR_HEIGHT_REM } from "@/styles/constants";
-import { Box, Typography, Stack, Grid, Button, Container } from "@mui/material";
+import { Typography, Stack, Grid, Button, Container, Box } from "@mui/material";
 import { useRouter } from "next/router";
 import { FC } from "react";
 import HeroSignIn from "./HeroSignIn";

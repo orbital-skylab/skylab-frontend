@@ -7,6 +7,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 // Hooks
 import { AuthProvider } from "@/hooks/useAuth";
+import { CohortProvider } from "@/hooks/useCohort";
 // Styling
 import "../styles/globals.scss";
 import { theme } from "@/styles/muiTheme";
@@ -19,11 +20,13 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="description" content="NUS Skylab" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <AuthProvider>
-        <Navbar />
-        <Component {...pageProps} />
-        <Footer />
-      </AuthProvider>
+      <CohortProvider>
+        <AuthProvider>
+          <Navbar />
+          <Component {...pageProps} />
+          <Footer />
+        </AuthProvider>
+      </CohortProvider>
     </ThemeProvider>
   );
 }

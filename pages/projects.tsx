@@ -2,6 +2,7 @@ import {
   ChangeEvent,
   SyntheticEvent,
   useCallback,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -23,8 +24,8 @@ import {
 } from "@mui/material";
 // Hooks
 import useInfiniteFetch from "@/hooks/useInfiniteFetch";
-import useFetch, { isError, isFetching } from "@/hooks/useFetch";
-import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
+import { isError, isFetching } from "@/hooks/useFetch";
+import useCohort from "@/hooks/useCohort";
 // Helpers
 import { createBottomOfPageRef } from "@/hooks/useInfiniteFetch";
 // Types
@@ -33,9 +34,11 @@ import { Cohort } from "@/types/cohorts";
 import Body from "@/components/layout/Body";
 import ProjectCard from "@/components/cards/ProjectCard";
 import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
+import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 // Constants
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
 import NoneFound from "@/components/emptyStates/NoneFound";
+
 const LIMIT = 16;
 
 const Projects: NextPage = () => {
@@ -45,16 +48,14 @@ const Projects: NextPage = () => {
   const [page, setPage] = useState(0);
   const [searchTextInput, setSearchTextInput] = useState(""); // The input value
   const [querySearch, setQuerySearch] = useState(""); // The debounced input value for searching
+  const {
+    currentCohortYear,
+    cohorts,
+    isLoading: isLoadingCohorts,
+  } = useCohort();
   const [selectedCohortYear, setSelectedCohortYear] = useState<
-    Cohort["academicYear"] | null
-  >(null);
-
-  /** For fetching cohorts and setting default as latest cohort */
-  const { data: cohorts, status: fetchCohortsStatus } = useFetch<Cohort[]>({
-    endpoint: "/cohorts",
-    onFetch: (cohorts) =>
-      setSelectedCohortYear(cohorts.length ? cohorts[0].academicYear : null),
-  });
+    Cohort["academicYear"] | undefined
+  >(currentCohortYear);
 
   /** For fetching projects based on filters */
   const memoQueryParams = useMemo(() => {
@@ -112,12 +113,15 @@ const Projects: NextPage = () => {
     observer
   );
 
+  useEffect(() => {
+    if (currentCohortYear) {
+      setSelectedCohortYear(currentCohortYear);
+    }
+  }, [currentCohortYear]);
+
   return (
     <>
-      <Body
-        isError={isError(fetchProjectStatus, fetchCohortsStatus)}
-        isLoading={isFetching(fetchCohortsStatus)}
-      >
+      <Body isError={isError(fetchProjectStatus)} isLoading={isLoadingCohorts}>
         <Stack direction="column" mt="0.5rem" mb="1rem">
           <Stack
             direction="row"

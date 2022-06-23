@@ -15,7 +15,7 @@ import { Cohort } from "@/types/cohorts";
 interface SignUpFormValuesType {
   name: string;
   email: string;
-  password: string;
+  password?: string;
   matricNo: string;
   nusnetId: string;
 }
@@ -40,7 +40,7 @@ const SignUp: NextPage = () => {
     values: SignUpFormValuesType,
     actions: FormikHelpers<SignUpFormValuesType>
   ) => {
-    const { name, email, password, matricNo, nusnetId } = values;
+    const { name, email, matricNo, nusnetId, password } = values;
     if (fetchCohortStatus === FETCH_STATUS.FETCHING) {
       alert("Still fetching latest cohort... Please try again");
       return;
@@ -71,7 +71,6 @@ const SignUp: NextPage = () => {
         signUp({
           name: `Student ${i}`,
           email: `student${i}@gmail.com`,
-          password: "test1234",
           cohortYear,
           role: "students",
           matricNo: `A000000${i}X`,
@@ -88,7 +87,6 @@ const SignUp: NextPage = () => {
         signUp({
           name: `Adviser ${i}`,
           email: `adviser${i}@gmail.com`,
-          password: "test1234",
           cohortYear,
           role: "advisers",
         })
@@ -104,7 +102,6 @@ const SignUp: NextPage = () => {
         signUp({
           name: `Mentor ${i}`,
           email: `mentor${i}@gmail.com`,
-          password: "test1234",
           cohortYear,
           role: "mentors",
         })

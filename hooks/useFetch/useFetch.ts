@@ -30,7 +30,6 @@ const useFetch = <T>({
   queryParams?: QueryParams;
   onFetch?: (data: T) => void;
 }): HookReturnType<T> => {
-  const token = "placeholderToken"; // TODO: Retrieve from useAuth
   /* Initializing reducer. */
   const initialState: State<T> = {
     status: FETCH_STATUS.IDLE,
@@ -39,7 +38,6 @@ const useFetch = <T>({
   };
   const reducer = createReducer<T>();
   const [state, dispatch] = useReducer(reducer, initialState);
-
   useEffect(() => {
     let cancelRequest = false;
     const fetchData = async () => {
@@ -52,10 +50,8 @@ const useFetch = <T>({
         const apiServiceBuilder = new ApiServiceBuilder({
           method: HTTP_METHOD.GET,
           endpoint: endpointWithQueryParams,
+          requiresAuthorization,
         });
-        if (requiresAuthorization) {
-          apiServiceBuilder.setToken(token);
-        }
         const apiService = apiServiceBuilder.build();
 
         const response = await apiService();

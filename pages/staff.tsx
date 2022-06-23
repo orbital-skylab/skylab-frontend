@@ -2,6 +2,7 @@ import {
   ChangeEvent,
   SyntheticEvent,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -27,6 +28,7 @@ import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import NoneFound from "@/components/emptyStates/NoneFound";
 // Hooks
 import useFetch, { isFetching, isError } from "@/hooks/useFetch";
+import useCohort from "@/hooks/useCohort";
 // Types
 import { STAFF_TYPES, STAFF_VALUES } from "@/types/staff";
 import { Cohort } from "@/types/cohorts";
@@ -52,21 +54,19 @@ type GetStaffResponse =
   | GetMentorsResponse;
 
 const Staff: NextPage = () => {
-  const [selectedCohortYear, setSelectedCohortYear] = useState<
-    Cohort["academicYear"] | null
-  >(null);
   const [querySearch, setQuerySearch] = useState("");
   const [searchTextInput, setSearchTextInput] = useState("");
   const [selectedType, setSelectedType] = useState<STAFF_TYPES>(
     STAFF_VALUES[0]
   );
-
-  /** Fetching cohorts and setting latest cohort */
-  const { data: cohorts, status: fetchCohortsStatus } = useFetch<Cohort[]>({
-    endpoint: "/cohorts",
-    onFetch: (cohorts) =>
-      setSelectedCohortYear(cohorts.length ? cohorts[0].academicYear : null),
-  });
+  const {
+    currentCohortYear,
+    cohorts,
+    isLoading: isLoadingCohorts,
+  } = useCohort();
+  const [selectedCohortYear, setSelectedCohortYear] = useState<
+    Cohort["academicYear"] | undefined
+  >(currentCohortYear);
 
   /** Fetching staff based on filters */
   const memoQueryParams = useMemo(() => {
@@ -125,12 +125,15 @@ const Staff: NextPage = () => {
     setSelectedCohortYear(e.target.value as Cohort["academicYear"]);
   };
 
+  useEffect(() => {
+    if (currentCohortYear) {
+      setSelectedCohortYear(currentCohortYear);
+    }
+  }, [currentCohortYear]);
+
   return (
     <>
-      <Body
-        isError={isError(fetchStaffStatus, fetchCohortsStatus)}
-        isLoading={isFetching(fetchCohortsStatus)}
-      >
+      <Body isError={isError(fetchStaffStatus)} isLoading={isLoadingCohorts}>
         <Stack direction="column" mt="0.5rem" mb="1rem">
           <Stack
             direction="row"
