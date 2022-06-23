@@ -1,5 +1,8 @@
 import { createContext, useMemo, useContext } from "react";
-import { ICohort, CohortProviderProps } from "@/types/useCohort";
+import {
+  ICohort,
+  CohortProviderProps,
+} from "@/hooks/useCohort/useCohort.types";
 import { Cohort } from "@/types/cohorts";
 import useFetch, { isFetching } from "../useFetch";
 

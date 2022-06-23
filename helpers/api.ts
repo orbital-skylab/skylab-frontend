@@ -5,7 +5,6 @@ import { CONTENT_TYPE, HTTP_METHOD } from "@/types/api";
  * Constants
  */
 export const API_URL = `${process.env.NEXT_PUBLIC_BASE_DEV_API_URL}`;
-export const AUTH_API_URL = "/api";
 export class ApiServiceBuilder {
   private endpoint: string;
   private body: { [key: string]: any };
@@ -67,9 +66,7 @@ export class ApiServiceBuilder {
   }
 
   build() {
-    const requestResource = `${
-      this.requiresAuthorization ? AUTH_API_URL : API_URL
-    }${this.endpoint}`;
+    const requestResource = `${API_URL}${this.endpoint}`;
 
     const requestInit: RequestInit = {};
 
@@ -84,6 +81,10 @@ export class ApiServiceBuilder {
 
     if (Object.keys(this.body).length > 0) {
       requestInit.body = JSON.stringify(this.body);
+    }
+
+    if (this.requiresAuthorization) {
+      requestInit.credentials = "include";
     }
 
     const apiService = async () => {

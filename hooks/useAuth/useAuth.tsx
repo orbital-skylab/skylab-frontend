@@ -1,7 +1,7 @@
 import { ApiServiceBuilder } from "@/helpers/api";
 import { PAGES } from "@/helpers/navigation";
 import { HTTP_METHOD } from "@/types/api";
-import { AuthProviderProps, IAuth } from "@/types/useAuth";
+import { AuthProviderProps, IAuth } from "@/hooks/useAuth/useAuth.types";
 import { User } from "@/types/users";
 import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
@@ -71,7 +71,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }: {
     name?: string;
     email: string;
-    password: string;
     cohortYear: number;
     role: "students" | "advisers" | "mentors" | "facilitators";
     matricNo?: string;

@@ -1,4 +1,4 @@
-import { User } from "./users";
+import { User } from "../../types/users";
 
 export interface AuthProviderProps {
   children?: React.ReactNode;
@@ -10,7 +10,6 @@ export interface IAuth {
   signUp: ({
     name,
     email,
-    password,
     matricNo,
     nusnetId,
     cohortYear,
@@ -18,7 +17,6 @@ export interface IAuth {
   }: {
     name?: string;
     email: string;
-    password: string;
     matricNo?: string;
     nusnetId?: string;
     cohortYear: number;

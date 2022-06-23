@@ -1,4 +1,4 @@
-import { Cohort } from "./cohorts";
+import { Cohort } from "../../types/cohorts";
 
 export interface ICohort {
   cohorts: Cohort[] | undefined;
