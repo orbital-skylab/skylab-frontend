@@ -33,7 +33,7 @@ const HeroSignIn: FC = () => {
       await signIn(email, password);
       setSuccess("You have signed in successfully!");
     } catch (error) {
-      setError(error instanceof Error ? error.message : String(error));
+      setError(error);
     }
 
     actions.setSubmitting(false);

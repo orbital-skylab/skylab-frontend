@@ -61,7 +61,7 @@ const EditProfile: NextPage = () => {
       setHasSuccessfullySubmitted(true);
       actions.resetForm();
     } catch (error) {
-      setError(error instanceof Error ? error.message : String(error));
+      setError(error);
     }
 
     actions.setSubmitting(false);

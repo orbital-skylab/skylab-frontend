@@ -30,7 +30,7 @@ type Props = {
   deadline: Deadline;
   mutate: Mutate<GetDeadlinesResponse>;
   setSuccess: (message: string) => void;
-  setError: (message: string) => void;
+  setError: (error: unknown) => void;
 };
 
 const EditDeadlineModal: FC<Props> = ({
@@ -79,7 +79,7 @@ const EditDeadlineModal: FC<Props> = ({
       handleCloseModal();
       actions.resetForm();
     } catch (error) {
-      setError(editDeadline.error);
+      setError(error);
     }
   };
 

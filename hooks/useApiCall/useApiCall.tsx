@@ -31,7 +31,6 @@ const useApiCall = ({
   onError?: (error: string) => void;
 }) => {
   const [status, setStatus] = useState<CALL_STATUS>(CALL_STATUS.IDLE);
-  const [error, setError] = useState("");
 
   /* Building API service. */
   const apiServiceBuilder = new ApiServiceBuilder({
@@ -71,13 +70,12 @@ const useApiCall = ({
       if (onError) {
         onError(errorMessage);
       }
-      setError(errorMessage);
       setStatus(CALL_STATUS.ERROR);
-      throw errorMessage;
+      throw new Error(errorMessage);
     }
   }
 
-  return { status, error, call };
+  return { status, call };
 };
 
 export default useApiCall;

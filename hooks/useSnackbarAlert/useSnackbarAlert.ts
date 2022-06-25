@@ -14,11 +14,18 @@ const useSnackbarAlert = () => {
     });
   };
 
-  const setError = (message: string) => {
-    setSnackbar({
-      message,
-      severity: "error",
-    });
+  const setError = (error: unknown) => {
+    if (typeof error === "string") {
+      setSnackbar({
+        message: error,
+        severity: "error",
+      });
+    } else {
+      setSnackbar({
+        message: error instanceof Error ? error.message : String(error),
+        severity: "error",
+      });
+    }
   };
 
   const handleClose = () => {

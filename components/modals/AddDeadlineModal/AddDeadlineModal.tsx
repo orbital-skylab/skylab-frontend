@@ -80,7 +80,7 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
       handleCloseModal();
       actions.resetForm();
     } catch (error) {
-      setError(addDeadline.error);
+      setError(error);
     }
   };
 

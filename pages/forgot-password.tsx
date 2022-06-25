@@ -3,19 +3,18 @@ import TextInput from "@/components/formControllers/TextInput";
 import { PAGES } from "@/helpers/navigation";
 import useAuth from "@/hooks/useAuth";
 import {
-  Alert,
   Box,
   Button,
   Container,
   Divider,
-  Snackbar,
   Stack,
   Typography,
 } from "@mui/material";
 import { Formik, FormikHelpers } from "formik";
 import type { NextPage } from "next";
 import Link from "next/link";
-import { useState } from "react";
+import useSnackbarAlert from "@/hooks/useSnackbarAlert";
+import SnackbarAlert from "@/components/SnackbarAlert";
 
 interface SignUpFormValuesType {
   email: string;
@@ -23,7 +22,7 @@ interface SignUpFormValuesType {
 
 const ForgotPassword: NextPage = () => {
   const { resetPassword } = useAuth();
-  const [error, setError] = useState("");
+  const { snackbar, handleClose, setError } = useSnackbarAlert();
 
   const initialValues: SignUpFormValuesType = {
     email: "",
@@ -36,24 +35,14 @@ const ForgotPassword: NextPage = () => {
     try {
       await resetPassword(values.email);
     } catch (error) {
-      setError(error instanceof Error ? error.message : String(error));
+      setError(error);
     }
     actions.setSubmitting(false);
   };
 
-  const handleCloseSnackbar = () => {
-    setError("");
-  };
-
   return (
     <>
-      <Snackbar
-        open={!!error}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert severity="error">{error}</Alert>
-      </Snackbar>
+      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <Body flexColCenter>
         <Container maxWidth="xs">
           <Stack gap="1rem" justifyContent="center">

@@ -94,7 +94,7 @@ const AddUserModal: FC<Props> = ({
       handleCloseModal();
       actions.resetForm();
     } catch (error) {
-      setError(addUser.error);
+      setError(error);
     }
   };
 

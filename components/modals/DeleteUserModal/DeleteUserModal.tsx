@@ -6,40 +6,40 @@ import { Button, Stack } from "@mui/material";
 import useApiCall from "@/hooks/useApiCall";
 // Types
 import { HTTP_METHOD } from "@/types/api";
-import { Deadline } from "@/types/deadlines";
 import { Mutate } from "@/hooks/useFetch";
-import { GetDeadlinesResponse } from "@/pages/deadlines";
+import { User } from "@/types/users";
 
 type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  deadline: Deadline;
-  mutate: Mutate<GetDeadlinesResponse>;
+  user: User;
+  mutate: Mutate<User[]>;
   setSuccess: (message: string) => void;
   setError: (error: unknown) => void;
 };
 
-const DeleteDeadlineModal: FC<Props> = ({
+const DeleteUserModal: FC<Props> = ({
   open,
   setOpen,
-  deadline,
+  user,
   mutate,
   setSuccess,
   setError,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const deleteDeadline = useApiCall({
+  const deleteUser = useApiCall({
     method: HTTP_METHOD.DELETE,
-    endpoint: `/deadlines/${deadline.id}`,
+    endpoint: `/users/${user.id}`,
     onSuccess: () => {
-      mutate((data) => {
-        const oldDeadlineIdx = data.deadlines.findIndex(
-          (oldDeadline) => oldDeadline.id === deadline.id
+      mutate((users) => {
+        const deletedUserId = user.id;
+        const deletedUserIdx = users.findIndex(
+          (user) => user.id === deletedUserId
         );
-        const newDeadlines = [...data.deadlines];
-        newDeadlines.splice(oldDeadlineIdx, 1);
-        return { deadlines: newDeadlines };
+        const newUsers = [...users];
+        newUsers.splice(deletedUserIdx, 1);
+        return newUsers;
       });
     },
   });
@@ -47,10 +47,8 @@ const DeleteDeadlineModal: FC<Props> = ({
   const handleDelete = async () => {
     setIsSubmitting(true);
     try {
-      await deleteDeadline.call();
-      setSuccess(
-        `You have successfully deleted the deadline ${deadline.name}!`
-      );
+      await deleteUser.call();
+      setSuccess(`You have successfully deleted the user ${user.name}!`);
       handleCloseModal();
     } catch (error) {
       setError(error);
@@ -67,8 +65,8 @@ const DeleteDeadlineModal: FC<Props> = ({
       <Modal
         open={open}
         handleClose={handleCloseModal}
-        title={`Delete Deadline`}
-        subheader={`You are deleting deadline ${deadline.name}. This action is irreversible, are you sure?`}
+        title={`Delete User`}
+        subheader={`You are deleting user ${user.name}. This action is irreversible, are you sure?`}
         sx={{ width: "400px" }}
       >
         <Stack direction="row" justifyContent="space-between" marginTop="-1rem">
@@ -89,4 +87,4 @@ const DeleteDeadlineModal: FC<Props> = ({
     </>
   );
 };
-export default DeleteDeadlineModal;
+export default DeleteUserModal;

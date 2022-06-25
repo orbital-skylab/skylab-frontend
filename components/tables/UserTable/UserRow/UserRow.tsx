@@ -11,17 +11,13 @@ import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Types
 import { Mutate } from "@/hooks/useFetch";
 import { User } from "@/types/users";
+import DeleteUserModal from "@/components/modals/DeleteUserModal";
 
 type Props = { user: User; mutate: Mutate<User[]> };
 
 const UserRow: FC<Props> = ({ user, mutate }) => {
   const { snackbar, setSuccess, setError, handleClose } = useSnackbarAlert();
-  const [isEditUserOpen, setIsEditUserOpen] = useState(false);
   const [isDeleteUserOpen, setIsDeleteUserOpen] = useState(false);
-
-  const handleOpenEditModal = () => {
-    setIsEditUserOpen(true);
-  };
 
   const handleOpenDeleteModal = () => {
     setIsDeleteUserOpen(true);
@@ -29,6 +25,14 @@ const UserRow: FC<Props> = ({ user, mutate }) => {
 
   return (
     <>
+      <DeleteUserModal
+        open={isDeleteUserOpen}
+        setOpen={setIsDeleteUserOpen}
+        user={user}
+        mutate={mutate}
+        setSuccess={setSuccess}
+        setError={setError}
+      />
       <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <TableRow>
         <TableCell>{user.id}</TableCell>
@@ -50,18 +54,6 @@ const UserRow: FC<Props> = ({ user, mutate }) => {
                 Profile
               </Button>
             </Link>
-            <Button
-              size="small"
-              onClick={handleOpenEditModal}
-              sx={{
-                "&:hover": {
-                  color: "white",
-                  backgroundColor: "warning.main",
-                },
-              }}
-            >
-              Edit
-            </Button>
             <Button
               size="small"
               onClick={handleOpenDeleteModal}
