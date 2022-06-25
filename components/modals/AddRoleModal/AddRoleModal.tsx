@@ -1,7 +1,6 @@
 import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from "react";
 // Components
 import { MenuItem, TextField } from "@mui/material";
-import TextInput from "@/components/formControllers/TextInput";
 import SnackbarAlert from "@/components/SnackbarAlert";
 import Modal from "../Modal";
 import { Button, Stack, Typography } from "@mui/material";
@@ -11,15 +10,16 @@ import MentorDetailsForm from "@/components/forms/MentorDetailsForm";
 import AdministratorDetailsForm from "@/components/forms/AdministratorDetailsForm";
 // Helpers
 import { Formik, FormikHelpers } from "formik";
-import { toSingular } from "@/helpers/roles";
-import { processAddUserFormValues } from "./AddUserModal.helpers";
+import { toSingular, ifUserAlreadyHasRole } from "@/helpers/roles";
+import { processAddRoleFormValues } from "./AddRoleModal.helpers";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
+import useCohort from "@/hooks/useCohort";
 // Types
 import { HTTP_METHOD } from "@/types/api";
 import { Mutate } from "@/hooks/useFetch";
-import { User, UserMetadata } from "@/types/users";
+import { User } from "@/types/users";
 import { StudentMetadata } from "@/types/students";
 import { AdviserMetadata } from "@/types/advisers";
 import { MentorMetadata } from "@/types/mentors";
@@ -27,9 +27,7 @@ import { AdministratorMetadata } from "@/types/administrators";
 import { ROLES } from "@/types/roles";
 import { Cohort } from "@/types/cohorts";
 
-export type AddUserFormValuesType = Omit<UserMetadata, "id"> & {
-  password?: string;
-} & Partial<StudentMetadata> &
+export type AddRoleFormValuesType = Partial<StudentMetadata> &
   Partial<Omit<AdviserMetadata, "projectIds">> &
   Partial<Omit<MentorMetadata, "projectIds">> &
   Partial<AdministratorMetadata>;
@@ -37,20 +35,12 @@ export type AddUserFormValuesType = Omit<UserMetadata, "id"> & {
 type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  cohorts: Cohort[];
-  cohortYear: number;
+  user: User;
   mutate: Mutate<User[]>;
-  hasMore: boolean;
 };
 
-const AddUserModal: FC<Props> = ({
-  open,
-  setOpen,
-  cohorts,
-  cohortYear,
-  mutate,
-  hasMore,
-}) => {
+const AddRoleModal: FC<Props> = ({ open, setOpen, user, mutate }) => {
+  const { cohorts, currentCohortYear } = useCohort();
   const {
     snackbar,
     handleClose: handleCloseSnackbar,
@@ -59,38 +49,38 @@ const AddUserModal: FC<Props> = ({
   } = useSnackbarAlert();
   const [selectedRole, setSelectedRole] = useState<ROLES>(ROLES.STUDENTS);
 
-  const addUser = useApiCall({
+  const addRole = useApiCall({
     method: HTTP_METHOD.POST,
-    endpoint: `/users/create-${toSingular(selectedRole).toLowerCase()}`,
+    endpoint: `/users/${user.id}/${toSingular(selectedRole).toLowerCase()}`,
     requiresAuthorization: true,
     onSuccess: (newUser: User) => {
-      if (!hasMore) {
-        mutate((users) => [...users, newUser]);
-      }
+      mutate((users) => [...users, newUser]);
     },
   });
 
-  const initialValues: AddUserFormValuesType = {
-    name: "",
-    email: "",
-    cohortYear,
+  const initialValues: AddRoleFormValuesType = {
+    cohortYear: currentCohortYear,
   };
 
   const handleSubmit = async (
-    values: AddUserFormValuesType,
-    actions: FormikHelpers<AddUserFormValuesType>
+    values: AddRoleFormValuesType,
+    actions: FormikHelpers<AddRoleFormValuesType>
   ) => {
-    const processedValues = processAddUserFormValues({
-      values,
-      role: selectedRole,
-    });
-
     try {
-      await addUser.call(processedValues);
+      if (ifUserAlreadyHasRole(user, selectedRole)) {
+        throw new Error(
+          `${user.name} is already a ${toSingular(selectedRole)}`
+        );
+      }
+
+      const processedValues = processAddRoleFormValues({
+        values,
+        role: selectedRole,
+      });
+
+      await addRole.call(processedValues);
       setSuccess(
-        `You have successfully created a new ${toSingular(selectedRole)}: ${
-          values.name
-        }`
+        `You have added the ${toSingular(selectedRole)} role to ${user.name}`
       );
       handleCloseModal();
       actions.resetForm();
@@ -110,32 +100,16 @@ const AddUserModal: FC<Props> = ({
   return (
     <>
       <SnackbarAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
-      <Modal open={open} handleClose={handleCloseModal} title={`Add User`}>
+      <Modal
+        open={open}
+        handleClose={handleCloseModal}
+        title={`Add Role`}
+        subheader={`Adding ${toSingular(selectedRole)} role to ${user.name}`}
+      >
         <Formik initialValues={initialValues} onSubmit={handleSubmit}>
           {(formik) => (
             <>
               <Stack direction="column" spacing="1rem">
-                <Typography>User Details</Typography>
-                <TextInput
-                  name="name"
-                  label="Name"
-                  size="small"
-                  formik={formik}
-                />
-                <TextInput
-                  name="email"
-                  type="email"
-                  label="Email Address"
-                  size="small"
-                  formik={formik}
-                />
-                <TextInput
-                  name="password"
-                  type="password"
-                  label="Password (Optional)"
-                  size="small"
-                  formik={formik}
-                />
                 <Typography>{`${toSingular(selectedRole)} Details`}</Typography>
                 <TextField
                   label="Role"
@@ -154,13 +128,22 @@ const AddUserModal: FC<Props> = ({
                 </TextField>
 
                 {selectedRole === ROLES.STUDENTS && (
-                  <StudentDetailsForm formik={formik} cohorts={cohorts} />
+                  <StudentDetailsForm
+                    formik={formik}
+                    cohorts={cohorts as Cohort[]}
+                  />
                 )}
                 {selectedRole === ROLES.ADVISERS && (
-                  <AdviserDetailsForm formik={formik} cohorts={cohorts} />
+                  <AdviserDetailsForm
+                    formik={formik}
+                    cohorts={cohorts as Cohort[]}
+                  />
                 )}
                 {selectedRole === ROLES.MENTORS && (
-                  <MentorDetailsForm formik={formik} cohorts={cohorts} />
+                  <MentorDetailsForm
+                    formik={formik}
+                    cohorts={cohorts as Cohort[]}
+                  />
                 )}
                 {selectedRole === ROLES.ADMINISTRATORS && (
                   <AdministratorDetailsForm formik={formik} />
@@ -190,4 +173,4 @@ const AddUserModal: FC<Props> = ({
     </>
   );
 };
-export default AddUserModal;
+export default AddRoleModal;

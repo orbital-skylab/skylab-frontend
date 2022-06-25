@@ -36,6 +36,9 @@ function TextInput<FormValuesType>({
       multiline={multiline}
       minRows={minRows}
       size={size}
+      InputLabelProps={{
+        shrink: type === "datetime-local" ? true : undefined,
+      }}
     />
   );
 }

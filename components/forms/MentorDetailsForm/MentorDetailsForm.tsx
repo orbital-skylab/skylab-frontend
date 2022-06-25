@@ -1,16 +1,27 @@
-import { AddUserFormValuesType } from "@/components/modals/AddUserModal/AddUserModal";
+import Select from "@/components/formControllers/Select";
+import { Cohort } from "@/types/cohorts";
 import { FormikProps } from "formik";
 import { FC } from "react";
 
 type Props = {
-  formik: FormikProps<AddUserFormValuesType>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  formik: FormikProps<any>;
+  cohorts: Cohort[];
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const MentorDetailsForm: FC<Props> = ({ formik }) => {
+const MentorDetailsForm: FC<Props> = ({ formik, cohorts }) => {
   return (
     <>
-      {/* TODO: Add more details if Mentors have more fields in the future */}
+      <Select
+        label="Cohort"
+        name="cohortYear"
+        options={cohorts.map((cohort) => ({
+          value: cohort.academicYear,
+          label: cohort.academicYear,
+        }))}
+        size="small"
+        formik={formik}
+      />
     </>
   );
 };
