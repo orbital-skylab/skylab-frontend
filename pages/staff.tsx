@@ -12,8 +12,6 @@ import {
   debounce,
   Grid,
   MenuItem,
-  Select,
-  SelectChangeEvent,
   Stack,
   Tab,
   Tabs,
@@ -121,10 +119,8 @@ const Staff: NextPage = () => {
     debouncedSetQuerySearch(e.target.value);
   };
 
-  const handleCohortYearChange = (
-    e: SelectChangeEvent<number | string | null>
-  ) => {
-    setSelectedCohortYear(e.target.value as Cohort["academicYear"]);
+  const handleCohortYearChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSelectedCohortYear(Number(e.target.value) as Cohort["academicYear"]);
   };
 
   useEffect(() => {
@@ -150,11 +146,12 @@ const Staff: NextPage = () => {
               onChange={handleSearchInputChange}
               size="small"
             />
-            <Select
+            <TextField
               name="cohort"
               label="Cohort"
               value={selectedCohortYear}
               onChange={handleCohortYearChange}
+              select
               size="small"
             >
               {cohorts &&
@@ -163,7 +160,7 @@ const Staff: NextPage = () => {
                     {academicYear}
                   </MenuItem>
                 ))}
-            </Select>
+            </TextField>
           </Stack>
           <Tabs
             value={selectedType}

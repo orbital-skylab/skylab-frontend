@@ -11,7 +11,6 @@ import type { NextPage } from "next";
 // Libraries
 import {
   Grid,
-  Select,
   MenuItem,
   Stack,
   Tab,
@@ -19,7 +18,6 @@ import {
   tabsClasses,
   TextField,
   debounce,
-  SelectChangeEvent,
   Box,
 } from "@mui/material";
 // Hooks
@@ -100,10 +98,8 @@ const Projects: NextPage = () => {
     setPage(0);
   };
 
-  const handleCohortYearChange = (
-    e: SelectChangeEvent<number | string | null>
-  ) => {
-    setSelectedCohortYear(e.target.value as Cohort["academicYear"]);
+  const handleCohortYearChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSelectedCohortYear(Number(e.target.value) as Cohort["academicYear"]);
     setPage(0);
   };
 
@@ -139,10 +135,12 @@ const Projects: NextPage = () => {
               onChange={handleSearchInputChange}
               size="small"
             />
-            <Select
+            <TextField
+              name="cohort"
               label="Cohort"
               value={selectedCohortYear}
               onChange={handleCohortYearChange}
+              select
               size="small"
             >
               {cohorts &&
@@ -151,7 +149,7 @@ const Projects: NextPage = () => {
                     {academicYear}
                   </MenuItem>
                 ))}
-            </Select>
+            </TextField>
           </Stack>
           <Tabs
             value={selectedLevel}

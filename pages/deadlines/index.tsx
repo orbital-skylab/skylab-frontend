@@ -1,13 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import type { NextPage } from "next";
 // Libraries
-import {
-  Button,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Stack,
-} from "@mui/material";
+import { Button, MenuItem, Stack, TextField } from "@mui/material";
 // Components
 import Body from "@/components/layout/Body";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
@@ -54,10 +48,8 @@ const Deadlines: NextPage = () => {
   });
 
   /** Input Change Handlers */
-  const handleCohortYearChange = (
-    e: SelectChangeEvent<number | string | null>
-  ) => {
-    setSelectedCohortYear(e.target.value as Cohort["academicYear"]);
+  const handleCohortYearChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSelectedCohortYear(Number(e.target.value) as Cohort["academicYear"]);
   };
 
   const handleOpenAddMilestoneModal = () => {
@@ -97,11 +89,12 @@ const Deadlines: NextPage = () => {
             <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
             Deadline
           </Button>
-          <Select
+          <TextField
             name="cohort"
             label="Cohort"
             value={selectedCohortYear}
             onChange={handleCohortYearChange}
+            select
             size="small"
           >
             {cohorts &&
@@ -110,7 +103,7 @@ const Deadlines: NextPage = () => {
                   {academicYear}
                 </MenuItem>
               ))}
-          </Select>
+          </TextField>
         </Stack>
         <LoadingWrapper
           isLoading={isFetching(fetchDeadlinesStatus)}
