@@ -1,12 +1,17 @@
+import { FC } from "react";
+// Components
 import TextInput from "@/components/formControllers/TextInput";
 import SnackbarAlert from "@/components/SnackbarAlert/SnackbarAlert";
+import { Box, Stack, Typography, Button } from "@mui/material";
+import Link from "next/link";
+// Helpers
+import * as Yup from "yup";
 import { PAGES } from "@/helpers/navigation";
+import { Formik, FormikHelpers } from "formik";
+// Hooks
 import useAuth from "@/hooks/useAuth";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
-import { Box, Stack, Typography, Button } from "@mui/material";
-import { Formik, FormikHelpers } from "formik";
-import Link from "next/link";
-import { FC } from "react";
+import { ERRORS } from "@/helpers/errors";
 
 export const LANDING_SIGN_IN_ID = "landingSignIn";
 
@@ -44,7 +49,11 @@ const HeroSignIn: FC = () => {
       <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       {!user ? (
         <Box sx={{ width: "100%" }} id={LANDING_SIGN_IN_ID}>
-          <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+          <Formik
+            initialValues={initialValues}
+            onSubmit={handleSubmit}
+            validationSchema={signInValidationSchema}
+          >
             {(formik) => (
               <form onSubmit={formik.handleSubmit}>
                 <Stack gap="1rem" width="100%">
@@ -99,4 +108,10 @@ const HeroSignIn: FC = () => {
     </>
   );
 };
+
 export default HeroSignIn;
+
+const signInValidationSchema = Yup.object().shape({
+  email: Yup.string().email(ERRORS.INVALID_EMAIL).required(ERRORS.REQUIRED),
+  password: Yup.string().required(ERRORS.REQUIRED),
+});

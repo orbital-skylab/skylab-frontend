@@ -7,6 +7,7 @@ export enum PAGES {
   FORGOT_PASSWORD = "/forgot-password",
   DEADLINES = "/deadlines",
   USERS = "/users",
+  BATCH_ADD = "/users/batch-add",
 }
 
 export enum NAVBAR_ACTIONS {

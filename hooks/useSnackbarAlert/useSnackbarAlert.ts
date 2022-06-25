@@ -1,5 +1,7 @@
-import { SNACKBAR_ALERT_INITIAL } from "@/helpers/forms";
-import { SnackbarAlertType } from "@/types/forms";
+import {
+  SnackbarAlertType,
+  SNACKBAR_ALERT_INITIAL,
+} from "@/components/SnackbarAlert";
 import { useState } from "react";
 
 const useSnackbarAlert = () => {

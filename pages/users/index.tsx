@@ -4,6 +4,7 @@ import Body from "@/components/layout/Body";
 import AddUserModal from "@/components/modals/AddUserModal";
 import UserTable from "@/components/tables/UserTable";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
+import { PAGES } from "@/helpers/navigation";
 import useCohort from "@/hooks/useCohort";
 import { isFetching } from "@/hooks/useFetch";
 import useInfiniteFetch, {
@@ -25,6 +26,7 @@ import {
   TextField,
 } from "@mui/material";
 import type { NextPage } from "next";
+import Link from "next/link";
 import {
   ChangeEvent,
   SyntheticEvent,
@@ -210,13 +212,19 @@ const Users: NextPage = () => {
             width="100%"
             mb={{ md: "0.5rem" }}
           >
+            <TextField
+              label="Search"
+              value={searchTextInput}
+              onChange={handleSearchInputChange}
+              size="small"
+            />
             <Stack direction="row" spacing="1rem">
-              <TextField
-                label="Search"
-                value={searchTextInput}
-                onChange={handleSearchInputChange}
-                size="small"
-              />
+              <Link passHref href={PAGES.BATCH_ADD}>
+                <Button variant="contained" size="small">
+                  <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
+                  Batch Add
+                </Button>
+              </Link>
               <Button
                 variant="contained"
                 size="small"
@@ -225,22 +233,22 @@ const Users: NextPage = () => {
                 <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
                 User
               </Button>
+              <TextField
+                name="cohort"
+                label="Cohort"
+                value={selectedCohortYear}
+                onChange={handleCohortYearChange}
+                select
+                size="small"
+              >
+                {cohorts &&
+                  cohorts.map(({ academicYear }) => (
+                    <MenuItem key={academicYear} value={academicYear}>
+                      {academicYear}
+                    </MenuItem>
+                  ))}
+              </TextField>
             </Stack>
-            <TextField
-              name="cohort"
-              label="Cohort"
-              value={selectedCohortYear}
-              onChange={handleCohortYearChange}
-              select
-              size="small"
-            >
-              {cohorts &&
-                cohorts.map(({ academicYear }) => (
-                  <MenuItem key={academicYear} value={academicYear}>
-                    {academicYear}
-                  </MenuItem>
-                ))}
-            </TextField>
           </Stack>
           <Tabs
             value={selectedRole}
