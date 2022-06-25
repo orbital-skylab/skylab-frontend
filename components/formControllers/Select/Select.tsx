@@ -13,6 +13,7 @@ type Props<FormValuesType> = {
   label: string;
   options: SelectOption[];
   formik: FormikProps<FormValuesType>;
+  size?: "medium" | "small";
 };
 
 function Select<FormValuesType>({
@@ -20,6 +21,7 @@ function Select<FormValuesType>({
   label,
   options,
   formik,
+  size = "medium",
 }: Props<FormValuesType>) {
   const { values, handleChange, handleBlur, errors, touched } = formik;
 
@@ -34,6 +36,7 @@ function Select<FormValuesType>({
           onChange={handleChange}
           onBlur={handleBlur}
           MenuProps={{ disableScrollLock: true }}
+          size={size}
         >
           {options.map(({ value, label }) => (
             <MenuItem key={value} value={value}>

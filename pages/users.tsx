@@ -1,6 +1,7 @@
 import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import Body from "@/components/layout/Body";
+import AddUserModal from "@/components/modals/AddUserModal";
 import UserTable from "@/components/tables/UserTable";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import useCohort from "@/hooks/useCohort";
@@ -9,9 +10,12 @@ import useInfiniteFetch, {
   createBottomOfPageRef,
 } from "@/hooks/useInfiniteFetch";
 import { Cohort } from "@/types/cohorts";
+import { ROLES_WITH_ALL } from "@/types/roles";
 import { User } from "@/types/users";
+import { Add } from "@mui/icons-material";
 import {
   Box,
+  Button,
   debounce,
   MenuItem,
   Select,
@@ -76,15 +80,10 @@ export type GetUsersResponse = {
 
 const LIMIT = 50;
 
-enum ROLES {
-  ALL = "All",
-  STUDENTS = "Students",
-  ADVISERS = "Advisers",
-  MENTORS = "Mentors",
-}
-
 const Users: NextPage = () => {
-  const [selectedRole, setSelectedRole] = useState<ROLES>(ROLES.ALL);
+  const [selectedRole, setSelectedRole] = useState<ROLES_WITH_ALL>(
+    ROLES_WITH_ALL.ALL
+  );
   const [page, setPage] = useState(0);
   const [searchTextInput, setSearchTextInput] = useState(""); // The input value
   const [querySearch, setQuerySearch] = useState(""); // The debounced input value for searching
@@ -96,6 +95,7 @@ const Users: NextPage = () => {
   const [selectedCohortYear, setSelectedCohortYear] = useState<
     Cohort["academicYear"] | string
   >("");
+  const [isAddUserOpen, setIsAddUserOpen] = useState(false);
 
   /** For fetching users based on filters */
   const memoQueryParams = useMemo(() => {
@@ -120,7 +120,7 @@ const Users: NextPage = () => {
   });
 
   /** Input Change Handlers */
-  const handleTabChange = (event: SyntheticEvent, newRole: ROLES) => {
+  const handleTabChange = (event: SyntheticEvent, newRole: ROLES_WITH_ALL) => {
     setSelectedRole(newRole);
     setPage(0);
   };
@@ -146,6 +146,10 @@ const Users: NextPage = () => {
     setPage(0);
   };
 
+  const handleOpenAddUserModal = () => {
+    setIsAddUserOpen(true);
+  };
+
   /** To fetch more projects when the bottom of the page is reached */
   const observer = useRef<IntersectionObserver | null>(null);
   const bottomOfPageRef = createBottomOfPageRef(
@@ -162,74 +166,94 @@ const Users: NextPage = () => {
   }, [currentCohortYear]);
 
   return (
-    <Body isLoading={isLoadingCohorts}>
-      <Stack direction="column" mt="0.5rem" mb="1rem">
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          width="100%"
-          mb={{ md: "0.5rem" }}
-        >
-          <TextField
-            label="Search"
-            value={searchTextInput}
-            onChange={handleSearchInputChange}
-            size="small"
-          />
-          <Select
-            name="cohort"
-            label="Cohort"
-            value={selectedCohortYear}
-            onChange={handleCohortYearChange}
-            size="small"
+    <>
+      <AddUserModal
+        open={isAddUserOpen}
+        setOpen={setIsAddUserOpen}
+        cohorts={cohorts as Cohort[]}
+        cohortYear={selectedCohortYear as Cohort["academicYear"]}
+        mutate={mutate}
+        hasMore={hasMore}
+      />
+      <Body isLoading={isLoadingCohorts}>
+        <Stack direction="column" mt="0.5rem" mb="1rem">
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            width="100%"
+            mb={{ md: "0.5rem" }}
           >
-            {cohorts &&
-              cohorts.map(({ academicYear }) => (
-                <MenuItem key={academicYear} value={academicYear}>
-                  {academicYear}
-                </MenuItem>
-              ))}
-          </Select>
-        </Stack>
-        <Tabs
-          value={selectedRole}
-          onChange={handleTabChange}
-          textColor="secondary"
-          indicatorColor="secondary"
-          aria-label="project-level-tabs"
-          variant="scrollable"
-          scrollButtons="auto"
-          allowScrollButtonsMobile
-          sx={{
-            [`& .${tabsClasses.scrollButtons}`]: { color: "primary" },
-            marginY: { xs: 2, md: 0 },
-          }}
-        >
-          {Object.values(ROLES).map((level) => {
-            return <Tab key={level} value={level} label={level} />;
-          })}
-        </Tabs>
-      </Stack>
-      <NoDataWrapper
-        noDataCondition={users === undefined || users.length === 0}
-        fallback={<NoneFound message="No such users found" />}
-      >
-        <UserTable users={users} mutate={mutate} />
-        <div ref={bottomOfPageRef} />
-        {isFetching(fetchUsersStatus) ? (
-          <Box
+            <Stack direction="row" spacing="1rem">
+              <TextField
+                label="Search"
+                value={searchTextInput}
+                onChange={handleSearchInputChange}
+                size="small"
+              />
+              <Button
+                variant="contained"
+                size="small"
+                onClick={handleOpenAddUserModal}
+              >
+                <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
+                User
+              </Button>
+            </Stack>
+            <Select
+              name="cohort"
+              label="Cohort"
+              value={selectedCohortYear}
+              onChange={handleCohortYearChange}
+              size="small"
+            >
+              {cohorts &&
+                cohorts.map(({ academicYear }) => (
+                  <MenuItem key={academicYear} value={academicYear}>
+                    {academicYear}
+                  </MenuItem>
+                ))}
+            </Select>
+          </Stack>
+          <Tabs
+            value={selectedRole}
+            onChange={handleTabChange}
+            textColor="secondary"
+            indicatorColor="secondary"
+            aria-label="project-level-tabs"
+            variant="scrollable"
+            scrollButtons="auto"
+            allowScrollButtonsMobile
             sx={{
-              display: "grid",
-              placeItems: "center",
-              marginY: users.length === 0 ? "15vh" : 0,
+              [`& .${tabsClasses.scrollButtons}`]: { color: "primary" },
+              marginY: { xs: 2, md: 0 },
             }}
           >
-            <LoadingSpinner />
-          </Box>
-        ) : null}
-      </NoDataWrapper>
-    </Body>
+            {Object.values(ROLES_WITH_ALL).map((level) => {
+              return <Tab key={level} value={level} label={level} />;
+            })}
+          </Tabs>
+        </Stack>
+        <NoDataWrapper
+          noDataCondition={users === undefined || users.length === 0}
+          fallback={<NoneFound message="No such users found" />}
+        >
+          <UserTable users={users} mutate={mutate} />
+          <div ref={bottomOfPageRef} />
+          {isFetching(fetchUsersStatus) ? (
+            <Box
+              sx={{
+                display: "grid",
+                placeItems: "center",
+                marginY: users.length === 0 ? "15vh" : 0,
+              }}
+            >
+              <LoadingSpinner />
+            </Box>
+          ) : null}
+        </NoDataWrapper>
+      </Body>
+    </>
   );
 };
 export default Users;
