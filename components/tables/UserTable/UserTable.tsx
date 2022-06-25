@@ -32,9 +32,7 @@ const UserTable: FC<Props> = ({ users, mutate }) => {
         <TableHead>
           <TableRow>
             {ColumnHeadings.map((heading) => (
-              <TableCell key={heading} width="25%">
-                {heading}
-              </TableCell>
+              <TableCell key={heading}>{heading}</TableCell>
             ))}
           </TableRow>
         </TableHead>

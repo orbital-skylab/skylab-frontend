@@ -1,7 +1,6 @@
 import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from "react";
 // Components
 import { MenuItem, TextField } from "@mui/material";
-import TextInput from "@/components/formControllers/TextInput";
 import SnackbarAlert from "@/components/SnackbarAlert";
 import Modal from "../Modal";
 import { Button, Stack, Typography } from "@mui/material";
@@ -26,6 +25,7 @@ import { MentorMetadata } from "@/types/mentors";
 import { AdministratorMetadata } from "@/types/administrators";
 import { ROLES } from "@/types/roles";
 import { Cohort } from "@/types/cohorts";
+import UserDetailsForm from "@/components/forms/UserDetailsForm";
 
 export type AddUserFormValuesType = Omit<UserMetadata, "id"> & {
   password?: string;
@@ -116,26 +116,7 @@ const AddUserModal: FC<Props> = ({
             <>
               <Stack direction="column" spacing="1rem">
                 <Typography>User Details</Typography>
-                <TextInput
-                  name="name"
-                  label="Name"
-                  size="small"
-                  formik={formik}
-                />
-                <TextInput
-                  name="email"
-                  type="email"
-                  label="Email Address"
-                  size="small"
-                  formik={formik}
-                />
-                <TextInput
-                  name="password"
-                  type="password"
-                  label="Password (Optional)"
-                  size="small"
-                  formik={formik}
-                />
+                <UserDetailsForm formik={formik} />
                 <Typography>{`${toSingular(selectedRole)} Details`}</Typography>
                 <TextField
                   label="Role"

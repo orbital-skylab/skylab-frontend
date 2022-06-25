@@ -1,5 +1,5 @@
 import {
-  AdministatorRole,
+  AdministratorRole,
   AdviserRole,
   FacilitatorRole,
   MentorRole,
@@ -19,10 +19,10 @@ export type UserMetadata = {
   selfIntro?: string;
 };
 
-type RoleMetadata = {
+export type RoleMetadata = {
   student?: StudentRole;
   adviser?: AdviserRole;
   mentor?: MentorRole;
-  administrator?: AdministatorRole;
+  administrator?: AdministratorRole;
   facilitator?: FacilitatorRole;
 };

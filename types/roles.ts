@@ -23,5 +23,5 @@ type WithRoleSpecificId<T> = T & { id: number };
 export type StudentRole = WithRoleSpecificId<StudentMetadata>;
 export type AdviserRole = WithRoleSpecificId<AdviserMetadata>;
 export type MentorRole = WithRoleSpecificId<MentorMetadata>;
-export type AdministatorRole = WithRoleSpecificId<AdministratorMetadata>;
+export type AdministratorRole = WithRoleSpecificId<AdministratorMetadata>;
 export type FacilitatorRole = WithRoleSpecificId<FacilitatorMetadata>;

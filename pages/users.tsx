@@ -70,6 +70,36 @@ const users: User[] = [
       projectIds: [0],
     },
   },
+  {
+    id: 3,
+    name: "Prof Zhao Jin",
+    email: "jinzhao@u.nus.edu",
+    student: {
+      id: 99,
+      cohortYear: 2022,
+      projectId: 9,
+      nusnetId: "123",
+      matricNo: "321",
+    },
+    adviser: {
+      id: 99,
+      cohortYear: 2022,
+      nusnetId: "123",
+      matricNo: "321",
+      projectIds: [0],
+    },
+
+    mentor: {
+      id: 18,
+      cohortYear: 2022,
+      projectIds: [0],
+    },
+    administrator: {
+      id: 1232,
+      startDate: "",
+      endDate: "",
+    },
+  },
 ];
 
 export type GetUsersResponse = {
