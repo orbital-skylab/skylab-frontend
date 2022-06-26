@@ -1,6 +1,6 @@
 export enum CALL_STATUS {
   IDLE,
-  LOADING,
+  CALLING,
   SUCCESS,
   ERROR,
 }

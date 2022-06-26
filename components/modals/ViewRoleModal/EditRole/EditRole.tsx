@@ -7,50 +7,50 @@ import AdviserDetailsForm from "@/components/forms/AdviserDetailsForm";
 import MentorDetailsForm from "@/components/forms/MentorDetailsForm";
 import StudentDetailsForm from "@/components/forms/StudentDetailsForm";
 // Helpers
-import { generateInitialValues, processValues } from "./EditRole.helpers";
+import { generateInitialValues } from "./EditRole.helpers";
 import { Formik, FormikHelpers, FormikProps } from "formik";
-import { getRoleId, toSingular } from "@/helpers/roles";
+import {
+  getRoleId,
+  processAddUserOrRoleFormValues,
+  toSingular,
+} from "@/helpers/roles";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
 // Types
 import { Mutate } from "@/hooks/useFetch";
-import { AdministratorMetadata } from "@/types/administrators";
-import { AdviserMetadata } from "@/types/advisers";
 import { HTTP_METHOD } from "@/types/api";
-import { MentorMetadata } from "@/types/mentors";
-import { ROLES } from "@/types/roles";
-import { StudentMetadata } from "@/types/students";
+import { AddOrEditRoleFormValuesType, ROLES } from "@/types/roles";
 import { RoleMetadata, User } from "@/types/users";
+import { LeanProject } from "@/types/projects";
 
 type Props = {
   user: User;
-  viewSelectedRole: ROLES | null;
+  selectedRole: ROLES | null;
   handleCloseModal: () => void;
   setViewMode: () => void;
   setSuccess: (message: string) => void;
   setError: (error: unknown) => void;
   mutate: Mutate<User[]>;
+  leanProjects: LeanProject[] | undefined;
+  isFetchingLeanProjects: boolean;
 };
-
-export type EditRoleFormValuesType = Partial<StudentMetadata> &
-  Partial<Omit<AdviserMetadata, "projectIds">> &
-  Partial<Omit<MentorMetadata, "projectIds">> &
-  Partial<AdministratorMetadata>;
 
 const EditRole: FC<Props> = ({
   user,
-  viewSelectedRole,
+  selectedRole,
   handleCloseModal,
   setViewMode,
   setSuccess,
   setError,
   mutate,
+  leanProjects,
+  isFetchingLeanProjects,
 }) => {
   const editRole = useApiCall({
     method: HTTP_METHOD.PUT,
-    endpoint: `/${viewSelectedRole?.toLowerCase()}/${getRoleId(
+    endpoint: `/${selectedRole?.toLowerCase()}/${getRoleId(
       user,
-      viewSelectedRole
+      selectedRole
     )}`,
     requiresAuthorization: true,
     onSuccess: (newRoleDetails) => {
@@ -60,7 +60,7 @@ const EditRole: FC<Props> = ({
 
         const newUserWithEditedRole: User = { ...user };
         const editedRole = toSingular(
-          viewSelectedRole
+          selectedRole
         ).toLowerCase() as keyof RoleMetadata;
         newUserWithEditedRole[editedRole] = {
           ...newUserWithEditedRole[editedRole],
@@ -74,22 +74,25 @@ const EditRole: FC<Props> = ({
     },
   });
 
-  const initialValues: EditRoleFormValuesType = generateInitialValues(
+  const initialValues: AddOrEditRoleFormValuesType = generateInitialValues({
     user,
-    viewSelectedRole
-  );
+    selectedRole,
+  });
 
   const handleSubmit = async (
-    values: EditRoleFormValuesType,
-    actions: FormikHelpers<EditRoleFormValuesType>
+    values: AddOrEditRoleFormValuesType,
+    actions: FormikHelpers<AddOrEditRoleFormValuesType>
   ) => {
-    const processedValues = processValues(values, viewSelectedRole);
+    const processedValues = processAddUserOrRoleFormValues({
+      values,
+      selectedRole,
+    });
 
     try {
       await editRole.call(processedValues);
       setSuccess(
         `You have successfully edited ${user.name}'s ${toSingular(
-          viewSelectedRole
+          selectedRole
         )} details!`
       );
       handleCloseModal();
@@ -100,15 +103,33 @@ const EditRole: FC<Props> = ({
   };
 
   const renderRoleDetailsForm = (
-    formik: FormikProps<EditRoleFormValuesType>
+    formik: FormikProps<AddOrEditRoleFormValuesType>
   ) => {
-    switch (viewSelectedRole) {
+    switch (selectedRole) {
       case ROLES.STUDENTS:
-        return <StudentDetailsForm formik={formik} />;
+        return (
+          <StudentDetailsForm
+            formik={formik}
+            leanProjects={leanProjects}
+            isFetchingLeanProjects={isFetchingLeanProjects}
+          />
+        );
       case ROLES.ADVISERS:
-        return <AdviserDetailsForm formik={formik} />;
+        return (
+          <AdviserDetailsForm
+            formik={formik}
+            leanProjects={leanProjects}
+            isFetchingLeanProjects={isFetchingLeanProjects}
+          />
+        );
       case ROLES.MENTORS:
-        return <MentorDetailsForm formik={formik} />;
+        return (
+          <MentorDetailsForm
+            formik={formik}
+            leanProjects={leanProjects}
+            isFetchingLeanProjects={isFetchingLeanProjects}
+          />
+        );
       case ROLES.ADMINISTRATORS:
         return <AdministratorDetailsForm formik={formik} />;
       default:
@@ -125,7 +146,7 @@ const EditRole: FC<Props> = ({
             <UserDetails user={user} />
 
             <Typography>{`Edit ${toSingular(
-              viewSelectedRole
+              selectedRole
             )} Details`}</Typography>
             {renderRoleDetailsForm(formik)}
           </Stack>

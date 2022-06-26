@@ -13,9 +13,15 @@ import UserRow from "./UserRow";
 // Types
 import { User } from "@/types/users";
 import { Mutate } from "@/hooks/useFetch";
+import { LeanProject } from "@/types/projects";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Props = { users: User[]; mutate: Mutate<User[]> };
+type Props = {
+  users: User[];
+  mutate: Mutate<User[]>;
+  leanProjects: LeanProject[] | undefined;
+  isFetchingLeanProjects: boolean;
+};
 
 const ColumnHeadings = [
   "User ID",
@@ -25,7 +31,12 @@ const ColumnHeadings = [
   "Actions",
 ];
 
-const UserTable: FC<Props> = ({ users, mutate }) => {
+const UserTable: FC<Props> = ({
+  users,
+  mutate,
+  leanProjects,
+  isFetchingLeanProjects,
+}) => {
   return (
     <TableContainer>
       <Table>
@@ -38,7 +49,13 @@ const UserTable: FC<Props> = ({ users, mutate }) => {
         </TableHead>
         <TableBody>
           {users.map((user) => (
-            <UserRow key={user.id} user={user} mutate={mutate} />
+            <UserRow
+              key={user.id}
+              user={user}
+              mutate={mutate}
+              leanProjects={leanProjects}
+              isFetchingLeanProjects={isFetchingLeanProjects}
+            />
           ))}
         </TableBody>
       </Table>

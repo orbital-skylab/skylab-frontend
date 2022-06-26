@@ -13,7 +13,7 @@ import { RoleMetadata, User } from "@/types/users";
 
 type Props = {
   user: User;
-  viewSelectedRole: ROLES | null;
+  selectedRole: ROLES | null;
   handleCloseModal: () => void;
   setViewMode: () => void;
   setSuccess: (message: string) => void;
@@ -23,7 +23,7 @@ type Props = {
 
 const DeleteRole: FC<Props> = ({
   user,
-  viewSelectedRole,
+  selectedRole,
   handleCloseModal,
   setViewMode,
   setSuccess,
@@ -34,9 +34,9 @@ const DeleteRole: FC<Props> = ({
 
   const deleteRole = useApiCall({
     method: HTTP_METHOD.DELETE,
-    endpoint: `/${viewSelectedRole?.toLowerCase()}/${getRoleId(
+    endpoint: `/${selectedRole?.toLowerCase()}/${getRoleId(
       user,
-      viewSelectedRole
+      selectedRole
     )}`,
     onSuccess: () => {
       mutate((users) => {
@@ -45,7 +45,7 @@ const DeleteRole: FC<Props> = ({
 
         const newUserWithoutRole: User = { ...user };
         const removedRole = toSingular(
-          viewSelectedRole
+          selectedRole
         ).toLowerCase() as keyof RoleMetadata;
         delete newUserWithoutRole[removedRole];
 
@@ -62,7 +62,7 @@ const DeleteRole: FC<Props> = ({
       await deleteRole.call();
       setSuccess(
         `You have successfully deleted ${user.name}'s ${toSingular(
-          viewSelectedRole
+          selectedRole
         )} details!`
       );
       handleCloseModal();
@@ -76,10 +76,10 @@ const DeleteRole: FC<Props> = ({
     <>
       <Stack direction="column" spacing="1rem">
         <Typography>{`You are deleting the ${toSingular(
-          viewSelectedRole
+          selectedRole
         )} role from ${user.name}`}</Typography>
         <Typography>{`Note: This will not delete the actual user, just remove the ${toSingular(
-          viewSelectedRole
+          selectedRole
         )} role from them`}</Typography>
       </Stack>
       <Stack direction="row" justifyContent="space-between" marginTop="2rem">

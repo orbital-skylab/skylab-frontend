@@ -42,7 +42,7 @@ const useApiCall = ({
 
   /* Calls the actual API call with the specified api service. */
   async function call(body?: { [key: string]: any }) {
-    setStatus(CALL_STATUS.LOADING);
+    setStatus(CALL_STATUS.CALLING);
 
     try {
       if (body) {
@@ -71,7 +71,7 @@ const useApiCall = ({
         onError(errorMessage);
       }
       setStatus(CALL_STATUS.ERROR);
-      throw new Error(errorMessage);
+      throw error;
     }
   }
 

@@ -3,6 +3,8 @@ import Link from "next/link";
 // Components
 import { Button, Chip, Stack, TableCell, TableRow } from "@mui/material";
 import SnackbarAlert from "@/components/SnackbarAlert";
+import ViewRoleModal from "@/components/modals/ViewRoleModal";
+import AddRoleModal from "@/components/modals/AddRoleModal";
 import DeleteUserModal from "@/components/modals/DeleteUserModal";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
@@ -11,16 +13,25 @@ import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 import { Mutate } from "@/hooks/useFetch";
 // Types
 import { User } from "@/types/users";
-import ViewRoleModal from "@/components/modals/ViewRoleModal";
 import { ROLES } from "@/types/roles";
-import AddRoleModal from "@/components/modals/AddRoleModal";
+import { LeanProject } from "@/types/projects";
 
-type Props = { user: User; mutate: Mutate<User[]> };
+type Props = {
+  user: User;
+  mutate: Mutate<User[]>;
+  leanProjects: LeanProject[] | undefined;
+  isFetchingLeanProjects: boolean;
+};
 
-const UserRow: FC<Props> = ({ user, mutate }) => {
+const UserRow: FC<Props> = ({
+  user,
+  mutate,
+  leanProjects,
+  isFetchingLeanProjects,
+}) => {
   const { snackbar, setSuccess, setError, handleClose } = useSnackbarAlert();
   const [isDeleteUserOpen, setIsDeleteUserOpen] = useState(false);
-  const [viewSelectedRole, setViewSelectedRole] = useState<ROLES | null>(null);
+  const [selectedRole, setSelectedRole] = useState<ROLES | null>(null);
   const [isAddRoleOpen, setIsAddRoleOpen] = useState(false);
 
   const renderTags = () => {
@@ -33,7 +44,7 @@ const UserRow: FC<Props> = ({ user, mutate }) => {
           label="Student"
           color="primary"
           size="small"
-          onClick={() => setViewSelectedRole(ROLES.STUDENTS)}
+          onClick={() => setSelectedRole(ROLES.STUDENTS)}
         />
       );
     }
@@ -44,7 +55,7 @@ const UserRow: FC<Props> = ({ user, mutate }) => {
           label="Adviser"
           color="secondary"
           size="small"
-          onClick={() => setViewSelectedRole(ROLES.ADVISERS)}
+          onClick={() => setSelectedRole(ROLES.ADVISERS)}
         />
       );
     }
@@ -55,7 +66,7 @@ const UserRow: FC<Props> = ({ user, mutate }) => {
           label="Mentor"
           color="info"
           size="small"
-          onClick={() => setViewSelectedRole(ROLES.MENTORS)}
+          onClick={() => setSelectedRole(ROLES.MENTORS)}
         />
       );
     }
@@ -66,19 +77,22 @@ const UserRow: FC<Props> = ({ user, mutate }) => {
           label="Administrator"
           color="success"
           size="small"
-          onClick={() => setViewSelectedRole(ROLES.ADMINISTRATORS)}
+          onClick={() => setSelectedRole(ROLES.ADMINISTRATORS)}
         />
       );
     }
-    tags.push(
-      <Chip
-        key={"user" + user.id}
-        label="+"
-        size="small"
-        variant="outlined"
-        onClick={() => setIsAddRoleOpen(true)}
-      />
-    );
+    /** If the user does not have all the roles, place an Add (+) button */
+    if (tags.length < Object.values(ROLES).length) {
+      tags.push(
+        <Chip
+          key={"user" + user.id}
+          label="+"
+          size="small"
+          variant="outlined"
+          onClick={() => setIsAddRoleOpen(true)}
+        />
+      );
+    }
     return tags;
   };
 
@@ -93,12 +107,16 @@ const UserRow: FC<Props> = ({ user, mutate }) => {
         setOpen={setIsAddRoleOpen}
         user={user}
         mutate={mutate}
+        leanProjects={leanProjects}
+        isFetchingLeanProjects={isFetchingLeanProjects}
       />
       <ViewRoleModal
-        viewSelectedRole={viewSelectedRole}
-        setViewSelectedRole={setViewSelectedRole}
+        selectedRole={selectedRole}
+        setSelectedRole={setSelectedRole}
         user={user}
         mutate={mutate}
+        leanProjects={leanProjects}
+        isFetchingLeanProjects={isFetchingLeanProjects}
       />
       <DeleteUserModal
         open={isDeleteUserOpen}

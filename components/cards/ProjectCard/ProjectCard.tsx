@@ -44,8 +44,8 @@ const ProjectCard: FC<Props> = ({ project }) => {
               }}
             >
               <img
+                //TODO: Placeholder image
                 src={
-                  project.posterUrl ??
                   "https://nusskylab-dev.comp.nus.edu.sg/posters/2021/2680.jpg"
                 }
                 alt={`${project.name} Project`}

@@ -10,47 +10,41 @@ import MentorDetailsForm from "@/components/forms/MentorDetailsForm";
 import AdministratorDetailsForm from "@/components/forms/AdministratorDetailsForm";
 // Helpers
 import { Formik, FormikHelpers } from "formik";
-import { toSingular } from "@/helpers/roles";
-import { processAddUserFormValues } from "./AddUserModal.helpers";
+import {
+  generateEmptyInitialValues,
+  processAddUserOrRoleFormValues,
+  toSingular,
+} from "@/helpers/roles";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
 // Types
 import { HTTP_METHOD } from "@/types/api";
 import { Mutate } from "@/hooks/useFetch";
-import { User, UserMetadata } from "@/types/users";
-import { StudentMetadata } from "@/types/students";
-import { AdviserMetadata } from "@/types/advisers";
-import { MentorMetadata } from "@/types/mentors";
-import { AdministratorMetadata } from "@/types/administrators";
-import { ROLES } from "@/types/roles";
-import { Cohort } from "@/types/cohorts";
+import { User } from "@/types/users";
+import { AddUserFormValuesType, ROLES } from "@/types/roles";
 import UserDetailsForm from "@/components/forms/UserDetailsForm";
-
-export type AddUserFormValuesType = Omit<UserMetadata, "id"> & {
-  password?: string;
-} & Partial<StudentMetadata> &
-  Partial<Omit<AdviserMetadata, "projectIds">> &
-  Partial<Omit<MentorMetadata, "projectIds">> &
-  Partial<AdministratorMetadata>;
+import { LeanProject } from "@/types/projects";
+import useCohort from "@/hooks/useCohort";
 
 type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  cohorts: Cohort[];
-  cohortYear: number;
   mutate: Mutate<User[]>;
   hasMore: boolean;
+  leanProjects: LeanProject[] | undefined;
+  isFetchingLeanProjects: boolean;
 };
 
 const AddUserModal: FC<Props> = ({
   open,
   setOpen,
-  cohorts,
-  cohortYear,
   mutate,
   hasMore,
+  leanProjects,
+  isFetchingLeanProjects,
 }) => {
+  const { cohorts, currentCohortYear } = useCohort();
   const {
     snackbar,
     handleClose: handleCloseSnackbar,
@@ -70,19 +64,18 @@ const AddUserModal: FC<Props> = ({
     },
   });
 
-  const initialValues: AddUserFormValuesType = {
-    name: "",
-    email: "",
-    cohortYear,
-  };
+  const initialValues: AddUserFormValuesType =
+    generateEmptyInitialValues(currentCohortYear);
 
   const handleSubmit = async (
     values: AddUserFormValuesType,
     actions: FormikHelpers<AddUserFormValuesType>
   ) => {
-    const processedValues = processAddUserFormValues({
+    const processedValues = processAddUserOrRoleFormValues({
       values,
-      role: selectedRole,
+      selectedRole,
+      includeUserData: true,
+      includeCohortYear: true,
     });
 
     try {
@@ -135,13 +128,28 @@ const AddUserModal: FC<Props> = ({
                 </TextField>
 
                 {selectedRole === ROLES.STUDENTS && (
-                  <StudentDetailsForm formik={formik} cohorts={cohorts} />
+                  <StudentDetailsForm
+                    formik={formik}
+                    cohorts={cohorts}
+                    leanProjects={leanProjects}
+                    isFetchingLeanProjects={isFetchingLeanProjects}
+                  />
                 )}
                 {selectedRole === ROLES.ADVISERS && (
-                  <AdviserDetailsForm formik={formik} cohorts={cohorts} />
+                  <AdviserDetailsForm
+                    formik={formik}
+                    cohorts={cohorts}
+                    leanProjects={leanProjects}
+                    isFetchingLeanProjects={isFetchingLeanProjects}
+                  />
                 )}
                 {selectedRole === ROLES.MENTORS && (
-                  <MentorDetailsForm formik={formik} cohorts={cohorts} />
+                  <MentorDetailsForm
+                    formik={formik}
+                    cohorts={cohorts}
+                    leanProjects={leanProjects}
+                    isFetchingLeanProjects={isFetchingLeanProjects}
+                  />
                 )}
                 {selectedRole === ROLES.ADMINISTRATORS && (
                   <AdministratorDetailsForm formik={formik} />

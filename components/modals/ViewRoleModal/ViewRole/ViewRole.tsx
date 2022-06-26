@@ -20,7 +20,7 @@ import { User } from "@/types/users";
 
 type Props = {
   user: User;
-  viewSelectedRole: ROLES | null;
+  selectedRole: ROLES | null;
   handleCloseModal: () => void;
   setDeleteMode: () => void;
   setEditMode: () => void;
@@ -28,13 +28,13 @@ type Props = {
 
 const ViewRole: FC<Props> = ({
   user,
-  viewSelectedRole,
+  selectedRole,
   handleCloseModal,
   setDeleteMode,
   setEditMode,
 }) => {
   const renderRoleDetails = () => {
-    switch (viewSelectedRole) {
+    switch (selectedRole) {
       case ROLES.STUDENTS:
         return <StudentDetails studentRole={user.student as StudentRole} />;
       case ROLES.ADVISERS:
@@ -56,7 +56,7 @@ const ViewRole: FC<Props> = ({
         <Typography>User Details</Typography>
         <UserDetails user={user} />
 
-        <Typography>{`${toSingular(viewSelectedRole)} Details`}</Typography>
+        <Typography>{`${toSingular(selectedRole)} Details`}</Typography>
         {renderRoleDetails()}
       </Stack>
       <Stack direction="row" justifyContent="space-between" marginTop="2rem">

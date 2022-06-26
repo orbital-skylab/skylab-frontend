@@ -1,6 +1,6 @@
 import { Dispatch, FC, SetStateAction } from "react";
 // Components
-import Select from "@/components/formControllers/Select";
+import Dropdown from "@/components/formControllers/Dropdown";
 import TextInput from "@/components/formControllers/TextInput";
 import Modal from "../Modal";
 import { Button, Stack } from "@mui/material";
@@ -112,7 +112,7 @@ const EditDeadlineModal: FC<Props> = ({
                   size="small"
                   formik={formik}
                 />
-                <Select
+                <Dropdown
                   label="Type"
                   name="type"
                   formik={formik}

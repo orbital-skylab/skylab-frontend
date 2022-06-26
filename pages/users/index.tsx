@@ -6,11 +6,12 @@ import UserTable from "@/components/tables/UserTable";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import { PAGES } from "@/helpers/navigation";
 import useCohort from "@/hooks/useCohort";
-import { isFetching } from "@/hooks/useFetch";
+import useFetch, { isFetching } from "@/hooks/useFetch";
 import useInfiniteFetch, {
   createBottomOfPageRef,
 } from "@/hooks/useInfiniteFetch";
 import { Cohort } from "@/types/cohorts";
+import { LeanProject } from "@/types/projects";
 import { ROLES_WITH_ALL } from "@/types/roles";
 import { User } from "@/types/users";
 import { Add } from "@mui/icons-material";
@@ -104,6 +105,11 @@ const users: User[] = [
   },
 ];
 
+const leanProjects: LeanProject[] = [
+  { id: 1, name: "NUSGrabYourOwnFood" },
+  { id: 2, name: "OrbiTinder" },
+];
+
 export type GetUsersResponse = {
   users: User[];
 };
@@ -128,7 +134,7 @@ const Users: NextPage = () => {
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
 
   /** For fetching users based on filters */
-  const memoQueryParams = useMemo(() => {
+  const memoUsersQueryParams = useMemo(() => {
     return {
       cohortYear: selectedCohortYear,
       role: selectedRole,
@@ -138,15 +144,32 @@ const Users: NextPage = () => {
   }, [selectedCohortYear, selectedRole, querySearch]);
   const {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    data: usersToDo,
+    data: usersToDo, //TODO:
     status: fetchUsersStatus,
     hasMore,
     mutate,
   } = useInfiniteFetch<GetUsersResponse, User>({
     endpoint: `/users`,
-    queryParams: memoQueryParams,
+    queryParams: memoUsersQueryParams,
     page,
     responseToData: (response) => response.users,
+    requiresAuthorization: true,
+  });
+
+  /** For fetching project ID and names to create new users/roles */
+  const memoLeanProjectsQueryParams = useMemo(() => {
+    return {
+      cohortYear: selectedCohortYear,
+    };
+  }, [selectedCohortYear]);
+  //TODO:
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { data: leanProjectsToDo, status: fetchLeanProjectsStatus } = useFetch<
+    LeanProject[]
+  >({
+    endpoint: `/projects/lean`,
+    queryParams: memoLeanProjectsQueryParams,
+    requiresAuthorization: true,
   });
 
   /** Input Change Handlers */
@@ -198,10 +221,10 @@ const Users: NextPage = () => {
       <AddUserModal
         open={isAddUserOpen}
         setOpen={setIsAddUserOpen}
-        cohorts={cohorts as Cohort[]}
-        cohortYear={selectedCohortYear as Cohort["academicYear"]}
         mutate={mutate}
         hasMore={hasMore}
+        leanProjects={leanProjects}
+        isFetchingLeanProjects={isFetching(fetchLeanProjectsStatus)}
       />
       <Body isLoading={isLoadingCohorts}>
         <Stack direction="column" mt="0.5rem" mb="1rem">
@@ -218,15 +241,16 @@ const Users: NextPage = () => {
               onChange={handleSearchInputChange}
               size="small"
             />
+
             <Stack direction="row" spacing="1rem">
               <Link passHref href={PAGES.BATCH_ADD}>
-                <Button variant="contained" size="small">
+                <Button size="small" variant="outlined">
                   <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
                   Batch Add
                 </Button>
               </Link>
               <Button
-                variant="contained"
+                variant="outlined"
                 size="small"
                 onClick={handleOpenAddUserModal}
               >
@@ -250,6 +274,7 @@ const Users: NextPage = () => {
               </TextField>
             </Stack>
           </Stack>
+
           <Tabs
             value={selectedRole}
             onChange={handleTabChange}
@@ -269,11 +294,17 @@ const Users: NextPage = () => {
             })}
           </Tabs>
         </Stack>
+
         <NoDataWrapper
           noDataCondition={users === undefined || users.length === 0}
           fallback={<NoneFound message="No such users found" />}
         >
-          <UserTable users={users} mutate={mutate} />
+          <UserTable
+            users={users}
+            mutate={mutate}
+            leanProjects={leanProjects}
+            isFetchingLeanProjects={isFetching(fetchLeanProjectsStatus)}
+          />
           <div ref={bottomOfPageRef} />
           {isFetching(fetchUsersStatus) ? (
             <Box

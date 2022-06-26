@@ -1,6 +1,6 @@
 import { Dispatch, FC, SetStateAction } from "react";
 // Components
-import Select from "@/components/formControllers/Select";
+import Dropdown from "@/components/formControllers/Dropdown";
 import TextInput from "@/components/formControllers/TextInput";
 import SnackbarAlert from "@/components/SnackbarAlert";
 import Modal from "../Modal";
@@ -109,7 +109,7 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
                   size="small"
                   formik={formik}
                 />
-                <Select
+                <Dropdown
                   label="Type"
                   name="type"
                   formik={formik}

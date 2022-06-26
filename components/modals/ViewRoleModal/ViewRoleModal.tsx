@@ -14,6 +14,7 @@ import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
 import { Mutate } from "@/hooks/useFetch";
 import { User } from "@/types/users";
 import { ROLES } from "@/types/roles";
+import { LeanProject } from "@/types/projects";
 
 enum MODE {
   VIEW,
@@ -22,17 +23,21 @@ enum MODE {
 }
 
 type Props = {
-  viewSelectedRole: ROLES | null;
-  setViewSelectedRole: Dispatch<SetStateAction<ROLES | null>>;
+  selectedRole: ROLES | null;
+  setSelectedRole: Dispatch<SetStateAction<ROLES | null>>;
   user: User;
   mutate: Mutate<User[]>;
+  leanProjects: LeanProject[] | undefined;
+  isFetchingLeanProjects: boolean;
 };
 
 const ViewRoleModal: FC<Props> = ({
-  viewSelectedRole,
-  setViewSelectedRole,
+  selectedRole,
+  setSelectedRole,
   user,
   mutate,
+  leanProjects,
+  isFetchingLeanProjects,
 }) => {
   const {
     snackbar,
@@ -43,7 +48,7 @@ const ViewRoleModal: FC<Props> = ({
   const [mode, setMode] = useState<MODE>(MODE.VIEW);
 
   const handleCloseModal = () => {
-    setViewSelectedRole(null);
+    setSelectedRole(null);
     setViewMode();
   };
 
@@ -65,7 +70,7 @@ const ViewRoleModal: FC<Props> = ({
         return (
           <ViewRole
             user={user}
-            viewSelectedRole={viewSelectedRole}
+            selectedRole={selectedRole}
             handleCloseModal={handleCloseModal}
             setEditMode={setEditMode}
             setDeleteMode={setDeleteMode}
@@ -76,12 +81,14 @@ const ViewRoleModal: FC<Props> = ({
         return (
           <EditRole
             user={user}
-            viewSelectedRole={viewSelectedRole}
+            selectedRole={selectedRole}
             handleCloseModal={handleCloseModal}
             setViewMode={setViewMode}
             setSuccess={setSuccess}
             setError={setError}
             mutate={mutate}
+            leanProjects={leanProjects}
+            isFetchingLeanProjects={isFetchingLeanProjects}
           />
         );
 
@@ -89,7 +96,7 @@ const ViewRoleModal: FC<Props> = ({
         return (
           <DeleteRole
             user={user}
-            viewSelectedRole={viewSelectedRole}
+            selectedRole={selectedRole}
             handleCloseModal={handleCloseModal}
             setViewMode={setViewMode}
             setSuccess={setSuccess}
@@ -104,11 +111,11 @@ const ViewRoleModal: FC<Props> = ({
     <>
       <SnackbarAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
       <Modal
-        open={Boolean(viewSelectedRole)}
+        open={Boolean(selectedRole)}
         handleClose={handleCloseModal}
         title={`${user.name}`}
         subheader={`You are viewing ${user.name}'s ${toSingular(
-          viewSelectedRole
+          selectedRole
         )} details`}
       >
         {renderMode()}
