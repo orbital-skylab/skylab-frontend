@@ -38,7 +38,9 @@ jobs:
       - name: Prettier Check
         run: npx prettier --check . --config .prettierrc.json
 
-      ## TODO: Add test scripts when Jest is configured
+      # Run Jest Unit Tests
+      - name: Unit Tests
+        run: npx jest
 
     # Deploy:
     #   needs: [Lint-Build-Test]
