@@ -2,7 +2,6 @@ import { FC } from "react";
 import { Box, SxProps } from "@mui/system";
 import { NAVBAR_HEIGHT_REM } from "@/styles/constants";
 import LoadingWrapper from "../../wrappers/LoadingWrapper";
-import { Container } from "@mui/material";
 import ErrorWrapper from "../../wrappers/ErrorWrapper";
 
 type Props = {
@@ -23,6 +22,8 @@ const Body: FC<Props> = ({
     minHeight: "100vh",
     height: "100%",
     paddingTop: NAVBAR_HEIGHT_REM,
+    maxWidth: "1536px",
+    marginX: "auto",
   };
 
   if (flexColCenter) {
@@ -35,15 +36,13 @@ const Body: FC<Props> = ({
   return (
     <>
       <Box sx={boxSx}>
-        <Container maxWidth="xl">
-          <LoadingWrapper
-            isLoading={!!isLoading}
-            loadingText={loadingText}
-            fullScreen
-          >
-            <ErrorWrapper isError={!!isError}>{children}</ErrorWrapper>
-          </LoadingWrapper>
-        </Container>
+        <LoadingWrapper
+          isLoading={!!isLoading}
+          loadingText={loadingText}
+          fullScreen
+        >
+          <ErrorWrapper isError={!!isError}>{children}</ErrorWrapper>
+        </LoadingWrapper>
       </Box>
     </>
   );

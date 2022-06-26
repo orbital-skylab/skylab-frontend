@@ -1,5 +1,5 @@
+import Attribute from "@/components/typography/Attribute";
 import { StudentRole } from "@/types/roles";
-import { Box, Typography } from "@mui/material";
 import { FC } from "react";
 
 type Props = { studentRole: StudentRole };
@@ -7,13 +7,14 @@ type Props = { studentRole: StudentRole };
 const StudentDetails: FC<Props> = ({ studentRole }) => {
   return (
     <>
-      <Box>
-        <Typography>{`Student ID: ${studentRole.id}`}</Typography>
-        <Typography>{`Cohort Year: ${studentRole.cohortYear}`}</Typography>
-        <Typography>{`NUSNET ID: ${studentRole.nusnetId}`}</Typography>
-        <Typography>{`Matriculation Number: ${studentRole.matricNo}`}</Typography>
-        <Typography>{`Project ID: ${studentRole.projectId}`}</Typography>
-      </Box>
+      <Attribute attribute="Student ID" value={studentRole.id} />
+      <Attribute attribute="Cohort Year" value={studentRole.cohortYear} />
+      <Attribute attribute="NUSNET ID" value={studentRole.nusnetId} />
+      <Attribute
+        attribute="Matriculation Number"
+        value={studentRole.matricNo}
+      />
+      <Attribute attribute="Project ID" value={studentRole.projectId} />
     </>
   );
 };

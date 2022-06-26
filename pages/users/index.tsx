@@ -1,19 +1,21 @@
+import {
+  ChangeEvent,
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import Link from "next/link";
+import type { NextPage } from "next";
+// Components
+import Body from "@/components/layout/Body";
 import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 import NoneFound from "@/components/emptyStates/NoneFound";
-import Body from "@/components/layout/Body";
 import AddUserModal from "@/components/modals/AddUserModal";
 import UserTable from "@/components/tables/UserTable";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
-import { PAGES } from "@/helpers/navigation";
-import useCohort from "@/hooks/useCohort";
-import useFetch, { isFetching } from "@/hooks/useFetch";
-import useInfiniteFetch, {
-  createBottomOfPageRef,
-} from "@/hooks/useInfiniteFetch";
-import { Cohort } from "@/types/cohorts";
-import { LeanProject } from "@/types/projects";
-import { ROLES_WITH_ALL } from "@/types/roles";
-import { User } from "@/types/users";
 import { Add } from "@mui/icons-material";
 import {
   Box,
@@ -26,17 +28,19 @@ import {
   tabsClasses,
   TextField,
 } from "@mui/material";
-import type { NextPage } from "next";
-import Link from "next/link";
-import {
-  ChangeEvent,
-  SyntheticEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+// Helpers
+import { PAGES } from "@/helpers/navigation";
+// Hooks
+import useCohort from "@/hooks/useCohort";
+import useFetch, { isFetching } from "@/hooks/useFetch";
+import useInfiniteFetch, {
+  createBottomOfPageRef,
+} from "@/hooks/useInfiniteFetch";
+// Types
+import { Cohort } from "@/types/cohorts";
+import { LeanProject } from "@/types/projects";
+import { ROLES_WITH_ALL } from "@/types/roles";
+import { User } from "@/types/users";
 
 const users: User[] = [
   {
@@ -89,7 +93,7 @@ const users: User[] = [
       cohortYear: 2022,
       nusnetId: "123",
       matricNo: "321",
-      projectIds: [0],
+      projectIds: [0, 2, 3, 5],
     },
 
     mentor: {

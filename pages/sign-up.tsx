@@ -128,7 +128,7 @@ const SignUp: NextPage = () => {
         <Container maxWidth="xs">
           <Stack gap="1rem">
             <Box>
-              <Typography variant="caption" fontWeight={400}>
+              <Typography variant="caption">
                 Dev: For testing purposes
               </Typography>
               <Typography variant="h6" fontWeight={600}>

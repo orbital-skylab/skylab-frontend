@@ -58,7 +58,7 @@ const HeroSignIn: FC = () => {
               <form onSubmit={formik.handleSubmit}>
                 <Stack gap="1rem" width="100%">
                   <Box>
-                    <Typography variant="caption" fontWeight={400}>
+                    <Typography variant="caption">
                       Involved in Orbital?
                     </Typography>
                     <Typography variant="h6" fontWeight={600}>

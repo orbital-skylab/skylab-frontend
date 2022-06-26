@@ -1,6 +1,6 @@
 import { FC } from "react";
 // Components
-import { Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import AdministratorDetails from "@/components/details/AdministratorDetails";
 import AdviserDetails from "@/components/details/AdviserDetails";
 import MentorDetails from "@/components/details/MentorDetails";
@@ -53,11 +53,19 @@ const ViewRole: FC<Props> = ({
   return (
     <>
       <Stack direction="column" spacing="1rem">
-        <Typography>User Details</Typography>
-        <UserDetails user={user} />
+        <Box>
+          <Typography fontWeight={600} mb="0.25rem">
+            User Details
+          </Typography>
+          <UserDetails user={user} />
+        </Box>
 
-        <Typography>{`${toSingular(selectedRole)} Details`}</Typography>
-        {renderRoleDetails()}
+        <Box>
+          <Typography fontWeight={600} mb="0.25rem">{`${toSingular(
+            selectedRole
+          )} Details`}</Typography>
+          {renderRoleDetails()}
+        </Box>
       </Stack>
       <Stack direction="row" justifyContent="space-between" marginTop="2rem">
         <Button size="small" onClick={handleCloseModal}>

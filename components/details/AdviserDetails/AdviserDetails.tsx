@@ -1,5 +1,5 @@
+import Attribute from "@/components/typography/Attribute";
 import { AdviserRole } from "@/types/roles";
-import { Box, Typography } from "@mui/material";
 import { FC } from "react";
 
 type Props = { adviserRole: AdviserRole };
@@ -7,16 +7,14 @@ type Props = { adviserRole: AdviserRole };
 const AdviserDetails: FC<Props> = ({ adviserRole }) => {
   return (
     <>
-      <Box>
-        <Typography>{`Adviser ID: ${adviserRole.id}`}</Typography>
-        <Typography>{`Cohort Year: ${adviserRole.cohortYear}`}</Typography>
-        <Typography>{`NUSNET ID: ${adviserRole.nusnetId}`}</Typography>
-        <Typography>{`Matriculation Number: ${adviserRole.matricNo}`}</Typography>
-        <Typography>{`Projects:`}</Typography>
-        {adviserRole.projectIds.map((projectId) => (
-          <Typography key={projectId}>{projectId}</Typography>
-        ))}
-      </Box>
+      <Attribute attribute="Adviser ID" value={adviserRole.id} />
+      <Attribute attribute="Cohort Year" value={adviserRole.cohortYear} />
+      <Attribute attribute="NUSNET ID" value={adviserRole.nusnetId} />
+      <Attribute
+        attribute="Matriculation Number"
+        value={adviserRole.matricNo}
+      />
+      <Attribute attribute="Projects" value={adviserRole.projectIds} />
     </>
   );
 };
