@@ -26,6 +26,7 @@ import { AddUserFormValuesType, ROLES } from "@/types/roles";
 import UserDetailsForm from "@/components/forms/UserDetailsForm";
 import { LeanProject } from "@/types/projects";
 import useCohort from "@/hooks/useCohort";
+import { generateValidationSchema } from "./AddUserModal.helpers";
 
 type Props = {
   open: boolean;
@@ -104,9 +105,14 @@ const AddUserModal: FC<Props> = ({
     <>
       <SnackbarAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
       <Modal open={open} handleClose={handleCloseModal} title={`Add User`}>
-        <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={handleSubmit}
+          validationSchema={generateValidationSchema(selectedRole)}
+        >
           {(formik) => (
             <>
+              {console.log(formik.errors)}
               <Stack direction="column" spacing="1rem">
                 <Typography>User Details</Typography>
                 <UserDetailsForm formik={formik} />

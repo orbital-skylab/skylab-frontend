@@ -32,7 +32,7 @@ function TextInput<FormValuesType>({
       onChange={handleChange}
       onBlur={handleBlur}
       error={!!errors[name] && !!touched[name]}
-      helperText={errors[name]}
+      helperText={!!touched[name] && errors[name]}
       multiline={multiline}
       minRows={minRows}
       size={size}

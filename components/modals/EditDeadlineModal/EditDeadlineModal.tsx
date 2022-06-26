@@ -10,6 +10,8 @@ import {
   isoDateToDateTimeLocalInput,
 } from "@/helpers/dates";
 import { Formik, FormikHelpers } from "formik";
+import * as Yup from "yup";
+import { ERRORS } from "@/helpers/errors";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
 // Types
@@ -95,7 +97,11 @@ const EditDeadlineModal: FC<Props> = ({
         title={`Edit Deadline`}
         subheader={`You are editing: ${deadline.name}`}
       >
-        <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={handleSubmit}
+          validationSchema={editDeadlineValidationSchema}
+        >
           {(formik) => (
             <>
               <Stack direction="column" spacing="1rem">
@@ -146,3 +152,9 @@ const EditDeadlineModal: FC<Props> = ({
   );
 };
 export default EditDeadlineModal;
+
+const editDeadlineValidationSchema = Yup.object().shape({
+  name: Yup.string().required(ERRORS.REQUIRED),
+  dueBy: Yup.string().required(ERRORS.REQUIRED),
+  type: Yup.string().required(ERRORS.REQUIRED),
+});

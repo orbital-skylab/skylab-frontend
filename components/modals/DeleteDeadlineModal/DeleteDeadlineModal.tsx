@@ -71,7 +71,7 @@ const DeleteDeadlineModal: FC<Props> = ({
         subheader={`You are deleting deadline ${deadline.name}. This action is irreversible, are you sure?`}
         sx={{ width: "400px" }}
       >
-        <Stack direction="row" justifyContent="space-between" marginTop="-1rem">
+        <Stack direction="row" justifyContent="space-between">
           <Button size="small" onClick={handleCloseModal}>
             Cancel
           </Button>

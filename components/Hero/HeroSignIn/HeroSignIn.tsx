@@ -84,7 +84,7 @@ const HeroSignIn: FC = () => {
                   >
                     Sign In
                   </Button>
-                  <Link href={PAGES.FORGOT_PASSWORD} passHref>
+                  <Link href={PAGES.RESET_PASSWORD} passHref>
                     <Typography
                       variant="subtitle2"
                       sx={{

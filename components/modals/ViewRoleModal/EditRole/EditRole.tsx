@@ -1,6 +1,6 @@
 import { FC } from "react";
 // Components
-import { Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import UserDetails from "@/components/details/UserDetails";
 import AdministratorDetailsForm from "@/components/forms/AdministratorDetailsForm";
 import AdviserDetailsForm from "@/components/forms/AdviserDetailsForm";
@@ -22,6 +22,7 @@ import { HTTP_METHOD } from "@/types/api";
 import { AddOrEditRoleFormValuesType, ROLES } from "@/types/roles";
 import { RoleMetadata, User } from "@/types/users";
 import { LeanProject } from "@/types/projects";
+import { generateValidationSchema } from "../../AddRoleModal";
 
 type Props = {
   user: User;
@@ -138,14 +139,22 @@ const EditRole: FC<Props> = ({
   };
 
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+    <Formik
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      validationSchema={generateValidationSchema(selectedRole)}
+    >
       {(formik) => (
         <>
           <Stack direction="column" spacing="1rem">
-            <Typography>User Details</Typography>
-            <UserDetails user={user} />
+            <Box>
+              <Typography fontWeight={600} mb="0.25rem">
+                User Details
+              </Typography>
+              <UserDetails user={user} />
+            </Box>
 
-            <Typography>{`Edit ${toSingular(
+            <Typography fontWeight={600} mb="0.25rem">{`Edit ${toSingular(
               selectedRole
             )} Details`}</Typography>
             {renderRoleDetailsForm(formik)}

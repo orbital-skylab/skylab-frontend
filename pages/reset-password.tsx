@@ -15,15 +15,17 @@ import {
 // Helpers
 import { PAGES } from "@/helpers/navigation";
 import { Formik } from "formik";
+import * as Yup from "yup";
 // Hooks
 import useAuth from "@/hooks/useAuth";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
+import { ERRORS } from "@/helpers/errors";
 
 interface SignUpFormValuesType {
   email: string;
 }
 
-const ForgotPassword: NextPage = () => {
+const ResetPassword: NextPage = () => {
   const { resetPassword } = useAuth();
   const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
 
@@ -51,7 +53,11 @@ const ForgotPassword: NextPage = () => {
             <Typography variant="h6" fontWeight={600}>
               Reset Password
             </Typography>
-            <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+            <Formik
+              initialValues={initialValues}
+              onSubmit={handleSubmit}
+              validationSchema={resetPasswordValidationSchema}
+            >
               {(formik) => (
                 <form onSubmit={formik.handleSubmit}>
                   <Stack gap="1rem">
@@ -99,4 +105,8 @@ const ForgotPassword: NextPage = () => {
     </>
   );
 };
-export default ForgotPassword;
+export default ResetPassword;
+
+const resetPasswordValidationSchema = Yup.object().shape({
+  email: Yup.string().email(ERRORS.INVALID_EMAIL).required(ERRORS.REQUIRED),
+});

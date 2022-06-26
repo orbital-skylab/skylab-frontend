@@ -28,6 +28,7 @@ import { User } from "@/types/users";
 import { AddOrEditRoleFormValuesType, ROLES } from "@/types/roles";
 import { Cohort } from "@/types/cohorts";
 import { LeanProject } from "@/types/projects";
+import { generateValidationSchema } from "./AddRoleModal.helpers";
 
 type Props = {
   open: boolean;
@@ -120,7 +121,11 @@ const AddRoleModal: FC<Props> = ({
         title={`Add Role`}
         subheader={`Adding ${toSingular(selectedRole)} role to ${user.name}`}
       >
-        <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={handleSubmit}
+          validationSchema={generateValidationSchema(selectedRole)}
+        >
           {(formik) => (
             <>
               <Stack direction="column" spacing="1rem">

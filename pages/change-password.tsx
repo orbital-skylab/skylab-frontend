@@ -6,9 +6,12 @@ import SnackbarAlert from "@/components/SnackbarAlert";
 import { Button, Container, Divider, Stack, Typography } from "@mui/material";
 // Helpers
 import { Formik } from "formik";
+import * as Yup from "yup";
 // Hooks
 import useAuth from "@/hooks/useAuth";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
+// Constants
+import { ERRORS } from "@/helpers/errors";
 
 interface ChangePasswordFormValuesType {
   oldPassword: string;
@@ -44,7 +47,11 @@ const ChangePassword: NextPage = () => {
             <Typography variant="h6" fontWeight={600}>
               Change Password
             </Typography>
-            <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+            <Formik
+              initialValues={initialValues}
+              onSubmit={handleSubmit}
+              validationSchema={changePasswordValidationSchema}
+            >
               {(formik) => (
                 <form onSubmit={formik.handleSubmit}>
                   <Stack gap="1rem">
@@ -86,3 +93,17 @@ const ChangePassword: NextPage = () => {
   );
 };
 export default ChangePassword;
+
+const changePasswordValidationSchema = Yup.object().shape({
+  oldPassword: Yup.string().required(ERRORS.REQUIRED),
+  newPassword: Yup.string()
+    .min(8, ERRORS.PASSWORD_LENGTH)
+    .required(ERRORS.REQUIRED),
+  confirmNewPassword: Yup.string()
+    .test(
+      "isSameAsNewPassword",
+      ERRORS.CONFIRM_PASSWORD_MUST_BE_SAME,
+      (value, ctx) => value === ctx.parent.newPassword
+    )
+    .required(ERRORS.REQUIRED),
+});

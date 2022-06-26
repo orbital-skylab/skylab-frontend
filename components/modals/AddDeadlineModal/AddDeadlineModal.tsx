@@ -12,6 +12,8 @@ import {
   dateTimeLocalInputToIsoDate,
 } from "@/helpers/dates";
 import { Formik, FormikHelpers } from "formik";
+import * as Yup from "yup";
+import { ERRORS } from "@/helpers/errors";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
@@ -92,7 +94,11 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
     <>
       <SnackbarAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
       <Modal open={open} handleClose={handleCloseModal} title={`Add Deadline`}>
-        <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={handleSubmit}
+          validationSchema={addDeadlineValidationSchema}
+        >
           {(formik) => (
             <>
               <Stack direction="column" spacing="1rem">
@@ -143,3 +149,9 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
   );
 };
 export default AddDeadlineModal;
+
+const addDeadlineValidationSchema = Yup.object().shape({
+  name: Yup.string().required(ERRORS.REQUIRED),
+  dueBy: Yup.string().required(ERRORS.REQUIRED),
+  type: Yup.string().required(ERRORS.REQUIRED),
+});
