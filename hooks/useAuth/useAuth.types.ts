@@ -7,6 +7,7 @@ export interface AuthProviderProps {
 export interface IAuth {
   user: User | undefined;
   isLoading: boolean;
+  isPreviewMode: boolean;
   signUp: ({
     name,
     email,
@@ -28,4 +29,6 @@ export interface IAuth {
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   changePassword: (oldPassword: string, newPassword: string) => Promise<void>;
+  previewSiteAs: (user: User) => void;
+  stopPreview: () => void;
 }

@@ -3,6 +3,8 @@ import { Box, SxProps } from "@mui/system";
 import { NAVBAR_HEIGHT_REM } from "@/styles/constants";
 import LoadingWrapper from "../../wrappers/LoadingWrapper";
 import ErrorWrapper from "../../wrappers/ErrorWrapper";
+import useAuth from "@/hooks/useAuth";
+import { Alert, Button } from "@mui/material";
 
 type Props = {
   flexColCenter?: boolean;
@@ -18,6 +20,8 @@ const Body: FC<Props> = ({
   loadingText,
   isError,
 }) => {
+  const { user, isPreviewMode, stopPreview } = useAuth();
+
   const boxSx: SxProps = {
     minHeight: "100vh",
     height: "100%",
@@ -42,7 +46,30 @@ const Body: FC<Props> = ({
           loadingText={loadingText}
           fullScreen
         >
-          <ErrorWrapper isError={!!isError}>{children}</ErrorWrapper>
+          <ErrorWrapper isError={!!isError}>
+            {isPreviewMode && user && (
+              <Alert
+                color="warning"
+                sx={{
+                  mb: "1rem",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                {`You are currently previewing the page as: ${user.name}`}
+                <Button
+                  sx={{ marginLeft: "1rem" }}
+                  color="warning"
+                  size="small"
+                  variant="outlined"
+                  onClick={stopPreview}
+                >
+                  Stop Preview
+                </Button>
+              </Alert>
+            )}
+            {children}
+          </ErrorWrapper>
         </LoadingWrapper>
       </Box>
     </>

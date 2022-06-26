@@ -1,7 +1,15 @@
-import { FC, useState } from "react";
+import { FC, MouseEvent, useState } from "react";
 import Link from "next/link";
 // Components
-import { Button, Chip, Stack, TableCell, TableRow } from "@mui/material";
+import {
+  Button,
+  Chip,
+  Menu,
+  MenuItem,
+  Stack,
+  TableCell,
+  TableRow,
+} from "@mui/material";
 import SnackbarAlert from "@/components/SnackbarAlert";
 import ViewRoleModal from "@/components/modals/ViewRoleModal";
 import AddRoleModal from "@/components/modals/AddRoleModal";
@@ -15,6 +23,8 @@ import { Mutate } from "@/hooks/useFetch";
 import { User } from "@/types/users";
 import { ROLES } from "@/types/roles";
 import { LeanProject } from "@/types/projects";
+import { KeyboardArrowDown } from "@mui/icons-material";
+import useAuth from "@/hooks/useAuth";
 
 type Props = {
   user: User;
@@ -29,7 +39,11 @@ const UserRow: FC<Props> = ({
   leanProjects,
   isFetchingLeanProjects,
 }) => {
+  const { previewSiteAs } = useAuth();
   const { snackbar, setSuccess, setError, handleClose } = useSnackbarAlert();
+  const [dropdownAnchorElement, setDropdownAnchorElement] =
+    useState<HTMLElement | null>(null);
+  const isDropdownOpen = Boolean(dropdownAnchorElement);
   const [isDeleteUserOpen, setIsDeleteUserOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState<ROLES | null>(null);
   const [isAddRoleOpen, setIsAddRoleOpen] = useState(false);
@@ -96,8 +110,20 @@ const UserRow: FC<Props> = ({
     return tags;
   };
 
+  const handleOpenDropdown = (e: MouseEvent<HTMLButtonElement>) => {
+    setDropdownAnchorElement(e.currentTarget);
+  };
+
+  const handleCloseDropdown = () => {
+    setDropdownAnchorElement(null);
+  };
+
   const handleOpenDeleteModal = () => {
     setIsDeleteUserOpen(true);
+  };
+
+  const handlePreviewSiteAs = () => {
+    previewSiteAs(user);
   };
 
   return (
@@ -137,33 +163,43 @@ const UserRow: FC<Props> = ({
           </Stack>
         </TableCell>
         <TableCell>
-          <Stack direction="row" spacing="0.5rem">
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={handleOpenDropdown}
+            endIcon={<KeyboardArrowDown />}
+          >
+            Options
+          </Button>
+          <Menu
+            anchorEl={dropdownAnchorElement}
+            open={isDropdownOpen}
+            onClose={handleCloseDropdown}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+          >
             <Link href={`${PAGES.PROFILE}/${user.email}`} passHref>
-              <Button
-                size="small"
-                sx={{
-                  "&:hover": {
-                    color: "white",
-                    backgroundColor: "info.main",
-                  },
-                }}
-              >
-                Profile
-              </Button>
+              <MenuItem>View Profile</MenuItem>
             </Link>
-            <Button
-              size="small"
+            <MenuItem onClick={handlePreviewSiteAs}>Preview</MenuItem>
+            <MenuItem
               onClick={handleOpenDeleteModal}
               sx={{
                 "&:hover": {
-                  color: "white",
                   backgroundColor: "error.main",
+                  color: "white",
                 },
               }}
             >
               Delete
-            </Button>
-          </Stack>
+            </MenuItem>
+          </Menu>
         </TableCell>
       </TableRow>
     </>
