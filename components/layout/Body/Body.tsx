@@ -22,6 +22,7 @@ const Body: FC<Props> = ({
     minHeight: "100vh",
     height: "100%",
     paddingTop: NAVBAR_HEIGHT_REM,
+    paddingX: "24px",
     maxWidth: "1536px",
     marginX: "auto",
   };
