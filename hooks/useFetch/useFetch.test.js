@@ -115,12 +115,6 @@ describe("#isFetching", () => {
   it("returns false with one status", () => {
     expect(isFetching(FETCH_STATUS.FETCHED)).toBeFalsy();
   });
-
-  it("returns false with multiple statuses where none is fetching", () => {
-    expect(
-      isFetching(FETCH_STATUS.FETCHED, FETCH_STATUS.ERROR, FETCH_STATUS.IDLE)
-    ).toBeFalsy();
-  });
 });
 
 describe("#isError", () => {
@@ -138,5 +132,11 @@ describe("#isError", () => {
 
   it("returns false with one status", () => {
     expect(isError(FETCH_STATUS.FETCHED)).toBeFalsy();
+  });
+
+  it("returns false with multiple statuses where none is error", () => {
+    expect(
+      isError(FETCH_STATUS.FETCHED, FETCH_STATUS.FETCHING, FETCH_STATUS.IDLE)
+    ).toBeFalsy();
   });
 });
