@@ -1,7 +1,9 @@
+import type { NextPage } from "next";
+import Link from "next/link";
+// Components
 import Body from "@/components/layout/Body";
 import TextInput from "@/components/formControllers/TextInput";
-import { PAGES } from "@/helpers/navigation";
-import useAuth from "@/hooks/useAuth";
+import SnackbarAlert from "@/components/SnackbarAlert";
 import {
   Box,
   Button,
@@ -10,11 +12,12 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { Formik, FormikHelpers } from "formik";
-import type { NextPage } from "next";
-import Link from "next/link";
+// Helpers
+import { PAGES } from "@/helpers/navigation";
+import { Formik } from "formik";
+// Hooks
+import useAuth from "@/hooks/useAuth";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
-import SnackbarAlert from "@/components/SnackbarAlert";
 
 interface SignUpFormValuesType {
   email: string;
@@ -22,22 +25,21 @@ interface SignUpFormValuesType {
 
 const ForgotPassword: NextPage = () => {
   const { resetPassword } = useAuth();
-  const { snackbar, handleClose, setError } = useSnackbarAlert();
+  const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
 
   const initialValues: SignUpFormValuesType = {
     email: "",
   };
 
-  const handleSubmit = async (
-    values: SignUpFormValuesType,
-    actions: FormikHelpers<SignUpFormValuesType>
-  ) => {
+  const handleSubmit = async (values: SignUpFormValuesType) => {
     try {
       await resetPassword(values.email);
+      setSuccess(
+        "Successfully reset password! You should be receiving an email with your new password soon"
+      );
     } catch (error) {
       setError(error);
     }
-    actions.setSubmitting(false);
   };
 
   return (

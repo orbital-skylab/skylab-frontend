@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { ApiServiceBuilder } from "@/helpers/api";
 import { PAGES } from "@/helpers/navigation";
 import { HTTP_METHOD } from "@/types/api";
@@ -8,19 +9,12 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 const AuthContext = createContext<IAuth>({
   user: undefined,
-  isLoading: false,
-  signUp: async () => {
-    /* Placeholder for callback function */
-  },
-  signIn: async () => {
-    /* Placeholder for callback function */
-  },
-  signOut: async () => {
-    /* Placeholder for callback function */
-  },
-  resetPassword: async () => {
-    /* Placeholder for callback function */
-  },
+  isLoading: true,
+  signUp: async () => {},
+  signIn: async () => {},
+  signOut: async () => {},
+  resetPassword: async () => {},
+  changePassword: async () => {},
 });
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
@@ -180,6 +174,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // TODO: sendinblue
   };
 
+  const changePassword = async (oldPassword: string, newPassword: string) => {
+    console.log(oldPassword, newPassword);
+    // TODO: change password
+  };
+
   const memoedValue = useMemo(
     () => ({
       user,
@@ -188,6 +187,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       signIn,
       signOut,
       resetPassword,
+      changePassword,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [user]
