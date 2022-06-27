@@ -1,5 +1,8 @@
 import { HEADERS } from "./BatchAddStudentsForm.types";
 
+/**
+ * This maps the variable name (key) to the HEADER enum (value) used in the CSV template
+ */
 export const HEADER_MAPPING: Record<string, HEADERS> = {
   name: HEADERS.PROJECT_NAME,
   achievement: HEADERS.LOA,
