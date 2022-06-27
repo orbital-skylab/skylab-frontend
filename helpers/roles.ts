@@ -2,6 +2,7 @@ import {
   AddOrEditRoleFormValuesType,
   AddUserFormValuesType,
   ROLES,
+  ROLES_WITH_ALL,
 } from "@/types/roles";
 import { User } from "@/types/users";
 import { dateTimeLocalInputToIsoDate } from "@/helpers/dates";
@@ -12,7 +13,7 @@ import { isAddUserFormValuesType } from "./types";
  * @param {ROLES} role The specified role
  * @returns {string}
  */
-export const toSingular = (role: ROLES | null) => {
+export const toSingular = (role: ROLES | ROLES_WITH_ALL | null) => {
   if (!role) {
     return "";
   }

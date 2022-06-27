@@ -53,8 +53,12 @@ const useApiCall = ({
       const res = await apiService();
 
       if (!res.ok) {
-        const error = await res.json();
-        throw error;
+        try {
+          const error = await res.json();
+          throw error;
+        } catch {
+          throw res.statusText;
+        }
       }
 
       const data = await res.json();

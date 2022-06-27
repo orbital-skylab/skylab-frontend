@@ -3,7 +3,7 @@ import {
   ICohort,
   CohortProviderProps,
 } from "@/hooks/useCohort/useCohort.types";
-import { Cohort } from "@/types/cohorts";
+import { GetCohortResponse, GetCohortsResponse } from "@/types/cohorts";
 import useFetch, { isFetching } from "../useFetch";
 
 const CohortContext = createContext<ICohort>({
@@ -13,12 +13,14 @@ const CohortContext = createContext<ICohort>({
 });
 
 export const CohortProvider = ({ children }: CohortProviderProps) => {
-  const { data: currentCohort, status: currentCohortYearStatus } =
-    useFetch<Cohort>({ endpoint: "/cohorts/latest" });
-  const { data: cohorts, status: cohortsStatus } = useFetch<Cohort[]>({
-    endpoint: "/cohorts",
-  });
-  const currentCohortYear = currentCohort?.academicYear;
+  const { data: latestCohortResponse, status: currentCohortYearStatus } =
+    useFetch<GetCohortResponse>({ endpoint: "/cohorts/latest" });
+  const { data: cohortsResponse, status: cohortsStatus } =
+    useFetch<GetCohortsResponse>({
+      endpoint: "/cohorts",
+    });
+  const currentCohortYear = latestCohortResponse?.cohort?.academicYear;
+  const cohorts = cohortsResponse?.cohorts;
   const isLoading = isFetching(currentCohortYearStatus, cohortsStatus);
 
   const memoedValue = useMemo(
@@ -28,7 +30,7 @@ export const CohortProvider = ({ children }: CohortProviderProps) => {
       isLoading,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [cohorts, currentCohortYear, currentCohort]
+    [cohortsResponse, latestCohortResponse]
   );
 
   return (

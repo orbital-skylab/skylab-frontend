@@ -6,47 +6,47 @@ import { Button, Stack } from "@mui/material";
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
 // Types
 import { HTTP_METHOD } from "@/types/api";
-import { Deadline } from "@/types/deadlines";
 import { Mutate } from "@/hooks/useFetch";
-import { GetDeadlinesResponse } from "@/pages/deadlines";
+import { Cohort, GetCohortsResponse } from "@/types/cohorts";
 
 type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  deadline: Deadline;
-  mutate: Mutate<GetDeadlinesResponse>;
+  cohort: Cohort;
+  mutate: Mutate<GetCohortsResponse>;
   setSuccess: (message: string) => void;
   setError: (error: unknown) => void;
 };
 
-const DeleteDeadlineModal: FC<Props> = ({
+const DeleteCohortModal: FC<Props> = ({
   open,
   setOpen,
-  deadline,
+  cohort,
   mutate,
   setSuccess,
   setError,
 }) => {
-  const deleteDeadline = useApiCall({
+  const deleteCohort = useApiCall({
     method: HTTP_METHOD.DELETE,
-    endpoint: `/deadlines/${deadline.id}`,
+    endpoint: `/cohorts/${cohort.academicYear}`,
     onSuccess: () => {
       mutate((data) => {
-        const oldDeadlineIdx = data.deadlines.findIndex(
-          (oldDeadline) => oldDeadline.id === deadline.id
+        const oldCohortAcademicYear = cohort.academicYear;
+        const oldCohortIdx = data.cohorts.findIndex(
+          (cohort) => cohort.academicYear === oldCohortAcademicYear
         );
-        const newDeadlines = [...data.deadlines];
-        newDeadlines.splice(oldDeadlineIdx, 1);
-        return { deadlines: newDeadlines };
+        const newCohorts = [...data.cohorts];
+        newCohorts.splice(oldCohortIdx, 1);
+        return { cohorts: newCohorts };
       });
     },
   });
 
   const handleDelete = async () => {
     try {
-      await deleteDeadline.call();
+      await deleteCohort.call();
       setSuccess(
-        `You have successfully deleted the deadline ${deadline.name}!`
+        `You have successfully deleted the cohort ${cohort.academicYear}!`
       );
       handleCloseModal();
     } catch (error) {
@@ -63,8 +63,8 @@ const DeleteDeadlineModal: FC<Props> = ({
       <Modal
         open={open}
         handleClose={handleCloseModal}
-        title={`Delete Deadline`}
-        subheader={`You are deleting the deadline ${deadline.name}. This action is irreversible, are you sure?`}
+        title={`Delete Cohort`}
+        subheader={`You are deleting the cohort ${cohort.academicYear}. This action is irreversible, are you sure?`}
         sx={{ width: "400px" }}
       >
         <Stack direction="row" justifyContent="space-between">
@@ -76,7 +76,7 @@ const DeleteDeadlineModal: FC<Props> = ({
             variant="contained"
             color="error"
             onClick={handleDelete}
-            disabled={isCalling(deleteDeadline.status)}
+            disabled={isCalling(deleteCohort.status)}
           >
             Delete
           </Button>
@@ -85,4 +85,4 @@ const DeleteDeadlineModal: FC<Props> = ({
     </>
   );
 };
-export default DeleteDeadlineModal;
+export default DeleteCohortModal;
