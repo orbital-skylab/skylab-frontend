@@ -1,9 +1,10 @@
 import { Container, Stack, Typography } from "@mui/material";
 import { FC } from "react";
+import { ORBITAL_WORDPRESS } from "../layout/Footer/Footer.constants";
 
 const About: FC = () => {
   return (
-    <Container maxWidth="md" sx={{ padding: 0 }}>
+    <Container maxWidth="md" sx={{ padding: 0, mb: "15vh" }}>
       <Typography
         variant="h2"
         fontWeight={600}
@@ -30,6 +31,12 @@ const About: FC = () => {
           and driven to complete a project of their own design, by structuring
           peer evaluation, critique and presentation milestones over the summer
           period.
+        </Typography>
+        <Typography variant="body1">
+          To view more details about the program, do check out the{" "}
+          <a href={ORBITAL_WORDPRESS} target="_blank" rel="noreferrer">
+            Offical Orbital Program Website
+          </a>
         </Typography>
       </Stack>
     </Container>
