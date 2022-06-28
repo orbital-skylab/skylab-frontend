@@ -21,6 +21,7 @@ interface ChangePasswordFormValuesType {
 
 const ChangePassword: NextPage = () => {
   const router = useRouter();
+  console.log(router);
   const { token, id } = router.query;
   const { changePassword } = useAuth();
   const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();

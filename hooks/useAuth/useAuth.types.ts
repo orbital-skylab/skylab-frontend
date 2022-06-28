@@ -10,7 +10,13 @@ export interface IAuth {
   isPreviewMode: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
-  resetPassword: ({ email }: { email: string }) => Promise<void>;
+  resetPassword: ({
+    email,
+    origin,
+  }: {
+    email: string;
+    origin: string;
+  }) => Promise<void>;
   changePassword: ({
     newPassword,
     token,

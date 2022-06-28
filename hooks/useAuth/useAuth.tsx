@@ -89,11 +89,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     router.push(PAGES.LANDING);
   };
 
-  const resetPassword = async ({ email }: { email: string }) => {
+  const resetPassword = async ({
+    email,
+    origin,
+  }: {
+    email: string;
+    origin: string;
+  }) => {
     const resetPasswordApiService = new ApiServiceBuilder({
       method: HTTP_METHOD.POST,
       endpoint: "/auth/reset-password",
-      body: { email },
+      body: { email, origin },
     }).build();
     const signOutResponse = await resetPasswordApiService();
 

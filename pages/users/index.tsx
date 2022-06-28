@@ -52,7 +52,7 @@ const LIMIT = 20;
 
 const Users: NextPage = () => {
   const [selectedRole, setSelectedRole] = useState<ROLES_WITH_ALL>(
-    ROLES_WITH_ALL.STUDENTS
+    ROLES_WITH_ALL.ALL
   );
   const [page, setPage] = useState(0);
   const [searchTextInput, setSearchTextInput] = useState(""); // The input value

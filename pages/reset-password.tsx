@@ -35,7 +35,13 @@ const ResetPassword: NextPage = () => {
 
   const handleSubmit = async (values: SignUpFormValuesType) => {
     try {
-      await resetPassword({ email: values.email });
+      if (!window.location.origin) {
+        throw new Error("Cannot fetch the page origin");
+      }
+      await resetPassword({
+        email: values.email,
+        origin: window.location.origin,
+      });
       setSuccess(
         "Successfully reset password! You should be receiving an email with a link soon!"
       );

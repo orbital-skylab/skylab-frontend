@@ -3,7 +3,7 @@ import { AdviserMetadata } from "./advisers";
 import { FacilitatorMetadata } from "./facilitators";
 import { MentorMetadata } from "./mentors";
 import { StudentMetadata } from "./students";
-import { UserMetadata } from "./users";
+import { User, UserMetadata } from "./users";
 
 export enum ROLES {
   STUDENTS = "Students",
@@ -44,3 +44,5 @@ export type AddOrEditRoleFormValuesType = Partial<StudentMetadata> &
   Partial<AdviserMetadata> &
   Partial<MentorMetadata> &
   Partial<AdministratorMetadata>;
+
+export type CreateRoleResponse = User;

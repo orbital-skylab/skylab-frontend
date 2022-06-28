@@ -31,3 +31,5 @@ export type RoleMetadata = {
 export type GetUserResponse = {
   user: UserMetadata;
 };
+
+export type CreateUserResponse = User;
