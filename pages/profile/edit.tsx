@@ -1,10 +1,9 @@
+import type { NextPage } from "next";
+import Link from "next/link";
+// Components
 import Body from "@/components/layout/Body";
 import TextInput from "@/components/formControllers/TextInput";
 import SnackbarAlert from "@/components/SnackbarAlert";
-import { PAGES } from "@/helpers/navigation";
-import useApiCall from "@/hooks/useApiCall";
-import useAuth from "@/hooks/useAuth";
-import { HTTP_METHOD } from "@/types/api";
 import {
   Button,
   Card,
@@ -13,30 +12,27 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { Formik, FormikHelpers, FormikProps } from "formik";
-import type { NextPage } from "next";
-import Link from "next/link";
-import { useState } from "react";
 import { LoadingButton } from "@mui/lab";
+// Hooks
+import useApiCall from "@/hooks/useApiCall";
+import useAuth from "@/hooks/useAuth";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
+// Helpers
+import { PAGES } from "@/helpers/navigation";
+import { Formik, FormikHelpers, FormikProps } from "formik";
+// Types
+import { HTTP_METHOD } from "@/types/api";
+import { UserMetadata } from "@/types/users";
 
-interface EditProfileFormValues {
-  profilePicUrl: string;
-  githubUrl: string;
-  linkedinUrl: string;
-  personalSiteUrl: string;
-  selfIntro: string;
-}
+type EditProfileFormValues = Partial<UserMetadata>;
 
 const EditProfile: NextPage = () => {
   const { user } = useAuth();
   const editProfile = useApiCall({
     method: HTTP_METHOD.PUT,
-    endpoint: `/users/${user?.email}`,
+    endpoint: `/users/${user?.id}`,
   });
   const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
-  const [hasSuccessfullySubmitted, setHasSuccessfullySubmitted] =
-    useState(false);
 
   const initialValues: EditProfileFormValues = {
     profilePicUrl: "",
@@ -55,13 +51,11 @@ const EditProfile: NextPage = () => {
     );
 
     try {
-      const res = await editProfile.call({ user: processedValues });
-      console.log(res);
+      await editProfile.call({ user: processedValues });
       setSuccess("You have successfully edited your profile");
-      setHasSuccessfullySubmitted(true);
       actions.resetForm();
     } catch (error) {
-      setError(error instanceof Error ? error.message : String(error));
+      setError(error);
     }
 
     actions.setSubmitting(false);
@@ -122,7 +116,7 @@ const EditProfile: NextPage = () => {
                             variant="contained"
                             disabled={
                               hasNoneSelected(formik) ||
-                              hasSuccessfullySubmitted
+                              snackbar.severity === "success"
                             }
                             loading={formik.isSubmitting}
                           >

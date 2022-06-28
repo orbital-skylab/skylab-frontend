@@ -47,7 +47,11 @@ const Modal: FC<Props> = ({
           }}
         >
           {title || subheader ? (
-            <CardHeader title={title} subheader={subheader} />
+            <CardHeader
+              title={title}
+              subheader={subheader}
+              sx={{ paddingBottom: 0 }}
+            />
           ) : null}
           <CardContent>{children}</CardContent>
         </Card>

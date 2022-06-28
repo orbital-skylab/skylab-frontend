@@ -1,6 +1,6 @@
 import { Dispatch, FC, SetStateAction } from "react";
 // Components
-import Select from "@/components/formControllers/Select";
+import Dropdown from "@/components/formControllers/Dropdown";
 import TextInput from "@/components/formControllers/TextInput";
 import Modal from "../Modal";
 import { Button, Stack } from "@mui/material";
@@ -10,6 +10,8 @@ import {
   isoDateToDateTimeLocalInput,
 } from "@/helpers/dates";
 import { Formik, FormikHelpers } from "formik";
+import * as Yup from "yup";
+import { ERRORS } from "@/helpers/errors";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
 // Types
@@ -30,7 +32,7 @@ type Props = {
   deadline: Deadline;
   mutate: Mutate<GetDeadlinesResponse>;
   setSuccess: (message: string) => void;
-  setError: (message: string) => void;
+  setError: (error: unknown) => void;
 };
 
 const EditDeadlineModal: FC<Props> = ({
@@ -79,7 +81,7 @@ const EditDeadlineModal: FC<Props> = ({
       handleCloseModal();
       actions.resetForm();
     } catch (error) {
-      setError(editDeadline.error);
+      setError(error);
     }
   };
 
@@ -95,7 +97,11 @@ const EditDeadlineModal: FC<Props> = ({
         title={`Edit Deadline`}
         subheader={`You are editing: ${deadline.name}`}
       >
-        <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={handleSubmit}
+          validationSchema={editDeadlineValidationSchema}
+        >
           {(formik) => (
             <>
               <Stack direction="column" spacing="1rem">
@@ -112,7 +118,7 @@ const EditDeadlineModal: FC<Props> = ({
                   size="small"
                   formik={formik}
                 />
-                <Select
+                <Dropdown
                   label="Type"
                   name="type"
                   formik={formik}
@@ -146,3 +152,9 @@ const EditDeadlineModal: FC<Props> = ({
   );
 };
 export default EditDeadlineModal;
+
+const editDeadlineValidationSchema = Yup.object().shape({
+  name: Yup.string().required(ERRORS.REQUIRED),
+  dueBy: Yup.string().required(ERRORS.REQUIRED),
+  type: Yup.string().required(ERRORS.REQUIRED),
+});

@@ -1,5 +1,7 @@
-import { SNACKBAR_ALERT_INITIAL } from "@/helpers/forms";
-import { SnackbarAlertType } from "@/types/forms";
+import {
+  SnackbarAlertType,
+  SNACKBAR_ALERT_INITIAL,
+} from "@/components/SnackbarAlert";
 import { useState } from "react";
 
 const useSnackbarAlert = () => {
@@ -14,11 +16,18 @@ const useSnackbarAlert = () => {
     });
   };
 
-  const setError = (message: string) => {
-    setSnackbar({
-      message,
-      severity: "error",
-    });
+  const setError = (error: unknown) => {
+    if (typeof error === "string") {
+      setSnackbar({
+        message: error,
+        severity: "error",
+      });
+    } else {
+      setSnackbar({
+        message: error instanceof Error ? error.message : String(error),
+        severity: "error",
+      });
+    }
   };
 
   const handleClose = () => {

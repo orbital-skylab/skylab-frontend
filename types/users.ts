@@ -1,8 +1,12 @@
-import { AdministratorMetadata } from "./administrators";
-import { AdviserMetadata } from "./advisers";
-import { FacilitatorMetadata } from "./facilitators";
-import { MentorMetadata } from "./mentors";
-import { StudentMetadata } from "./students";
+import {
+  AdministratorRole,
+  AdviserRole,
+  FacilitatorRole,
+  MentorRole,
+  StudentRole,
+} from "./roles";
+
+export type User = UserMetadata & RoleMetadata;
 
 export type UserMetadata = {
   id: number;
@@ -15,19 +19,10 @@ export type UserMetadata = {
   selfIntro?: string;
 };
 
-export type User = UserMetadata & RoleMetadata;
-
-type RoleMetadata = {
+export type RoleMetadata = {
   student?: StudentRole;
   adviser?: AdviserRole;
   mentor?: MentorRole;
-  administrator?: AdministatorRole;
+  administrator?: AdministratorRole;
   facilitator?: FacilitatorRole;
 };
-
-type WithRoleSpecificId<T> = T & { id: number };
-type StudentRole = WithRoleSpecificId<StudentMetadata>;
-type AdviserRole = WithRoleSpecificId<AdviserMetadata>;
-type MentorRole = WithRoleSpecificId<MentorMetadata>;
-type AdministatorRole = WithRoleSpecificId<AdministratorMetadata>;
-type FacilitatorRole = WithRoleSpecificId<FacilitatorMetadata>;

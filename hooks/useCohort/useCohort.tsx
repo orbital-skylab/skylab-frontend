@@ -28,7 +28,7 @@ export const CohortProvider = ({ children }: CohortProviderProps) => {
       isLoading,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [cohorts, currentCohortYear]
+    [cohorts, currentCohortYear, currentCohort]
   );
 
   return (

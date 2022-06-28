@@ -1,4 +1,4 @@
-import { SnackbarAlertType } from "@/types/forms";
+import { SnackbarAlertType } from "./SnackbarAlert.types";
 import { Alert, Snackbar } from "@mui/material";
 import { FC } from "react";
 

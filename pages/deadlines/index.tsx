@@ -29,8 +29,8 @@ const Deadlines: NextPage = () => {
     isLoading: isLoadingCohorts,
   } = useCohort();
   const [selectedCohortYear, setSelectedCohortYear] = useState<
-    Cohort["academicYear"] | null
-  >(null);
+    Cohort["academicYear"] | string
+  >("");
 
   /** Fetching staff based on filters */
   const memoQueryParams = useMemo(() => {

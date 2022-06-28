@@ -1,66 +1,63 @@
+import type { NextPage } from "next";
+import Link from "next/link";
+// Components
 import Body from "@/components/layout/Body";
 import TextInput from "@/components/formControllers/TextInput";
-import { PAGES } from "@/helpers/navigation";
-import useAuth from "@/hooks/useAuth";
+import SnackbarAlert from "@/components/SnackbarAlert";
 import {
-  Alert,
   Box,
   Button,
   Container,
   Divider,
-  Snackbar,
   Stack,
   Typography,
 } from "@mui/material";
-import { Formik, FormikHelpers } from "formik";
-import type { NextPage } from "next";
-import Link from "next/link";
-import { useState } from "react";
+// Helpers
+import { PAGES } from "@/helpers/navigation";
+import { Formik } from "formik";
+import * as Yup from "yup";
+// Hooks
+import useAuth from "@/hooks/useAuth";
+import useSnackbarAlert from "@/hooks/useSnackbarAlert";
+import { ERRORS } from "@/helpers/errors";
 
 interface SignUpFormValuesType {
   email: string;
 }
 
-const ForgotPassword: NextPage = () => {
+const ResetPassword: NextPage = () => {
   const { resetPassword } = useAuth();
-  const [error, setError] = useState("");
+  const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
 
   const initialValues: SignUpFormValuesType = {
     email: "",
   };
 
-  const handleSubmit = async (
-    values: SignUpFormValuesType,
-    actions: FormikHelpers<SignUpFormValuesType>
-  ) => {
+  const handleSubmit = async (values: SignUpFormValuesType) => {
     try {
       await resetPassword(values.email);
+      setSuccess(
+        "Successfully reset password! You should be receiving an email with your new password soon"
+      );
     } catch (error) {
-      setError(error instanceof Error ? error.message : String(error));
+      setError(error);
     }
-    actions.setSubmitting(false);
-  };
-
-  const handleCloseSnackbar = () => {
-    setError("");
   };
 
   return (
     <>
-      <Snackbar
-        open={!!error}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert severity="error">{error}</Alert>
-      </Snackbar>
+      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <Body flexColCenter>
         <Container maxWidth="xs">
           <Stack gap="1rem" justifyContent="center">
             <Typography variant="h6" fontWeight={600}>
               Reset Password
             </Typography>
-            <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+            <Formik
+              initialValues={initialValues}
+              onSubmit={handleSubmit}
+              validationSchema={resetPasswordValidationSchema}
+            >
               {(formik) => (
                 <form onSubmit={formik.handleSubmit}>
                   <Stack gap="1rem">
@@ -108,4 +105,8 @@ const ForgotPassword: NextPage = () => {
     </>
   );
 };
-export default ForgotPassword;
+export default ResetPassword;
+
+const resetPasswordValidationSchema = Yup.object().shape({
+  email: Yup.string().email(ERRORS.INVALID_EMAIL).required(ERRORS.REQUIRED),
+});

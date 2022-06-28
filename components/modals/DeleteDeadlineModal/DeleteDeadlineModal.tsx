@@ -16,7 +16,7 @@ type Props = {
   deadline: Deadline;
   mutate: Mutate<GetDeadlinesResponse>;
   setSuccess: (message: string) => void;
-  setError: (message: string) => void;
+  setError: (error: unknown) => void;
 };
 
 const DeleteDeadlineModal: FC<Props> = ({
@@ -53,7 +53,7 @@ const DeleteDeadlineModal: FC<Props> = ({
       );
       handleCloseModal();
     } catch (error) {
-      setError(deleteDeadline.error);
+      setError(error);
     }
     setIsSubmitting(false);
   };
@@ -71,7 +71,7 @@ const DeleteDeadlineModal: FC<Props> = ({
         subheader={`You are deleting deadline ${deadline.name}. This action is irreversible, are you sure?`}
         sx={{ width: "400px" }}
       >
-        <Stack direction="row" justifyContent="space-between" marginTop="-1rem">
+        <Stack direction="row" justifyContent="space-between">
           <Button size="small" onClick={handleCloseModal}>
             Cancel
           </Button>

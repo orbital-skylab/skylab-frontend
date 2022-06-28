@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { ApiServiceBuilder } from "@/helpers/api";
 import { PAGES } from "@/helpers/navigation";
 import { HTTP_METHOD } from "@/types/api";
@@ -8,47 +9,46 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 const AuthContext = createContext<IAuth>({
   user: undefined,
-  isLoading: false,
-  signUp: async () => {
-    /* Placeholder for callback function */
-  },
-  signIn: async () => {
-    /* Placeholder for callback function */
-  },
-  signOut: async () => {
-    /* Placeholder for callback function */
-  },
-  resetPassword: async () => {
-    /* Placeholder for callback function */
-  },
+  isLoading: true,
+  isPreviewMode: false,
+  signUp: async () => {},
+  signIn: async () => {},
+  signOut: async () => {},
+  resetPassword: async () => {},
+  changePassword: async () => {},
+  previewSiteAs: () => {},
+  stopPreview: () => {},
 });
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const router = useRouter();
-
-  const [user, setUser] = useState<User | undefined>();
+  const [isPreviewMode, setPreviewMode] = useState(false);
+  const [user, setUser] = useState<User | undefined>(undefined);
+  const [backupUser, setBackupUser] = useState<User | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
 
+  const fetchUserInfo = async () => {
+    setIsLoading(true);
+    const apiServiceBuilder = new ApiServiceBuilder({
+      method: HTTP_METHOD.GET,
+      endpoint: "/auth/info",
+      requiresAuthorization: true,
+    });
+    const apiService = apiServiceBuilder.build();
+    const response = await apiService();
+
+    if (response.ok) {
+      const _user = await response.json();
+      setUser(_user as User);
+    }
+
+    setIsLoading(false);
+  };
+
   useEffect(() => {
-    const fetchUserInfo = async () => {
-      setIsLoading(true);
-      const apiServiceBuilder = new ApiServiceBuilder({
-        method: HTTP_METHOD.GET,
-        endpoint: "/auth/info",
-        requiresAuthorization: true,
-      });
-      const apiService = apiServiceBuilder.build();
-      const response = await apiService();
-
-      if (response.ok) {
-        const _user = await response.json();
-        setUser(_user as User);
-      }
-
-      setIsLoading(false);
-    };
-
-    if (!user) fetchUserInfo();
+    if (!user) {
+      fetchUserInfo();
+    }
   }, [user]);
 
   /**
@@ -180,17 +180,37 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // TODO: sendinblue
   };
 
+  const changePassword = async (oldPassword: string, newPassword: string) => {
+    console.log(oldPassword, newPassword);
+    // TODO: change password
+  };
+
+  const previewSiteAs = (userToPreviewAs: User) => {
+    setBackupUser(user);
+    setUser(userToPreviewAs);
+    setPreviewMode(true);
+  };
+
+  const stopPreview = () => {
+    setPreviewMode(false);
+    setUser(backupUser);
+  };
+
   const memoedValue = useMemo(
     () => ({
       user,
       isLoading,
+      isPreviewMode,
       signUp,
       signIn,
       signOut,
       resetPassword,
+      changePassword,
+      previewSiteAs,
+      stopPreview,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [user]
+    [user, isPreviewMode, isLoading]
   );
 
   return (

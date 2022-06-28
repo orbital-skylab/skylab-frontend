@@ -32,7 +32,7 @@ const Profile: NextPage = () => {
   const attributes = [
     {
       label: "Email",
-      value: user?.email as string,
+      value: user?.email,
     },
     { label: "GitHub", value: user?.githubUrl },
     { label: "LinkedIn", value: user?.linkedinUrl },

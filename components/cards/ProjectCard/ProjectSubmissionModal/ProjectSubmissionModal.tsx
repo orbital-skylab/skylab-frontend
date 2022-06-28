@@ -55,7 +55,7 @@ const ProjectSubmissionModal: FC<Props> = ({ open, setOpen, project }) => {
               borderRadius: "0.5rem",
             }}
           >
-            <img src={project.posterUrl} alt={`${project.name} Poster`} />
+            <img alt={`${project.name} Poster`} />
           </Box>
 
           <Typography variant="h6" align="center" fontWeight={600}>
