@@ -1,8 +1,8 @@
+import NextLink from "next/link";
+import type { NextPage } from "next";
+// Components
 import Body from "@/components/layout/Body";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
-import useAuth from "@/hooks/useAuth";
-import useFetch, { FETCH_STATUS } from "@/hooks/useFetch";
-import { User } from "@/types/users";
 import {
   Avatar,
   Box,
@@ -13,19 +13,26 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import NextLink from "next/link";
-import type { NextPage } from "next";
-import { useRouter } from "next/router";
-import { PAGES } from "@/helpers/navigation";
 import NoneFound from "@/components/emptyStates/NoneFound/NoneFound";
+// Hooks
+import useAuth from "@/hooks/useAuth";
+import useFetch, { FETCH_STATUS } from "@/hooks/useFetch";
+// Helpers
+import { PAGES } from "@/helpers/navigation";
+import { useRouter } from "next/router";
+import { isNotUndefined } from "@/helpers/types";
+// Types
+import { GetUserResponse, User } from "@/types/users";
 
 const Profile: NextPage = () => {
   const router = useRouter();
   const { email } = router.query;
 
-  const { data: user, status } = useFetch<User>({
+  const { data: userResponse, status } = useFetch<GetUserResponse>({
     endpoint: `/users/${email}`,
   });
+
+  const user = isNotUndefined(userResponse) ? userResponse.user : ({} as User);
 
   const isCurrentUser = useAuth()?.user?.email === user?.email;
 

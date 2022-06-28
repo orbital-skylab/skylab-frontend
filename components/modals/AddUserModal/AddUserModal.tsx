@@ -21,7 +21,7 @@ import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
 // Types
 import { HTTP_METHOD } from "@/types/api";
 import { Mutate } from "@/hooks/useFetch";
-import { User } from "@/types/users";
+import { CreateUserResponse, User } from "@/types/users";
 import { AddUserFormValuesType, ROLES } from "@/types/roles";
 import UserDetailsForm from "@/components/forms/UserDetailsForm";
 import { LeanProject } from "@/types/projects";
@@ -58,7 +58,7 @@ const AddUserModal: FC<Props> = ({
     method: HTTP_METHOD.POST,
     endpoint: `/users/create-${toSingular(selectedRole).toLowerCase()}`,
     requiresAuthorization: true,
-    onSuccess: (newUser: User) => {
+    onSuccess: (newUser: CreateUserResponse) => {
       if (!hasMore) {
         mutate((users) => [...users, newUser]);
       }

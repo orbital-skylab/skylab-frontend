@@ -25,7 +25,11 @@ import useCohort from "@/hooks/useCohort";
 import { HTTP_METHOD } from "@/types/api";
 import { Mutate } from "@/hooks/useFetch";
 import { User } from "@/types/users";
-import { AddOrEditRoleFormValuesType, ROLES } from "@/types/roles";
+import {
+  AddOrEditRoleFormValuesType,
+  CreateRoleResponse,
+  ROLES,
+} from "@/types/roles";
 import { Cohort } from "@/types/cohorts";
 import { LeanProject } from "@/types/projects";
 import { generateValidationSchema } from "./AddRoleModal.helpers";
@@ -66,7 +70,7 @@ const AddRoleModal: FC<Props> = ({
     method: HTTP_METHOD.POST,
     endpoint: `/users/${user.id}/${toSingular(selectedRole).toLowerCase()}`,
     requiresAuthorization: true,
-    onSuccess: (newUser: User) => {
+    onSuccess: (newUser: CreateRoleResponse) => {
       mutate((users) => [...users, newUser]);
     },
   });

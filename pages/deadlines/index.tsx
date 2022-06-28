@@ -52,7 +52,7 @@ const Deadlines: NextPage = () => {
     setSelectedCohortYear(Number(e.target.value) as Cohort["academicYear"]);
   };
 
-  const handleOpenAddMilestoneModal = () => {
+  const handleOpenAddDeadlineModal = () => {
     setIsAddDeadlineOpen(true);
   };
 
@@ -84,7 +84,7 @@ const Deadlines: NextPage = () => {
           <Button
             variant="contained"
             size="small"
-            onClick={handleOpenAddMilestoneModal}
+            onClick={handleOpenAddDeadlineModal}
           >
             <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
             Deadline

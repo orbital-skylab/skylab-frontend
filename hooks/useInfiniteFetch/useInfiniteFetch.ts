@@ -7,6 +7,7 @@ import {
   parseQueryParams,
   QueryParams,
 } from "@/hooks/useFetch";
+
 /**
  * U is the shape of the API response, T is the shape of a single element
  */
@@ -16,12 +17,14 @@ export default function useInfiniteFetch<U, T>({
   page,
   requiresAuthorization = false,
   responseToData,
+  enabled = true,
 }: {
   endpoint: string;
   queryParams: QueryParams;
   page: number;
   requiresAuthorization?: boolean;
   responseToData: (response: U) => T[];
+  enabled?: boolean;
 }) {
   const [status, setStatus] = useState<FETCH_STATUS>(FETCH_STATUS.IDLE);
   const [error, setError] = useState("");
@@ -29,13 +32,13 @@ export default function useInfiniteFetch<U, T>({
   const [hasMore, setHasMore] = useState(false);
 
   useEffect(() => {
-    setData([]);
-  }, [queryParams]);
-
-  useEffect(() => {
     const fetchData = async () => {
       setStatus(FETCH_STATUS.FETCHING);
       setError("");
+
+      if (page === 0) {
+        setData([]);
+      }
 
       try {
         /* Building API service. */
@@ -51,7 +54,13 @@ export default function useInfiniteFetch<U, T>({
 
         const response = await (await apiService()).json();
         const data = responseToData(response);
-        setData((prevData) => [...prevData, ...data]);
+        if (data && data.length !== undefined) {
+          if (page === 0) {
+            setData(data);
+          } else {
+            setData((prevData) => [...prevData, ...data]);
+          }
+        }
         setHasMore(data.length > 0);
         setStatus(FETCH_STATUS.FETCHED);
       } catch (error) {
@@ -59,7 +68,10 @@ export default function useInfiniteFetch<U, T>({
         setStatus(FETCH_STATUS.ERROR);
       }
     };
-    fetchData();
+
+    if (enabled) {
+      fetchData();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [endpoint, queryParams, page]);
 

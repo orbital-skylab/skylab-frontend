@@ -41,84 +41,14 @@ import { Cohort } from "@/types/cohorts";
 import { LeanProject } from "@/types/projects";
 import { ROLES_WITH_ALL } from "@/types/roles";
 import { User } from "@/types/users";
-
-const users: User[] = [
-  {
-    id: 0,
-    name: "Rayner",
-    email: "raynerljm@u.nus.edu",
-    student: {
-      id: 1,
-      cohortYear: 2022,
-      projectId: 0,
-      nusnetId: "e0572281",
-      matricNo: "a0214871fx",
-    },
-  },
-  {
-    id: 1,
-    name: "Zechary",
-    email: "zecharyajw@u.nus.edu",
-    adviser: {
-      id: 23,
-      cohortYear: 2022,
-      projectIds: [0],
-      nusnetId: "e0572281",
-      matricNo: "a0214871fx",
-    },
-  },
-  {
-    id: 2,
-    name: "Vijay",
-    email: "nvjn@u.nus.edu",
-    mentor: {
-      id: 17,
-      cohortYear: 2022,
-      projectIds: [0],
-    },
-  },
-  {
-    id: 3,
-    name: "Prof Zhao Jin",
-    email: "jinzhao@u.nus.edu",
-    student: {
-      id: 99,
-      cohortYear: 2022,
-      projectId: 9,
-      nusnetId: "123",
-      matricNo: "321",
-    },
-    adviser: {
-      id: 99,
-      cohortYear: 2022,
-      nusnetId: "123",
-      matricNo: "321",
-      projectIds: [0, 2, 3, 5],
-    },
-
-    mentor: {
-      id: 18,
-      cohortYear: 2022,
-      projectIds: [0],
-    },
-    administrator: {
-      id: 1232,
-      startDate: "",
-      endDate: "",
-    },
-  },
-];
-
-const leanProjects: LeanProject[] = [
-  { id: 1, name: "NUSGrabYourOwnFood" },
-  { id: 2, name: "OrbiTinder" },
-];
+import { toSingular } from "@/helpers/roles";
+import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 
 export type GetUsersResponse = {
   users: User[];
 };
 
-const LIMIT = 50;
+const LIMIT = 20;
 
 const Users: NextPage = () => {
   const [selectedRole, setSelectedRole] = useState<ROLES_WITH_ALL>(
@@ -141,14 +71,13 @@ const Users: NextPage = () => {
   const memoUsersQueryParams = useMemo(() => {
     return {
       cohortYear: selectedCohortYear,
-      role: selectedRole,
+      role: selectedRole !== ROLES_WITH_ALL.ALL ? toSingular(selectedRole) : "",
       search: querySearch,
       limit: LIMIT,
     };
   }, [selectedCohortYear, selectedRole, querySearch]);
   const {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    data: usersToDo, //TODO:
+    data: users,
     status: fetchUsersStatus,
     hasMore,
     mutate,
@@ -158,6 +87,7 @@ const Users: NextPage = () => {
     page,
     responseToData: (response) => response.users,
     requiresAuthorization: true,
+    enabled: typeof selectedCohortYear === "number",
   });
 
   /** For fetching project ID and names to create new users/roles */
@@ -166,14 +96,13 @@ const Users: NextPage = () => {
       cohortYear: selectedCohortYear,
     };
   }, [selectedCohortYear]);
-  //TODO:
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { data: leanProjectsToDo, status: fetchLeanProjectsStatus } = useFetch<
+  const { data: leanProjects, status: fetchLeanProjectsStatus } = useFetch<
     LeanProject[]
   >({
     endpoint: `/projects/lean`,
     queryParams: memoLeanProjectsQueryParams,
     requiresAuthorization: true,
+    enabled: typeof selectedCohortYear === "number",
   });
 
   /** Input Change Handlers */
@@ -299,29 +228,36 @@ const Users: NextPage = () => {
           </Tabs>
         </Stack>
 
-        <NoDataWrapper
-          noDataCondition={users === undefined || users.length === 0}
-          fallback={<NoneFound message="No such users found" />}
+        <LoadingWrapper
+          isLoading={
+            (users === undefined || users.length === 0) &&
+            isFetching(fetchUsersStatus)
+          }
         >
-          <UserTable
-            users={users}
-            mutate={mutate}
-            leanProjects={leanProjects}
-            isFetchingLeanProjects={isFetching(fetchLeanProjectsStatus)}
-          />
-          <div ref={bottomOfPageRef} />
-          {isFetching(fetchUsersStatus) ? (
-            <Box
-              sx={{
-                display: "grid",
-                placeItems: "center",
-                marginY: users.length === 0 ? "15vh" : 0,
-              }}
-            >
-              <LoadingSpinner />
-            </Box>
-          ) : null}
-        </NoDataWrapper>
+          <NoDataWrapper
+            noDataCondition={users === undefined || users.length === 0}
+            fallback={<NoneFound message="No such users found" />}
+          >
+            <UserTable
+              users={users}
+              mutate={mutate}
+              leanProjects={leanProjects}
+              isFetchingLeanProjects={isFetching(fetchLeanProjectsStatus)}
+            />
+            <div ref={bottomOfPageRef} />
+            {isFetching(fetchUsersStatus) ? (
+              <Box
+                sx={{
+                  display: "grid",
+                  placeItems: "center",
+                }}
+              >
+                <LoadingSpinner />
+              </Box>
+            ) : null}
+            <Box sx={{ height: "15vh" }} />
+          </NoDataWrapper>
+        </LoadingWrapper>
       </Body>
     </>
   );

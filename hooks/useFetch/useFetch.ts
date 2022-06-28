@@ -24,11 +24,13 @@ const useFetch = <T>({
   requiresAuthorization = false,
   queryParams,
   onFetch,
+  enabled = true,
 }: {
   endpoint: string;
   requiresAuthorization?: boolean;
   queryParams?: QueryParams;
   onFetch?: (data: T) => void;
+  enabled?: boolean;
 }): HookReturnType<T> => {
   /* Initializing reducer. */
   const initialState: State<T> = {
@@ -72,7 +74,10 @@ const useFetch = <T>({
         });
       }
     };
-    fetchData();
+
+    if (enabled) {
+      fetchData();
+    }
 
     return function cleanup() {
       cancelRequest = true;

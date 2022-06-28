@@ -17,6 +17,7 @@ export type UserMetadata = {
   linkedinUrl?: string;
   personalSiteUrl?: string;
   selfIntro?: string;
+  submitterId?: string;
 };
 
 export type RoleMetadata = {
@@ -26,3 +27,9 @@ export type RoleMetadata = {
   administrator?: AdministratorRole;
   facilitator?: FacilitatorRole;
 };
+
+export type GetUserResponse = {
+  user: UserMetadata;
+};
+
+export type CreateUserResponse = User;

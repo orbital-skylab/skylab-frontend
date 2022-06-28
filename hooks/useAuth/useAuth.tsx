@@ -11,7 +11,6 @@ const AuthContext = createContext<IAuth>({
   user: undefined,
   isLoading: true,
   isPreviewMode: false,
-  signUp: async () => {},
   signIn: async () => {},
   signOut: async () => {},
   resetPassword: async () => {},
@@ -51,109 +50,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }, [user]);
 
-  /**
-   * TODO: ONLY FOR TESTING PURPOSES
-   */
-  const signUp = async ({
-    name,
-    email,
-    password,
-    cohortYear,
-    role,
-    matricNo,
-    nusnetId,
-  }: {
-    name?: string;
-    email: string;
-    password?: string;
-    cohortYear: number;
-    role: "students" | "advisers" | "mentors" | "facilitators";
-    matricNo?: string;
-    nusnetId?: string;
-  }) => {
-    const body: {
-      user: { [key: string]: string | number };
-      student?: { nusnetId: string; matricNo: string; cohortYear: number };
-      mentor?: { cohortYear: number };
-      adviser?: { cohortYear: number };
-      facilitator?: { cohortYear: number };
-    } = {
-      user: { email },
-    };
-
-    if (user && name) {
-      body.user.name = name;
-    }
-    if (user && password) {
-      body.user.password = password;
-    }
-
-    switch (role) {
-      case "students":
-        body.student = {
-          nusnetId: nusnetId ?? "",
-          matricNo: matricNo ?? "",
-          cohortYear,
-        };
-        break;
-      case "mentors":
-        body.mentor = {
-          cohortYear,
-        };
-        break;
-      case "advisers":
-        body.adviser = {
-          cohortYear,
-        };
-        break;
-      case "facilitators":
-        body.facilitator = {
-          cohortYear,
-        };
-        break;
-      default:
-        break;
-    }
-
-    /**
-     * attempt to create new user in postgres
-     */
-    const apiServiceBuilder = new ApiServiceBuilder({
-      method: HTTP_METHOD.POST,
-      endpoint: `/users/create-${role.slice(0, role.length - 1)}`, // remove the last "s" in the role name
-      body,
-    });
-    const apiService = apiServiceBuilder.build();
-    const createUserResponse = await apiService();
-
-    /**
-     * throw error if postgres user creation failed
-     */
-    if (!createUserResponse.ok) {
-      const errorMessage = await createUserResponse.text();
-      throw new Error(errorMessage);
-    }
-  };
-
   const signIn = async (email: string, password: string) => {
     const apiServiceBuilder = new ApiServiceBuilder({
       method: HTTP_METHOD.POST,
       endpoint: "/auth/sign-in",
       body: { email, password },
-      requiresAuthorization: true,
     });
     const apiService = apiServiceBuilder.build();
-    const loginResponse = await apiService();
+    const signInResponse = await apiService();
 
     /**
      * Unsuccessful user login
      */
-    if (!loginResponse.ok) {
-      const errorMessage = await loginResponse.text();
-      throw new Error(errorMessage);
+    if (!signInResponse.ok) {
+      const error = await signInResponse.json();
+      throw new Error(error.message);
     }
 
-    const _user = await loginResponse.json();
+    const _user = await signInResponse.json();
     setUser(_user as User);
   };
 
@@ -167,22 +81,54 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const signOutResponse = await apiService();
 
     if (!signOutResponse.ok) {
-      const errorMessage = await signOutResponse.text();
-      throw new Error(errorMessage);
+      const error = await signOutResponse.json();
+      throw new Error(error.message);
     }
 
     setUser(undefined);
     router.push(PAGES.LANDING);
   };
 
-  const resetPassword = async (email: string) => {
-    console.log(email);
-    // TODO: sendinblue
+  const resetPassword = async ({
+    email,
+    origin,
+  }: {
+    email: string;
+    origin: string;
+  }) => {
+    const resetPasswordApiService = new ApiServiceBuilder({
+      method: HTTP_METHOD.POST,
+      endpoint: "/auth/reset-password",
+      body: { email, origin },
+    }).build();
+    const signOutResponse = await resetPasswordApiService();
+
+    if (!signOutResponse.ok) {
+      const error = await signOutResponse.json();
+      throw new Error(error.message ?? error);
+    }
   };
 
-  const changePassword = async (oldPassword: string, newPassword: string) => {
-    console.log(oldPassword, newPassword);
-    // TODO: change password
+  const changePassword = async ({
+    newPassword,
+    token,
+    id,
+  }: {
+    newPassword: string;
+    token: string;
+    id: number;
+  }) => {
+    const changePasswordApiService = new ApiServiceBuilder({
+      method: HTTP_METHOD.POST,
+      endpoint: "/auth/change-password",
+      body: { newPassword, token, id },
+    }).build();
+    const changePasswordResponse = await changePasswordApiService();
+
+    if (!changePasswordResponse.ok) {
+      const error = await changePasswordResponse.json();
+      throw new Error(error.message ?? error);
+    }
   };
 
   const previewSiteAs = (userToPreviewAs: User) => {
@@ -201,7 +147,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       user,
       isLoading,
       isPreviewMode,
-      signUp,
       signIn,
       signOut,
       resetPassword,
