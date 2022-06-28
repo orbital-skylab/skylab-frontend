@@ -35,9 +35,9 @@ const ResetPassword: NextPage = () => {
 
   const handleSubmit = async (values: SignUpFormValuesType) => {
     try {
-      await resetPassword(values.email);
+      await resetPassword({ email: values.email });
       setSuccess(
-        "Successfully reset password! You should be receiving an email with your new password soon"
+        "Successfully reset password! You should be receiving an email with a link soon!"
       );
     } catch (error) {
       setError(error);

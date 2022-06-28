@@ -12,26 +12,42 @@ import useAuth from "@/hooks/useAuth";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Constants
 import { ERRORS } from "@/helpers/errors";
+import { useRouter } from "next/router";
 
 interface ChangePasswordFormValuesType {
-  oldPassword: string;
   newPassword: string;
   confirmNewPassword: string;
 }
 
 const ChangePassword: NextPage = () => {
+  const router = useRouter();
+  const { token, id } = router.query;
   const { changePassword } = useAuth();
   const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
 
   const initialValues: ChangePasswordFormValuesType = {
-    oldPassword: "",
     newPassword: "",
     confirmNewPassword: "",
   };
 
   const handleSubmit = async (values: ChangePasswordFormValuesType) => {
     try {
-      await changePassword(values.oldPassword, values.newPassword);
+      if (
+        !token ||
+        !id ||
+        typeof token !== "string" ||
+        typeof id !== "string"
+      ) {
+        throw new Error(
+          "The reset password link is invalid. Please try to reset your password again"
+        );
+      }
+
+      await changePassword({
+        newPassword: values.newPassword,
+        token,
+        id: parseInt(id, 10),
+      });
       setSuccess("Successfully changed password!");
     } catch (error) {
       setError(error);
@@ -55,12 +71,6 @@ const ChangePassword: NextPage = () => {
               {(formik) => (
                 <form onSubmit={formik.handleSubmit}>
                   <Stack gap="1rem">
-                    <TextInput
-                      label="Old Password"
-                      name="oldPassword"
-                      type="password"
-                      formik={formik}
-                    />
                     <TextInput
                       label="New Password"
                       name="newPassword"
@@ -95,7 +105,6 @@ const ChangePassword: NextPage = () => {
 export default ChangePassword;
 
 const changePasswordValidationSchema = Yup.object().shape({
-  oldPassword: Yup.string().required(ERRORS.REQUIRED),
   newPassword: Yup.string()
     .min(8, ERRORS.PASSWORD_LENGTH)
     .required(ERRORS.REQUIRED),

@@ -175,13 +175,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     router.push(PAGES.LANDING);
   };
 
-  const resetPassword = async (email: string) => {
+  const resetPassword = async ({ email }: { email: string }) => {
     console.log(email);
     // TODO: sendinblue
   };
 
-  const changePassword = async (oldPassword: string, newPassword: string) => {
-    console.log(oldPassword, newPassword);
+  const changePassword = async ({
+    newPassword,
+    token,
+    id,
+  }: {
+    newPassword: string;
+    token: string;
+    id: number;
+  }) => {
+    console.log(newPassword, token, id);
     // TODO: change password
   };
 
