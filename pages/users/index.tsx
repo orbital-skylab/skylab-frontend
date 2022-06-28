@@ -250,7 +250,6 @@ const Users: NextPage = () => {
                 sx={{
                   display: "grid",
                   placeItems: "center",
-                  marginY: users.length === 0 ? "15vh" : 0,
                 }}
               >
                 <LoadingSpinner />

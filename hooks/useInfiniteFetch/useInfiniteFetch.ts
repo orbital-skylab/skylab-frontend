@@ -33,12 +33,12 @@ export default function useInfiniteFetch<U, T>({
 
   useEffect(() => {
     const fetchData = async () => {
+      setStatus(FETCH_STATUS.FETCHING);
+      setError("");
+
       if (page === 0) {
         setData([]);
       }
-
-      setStatus(FETCH_STATUS.FETCHING);
-      setError("");
 
       try {
         /* Building API service. */
@@ -54,8 +54,12 @@ export default function useInfiniteFetch<U, T>({
 
         const response = await (await apiService()).json();
         const data = responseToData(response);
-        if (data && data.length) {
-          setData((prevData) => [...prevData, ...data]);
+        if (data && data.length !== undefined) {
+          if (page === 0) {
+            setData(data);
+          } else {
+            setData((prevData) => [...prevData, ...data]);
+          }
         }
         setHasMore(data.length > 0);
         setStatus(FETCH_STATUS.FETCHED);

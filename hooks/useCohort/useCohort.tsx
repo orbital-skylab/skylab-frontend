@@ -14,7 +14,7 @@ const CohortContext = createContext<ICohort>({
 
 export const CohortProvider = ({ children }: CohortProviderProps) => {
   const { data: latestCohortResponse, status: currentCohortYearStatus } =
-    useFetch<GetCohortResponse>({ endpoint: "/cohorts/latest" });
+    useFetch<GetCohortResponse>({ endpoint: "/cohorts/current" });
   const { data: cohortsResponse, status: cohortsStatus } =
     useFetch<GetCohortsResponse>({
       endpoint: "/cohorts",

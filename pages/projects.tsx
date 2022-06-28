@@ -36,6 +36,7 @@ import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 // Constants
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
 import NoneFound from "@/components/emptyStates/NoneFound";
+import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 
 const LIMIT = 16;
 
@@ -87,15 +88,15 @@ const Projects: NextPage = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSetQuerySearch = useCallback(
     debounce((val) => {
+      setPage(0);
       setQuerySearch(val);
-    }, 500),
+    }, 200),
     []
   );
 
   const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchTextInput(e.target.value);
     debouncedSetQuerySearch(e.target.value);
-    setPage(0);
   };
 
   const handleCohortYearChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -170,37 +171,41 @@ const Projects: NextPage = () => {
             })}
           </Tabs>
         </Stack>
-        <NoDataWrapper
-          noDataCondition={
-            (projects === undefined || projects?.length === 0) &&
-            !isFetching(fetchProjectsStatus)
+        <LoadingWrapper
+          isLoading={
+            (projects === undefined || projects.length === 0) &&
+            isFetching(fetchProjectsStatus)
           }
-          fallback={<NoneFound message="No such projects found" />}
         >
-          <Grid container spacing={{ xs: 2, md: 4, xl: 8 }}>
-            {projects
-              ? projects.map((project) => {
-                  return (
-                    <Grid item key={project.id} xs={12} md={4} xl={3}>
-                      <ProjectCard project={project} />
-                    </Grid>
-                  );
-                })
-              : null}
-          </Grid>
-          <div ref={bottomOfPageRef} />
-          {isFetching(fetchProjectsStatus) ? (
-            <Box
-              sx={{
-                display: "grid",
-                placeItems: "center",
-                marginY: projects.length === 0 ? "15vh" : 0,
-              }}
-            >
-              <LoadingSpinner />
-            </Box>
-          ) : null}
-        </NoDataWrapper>
+          <NoDataWrapper
+            noDataCondition={projects === undefined || projects.length === 0}
+            fallback={<NoneFound message="No such projects found" />}
+          >
+            <Grid container spacing={{ xs: 2, md: 4, xl: 8 }}>
+              {projects
+                ? projects.map((project) => {
+                    return (
+                      <Grid item key={project.id} xs={12} md={4} xl={3}>
+                        <ProjectCard project={project} />
+                      </Grid>
+                    );
+                  })
+                : null}
+            </Grid>
+            <div ref={bottomOfPageRef} />
+            {isFetching(fetchProjectsStatus) ? (
+              <Box
+                sx={{
+                  display: "grid",
+                  placeItems: "center",
+                }}
+              >
+                <LoadingSpinner />
+              </Box>
+            ) : null}
+            <Box sx={{ height: "15vh" }} />
+          </NoDataWrapper>
+        </LoadingWrapper>
       </Body>
     </>
   );
