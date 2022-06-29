@@ -1,32 +1,36 @@
-import React, { useState, FC } from "react";
+import React, { FC } from "react";
+// Components
 import {
   AppBar,
-  Box,
   Toolbar,
-  IconButton,
   Typography,
-  Menu,
   Container,
-  Button,
-  MenuItem,
   useScrollTrigger,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { PAGES, NAVBAR_ACTIONS, NAVBAR_OPTIONS } from "@/helpers/navigation";
-import { BASE_TRANSITION, NAVBAR_HEIGHT_REM } from "@/styles/constants";
+import NavbarButtonsMobile from "./NavbarButtonsMobile";
+import NavbarButtonsDesktop from "./NavbarButtonsDesktop";
+import SignInButton from "./SignInButton";
+// Hooks
 import useAuth from "@/hooks/useAuth";
-import { LANDING_SIGN_IN_ID } from "../../Hero/HeroSignIn";
+// Helpers
+import { useRouter } from "next/router";
+import Link from "next/link";
+import { PAGES, NAVBAR_ACTIONS, NAVBAR_OPTIONS } from "@/helpers/navigation";
+// Constants
+import { BASE_TRANSITION, NAVBAR_HEIGHT_REM } from "@/styles/constants";
 
 const Navbar: FC = () => {
   const router = useRouter();
   const { user, signOut } = useAuth();
-  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const trigger = useScrollTrigger({ threshold: 0 });
 
+  /**
+   * Helper functions
+   */
   const isCurrentPage = (path: string | undefined) => {
     if (path === undefined) {
+      return false;
+    } else if (path.split("/").length < 2) {
       return false;
     }
     return (
@@ -35,118 +39,48 @@ const Navbar: FC = () => {
     );
   };
 
-  const pushRoute = (route: string) => {
-    if (router.pathname !== route) {
-      router.push(route);
+  const generateOnClick = ({
+    route,
+    action,
+  }: {
+    route?: string;
+    action?: string;
+  }) => {
+    if (route) {
+      return () => {
+        if (router.pathname !== route) {
+          router.push(route);
+        }
+      };
+    }
+
+    switch (action) {
+      case NAVBAR_ACTIONS.SIGN_OUT:
+        return () => {
+          signOut();
+        };
+
+      default:
+        return () => console.error("Invalid Navbar Action Provided");
     }
   };
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
   const renderNavigationButtons = () => {
-    const generateAction = ({
-      route,
-      action,
-    }: {
-      route?: string;
-      action?: string;
-    }) => {
-      if (route) {
-        return () => {
-          pushRoute(route);
-          handleCloseNavMenu();
-        };
-      } else if (action === NAVBAR_ACTIONS.SIGN_OUT) {
-        return () => {
-          signOut();
-          handleCloseNavMenu();
-        };
-      } else {
-        return () => alert("Invalid action");
-      }
-    };
-
     if (user) {
       return (
         <>
-          {/* Mobile Hamburger Icon */}
-          <Box
-            sx={{
-              display: { xs: "flex", md: "none" },
-            }}
-          >
-            <IconButton
-              size="large"
-              aria-label="button to view navigation"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-              sx={{ padding: 0 }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: "block", md: "none" },
-              }}
-            >
-              {NAVBAR_OPTIONS.map((option) => (
-                <MenuItem
-                  key={option.label}
-                  onClick={generateAction(option)}
-                  selected={isCurrentPage(option.route)}
-                  disabled={isCurrentPage(option.route)}
-                >
-                  <Typography textAlign="center">{option.label}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-          {/* Desktop list of navigation */}
-          <Box
-            sx={{
-              display: { xs: "none", md: "flex" },
-              gap: "0.5rem",
-            }}
-          >
-            {NAVBAR_OPTIONS.map((option) => (
-              <Button
-                key={option.label}
-                onClick={generateAction(option)}
-                sx={{
-                  my: 2,
-                  display: "block",
-                  color: "inherit",
-                  background: isCurrentPage(option.route)
-                    ? "rgba(13, 13, 13, 0.08)"
-                    : "inherit",
-                }}
-                disabled={isCurrentPage(option.route)}
-              >
-                {option.label}
-              </Button>
-            ))}
-          </Box>
+          <NavbarButtonsMobile
+            options={NAVBAR_OPTIONS}
+            user={user}
+            generateOnClick={generateOnClick}
+            isCurrentPage={isCurrentPage}
+          />
+          <NavbarButtonsDesktop
+            options={NAVBAR_OPTIONS}
+            user={user}
+            generateOnClick={generateOnClick}
+            isCurrentPage={isCurrentPage}
+          />
         </>
       );
     } else {
@@ -184,7 +118,6 @@ const Navbar: FC = () => {
               Skylab
             </Typography>
           </Link>
-
           {renderNavigationButtons()}
         </Toolbar>
       </Container>
@@ -192,32 +125,3 @@ const Navbar: FC = () => {
   );
 };
 export default Navbar;
-
-const SignInButton = () => {
-  const router = useRouter();
-
-  if (router.pathname === PAGES.LANDING) {
-    return (
-      <Button
-        variant="contained"
-        onClick={() => {
-          if (router.pathname === PAGES.LANDING) {
-            const heroSignIn = document.querySelector("#" + LANDING_SIGN_IN_ID);
-            heroSignIn?.scrollIntoView({
-              behavior: "smooth",
-              block: "center",
-            });
-          }
-        }}
-      >
-        Sign In
-      </Button>
-    );
-  } else {
-    return (
-      <Link href={PAGES.LANDING} passHref>
-        <Button variant="contained">Sign In</Button>
-      </Link>
-    );
-  }
-};
