@@ -18,13 +18,6 @@ const UserDetailsForm: FC<Props> = ({ formik }) => {
         size="small"
         formik={formik}
       />
-      <TextInput
-        name="password"
-        type="password"
-        label="Password (Optional)"
-        size="small"
-        formik={formik}
-      />
     </>
   );
 };
