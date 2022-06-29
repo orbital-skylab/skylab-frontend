@@ -27,7 +27,20 @@ export const toSingular = (role: ROLES | ROLES_WITH_ALL | null) => {
  * @param selectedRole The role to check
  * @returns {boolean}
  */
-export const userHasRole = (user: User, selectedRole: ROLES) => {
+export const userHasRole = (
+  user: User,
+  selectedRole: ROLES | ROLES[]
+): boolean => {
+  if (!user) {
+    return false;
+  }
+
+  if (Array.isArray(selectedRole)) {
+    return Boolean(
+      selectedRole.reduce((acc, role) => acc || userHasRole(user, role), false)
+    );
+  }
+
   if (selectedRole === ROLES.STUDENTS && user.student && user.student.id) {
     return true;
   } else if (

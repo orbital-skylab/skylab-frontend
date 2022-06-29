@@ -5,22 +5,32 @@ import LoadingWrapper from "../../wrappers/LoadingWrapper";
 import ErrorWrapper from "../../wrappers/ErrorWrapper";
 import useAuth from "@/hooks/useAuth";
 import { Alert, Button } from "@mui/material";
+import { ROLES } from "@/types/roles";
+import UnauthorizedWrapper from "@/components/wrappers/UnauthorizedWrapper";
+import { userHasRole } from "@/helpers/roles";
 
 type Props = {
   flexColCenter?: boolean;
   isLoading?: boolean;
   loadingText?: string;
   isError?: boolean;
+  authorizedRoles?: ROLES[];
 };
 
 const Body: FC<Props> = ({
   children,
   flexColCenter,
-  isLoading,
+  isLoading = false,
   loadingText,
-  isError,
+  isError = false,
+  authorizedRoles,
 }) => {
-  const { user, isPreviewMode, stopPreview } = useAuth();
+  const {
+    user,
+    isPreviewMode,
+    stopPreview,
+    isLoading: isLoadingUser,
+  } = useAuth();
 
   const boxSx: SxProps = {
     minHeight: "100vh",
@@ -38,38 +48,47 @@ const Body: FC<Props> = ({
     boxSx.alignItems = "center";
   }
 
+  const requiresAuthorizationAndIsLoadingUser = Boolean(
+    authorizedRoles && isLoadingUser
+  );
+  const isAuthorized =
+    !authorizedRoles ||
+    (authorizedRoles && user && userHasRole(user, authorizedRoles));
+
   return (
     <>
       <Box sx={boxSx}>
         <LoadingWrapper
-          isLoading={!!isLoading}
+          isLoading={!!isLoading || requiresAuthorizationAndIsLoadingUser}
           loadingText={loadingText}
           fullScreen
         >
-          <ErrorWrapper isError={!!isError}>
-            {isPreviewMode && user && (
-              <Alert
-                color="warning"
-                sx={{
-                  mb: "1rem",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                {`You are currently previewing the page as: ${user.name}`}
-                <Button
-                  sx={{ marginLeft: "1rem" }}
+          <UnauthorizedWrapper isUnauthorized={!isAuthorized}>
+            <ErrorWrapper isError={!!isError}>
+              {isPreviewMode && user && (
+                <Alert
                   color="warning"
-                  size="small"
-                  variant="outlined"
-                  onClick={stopPreview}
+                  sx={{
+                    mb: "1rem",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
                 >
-                  Stop Preview
-                </Button>
-              </Alert>
-            )}
-            {children}
-          </ErrorWrapper>
+                  {`You are currently previewing the page as: ${user.name}`}
+                  <Button
+                    sx={{ marginLeft: "1rem" }}
+                    color="warning"
+                    size="small"
+                    variant="outlined"
+                    onClick={stopPreview}
+                  >
+                    Stop Preview
+                  </Button>
+                </Alert>
+              )}
+              {children}
+            </ErrorWrapper>
+          </UnauthorizedWrapper>
         </LoadingWrapper>
       </Box>
     </>

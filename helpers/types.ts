@@ -21,3 +21,9 @@ export function isAddUserFormValuesType(
 export function isArray<T>(values: any): values is Array<T> {
   return values && typeof values === "object" && values.length !== undefined;
 }
+
+export type DeepPartial<T> = T extends object
+  ? {
+      [P in keyof T]?: DeepPartial<T[P]>;
+    }
+  : T;
