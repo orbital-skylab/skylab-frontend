@@ -17,7 +17,10 @@ import Papa from "papaparse";
 // Hooks
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Types
-import { StudentData } from "./BatchAddStudentsForm.types";
+import {
+  ADD_STUDENT_CSV_HEADERS,
+  StudentData,
+} from "./BatchAddStudentsForm.types";
 import { checkHeadersMatch } from "./BatchAddStudentsForm.helpers";
 
 type Props = {
@@ -52,9 +55,14 @@ const BatchAddStudentsForm: FC<Props> = ({
             setUnsuccessfulParseStatus(
               "No projects or students were detected. Please upload another file."
             );
-          } else if (!checkHeadersMatch(results.data)) {
+          } else if (
+            !checkHeadersMatch(
+              results.data,
+              Object.values(ADD_STUDENT_CSV_HEADERS)
+            )
+          ) {
             setUnsuccessfulParseStatus(
-              "The detected file does not follow the format of the provided CSV template. Please upload another file or try again."
+              "The detected file does not follow the format of the provided Add Student CSV template. Please upload another file or try again."
             );
           } else {
             setSuccessfulParseStatus(
@@ -67,6 +75,8 @@ const BatchAddStudentsForm: FC<Props> = ({
         },
       });
     }
+
+    // Ensures that users can reupload files
     const input: HTMLInputElement | null =
       document.querySelector(`#studentUploadInput`);
     if (input) {

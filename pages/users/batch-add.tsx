@@ -4,14 +4,14 @@ import { useRouter } from "next/router";
 import Body from "@/components/layout/Body";
 import SnackbarAlert from "@/components/SnackbarAlert";
 import BatchAddStudentsForm, {
-  HEADERS as STUDENT_CSV_HEADERS,
+  ADD_STUDENT_CSV_HEADERS,
   processBatchStudentData,
   StudentData,
 } from "@/components/forms/BatchAddStudentsForm";
 import BatchAttachAdvisersForm, {
-  HEADERS as ADVISER_CSV_HEADERS,
   AdviserData,
   processBatchAdviserData,
+  ATTACH_ADVISER_CSV_HEADERS,
 } from "@/components/forms/BatchAttachAdvisersForm";
 import { Box, Button, Stack, Tooltip, Typography } from "@mui/material";
 import { ArrowBack, HelpOutline } from "@mui/icons-material";
@@ -97,7 +97,7 @@ const BatchAdd: NextPage = () => {
                 <HelpOutline fontSize="small" />
               </Tooltip>
               <CSVLink
-                data={[Object.values(STUDENT_CSV_HEADERS)]}
+                data={[Object.values(ADD_STUDENT_CSV_HEADERS)]}
                 filename="skylab-add-students-csv-template"
                 style={{ textDecoration: "none", marginLeft: "auto" }}
               >
@@ -125,7 +125,7 @@ const BatchAdd: NextPage = () => {
                 <HelpOutline fontSize="small" />
               </Tooltip>
               <CSVLink
-                data={[Object.values(ADVISER_CSV_HEADERS)]}
+                data={[Object.values(ATTACH_ADVISER_CSV_HEADERS)]}
                 filename="skylab-attach-advisers-csv-template"
                 style={{ textDecoration: "none", marginLeft: "auto" }}
               >
@@ -135,7 +135,6 @@ const BatchAdd: NextPage = () => {
               </CSVLink>
             </Stack>
             <BatchAttachAdvisersForm
-              adviserData={adviserData}
               setAdviserData={setAdviserData}
               handleAttachAdvisers={handleAttachAdvisers}
               handleClearAdvisers={handleClearAdvisers}

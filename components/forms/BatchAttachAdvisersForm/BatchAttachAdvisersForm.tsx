@@ -1,6 +1,5 @@
 import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from "react";
 // Components
-import SnackbarAlert from "@/components/SnackbarAlert";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import { UploadFile } from "@mui/icons-material";
 import {
@@ -15,13 +14,16 @@ import {
 } from "@mui/material";
 // Helpers
 import Papa from "papaparse";
+import { checkHeadersMatch } from "../BatchAddStudentsForm";
 // Hooks
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Types
-import { AdviserData } from "./BatchAttachAdvisersForm.types";
+import {
+  AdviserData,
+  ATTACH_ADVISER_CSV_HEADERS,
+} from "./BatchAttachAdvisersForm.types";
 
 type Props = {
-  adviserData: AdviserData;
   setAdviserData: Dispatch<SetStateAction<AdviserData>>;
   handleAttachAdvisers: () => void;
   handleClearAdvisers: () => void;
@@ -29,14 +31,18 @@ type Props = {
 };
 
 const BatchAddStudentsForm: FC<Props> = ({
-  adviserData,
   setAdviserData,
   handleAttachAdvisers,
   handleClearAdvisers,
   isSubmitting,
 }) => {
   const [fileDetails, setFileDetails] = useState<File | null>(null);
-  const { snackbar, handleClose, setError } = useSnackbarAlert();
+  const {
+    snackbar: parseStatus,
+    handleClose: resetParseStatus,
+    setSuccess: setSuccessfulParseStatus,
+    setError: setUnsuccessfulParseStatus,
+  } = useSnackbarAlert();
 
   const handleUploadAdvisers = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length) {
@@ -45,14 +51,32 @@ const BatchAddStudentsForm: FC<Props> = ({
         header: true,
         dynamicTyping: true,
         complete: function (results) {
-          if (results.data.length) {
-            setAdviserData(results.data as AdviserData);
+          if (!results.data || !results.data.length) {
+            setUnsuccessfulParseStatus(
+              "No NUSNET IDs were detected. Please upload another file."
+            );
+          } else if (
+            !checkHeadersMatch(
+              results.data,
+              Object.values(ATTACH_ADVISER_CSV_HEADERS)
+            )
+          ) {
+            setUnsuccessfulParseStatus(
+              "The detected file does not follow the format of the provided Attach Advisers CSV template. Please upload another file or try again."
+            );
           } else {
-            setError("No advisers were detected. Please upload another file");
+            setSuccessfulParseStatus(
+              `${results.data.length} NUSNET ID${
+                results.data.length !== 1 ? "s" : ""
+              } successfully detected. Ready to attach the adviser role to them?`
+            );
+            setAdviserData(results.data as AdviserData);
           }
         },
       });
     }
+
+    // Ensures that users can reupload files
     const input: HTMLInputElement | null =
       document.querySelector(`#adviserUploadInput`);
     if (input) {
@@ -62,20 +86,20 @@ const BatchAddStudentsForm: FC<Props> = ({
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <Card>
         <CardContent sx={{ display: "grid", placeItems: "center" }}>
           <LoadingWrapper
             isLoading={isSubmitting}
             loadingText="Adding students..."
           >
-            {adviserData.length && fileDetails ? (
+            {!!parseStatus.message && fileDetails ? (
               <Stack
                 direction="column"
                 sx={{ height: "100%", width: "100%" }}
                 alignItems="center"
                 spacing="1rem"
               >
+                {/* File name and size */}
                 <Stack direction="column" alignItems="center">
                   <Typography variant="h6" fontWeight="600">
                     {fileDetails.name}
@@ -84,14 +108,28 @@ const BatchAddStudentsForm: FC<Props> = ({
                     {fileDetails.size} bytes
                   </Typography>
                 </Stack>
-                <Alert color="success">{`${adviserData.length} Advisers${
-                  adviserData.length !== 1 ? "s" : ""
-                } Detected`}</Alert>
+
+                {/* Parse status message */}
+                {parseStatus.message ? (
+                  <Alert color={parseStatus.severity}>
+                    {parseStatus.message}
+                  </Alert>
+                ) : null}
+
+                {/* Follow up actions */}
                 <Stack direction="column" spacing="0.5rem">
-                  <Button onClick={handleAttachAdvisers} variant="contained">
-                    Add
-                  </Button>
-                  <Button onClick={handleClearAdvisers} variant="outlined">
+                  {parseStatus.severity === "success" ? (
+                    <Button onClick={handleAttachAdvisers} variant="contained">
+                      Add
+                    </Button>
+                  ) : null}
+                  <Button
+                    onClick={() => {
+                      resetParseStatus();
+                      handleClearAdvisers();
+                    }}
+                    variant="outlined"
+                  >
                     Upload Another File
                   </Button>
                 </Stack>
