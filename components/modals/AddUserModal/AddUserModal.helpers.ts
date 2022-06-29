@@ -6,7 +6,6 @@ export const generateValidationSchema = (selectedRole: ROLES) => {
   return Yup.object().shape({
     name: Yup.string().required(ERRORS.REQUIRED),
     email: Yup.string().email(ERRORS.INVALID_EMAIL).required(ERRORS.REQUIRED),
-    password: Yup.string().min(8, ERRORS.PASSWORD_LENGTH).notRequired(),
     cohortYear: Yup.number().required(ERRORS.REQUIRED),
     nusnetId: Yup.string().when("null", {
       is: () =>

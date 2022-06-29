@@ -104,7 +104,6 @@ export const generateEmptyInitialValues = (
   return {
     name: "",
     email: "",
-    password: "",
     cohortYear: currentCohortYear,
     nusnetId: "",
     matricNo: "",
@@ -140,7 +139,6 @@ export const processAddUserOrRoleFormValues = ({
       user: {
         name: values.name,
         email: values.email,
-        password: values.password,
       },
     };
   }

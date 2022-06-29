@@ -31,9 +31,8 @@ export type FacilitatorRole = WithRoleSpecificId<FacilitatorMetadata>;
  * General user data for the following components
  * 1. `components/modal/AddUserModal`
  */
-export type AddUserFormValuesType = Omit<UserMetadata, "id"> & {
-  password?: string;
-} & AddOrEditRoleFormValuesType;
+export type AddUserFormValuesType = Omit<UserMetadata, "id"> &
+  AddOrEditRoleFormValuesType;
 
 /**
  * General role data for the following components
