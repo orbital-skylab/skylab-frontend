@@ -14,26 +14,26 @@ import {
 } from "@mui/material";
 // Helpers
 import Papa from "papaparse";
-import { checkHeadersMatch } from "../BatchAddStudentsForm";
+import { checkHeadersMatch } from "@/helpers/batchForms";
 // Hooks
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Types
 import {
-  AdviserData,
-  ATTACH_ADVISER_CSV_HEADERS,
-} from "./BatchAttachAdvisersForm.types";
+  ADD_ADVISERS_CSV_HEADERS,
+  AddAdvisersData,
+} from "./BatchAddAdvisersForm.types";
 
 type Props = {
-  setAdviserData: Dispatch<SetStateAction<AdviserData>>;
-  handleAttachAdvisers: () => void;
-  handleClearAdvisers: () => void;
+  setAddAdvisersData: Dispatch<SetStateAction<AddAdvisersData>>;
+  handleAddAdvisers: () => void;
+  handleClearAddAdvisers: () => void;
   isSubmitting: boolean;
 };
 
 const BatchAddStudentsForm: FC<Props> = ({
-  setAdviserData,
-  handleAttachAdvisers,
-  handleClearAdvisers,
+  setAddAdvisersData,
+  handleAddAdvisers,
+  handleClearAddAdvisers,
   isSubmitting,
 }) => {
   const [fileDetails, setFileDetails] = useState<File | null>(null);
@@ -53,32 +53,33 @@ const BatchAddStudentsForm: FC<Props> = ({
         complete: function (results) {
           if (!results.data || !results.data.length) {
             setUnsuccessfulParseStatus(
-              "No NUSNET IDs were detected. Please upload another file."
+              "No advisers were detected. Please upload another file."
             );
           } else if (
             !checkHeadersMatch(
               results.data,
-              Object.values(ATTACH_ADVISER_CSV_HEADERS)
+              Object.values(ADD_ADVISERS_CSV_HEADERS)
             )
           ) {
             setUnsuccessfulParseStatus(
-              "The detected file does not follow the format of the provided Attach Advisers CSV template. Please upload another file or try again."
+              "The detected file does not follow the format of the provided Add Adviser CSV template. Please upload another file or try again."
             );
           } else {
             setSuccessfulParseStatus(
-              `${results.data.length} NUSNET ID${
+              `${results.data.length} adviser${
                 results.data.length !== 1 ? "s" : ""
-              } successfully detected. Ready to attach the adviser role to them?`
+              } successfully detected. Ready to add them?`
             );
-            setAdviserData(results.data as AdviserData);
+            setAddAdvisersData(results.data as AddAdvisersData);
           }
         },
       });
     }
 
     // Ensures that users can reupload files
-    const input: HTMLInputElement | null =
-      document.querySelector(`#adviserUploadInput`);
+    const input: HTMLInputElement | null = document.querySelector(
+      `#addAdviserUploadInput`
+    );
     if (input) {
       input.value = "";
     }
@@ -90,7 +91,7 @@ const BatchAddStudentsForm: FC<Props> = ({
         <CardContent sx={{ display: "grid", placeItems: "center" }}>
           <LoadingWrapper
             isLoading={isSubmitting}
-            loadingText="Adding students..."
+            loadingText="Adding advisers..."
           >
             {!!parseStatus.message && fileDetails ? (
               <Stack
@@ -119,14 +120,14 @@ const BatchAddStudentsForm: FC<Props> = ({
                 {/* Follow up actions */}
                 <Stack direction="column" spacing="0.5rem">
                   {parseStatus.severity === "success" ? (
-                    <Button onClick={handleAttachAdvisers} variant="contained">
+                    <Button onClick={handleAddAdvisers} variant="contained">
                       Add
                     </Button>
                   ) : null}
                   <Button
                     onClick={() => {
                       resetParseStatus();
-                      handleClearAdvisers();
+                      handleClearAddAdvisers();
                     }}
                     variant="outlined"
                   >
@@ -153,7 +154,7 @@ const BatchAddStudentsForm: FC<Props> = ({
                 <Typography>Upload a CSV spreadsheet</Typography>
                 <UploadFile fontSize="large" sx={{ marginTop: "0.5rem" }} />
                 <Input
-                  id="adviserUploadInput"
+                  id="addAdviserUploadInput"
                   type="file"
                   inputProps={{
                     accept:
