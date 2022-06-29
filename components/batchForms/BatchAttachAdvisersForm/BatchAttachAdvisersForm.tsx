@@ -90,7 +90,7 @@ const BatchAddStudentsForm: FC<Props> = ({
         <CardContent sx={{ display: "grid", placeItems: "center" }}>
           <LoadingWrapper
             isLoading={isSubmitting}
-            loadingText="Adding students..."
+            loadingText="Attaching advisers..."
           >
             {!!parseStatus.message && fileDetails ? (
               <Stack

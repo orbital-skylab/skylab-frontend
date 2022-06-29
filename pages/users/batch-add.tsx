@@ -23,6 +23,11 @@ import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 import type { NextPage } from "next";
 import { HTTP_METHOD } from "@/types/api";
 import HeadingWithCsvTemplate from "@/components/batchForms/HeadingWithCsvTemplate/HeadingWithCsvTemplate";
+import BatchAddAdvisersForm, {
+  AddAdvisersData,
+  ADD_ADVISERS_CSV_HEADERS,
+  processBatchAddAdvisersData,
+} from "@/components/batchForms/BatchAddAdvisersForm";
 
 const BatchAdd: NextPage = () => {
   const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
@@ -31,6 +36,12 @@ const BatchAdd: NextPage = () => {
   const batchAddStudents = useApiCall({
     method: HTTP_METHOD.POST,
     endpoint: `/users/create-student/batch`,
+    requiresAuthorization: true,
+  });
+  const [addAdvisersData, setAddAdvisersData] = useState<AddAdvisersData>([]);
+  const batchAddAdvisers = useApiCall({
+    method: HTTP_METHOD.POST,
+    endpoint: `/users/create-adviser/batch`,
     requiresAuthorization: true,
   });
   const [adviserData, setAdviserData] = useState<AdviserData>([]);
@@ -44,7 +55,7 @@ const BatchAdd: NextPage = () => {
     try {
       const processedValues = processBatchStudentData(studentData);
       await batchAddStudents.call(processedValues);
-      setSuccess("Successfully added the students!");
+      setSuccess("Successfully added the projects and students!");
       handleClearStudents();
     } catch (error) {
       setError(error);
@@ -53,6 +64,21 @@ const BatchAdd: NextPage = () => {
 
   const handleClearStudents = () => {
     setStudentData([]);
+  };
+
+  const handleAddAdvisers = async () => {
+    try {
+      const processedValues = processBatchAddAdvisersData(addAdvisersData);
+      await batchAddAdvisers.call(processedValues);
+      setSuccess("Successfully added the advisers!");
+      handleClearAddAdvisers();
+    } catch (error) {
+      setError(error);
+    }
+  };
+
+  const handleClearAddAdvisers = () => {
+    setAddAdvisersData([]);
   };
 
   const handleAttachAdvisers = async () => {
@@ -101,13 +127,13 @@ const BatchAdd: NextPage = () => {
             <HeadingWithCsvTemplate
               title="Batch Add Advisers"
               tooltipText="This creates new users with an adviser role attached to them"
-              csvTemplateHeaders={[Object.values(ADD_STUDENT_CSV_HEADERS)]}
+              csvTemplateHeaders={[Object.values(ADD_ADVISERS_CSV_HEADERS)]}
             />
-            <BatchAddStudentsForm
-              setStudentData={setStudentData}
-              handleAddStudents={handleAddStudents}
-              handleClearStudents={handleClearStudents}
-              isSubmitting={isCalling(batchAddStudents.status)}
+            <BatchAddAdvisersForm
+              setAddAdvisersData={setAddAdvisersData}
+              handleAddAdvisers={handleAddAdvisers}
+              handleClearAddAdvisers={handleClearAddAdvisers}
+              isSubmitting={isCalling(batchAddAdvisers.status)}
             />
           </Box>
           <Box>

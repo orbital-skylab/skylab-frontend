@@ -1,4 +1,4 @@
-import BatchAddStudentsForm from "./BatchAddStudentsForm";
-export default BatchAddStudentsForm;
-export * from "./BatchAddStudentsForm.helpers";
-export * from "./BatchAddStudentsForm.types";
+import BatchAddAdvisersForm from "./BatchAddAdvisersForm";
+export default BatchAddAdvisersForm;
+export * from "./BatchAddAdvisersForm.helpers";
+export * from "./BatchAddAdvisersForm.types";

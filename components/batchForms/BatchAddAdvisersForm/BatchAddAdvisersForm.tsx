@@ -18,22 +18,22 @@ import Papa from "papaparse";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Types
 import {
-  ADD_STUDENT_CSV_HEADERS,
-  StudentData,
-} from "./BatchAddStudentsForm.types";
-import { checkHeadersMatch } from "./BatchAddStudentsForm.helpers";
+  ADD_ADVISERS_CSV_HEADERS,
+  AddAdvisersData,
+} from "./BatchAddAdvisersForm.types";
+import { checkHeadersMatch } from "../BatchAddStudentsForm";
 
 type Props = {
-  setStudentData: Dispatch<SetStateAction<StudentData>>;
-  handleAddStudents: () => void;
-  handleClearStudents: () => void;
+  setAddAdvisersData: Dispatch<SetStateAction<AddAdvisersData>>;
+  handleAddAdvisers: () => void;
+  handleClearAddAdvisers: () => void;
   isSubmitting: boolean;
 };
 
 const BatchAddStudentsForm: FC<Props> = ({
-  setStudentData,
-  handleAddStudents,
-  handleClearStudents,
+  setAddAdvisersData,
+  handleAddAdvisers,
+  handleClearAddAdvisers,
   isSubmitting,
 }) => {
   const [fileDetails, setFileDetails] = useState<File | null>(null);
@@ -53,32 +53,33 @@ const BatchAddStudentsForm: FC<Props> = ({
         complete: function (results) {
           if (!results.data || !results.data.length) {
             setUnsuccessfulParseStatus(
-              "No projects or students were detected. Please upload another file."
+              "No advisers were detected. Please upload another file."
             );
           } else if (
             !checkHeadersMatch(
               results.data,
-              Object.values(ADD_STUDENT_CSV_HEADERS)
+              Object.values(ADD_ADVISERS_CSV_HEADERS)
             )
           ) {
             setUnsuccessfulParseStatus(
-              "The detected file does not follow the format of the provided Add Student CSV template. Please upload another file or try again."
+              "The detected file does not follow the format of the provided Add Adviser CSV template. Please upload another file or try again."
             );
           } else {
             setSuccessfulParseStatus(
-              `${results.data.length} project${
+              `${results.data.length} adviser${
                 results.data.length !== 1 ? "s" : ""
               } successfully detected. Ready to add them?`
             );
-            setStudentData(results.data as StudentData);
+            setAddAdvisersData(results.data as AddAdvisersData);
           }
         },
       });
     }
 
     // Ensures that users can reupload files
-    const input: HTMLInputElement | null =
-      document.querySelector(`#studentUploadInput`);
+    const input: HTMLInputElement | null = document.querySelector(
+      `#addAdviserUploadInput`
+    );
     if (input) {
       input.value = "";
     }
@@ -90,7 +91,7 @@ const BatchAddStudentsForm: FC<Props> = ({
         <CardContent sx={{ display: "grid", placeItems: "center" }}>
           <LoadingWrapper
             isLoading={isSubmitting}
-            loadingText="Adding students..."
+            loadingText="Adding advisers..."
           >
             {!!parseStatus.message && fileDetails ? (
               <Stack
@@ -119,14 +120,14 @@ const BatchAddStudentsForm: FC<Props> = ({
                 {/* Follow up actions */}
                 <Stack direction="column" spacing="0.5rem">
                   {parseStatus.severity === "success" ? (
-                    <Button onClick={handleAddStudents} variant="contained">
+                    <Button onClick={handleAddAdvisers} variant="contained">
                       Add
                     </Button>
                   ) : null}
                   <Button
                     onClick={() => {
                       resetParseStatus();
-                      handleClearStudents();
+                      handleClearAddAdvisers();
                     }}
                     variant="outlined"
                   >
@@ -153,7 +154,7 @@ const BatchAddStudentsForm: FC<Props> = ({
                 <Typography>Upload a CSV spreadsheet</Typography>
                 <UploadFile fontSize="large" sx={{ marginTop: "0.5rem" }} />
                 <Input
-                  id="studentUploadInput"
+                  id="addAdviserUploadInput"
                   type="file"
                   inputProps={{
                     accept:
