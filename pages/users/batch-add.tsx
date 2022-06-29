@@ -3,15 +3,15 @@ import { useRouter } from "next/router";
 // Components
 import Body from "@/components/layout/Body";
 import SnackbarAlert from "@/components/SnackbarAlert";
-import BatchAddStudentsForm, {
-  ADD_STUDENT_CSV_HEADERS,
+import BatchAddProjectsAndStudentsForm, {
+  AddProjectsAndStudentsData,
+  ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS,
   processBatchStudentData,
-  StudentData,
-} from "@/components/batchForms/BatchAddStudentsForm";
+} from "@/components/batchForms/BatchAddProjectsAndStudentsForm";
 import BatchAttachAdvisersForm, {
-  AdviserData,
   processBatchAdviserData,
-  ATTACH_ADVISER_CSV_HEADERS,
+  ATTACH_ADVISERS_CSV_HEADERS,
+  AttachAdvisersData,
 } from "@/components/batchForms/BatchAttachAdvisersForm";
 import { Box, Button, Stack } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
@@ -32,39 +32,40 @@ import BatchAddAdvisersForm, {
 const BatchAdd: NextPage = () => {
   const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
   const router = useRouter();
-  const [studentData, setStudentData] = useState<StudentData>([]);
-  const batchAddStudents = useApiCall({
+
+  /** Add Projects and Students Functions */
+  const [addProjectsAndStudentsData, setAddProjectsAndStudentsData] =
+    useState<AddProjectsAndStudentsData>([]);
+  const batchAddProjectsAndStudents = useApiCall({
     method: HTTP_METHOD.POST,
     endpoint: `/users/create-student/batch`,
     requiresAuthorization: true,
   });
+
+  const handleAddProjectsAndStudents = async () => {
+    try {
+      const processedValues = processBatchStudentData(
+        addProjectsAndStudentsData
+      );
+      await batchAddProjectsAndStudents.call(processedValues);
+      setSuccess("Successfully added the projects and students!");
+      handleClearProjectsAndStudents();
+    } catch (error) {
+      setError(error);
+    }
+  };
+
+  const handleClearProjectsAndStudents = () => {
+    setAddProjectsAndStudentsData([]);
+  };
+
+  /** Add Advisers Functions */
   const [addAdvisersData, setAddAdvisersData] = useState<AddAdvisersData>([]);
   const batchAddAdvisers = useApiCall({
     method: HTTP_METHOD.POST,
     endpoint: `/users/create-adviser/batch`,
     requiresAuthorization: true,
   });
-  const [adviserData, setAdviserData] = useState<AdviserData>([]);
-  const batchAttachAdvisers = useApiCall({
-    method: HTTP_METHOD.POST,
-    endpoint: `/users/attach-adviser/batch`,
-    requiresAuthorization: true,
-  });
-
-  const handleAddStudents = async () => {
-    try {
-      const processedValues = processBatchStudentData(studentData);
-      await batchAddStudents.call(processedValues);
-      setSuccess("Successfully added the projects and students!");
-      handleClearStudents();
-    } catch (error) {
-      setError(error);
-    }
-  };
-
-  const handleClearStudents = () => {
-    setStudentData([]);
-  };
 
   const handleAddAdvisers = async () => {
     try {
@@ -81,19 +82,28 @@ const BatchAdd: NextPage = () => {
     setAddAdvisersData([]);
   };
 
+  /** Attach Advisers Functions */
+  const [attachAdvisersData, setAttachAdvisersData] =
+    useState<AttachAdvisersData>([]);
+  const batchAttachAdvisers = useApiCall({
+    method: HTTP_METHOD.POST,
+    endpoint: `/users/attach-adviser/batch`,
+    requiresAuthorization: true,
+  });
+
   const handleAttachAdvisers = async () => {
     try {
-      const processedValues = processBatchAdviserData(adviserData);
+      const processedValues = processBatchAdviserData(attachAdvisersData);
       await batchAttachAdvisers.call(processedValues);
       setSuccess("Successfully attached the advisers!");
-      handleClearAdvisers();
+      handleClearAttachAdvisers();
     } catch (error) {
       setError(error);
     }
   };
 
-  const handleClearAdvisers = () => {
-    setAdviserData([]);
+  const handleClearAttachAdvisers = () => {
+    setAttachAdvisersData([]);
   };
 
   return (
@@ -114,13 +124,15 @@ const BatchAdd: NextPage = () => {
             <HeadingWithCsvTemplate
               title="Batch Add Projects and Students"
               tooltipText="This creates new projects and new users with a student role attached to them"
-              csvTemplateHeaders={[Object.values(ADD_STUDENT_CSV_HEADERS)]}
+              csvTemplateHeaders={[
+                Object.values(ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS),
+              ]}
             />
-            <BatchAddStudentsForm
-              setStudentData={setStudentData}
-              handleAddStudents={handleAddStudents}
-              handleClearStudents={handleClearStudents}
-              isSubmitting={isCalling(batchAddStudents.status)}
+            <BatchAddProjectsAndStudentsForm
+              setAddProjectsAndStudentsData={setAddProjectsAndStudentsData}
+              handleAddProjectsAndStudents={handleAddProjectsAndStudents}
+              handleClearProjectsAndStudents={handleClearProjectsAndStudents}
+              isSubmitting={isCalling(batchAddProjectsAndStudents.status)}
             />
           </Box>
           <Box>
@@ -140,12 +152,12 @@ const BatchAdd: NextPage = () => {
             <HeadingWithCsvTemplate
               title="Batch Attach Advisers"
               tooltipText="This attaches an adviser role onto EXISTING users (with a past student role) via their NUSNET ID"
-              csvTemplateHeaders={[Object.values(ATTACH_ADVISER_CSV_HEADERS)]}
+              csvTemplateHeaders={[Object.values(ATTACH_ADVISERS_CSV_HEADERS)]}
             />
             <BatchAttachAdvisersForm
-              setAdviserData={setAdviserData}
+              setAttachAdvisersData={setAttachAdvisersData}
               handleAttachAdvisers={handleAttachAdvisers}
-              handleClearAdvisers={handleClearAdvisers}
+              handleClearAttachAdvisers={handleClearAttachAdvisers}
               isSubmitting={isCalling(batchAttachAdvisers.status)}
             />
           </Box>

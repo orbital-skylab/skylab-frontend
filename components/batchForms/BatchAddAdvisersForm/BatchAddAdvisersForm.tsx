@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 // Helpers
 import Papa from "papaparse";
+import { checkHeadersMatch } from "@/helpers/batchForms";
 // Hooks
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Types
@@ -21,7 +22,6 @@ import {
   ADD_ADVISERS_CSV_HEADERS,
   AddAdvisersData,
 } from "./BatchAddAdvisersForm.types";
-import { checkHeadersMatch } from "../BatchAddStudentsForm";
 
 type Props = {
   setAddAdvisersData: Dispatch<SetStateAction<AddAdvisersData>>;
@@ -44,7 +44,7 @@ const BatchAddStudentsForm: FC<Props> = ({
     setError: setUnsuccessfulParseStatus,
   } = useSnackbarAlert();
 
-  const handleUploadStudents = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleUploadAdvisers = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length) {
       setFileDetails(e.target.files[0]);
       Papa.parse(e.target.files[0], {
@@ -161,7 +161,7 @@ const BatchAddStudentsForm: FC<Props> = ({
                       ".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel",
                   }}
                   value={null}
-                  onChange={handleUploadStudents}
+                  onChange={handleUploadAdvisers}
                   sx={{ display: "none" }}
                 />
               </Box>

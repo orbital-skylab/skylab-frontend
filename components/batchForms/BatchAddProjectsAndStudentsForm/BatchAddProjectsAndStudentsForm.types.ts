@@ -5,7 +5,7 @@ import { UserMetadata } from "@/types/users";
 /**
  * The headers used to generate the CSV Template file for students
  */
-export enum ADD_STUDENT_CSV_HEADERS {
+export enum ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS {
   PROJECT_NAME = "Project Name",
   LOA = "Level of Achievement",
   COHORT_YEAR = "Cohort Year",
@@ -21,11 +21,14 @@ export enum ADD_STUDENT_CSV_HEADERS {
 }
 
 /**
- * The data type that the student CSV data will be parsed into
+ * The data type that the projects and students CSV data will be parsed into
  */
-export type StudentData = Record<ADD_STUDENT_CSV_HEADERS, string | number>[];
+export type AddProjectsAndStudentsData = Record<
+  ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS,
+  string | number
+>[];
 
-export type BatchAddStudentRequestType = {
+export type BatchAddProjectsAndStudentsRequestType = {
   count: number;
   projects: {
     name: string;

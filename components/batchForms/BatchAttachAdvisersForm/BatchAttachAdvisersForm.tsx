@@ -14,26 +14,26 @@ import {
 } from "@mui/material";
 // Helpers
 import Papa from "papaparse";
-import { checkHeadersMatch } from "../BatchAddStudentsForm";
 // Hooks
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Types
 import {
-  AdviserData,
-  ATTACH_ADVISER_CSV_HEADERS,
+  AttachAdvisersData,
+  ATTACH_ADVISERS_CSV_HEADERS,
 } from "./BatchAttachAdvisersForm.types";
+import { checkHeadersMatch } from "@/helpers/batchForms";
 
 type Props = {
-  setAdviserData: Dispatch<SetStateAction<AdviserData>>;
+  setAttachAdvisersData: Dispatch<SetStateAction<AttachAdvisersData>>;
   handleAttachAdvisers: () => void;
-  handleClearAdvisers: () => void;
+  handleClearAttachAdvisers: () => void;
   isSubmitting: boolean;
 };
 
 const BatchAddStudentsForm: FC<Props> = ({
-  setAdviserData,
+  setAttachAdvisersData,
   handleAttachAdvisers,
-  handleClearAdvisers,
+  handleClearAttachAdvisers,
   isSubmitting,
 }) => {
   const [fileDetails, setFileDetails] = useState<File | null>(null);
@@ -58,7 +58,7 @@ const BatchAddStudentsForm: FC<Props> = ({
           } else if (
             !checkHeadersMatch(
               results.data,
-              Object.values(ATTACH_ADVISER_CSV_HEADERS)
+              Object.values(ATTACH_ADVISERS_CSV_HEADERS)
             )
           ) {
             setUnsuccessfulParseStatus(
@@ -70,7 +70,7 @@ const BatchAddStudentsForm: FC<Props> = ({
                 results.data.length !== 1 ? "s" : ""
               } successfully detected. Ready to attach the adviser role to them?`
             );
-            setAdviserData(results.data as AdviserData);
+            setAttachAdvisersData(results.data as AttachAdvisersData);
           }
         },
       });
@@ -126,7 +126,7 @@ const BatchAddStudentsForm: FC<Props> = ({
                   <Button
                     onClick={() => {
                       resetParseStatus();
-                      handleClearAdvisers();
+                      handleClearAttachAdvisers();
                     }}
                     variant="outlined"
                   >

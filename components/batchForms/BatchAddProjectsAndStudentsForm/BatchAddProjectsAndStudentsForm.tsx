@@ -14,26 +14,28 @@ import {
 } from "@mui/material";
 // Helpers
 import Papa from "papaparse";
+import { checkHeadersMatch } from "@/helpers/batchForms";
 // Hooks
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Types
 import {
-  ADD_STUDENT_CSV_HEADERS,
-  StudentData,
-} from "./BatchAddStudentsForm.types";
-import { checkHeadersMatch } from "./BatchAddStudentsForm.helpers";
+  ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS,
+  AddProjectsAndStudentsData,
+} from "./BatchAddProjectsAndStudentsForm.types";
 
 type Props = {
-  setStudentData: Dispatch<SetStateAction<StudentData>>;
-  handleAddStudents: () => void;
-  handleClearStudents: () => void;
+  setAddProjectsAndStudentsData: Dispatch<
+    SetStateAction<AddProjectsAndStudentsData>
+  >;
+  handleAddProjectsAndStudents: () => void;
+  handleClearProjectsAndStudents: () => void;
   isSubmitting: boolean;
 };
 
 const BatchAddStudentsForm: FC<Props> = ({
-  setStudentData,
-  handleAddStudents,
-  handleClearStudents,
+  setAddProjectsAndStudentsData,
+  handleAddProjectsAndStudents,
+  handleClearProjectsAndStudents,
   isSubmitting,
 }) => {
   const [fileDetails, setFileDetails] = useState<File | null>(null);
@@ -44,7 +46,9 @@ const BatchAddStudentsForm: FC<Props> = ({
     setError: setUnsuccessfulParseStatus,
   } = useSnackbarAlert();
 
-  const handleUploadStudents = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleUploadProjectsAndStudents = (
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
     if (e.target.files && e.target.files.length) {
       setFileDetails(e.target.files[0]);
       Papa.parse(e.target.files[0], {
@@ -58,11 +62,11 @@ const BatchAddStudentsForm: FC<Props> = ({
           } else if (
             !checkHeadersMatch(
               results.data,
-              Object.values(ADD_STUDENT_CSV_HEADERS)
+              Object.values(ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS)
             )
           ) {
             setUnsuccessfulParseStatus(
-              "The detected file does not follow the format of the provided Add Student CSV template. Please upload another file or try again."
+              "The detected file does not follow the format of the provided Add Projects And Student CSV template. Please upload another file or try again."
             );
           } else {
             setSuccessfulParseStatus(
@@ -70,7 +74,9 @@ const BatchAddStudentsForm: FC<Props> = ({
                 results.data.length !== 1 ? "s" : ""
               } successfully detected. Ready to add them?`
             );
-            setStudentData(results.data as StudentData);
+            setAddProjectsAndStudentsData(
+              results.data as AddProjectsAndStudentsData
+            );
           }
         },
       });
@@ -119,14 +125,17 @@ const BatchAddStudentsForm: FC<Props> = ({
                 {/* Follow up actions */}
                 <Stack direction="column" spacing="0.5rem">
                   {parseStatus.severity === "success" ? (
-                    <Button onClick={handleAddStudents} variant="contained">
+                    <Button
+                      onClick={handleAddProjectsAndStudents}
+                      variant="contained"
+                    >
                       Add
                     </Button>
                   ) : null}
                   <Button
                     onClick={() => {
                       resetParseStatus();
-                      handleClearStudents();
+                      handleClearProjectsAndStudents();
                     }}
                     variant="outlined"
                   >
@@ -160,7 +169,7 @@ const BatchAddStudentsForm: FC<Props> = ({
                       ".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel",
                   }}
                   value={null}
-                  onChange={handleUploadStudents}
+                  onChange={handleUploadProjectsAndStudents}
                   sx={{ display: "none" }}
                 />
               </Box>
