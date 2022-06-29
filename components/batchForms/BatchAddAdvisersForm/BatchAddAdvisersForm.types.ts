@@ -2,7 +2,7 @@ import { AdviserMetadata } from "@/types/advisers";
 import { UserMetadata } from "@/types/users";
 
 /**
- * The headers used to generate the CSV Template file for students
+ * The headers used to generate the CSV Template file for adding advisers
  */
 export enum ADD_ADVISERS_CSV_HEADERS {
   NAME = "Name",
@@ -13,7 +13,7 @@ export enum ADD_ADVISERS_CSV_HEADERS {
 }
 
 /**
- * The data type that the student CSV data will be parsed into
+ * The data type that the adviser CSV data will be parsed into
  */
 export type AddAdvisersData = Record<
   ADD_ADVISERS_CSV_HEADERS,

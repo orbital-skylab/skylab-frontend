@@ -14,26 +14,26 @@ import {
 } from "@mui/material";
 // Helpers
 import Papa from "papaparse";
+import { checkHeadersMatch } from "@/helpers/batchForms";
 // Hooks
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Types
 import {
-  AttachAdvisersData,
-  ATTACH_ADVISERS_CSV_HEADERS,
-} from "./BatchAttachAdvisersForm.types";
-import { checkHeadersMatch } from "@/helpers/batchForms";
+  ADD_MENTORS_CSV_HEADERS,
+  AddMentorsData,
+} from "./BatchAddMentorsForm.types";
 
 type Props = {
-  setAttachAdvisersData: Dispatch<SetStateAction<AttachAdvisersData>>;
-  handleAttachAdvisers: () => void;
-  handleClearAttachAdvisers: () => void;
+  setAddMentorsData: Dispatch<SetStateAction<AddMentorsData>>;
+  handleAddMentors: () => void;
+  handleClearAddMentors: () => void;
   isSubmitting: boolean;
 };
 
-const BatchAddAdvisersForm: FC<Props> = ({
-  setAttachAdvisersData,
-  handleAttachAdvisers,
-  handleClearAttachAdvisers,
+const BatchAddMentorsForm: FC<Props> = ({
+  setAddMentorsData,
+  handleAddMentors,
+  handleClearAddMentors,
   isSubmitting,
 }) => {
   const [fileDetails, setFileDetails] = useState<File | null>(null);
@@ -44,7 +44,7 @@ const BatchAddAdvisersForm: FC<Props> = ({
     setError: setUnsuccessfulParseStatus,
   } = useSnackbarAlert();
 
-  const handleUploadAdvisers = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleUploadMentors = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length) {
       setFileDetails(e.target.files[0]);
       Papa.parse(e.target.files[0], {
@@ -53,32 +53,33 @@ const BatchAddAdvisersForm: FC<Props> = ({
         complete: function (results) {
           if (!results.data || !results.data.length) {
             setUnsuccessfulParseStatus(
-              "No NUSNET IDs were detected. Please upload another file."
+              "No mentors were detected. Please upload another file."
             );
           } else if (
             !checkHeadersMatch(
               results.data,
-              Object.values(ATTACH_ADVISERS_CSV_HEADERS)
+              Object.values(ADD_MENTORS_CSV_HEADERS)
             )
           ) {
             setUnsuccessfulParseStatus(
-              "The detected file does not follow the format of the provided Attach Advisers CSV template. Please upload another file or try again."
+              "The detected file does not follow the format of the provided Add Mentor CSV template. Please upload another file or try again."
             );
           } else {
             setSuccessfulParseStatus(
-              `${results.data.length} NUSNET ID${
+              `${results.data.length} mentor${
                 results.data.length !== 1 ? "s" : ""
-              } successfully detected. Ready to attach the adviser role to them?`
+              } successfully detected. Ready to add them?`
             );
-            setAttachAdvisersData(results.data as AttachAdvisersData);
+            setAddMentorsData(results.data as AddMentorsData);
           }
         },
       });
     }
 
     // Ensures that users can reupload files
-    const input: HTMLInputElement | null =
-      document.querySelector(`#adviserUploadInput`);
+    const input: HTMLInputElement | null = document.querySelector(
+      `#addMentorsUploadInput`
+    );
     if (input) {
       input.value = "";
     }
@@ -90,7 +91,7 @@ const BatchAddAdvisersForm: FC<Props> = ({
         <CardContent sx={{ display: "grid", placeItems: "center" }}>
           <LoadingWrapper
             isLoading={isSubmitting}
-            loadingText="Attaching advisers..."
+            loadingText="Adding mentors..."
           >
             {!!parseStatus.message && fileDetails ? (
               <Stack
@@ -119,14 +120,14 @@ const BatchAddAdvisersForm: FC<Props> = ({
                 {/* Follow up actions */}
                 <Stack direction="column" spacing="0.5rem">
                   {parseStatus.severity === "success" ? (
-                    <Button onClick={handleAttachAdvisers} variant="contained">
+                    <Button onClick={handleAddMentors} variant="contained">
                       Add
                     </Button>
                   ) : null}
                   <Button
                     onClick={() => {
                       resetParseStatus();
-                      handleClearAttachAdvisers();
+                      handleClearAddMentors();
                     }}
                     variant="outlined"
                   >
@@ -153,14 +154,14 @@ const BatchAddAdvisersForm: FC<Props> = ({
                 <Typography>Upload a CSV spreadsheet</Typography>
                 <UploadFile fontSize="large" sx={{ marginTop: "0.5rem" }} />
                 <Input
-                  id="adviserUploadInput"
+                  id="addMentorsUploadInput"
                   type="file"
                   inputProps={{
                     accept:
                       ".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel",
                   }}
                   value={null}
-                  onChange={handleUploadAdvisers}
+                  onChange={handleUploadMentors}
                   sx={{ display: "none" }}
                 />
               </Box>
@@ -171,4 +172,4 @@ const BatchAddAdvisersForm: FC<Props> = ({
     </>
   );
 };
-export default BatchAddAdvisersForm;
+export default BatchAddMentorsForm;

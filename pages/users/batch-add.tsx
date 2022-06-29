@@ -3,11 +3,22 @@ import { useRouter } from "next/router";
 // Components
 import Body from "@/components/layout/Body";
 import SnackbarAlert from "@/components/SnackbarAlert";
+import HeadingWithCsvTemplate from "@/components/batchForms/HeadingWithCsvTemplate/HeadingWithCsvTemplate";
 import BatchAddProjectsAndStudentsForm, {
   AddProjectsAndStudentsData,
   ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS,
   processBatchStudentData,
 } from "@/components/batchForms/BatchAddProjectsAndStudentsForm";
+import BatchAddAdvisersForm, {
+  AddAdvisersData,
+  ADD_ADVISERS_CSV_HEADERS,
+  processBatchAddAdvisersData,
+} from "@/components/batchForms/BatchAddAdvisersForm";
+import BatchAddMentorsForm, {
+  AddMentorsData,
+  ADD_MENTORS_CSV_HEADERS,
+  processBatchAddMentorsData,
+} from "@/components/batchForms/BatchAddMentorsForm";
 import BatchAttachAdvisersForm, {
   processBatchAdviserData,
   ATTACH_ADVISERS_CSV_HEADERS,
@@ -22,12 +33,6 @@ import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Types
 import type { NextPage } from "next";
 import { HTTP_METHOD } from "@/types/api";
-import HeadingWithCsvTemplate from "@/components/batchForms/HeadingWithCsvTemplate/HeadingWithCsvTemplate";
-import BatchAddAdvisersForm, {
-  AddAdvisersData,
-  ADD_ADVISERS_CSV_HEADERS,
-  processBatchAddAdvisersData,
-} from "@/components/batchForms/BatchAddAdvisersForm";
 
 const BatchAdd: NextPage = () => {
   const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
@@ -79,6 +84,29 @@ const BatchAdd: NextPage = () => {
   };
 
   const handleClearAddAdvisers = () => {
+    setAddAdvisersData([]);
+  };
+
+  /** Add Mentors Functions */
+  const [addMentorsData, setAddMentorsData] = useState<AddMentorsData>([]);
+  const batchAddMentors = useApiCall({
+    method: HTTP_METHOD.POST,
+    endpoint: `/users/create-mentor/batch`,
+    requiresAuthorization: true,
+  });
+
+  const handleAddMentors = async () => {
+    try {
+      const processedValues = processBatchAddMentorsData(addMentorsData);
+      await batchAddAdvisers.call(processedValues);
+      setSuccess("Successfully added the mentors!");
+      handleClearAddMentors();
+    } catch (error) {
+      setError(error);
+    }
+  };
+
+  const handleClearAddMentors = () => {
     setAddAdvisersData([]);
   };
 
@@ -146,6 +174,19 @@ const BatchAdd: NextPage = () => {
               handleAddAdvisers={handleAddAdvisers}
               handleClearAddAdvisers={handleClearAddAdvisers}
               isSubmitting={isCalling(batchAddAdvisers.status)}
+            />
+          </Box>
+          <Box>
+            <HeadingWithCsvTemplate
+              title="Batch Add Mentors"
+              tooltipText="This creates new users with an mentor role attached to them"
+              csvTemplateHeaders={[Object.values(ADD_MENTORS_CSV_HEADERS)]}
+            />
+            <BatchAddMentorsForm
+              setAddMentorsData={setAddMentorsData}
+              handleAddMentors={handleAddMentors}
+              handleClearAddMentors={handleClearAddMentors}
+              isSubmitting={isCalling(batchAddMentors.status)}
             />
           </Box>
           <Box>
