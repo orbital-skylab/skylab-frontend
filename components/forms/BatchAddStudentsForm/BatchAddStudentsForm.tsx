@@ -1,6 +1,5 @@
 import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from "react";
 // Components
-import SnackbarAlert from "@/components/SnackbarAlert";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import { UploadFile } from "@mui/icons-material";
 import {
@@ -18,26 +17,32 @@ import Papa from "papaparse";
 // Hooks
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Types
-import { StudentData } from "./BatchAddStudentsForm.types";
+import {
+  ADD_STUDENT_CSV_HEADERS,
+  StudentData,
+} from "./BatchAddStudentsForm.types";
+import { checkHeadersMatch } from "./BatchAddStudentsForm.helpers";
 
 type Props = {
-  studentData: StudentData;
   setStudentData: Dispatch<SetStateAction<StudentData>>;
-
   handleAddStudents: () => void;
   handleClearStudents: () => void;
   isSubmitting: boolean;
 };
 
 const BatchAddStudentsForm: FC<Props> = ({
-  studentData,
   setStudentData,
   handleAddStudents,
   handleClearStudents,
   isSubmitting,
 }) => {
   const [fileDetails, setFileDetails] = useState<File | null>(null);
-  const { snackbar, handleClose, setError } = useSnackbarAlert();
+  const {
+    snackbar: parseStatus,
+    handleClose: resetParseStatus,
+    setSuccess: setSuccessfulParseStatus,
+    setError: setUnsuccessfulParseStatus,
+  } = useSnackbarAlert();
 
   const handleUploadStudents = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length) {
@@ -46,14 +51,32 @@ const BatchAddStudentsForm: FC<Props> = ({
         header: true,
         dynamicTyping: true,
         complete: function (results) {
-          if (results.data.length) {
-            setStudentData(results.data as StudentData);
+          if (!results.data || !results.data.length) {
+            setUnsuccessfulParseStatus(
+              "No projects or students were detected. Please upload another file."
+            );
+          } else if (
+            !checkHeadersMatch(
+              results.data,
+              Object.values(ADD_STUDENT_CSV_HEADERS)
+            )
+          ) {
+            setUnsuccessfulParseStatus(
+              "The detected file does not follow the format of the provided Add Student CSV template. Please upload another file or try again."
+            );
           } else {
-            setError("No students were detected. Please upload another file");
+            setSuccessfulParseStatus(
+              `${results.data.length} project${
+                results.data.length !== 1 ? "s" : ""
+              } successfully detected. Ready to add them?`
+            );
+            setStudentData(results.data as StudentData);
           }
         },
       });
     }
+
+    // Ensures that users can reupload files
     const input: HTMLInputElement | null =
       document.querySelector(`#studentUploadInput`);
     if (input) {
@@ -63,20 +86,20 @@ const BatchAddStudentsForm: FC<Props> = ({
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <Card>
         <CardContent sx={{ display: "grid", placeItems: "center" }}>
           <LoadingWrapper
             isLoading={isSubmitting}
             loadingText="Adding students..."
           >
-            {studentData.length && fileDetails ? (
+            {!!parseStatus.message && fileDetails ? (
               <Stack
                 direction="column"
                 sx={{ height: "100%", width: "100%" }}
                 alignItems="center"
                 spacing="1rem"
               >
+                {/* File name and size */}
                 <Stack direction="column" alignItems="center">
                   <Typography variant="h6" fontWeight="600">
                     {fileDetails.name}
@@ -85,14 +108,28 @@ const BatchAddStudentsForm: FC<Props> = ({
                     {fileDetails.size} bytes
                   </Typography>
                 </Stack>
-                <Alert color="success">{`${studentData.length} Project${
-                  studentData.length !== 1 ? "s" : ""
-                } Detected`}</Alert>
+
+                {/* Parse status message */}
+                {parseStatus.message ? (
+                  <Alert color={parseStatus.severity}>
+                    {parseStatus.message}
+                  </Alert>
+                ) : null}
+
+                {/* Follow up actions */}
                 <Stack direction="column" spacing="0.5rem">
-                  <Button onClick={handleAddStudents} variant="contained">
-                    Add
-                  </Button>
-                  <Button onClick={handleClearStudents} variant="outlined">
+                  {parseStatus.severity === "success" ? (
+                    <Button onClick={handleAddStudents} variant="contained">
+                      Add
+                    </Button>
+                  ) : null}
+                  <Button
+                    onClick={() => {
+                      resetParseStatus();
+                      handleClearStudents();
+                    }}
+                    variant="outlined"
+                  >
                     Upload Another File
                   </Button>
                 </Stack>

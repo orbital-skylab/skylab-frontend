@@ -9,10 +9,24 @@ const useSnackbarAlert = () => {
     SNACKBAR_ALERT_INITIAL
   );
 
+  const setInfo = (message: string) => {
+    setSnackbar({
+      message,
+      severity: "info",
+    });
+  };
+
   const setSuccess = (message: string) => {
     setSnackbar({
       message,
       severity: "success",
+    });
+  };
+
+  const setWarning = (message: string) => {
+    setSnackbar({
+      message,
+      severity: "warning",
     });
   };
 
@@ -34,6 +48,14 @@ const useSnackbarAlert = () => {
     setSnackbar(SNACKBAR_ALERT_INITIAL);
   };
 
-  return { snackbar, setSnackbar, setSuccess, setError, handleClose };
+  return {
+    snackbar,
+    setSnackbar,
+    setInfo,
+    setSuccess,
+    setWarning,
+    setError,
+    handleClose,
+  };
 };
 export default useSnackbarAlert;

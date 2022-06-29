@@ -1,16 +1,14 @@
-import { HEADER_MAPPING } from "./BatchAttachAdvisersForm.constants";
-import { AdviserData } from "./BatchAttachAdvisersForm.types";
-
-type BatchAttachAdviserRequestType = {
-  count: number;
-  nusnetIds: string[];
-};
+import {
+  AdviserData,
+  ATTACH_ADVISER_CSV_HEADERS,
+  BatchAttachAdviserRequestType,
+} from "./BatchAttachAdvisersForm.types";
 
 export const processBatchAdviserData = (adviserData: AdviserData) => {
   const processedValues: BatchAttachAdviserRequestType = {
     count: adviserData.length,
     nusnetIds: adviserData.map(
-      (adviser) => adviser[HEADER_MAPPING.nusnetId] as string
+      (adviser) => adviser[ATTACH_ADVISER_CSV_HEADERS.NUSNET_ID] as string
     ),
   };
 
