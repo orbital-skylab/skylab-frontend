@@ -9,3 +9,8 @@ export enum HEADERS {
  * The data type that the adviser CSV data will be parsed into
  */
 export type AdviserData = Record<HEADERS, string | number>[];
+
+export type BatchAttachAdviserRequestType = {
+  count: number;
+  nusnetIds: string[];
+};

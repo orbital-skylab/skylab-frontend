@@ -107,7 +107,6 @@ const BatchAdd: NextPage = () => {
               </CSVLink>
             </Stack>
             <BatchAddStudentsForm
-              studentData={studentData}
               setStudentData={setStudentData}
               handleAddStudents={handleAddStudents}
               handleClearStudents={handleClearStudents}

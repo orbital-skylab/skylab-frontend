@@ -1,3 +1,7 @@
+import { LEVELS_OF_ACHIEVEMENT } from "@/types/projects";
+import { StudentMetadata } from "@/types/students";
+import { UserMetadata } from "@/types/users";
+
 /**
  * The headers used to generate the CSV Template file for students
  */
@@ -20,3 +24,17 @@ export enum HEADERS {
  * The data type that the student CSV data will be parsed into
  */
 export type StudentData = Record<HEADERS, string | number>[];
+
+export type BatchAddStudentRequestType = {
+  count: number;
+  projects: {
+    name: string;
+    achievement: LEVELS_OF_ACHIEVEMENT;
+    cohortYear: number;
+    proposalPdf: string;
+    students: {
+      user: Omit<UserMetadata, "id">;
+      student: Partial<StudentMetadata>;
+    }[];
+  }[];
+};
