@@ -54,6 +54,7 @@ const EditRole: FC<Props> = ({
       selectedRole
     )}`,
     requiresAuthorization: true,
+    // TODO: Check newRoleDetails type
     onSuccess: (newRoleDetails) => {
       mutate((users) => {
         const userId = user.id;
