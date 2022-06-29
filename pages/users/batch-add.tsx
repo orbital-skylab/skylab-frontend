@@ -7,23 +7,22 @@ import BatchAddStudentsForm, {
   ADD_STUDENT_CSV_HEADERS,
   processBatchStudentData,
   StudentData,
-} from "@/components/forms/BatchAddStudentsForm";
+} from "@/components/batchForms/BatchAddStudentsForm";
 import BatchAttachAdvisersForm, {
   AdviserData,
   processBatchAdviserData,
   ATTACH_ADVISER_CSV_HEADERS,
-} from "@/components/forms/BatchAttachAdvisersForm";
-import { Box, Button, Stack, Tooltip, Typography } from "@mui/material";
-import { ArrowBack, HelpOutline } from "@mui/icons-material";
+} from "@/components/batchForms/BatchAttachAdvisersForm";
+import { Box, Button, Stack } from "@mui/material";
+import { ArrowBack } from "@mui/icons-material";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
 import { isCalling } from "@/hooks/useApiCall/useApiCall.helpers";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
-// Helpers
-import { CSVLink } from "react-csv";
 // Types
 import type { NextPage } from "next";
 import { HTTP_METHOD } from "@/types/api";
+import HeadingWithCsvTemplate from "@/components/batchForms/HeadingWithCsvTemplate/HeadingWithCsvTemplate";
 
 const BatchAdd: NextPage = () => {
   const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
@@ -86,26 +85,11 @@ const BatchAdd: NextPage = () => {
         </Button>
         <Stack direction="column" spacing="2rem">
           <Box>
-            <Stack
-              direction="row"
-              marginBottom="0.5rem"
-              spacing="0.5rem"
-              alignItems="center"
-            >
-              <Typography variant="h6">Batch Add Students</Typography>
-              <Tooltip title="This creates new users with a student role attached to them">
-                <HelpOutline fontSize="small" />
-              </Tooltip>
-              <CSVLink
-                data={[Object.values(ADD_STUDENT_CSV_HEADERS)]}
-                filename="skylab-add-students-csv-template"
-                style={{ textDecoration: "none", marginLeft: "auto" }}
-              >
-                <Tooltip title="Download CSV Template">
-                  <Button color="info">CSV Template</Button>
-                </Tooltip>
-              </CSVLink>
-            </Stack>
+            <HeadingWithCsvTemplate
+              title="Batch Add Projects and Students"
+              tooltipText="This creates new projects and new users with a student role attached to them"
+              csvTemplateHeaders={[Object.values(ADD_STUDENT_CSV_HEADERS)]}
+            />
             <BatchAddStudentsForm
               setStudentData={setStudentData}
               handleAddStudents={handleAddStudents}
@@ -114,26 +98,24 @@ const BatchAdd: NextPage = () => {
             />
           </Box>
           <Box>
-            <Stack
-              direction="row"
-              marginBottom="0.5rem"
-              alignItems="center"
-              spacing="0.5rem"
-            >
-              <Typography variant="h6">Batch Attach Advisers</Typography>
-              <Tooltip title="This attaches an adviser role onto EXISTING users (with a past student role) via their NUSNET ID">
-                <HelpOutline fontSize="small" />
-              </Tooltip>
-              <CSVLink
-                data={[Object.values(ATTACH_ADVISER_CSV_HEADERS)]}
-                filename="skylab-attach-advisers-csv-template"
-                style={{ textDecoration: "none", marginLeft: "auto" }}
-              >
-                <Tooltip title="Download CSV Template">
-                  <Button color="info">CSV Template</Button>
-                </Tooltip>
-              </CSVLink>
-            </Stack>
+            <HeadingWithCsvTemplate
+              title="Batch Add Advisers"
+              tooltipText="This creates new users with an adviser role attached to them"
+              csvTemplateHeaders={[Object.values(ADD_STUDENT_CSV_HEADERS)]}
+            />
+            <BatchAddStudentsForm
+              setStudentData={setStudentData}
+              handleAddStudents={handleAddStudents}
+              handleClearStudents={handleClearStudents}
+              isSubmitting={isCalling(batchAddStudents.status)}
+            />
+          </Box>
+          <Box>
+            <HeadingWithCsvTemplate
+              title="Batch Attach Advisers"
+              tooltipText="This attaches an adviser role onto EXISTING users (with a past student role) via their NUSNET ID"
+              csvTemplateHeaders={[Object.values(ATTACH_ADVISER_CSV_HEADERS)]}
+            />
             <BatchAttachAdvisersForm
               setAdviserData={setAdviserData}
               handleAttachAdvisers={handleAttachAdvisers}
