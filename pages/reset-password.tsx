@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
-import { Formik } from "formik";
+import { Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
 // Hooks
 import useAuth from "@/hooks/useAuth";
@@ -33,7 +33,10 @@ const ResetPassword: NextPage = () => {
     email: "",
   };
 
-  const handleSubmit = async (values: SignUpFormValuesType) => {
+  const handleSubmit = async (
+    values: SignUpFormValuesType,
+    helpers: FormikHelpers<SignUpFormValuesType>
+  ) => {
     try {
       if (!window.location.origin) {
         throw new Error("Cannot fetch the page origin");
@@ -45,6 +48,7 @@ const ResetPassword: NextPage = () => {
       setSuccess(
         "Successfully reset password! You should be receiving an email with a link soon!"
       );
+      helpers.resetForm();
     } catch (error) {
       setError(error);
     }
