@@ -5,7 +5,7 @@ import TextInput from "@/components/formControllers/TextInput";
 import SnackbarAlert from "@/components/SnackbarAlert";
 import { Button, Container, Divider, Stack, Typography } from "@mui/material";
 // Helpers
-import { Formik } from "formik";
+import { Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
 // Hooks
 import useAuth from "@/hooks/useAuth";
@@ -30,7 +30,10 @@ const ChangePassword: NextPage = () => {
     confirmNewPassword: "",
   };
 
-  const handleSubmit = async (values: ChangePasswordFormValuesType) => {
+  const handleSubmit = async (
+    values: ChangePasswordFormValuesType,
+    helpers: FormikHelpers<ChangePasswordFormValuesType>
+  ) => {
     try {
       if (
         !token ||
@@ -49,6 +52,7 @@ const ChangePassword: NextPage = () => {
         id: parseInt(id, 10),
       });
       setSuccess("Successfully changed password!");
+      helpers.resetForm();
     } catch (error) {
       setError(error);
     }

@@ -17,6 +17,7 @@ import {
   toSingular,
   userHasRole,
 } from "@/helpers/roles";
+import { generateValidationSchema } from "./AddRoleModal.helpers";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
@@ -24,7 +25,6 @@ import useCohort from "@/hooks/useCohort";
 // Types
 import { HTTP_METHOD } from "@/types/api";
 import { Mutate } from "@/hooks/useFetch";
-import { User } from "@/types/users";
 import {
   AddOrEditRoleFormValuesType,
   CreateRoleResponse,
@@ -32,7 +32,7 @@ import {
 } from "@/types/roles";
 import { Cohort } from "@/types/cohorts";
 import { LeanProject } from "@/types/projects";
-import { generateValidationSchema } from "./AddRoleModal.helpers";
+import { User } from "@/types/users";
 
 type Props = {
   open: boolean;
@@ -70,8 +70,14 @@ const AddRoleModal: FC<Props> = ({
     method: HTTP_METHOD.POST,
     endpoint: `/users/${user.id}/${toSingular(selectedRole).toLowerCase()}`,
     requiresAuthorization: true,
-    onSuccess: (newUser: CreateRoleResponse) => {
-      mutate((users) => [...users, newUser]);
+    // TODO: Check newRole type
+    onSuccess: (newRole: CreateRoleResponse) => {
+      mutate((users) => {
+        const userId = user.id;
+        const userIdx = users.findIndex((user) => user.id === userId);
+        console.log(userIdx, newRole);
+        return users;
+      });
     },
   });
 
