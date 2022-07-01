@@ -62,7 +62,7 @@ const DeadlineQuestions: NextPage = () => {
   });
 
   const saveQuestions = useApiCall({
-    method: HTTP_METHOD.POST,
+    method: HTTP_METHOD.PUT,
     endpoint: `/deadlines/${deadlineId}/questions`,
     requiresAuthorization: true,
   });
