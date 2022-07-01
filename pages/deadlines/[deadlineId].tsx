@@ -147,26 +147,28 @@ const DeadlineQuestions: NextPage = () => {
               <Typography variant="h6">
                 {deadlineDetailsResponse?.deadline.name}
               </Typography>
-              {questions.length ? (
-                <FormControlLabel
-                  value={isPreviewMode}
-                  onClick={handleTogglePreviewMode}
-                  control={<Switch color="info" />}
-                  label="Preview Questions"
-                  labelPlacement="start"
-                  sx={{ marginLeft: "auto" }}
-                />
-              ) : null}
+              <FormControlLabel
+                value={isPreviewMode}
+                onClick={handleTogglePreviewMode}
+                control={<Switch color="info" />}
+                label="Preview Questions"
+                labelPlacement="start"
+                sx={{ marginLeft: "auto" }}
+              />
             </Stack>
 
-            <TextField
-              size="small"
-              rows={3}
-              multiline
-              fullWidth
-              value={deadlineDescription}
-              onChange={handleDeadlineDescriptionChange}
-            />
+            {!isPreviewMode ? (
+              <TextField
+                size="small"
+                rows={3}
+                multiline
+                fullWidth
+                value={deadlineDescription}
+                onChange={handleDeadlineDescriptionChange}
+              />
+            ) : (
+              <Typography variant="body2">{deadlineDescription}</Typography>
+            )}
           </CardContent>
         </Card>
 
