@@ -67,7 +67,7 @@ const CheckboxesQuestion: FC<Props> = ({ question, answer, setAnswer }) => {
               {question.options.map((option, idx) => (
                 <FormControlLabel
                   key={idx}
-                  label={option}
+                  label={option ? option : `<Empty Option ${idx + 1}>`}
                   control={<Checkbox checked={isChecked(option)} />}
                   onClick={generateToggle(option)}
                 />

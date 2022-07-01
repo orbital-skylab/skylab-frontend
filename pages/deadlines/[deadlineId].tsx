@@ -87,7 +87,7 @@ const DeadlineQuestions: NextPage = () => {
     const newDefaultQuestion = {
       question: "",
       desc: "",
-      type: QUESTION_TYPE.SHORT_ANSWER,
+      type: QUESTION_TYPE.MULTIPLE_CHOICE,
       options: [""],
       isAnonymous: false,
     };

@@ -31,7 +31,7 @@ const DropdownQuestion: FC<Props> = ({ question, answer, setAnswer }) => {
         {question.options &&
           question.options.map((option, idx) => (
             <MenuItem value={option} key={idx}>
-              {option}
+              {option ? option : `<Empty Option ${idx + 1}>`}
             </MenuItem>
           ))}
       </TextField>

@@ -45,7 +45,7 @@ const MultipleChoiceQuestion: FC<Props> = ({ question, answer, setAnswer }) => {
                   key={idx}
                   value={option}
                   control={<Radio />}
-                  label={option}
+                  label={option ? option : `<Empty Option ${idx + 1}>`}
                 />
               ))}
             </>
