@@ -40,11 +40,7 @@ export type DeadlineDetailsResponse = {
 const DeadlineQuestions: NextPage = () => {
   const router = useRouter();
   const { deadlineId } = router.query;
-  const {
-    snackbar,
-    handleClose: handleCloseSnackbar,
-    setError,
-  } = useSnackbarAlert();
+  const { snackbar, handleClose: handleCloseSnackbar } = useSnackbarAlert();
   const [deadlineDescription, setDeadlineDescription] = useState("");
   const [questions, setQuestions] = useState<LeanQuestion[]>([]);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
@@ -57,7 +53,11 @@ const DeadlineQuestions: NextPage = () => {
       endpoint: `/deadlines/${deadlineId}/questions`,
       onFetch: (deadlineDetailsResponse) => {
         setDeadlineDescription(deadlineDetailsResponse.deadline.desc ?? "");
-        setQuestions(deadlineDetailsResponse.questions);
+        if (deadlineDetailsResponse.questions.length) {
+          setQuestions(deadlineDetailsResponse.questions);
+        } else {
+          addQuestion();
+        }
       },
       enabled: !!deadlineId,
     });
@@ -82,15 +82,9 @@ const DeadlineQuestions: NextPage = () => {
     }
   };
 
-  /** Function to add a new default question */
+  /** Function to add a new question */
   const addQuestion = () => {
-    if (!deadlineDetailsResponse) {
-      setError("Deadline Details Not Found");
-      return;
-    }
-
     const newDefaultQuestion = {
-      deadlineId: deadlineDetailsResponse?.deadline.id,
       question: "",
       desc: "",
       type: QUESTION_TYPE.SHORT_ANSWER,
@@ -179,14 +173,20 @@ const DeadlineQuestions: NextPage = () => {
         <NoDataWrapper
           noDataCondition={!questions.length}
           fallback={
-            <NoneFound
-              message="No questions found"
-              actionPrompt={
-                <Button size="small" variant="contained" onClick={addQuestion}>
-                  Add Your First Question
-                </Button>
-              }
-            />
+            <>
+              <NoneFound
+                message="No questions found"
+                actionPrompt={
+                  <Button
+                    size="small"
+                    variant="contained"
+                    onClick={addQuestion}
+                  >
+                    Add Your First Question
+                  </Button>
+                }
+              />
+            </>
           }
         >
           {!isPreviewMode ? (

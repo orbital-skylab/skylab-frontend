@@ -38,6 +38,9 @@ export type Question = {
   isAnonymous?: boolean;
 };
 
-export type LeanQuestion = Omit<Question, "id" | "questionNumber">;
+export type LeanQuestion = Omit<
+  Question,
+  "id" | "questionNumber" | "deadlineId"
+>;
 
 export type Option = string;
