@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 // Components
 import GoBackButton from "@/components/buttons/GoBackButton";
 import NoneFound from "@/components/emptyStates/NoneFound";
@@ -7,16 +7,9 @@ import AddQuestionButton from "@/components/questions/AddQuestionButton";
 import EditQuestionsList from "@/components/questions/EditQuestionsList";
 import SnackbarAlert from "@/components/SnackbarAlert";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
-import {
-  Button,
-  Card,
-  CardContent,
-  FormControlLabel,
-  Stack,
-  Switch,
-  TextField,
-  Typography,
-} from "@mui/material";
+import QuestionsList from "@/components/questions/QuestionsList";
+import DeadlineDescriptionCard from "@/components/questions/DeadlineDescriptionCard/DeadlineDescriptionCard";
+import { Button } from "@mui/material";
 // Hooks
 import useFetch, { isError, isFetching } from "@/hooks/useFetch";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
@@ -30,7 +23,6 @@ import {
   QUESTION_TYPE,
 } from "@/types/deadlines";
 import type { NextPage } from "next";
-import QuestionsList from "@/components/questions/QuestionsList";
 
 export type DeadlineDetailsResponse = {
   deadline: Deadline;
@@ -63,12 +55,6 @@ const DeadlineQuestions: NextPage = () => {
     });
 
   /** Helper functions */
-  const handleDeadlineDescriptionChange = (
-    e: ChangeEvent<HTMLInputElement>
-  ) => {
-    setDeadlineDescription(e.target.value);
-  };
-
   const handleTogglePreviewMode = () => {
     if (isPreviewMode) {
       setIsPreviewMode(false);
@@ -141,36 +127,13 @@ const DeadlineQuestions: NextPage = () => {
         isError={isError(fetchDeadlineDetailsStatus)}
       >
         <GoBackButton />
-        <Card elevation={5} sx={{ marginBottom: "1rem" }}>
-          <CardContent>
-            <Stack direction="row" alignItems="center" marginBottom="0.5rem">
-              <Typography variant="h6">
-                {deadlineDetailsResponse?.deadline.name}
-              </Typography>
-              <FormControlLabel
-                value={isPreviewMode}
-                onClick={handleTogglePreviewMode}
-                control={<Switch color="info" />}
-                label="Preview Questions"
-                labelPlacement="start"
-                sx={{ marginLeft: "auto" }}
-              />
-            </Stack>
-
-            {!isPreviewMode ? (
-              <TextField
-                size="small"
-                rows={3}
-                multiline
-                fullWidth
-                value={deadlineDescription}
-                onChange={handleDeadlineDescriptionChange}
-              />
-            ) : (
-              <Typography variant="body2">{deadlineDescription}</Typography>
-            )}
-          </CardContent>
-        </Card>
+        <DeadlineDescriptionCard
+          isPreviewMode={isPreviewMode}
+          handleTogglePreviewMode={handleTogglePreviewMode}
+          deadlineName={deadlineDetailsResponse?.deadline.name}
+          deadlineDescription={deadlineDescription}
+          setDeadlineDescription={setDeadlineDescription}
+        />
 
         <NoDataWrapper
           noDataCondition={!questions.length}

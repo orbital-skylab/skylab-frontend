@@ -15,7 +15,7 @@ const AddOptionButton: FC<Props> = ({ addOption }) => {
       sx={{ width: "fit-content" }}
     >
       <Add />
-      Add Option
+      Option
     </Button>
   );
 };

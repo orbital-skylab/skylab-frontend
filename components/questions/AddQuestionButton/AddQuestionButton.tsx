@@ -16,7 +16,7 @@ const AddQuestionButton: FC<Props> = ({ addQuestion }) => {
         sx={{ marginX: "auto" }}
         size="small"
       >
-        <Add /> Add Question
+        <Add /> Question
       </Button>
     </Stack>
   );
