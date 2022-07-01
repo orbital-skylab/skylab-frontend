@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useRouter } from "next/router";
 // Components
 import Body from "@/components/layout/Body";
 import SnackbarAlert from "@/components/SnackbarAlert";
@@ -24,8 +23,7 @@ import BatchAttachAdvisersForm, {
   ATTACH_ADVISERS_CSV_HEADERS,
   AttachAdvisersData,
 } from "@/components/batchForms/BatchAttachAdvisersForm";
-import { Box, Button, Stack } from "@mui/material";
-import { ArrowBack } from "@mui/icons-material";
+import { Box, Stack } from "@mui/material";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
 import { isCalling } from "@/hooks/useApiCall/useApiCall.helpers";
@@ -37,7 +35,6 @@ import GoBackButton from "@/components/buttons/GoBackButton";
 
 const BatchAdd: NextPage = () => {
   const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
-  const router = useRouter();
 
   /** Add Projects and Students Functions */
   const [addProjectsAndStudentsData, setAddProjectsAndStudentsData] =

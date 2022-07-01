@@ -16,7 +16,7 @@ const EditQuestionsList: FC<Props> = ({ questions, generateSetQuestion }) => {
       {questions.map((question, idx) => (
         <QuestionCard
           key={idx}
-          questionNumber={idx + 1}
+          idx={idx}
           question={question}
           setQuestion={generateSetQuestion(idx)}
           isEditMode

@@ -29,7 +29,7 @@ const EditQuestionConfig: FC<Props> = ({ question, setQuestion }) => {
 
   const handleToggleAnonymous = () => {
     const newQuestion: LeanQuestion = { ...question };
-    newQuestion.isAnonymous = !newQuestion.isAnonymous;
+    newQuestion.isAnonymous = !question.isAnonymous;
     setQuestion(newQuestion);
   };
 

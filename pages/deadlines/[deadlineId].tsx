@@ -25,10 +25,12 @@ import { useRouter } from "next/router";
 import {
   Deadline,
   LeanQuestion,
+  Option,
   Question,
   QUESTION_TYPE,
 } from "@/types/deadlines";
 import type { NextPage } from "next";
+import QuestionsList from "@/components/questions/QuestionsList";
 
 export type DeadlineDetailsResponse = {
   deadline: Deadline;
@@ -46,7 +48,10 @@ const DeadlineQuestions: NextPage = () => {
   const [deadlineDescription, setDeadlineDescription] = useState("");
   const [questions, setQuestions] = useState<LeanQuestion[]>([]);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
+  // For controlled inputs in preview mode
+  const [answers, setAnswers] = useState<Record<number, Option>>({});
 
+  /** Fetch deadline description and questions data */
   const { data: deadlineDetailsResponse, status: fetchDeadlineDetailsStatus } =
     useFetch<DeadlineDetailsResponse>({
       endpoint: `/deadlines/${deadlineId}/questions`,
@@ -57,6 +62,7 @@ const DeadlineQuestions: NextPage = () => {
       enabled: !!deadlineId,
     });
 
+  /** Helper functions */
   const handleDeadlineDescriptionChange = (
     e: ChangeEvent<HTMLInputElement>
   ) => {
@@ -64,7 +70,16 @@ const DeadlineQuestions: NextPage = () => {
   };
 
   const handleTogglePreviewMode = () => {
-    setIsPreviewMode((isPreviewMode) => !isPreviewMode);
+    if (isPreviewMode) {
+      setIsPreviewMode(false);
+      setAnswers({});
+    } else {
+      setIsPreviewMode(true);
+      // Answers are accessed via the index of the question
+      const emptyAnswers: Record<number, Option> = {};
+      questions.forEach((question, idx) => (emptyAnswers[idx] = ""));
+      setAnswers(emptyAnswers);
+    }
   };
 
   /** Function to add a new default question */
@@ -86,7 +101,8 @@ const DeadlineQuestions: NextPage = () => {
     setQuestions((questions) => [...questions, newDefaultQuestion]);
   };
 
-  /** Function to set a question at a specific index so that each component only receives the setter they need */
+  /** Function to set a question at a specific index.
+   * This is so that each component only receives the setter they need */
   const generateSetQuestion = useCallback(
     (idx: number) => {
       const setQuestion = (newQuestion?: LeanQuestion) => {
@@ -104,6 +120,23 @@ const DeadlineQuestions: NextPage = () => {
       return setQuestion;
     },
     [questions]
+  );
+
+  /**
+   * Function to set an answer for a specific question based on its idx.
+   * This is so that each <QuestionCard/> component only receives the setter they need.
+   */
+  const generateSetAnswer = useCallback(
+    (questionIdx: number) => {
+      const setAnswer = (newAnswer: string) => {
+        const newAnswers = { ...answers };
+        newAnswers[questionIdx] = newAnswer;
+        setAnswers(newAnswers);
+      };
+
+      return setAnswer;
+    },
+    [answers]
   );
 
   return (
@@ -164,7 +197,13 @@ const DeadlineQuestions: NextPage = () => {
               />
               <AddQuestionButton addQuestion={addQuestion} />
             </>
-          ) : null}
+          ) : (
+            <QuestionsList
+              questions={questions}
+              answers={answers}
+              generateSetAnswer={generateSetAnswer}
+            />
+          )}
         </NoDataWrapper>
       </Body>
     </>
