@@ -56,7 +56,7 @@ const AddUserModal: FC<Props> = ({
 
   const addUser = useApiCall({
     method: HTTP_METHOD.POST,
-    endpoint: `/users/create-${toSingular(selectedRole).toLowerCase()}`,
+    endpoint: `/${selectedRole.toLowerCase()}`,
     requiresAuthorization: true,
     onSuccess: (newUser: CreateUserResponse) => {
       if (!hasMore) {
