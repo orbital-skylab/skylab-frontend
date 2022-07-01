@@ -87,6 +87,7 @@ const Body: FC<Props> = ({
                 </Alert>
               )}
               {children}
+              <Box height="15vh" />
             </ErrorWrapper>
           </UnauthorizedWrapper>
         </LoadingWrapper>

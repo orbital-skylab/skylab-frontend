@@ -35,6 +35,9 @@ export type Question = {
   desc: string;
   type: QUESTION_TYPE;
   options?: Option[];
+  isAnonymous?: boolean;
 };
+
+export type LeanQuestion = Omit<Question, "id" | "questionNumber">;
 
 export type Option = string;
