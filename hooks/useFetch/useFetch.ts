@@ -40,43 +40,44 @@ const useFetch = <T>({
   };
   const reducer = createReducer<T>();
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  const fetchData = async (cancelRequest: boolean) => {
+    dispatch({ type: ACTION_TYPE.SET_STATUS_FETCHING });
+    try {
+      /* Building API service. */
+      const endpointWithQueryParams = endpoint + parseQueryParams(queryParams);
+
+      const apiServiceBuilder = new ApiServiceBuilder({
+        method: HTTP_METHOD.GET,
+        endpoint: endpointWithQueryParams,
+        requiresAuthorization,
+      });
+      const apiService = apiServiceBuilder.build();
+
+      const response = await apiService();
+      const data: T = await response.json();
+      if (cancelRequest) return;
+
+      dispatch({ type: ACTION_TYPE.SET_FETCHED_DATA, payload: data });
+      if (onFetch) {
+        onFetch(data);
+      }
+    } catch (error) {
+      if (cancelRequest) return;
+      const payloadError =
+        error instanceof Error ? error.message : (error as string);
+      dispatch({
+        type: ACTION_TYPE.SET_ERROR,
+        payload: payloadError,
+      });
+    }
+  };
+
   useEffect(() => {
     let cancelRequest = false;
-    const fetchData = async () => {
-      dispatch({ type: ACTION_TYPE.SET_STATUS_FETCHING });
-      try {
-        /* Building API service. */
-        const endpointWithQueryParams =
-          endpoint + parseQueryParams(queryParams);
-
-        const apiServiceBuilder = new ApiServiceBuilder({
-          method: HTTP_METHOD.GET,
-          endpoint: endpointWithQueryParams,
-          requiresAuthorization,
-        });
-        const apiService = apiServiceBuilder.build();
-
-        const response = await apiService();
-        const data: T = await response.json();
-        if (cancelRequest) return;
-
-        dispatch({ type: ACTION_TYPE.SET_FETCHED_DATA, payload: data });
-        if (onFetch) {
-          onFetch(data);
-        }
-      } catch (error) {
-        if (cancelRequest) return;
-        const payloadError =
-          error instanceof Error ? error.message : (error as string);
-        dispatch({
-          type: ACTION_TYPE.SET_ERROR,
-          payload: payloadError,
-        });
-      }
-    };
 
     if (enabled) {
-      fetchData();
+      fetchData(cancelRequest);
     }
 
     return function cleanup() {
@@ -90,7 +91,9 @@ const useFetch = <T>({
     dispatch({ type: ACTION_TYPE.MUTATE, payload: mutator });
   };
 
-  return { ...state, mutate };
+  const refetch = () => fetchData(false);
+
+  return { ...state, mutate, refetch };
 };
 
 export default useFetch;

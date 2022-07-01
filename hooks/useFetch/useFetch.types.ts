@@ -40,6 +40,7 @@ export interface Action<T> {
  */
 export interface HookReturnType<T> extends State<T> {
   mutate: Mutate<T>;
+  refetch: () => void;
 }
 
 /**
