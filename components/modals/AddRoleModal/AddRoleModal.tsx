@@ -67,7 +67,7 @@ const AddRoleModal: FC<Props> = ({
   );
 
   const addRole = useApiCall({
-    method: HTTP_METHOD.POST,
+    method: HTTP_METHOD.PUT,
     endpoint: `/users/${user.id}/${toSingular(selectedRole).toLowerCase()}`,
     requiresAuthorization: true,
     // TODO: Check newRole type

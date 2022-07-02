@@ -43,7 +43,7 @@ const BatchAdd: NextPage = () => {
     useState<AddProjectsAndStudentsData>([]);
   const batchAddProjectsAndStudents = useApiCall({
     method: HTTP_METHOD.POST,
-    endpoint: `/users/create-student/batch`,
+    endpoint: `/students/batch`,
     requiresAuthorization: true,
   });
 
@@ -68,7 +68,7 @@ const BatchAdd: NextPage = () => {
   const [addAdvisersData, setAddAdvisersData] = useState<AddAdvisersData>([]);
   const batchAddAdvisers = useApiCall({
     method: HTTP_METHOD.POST,
-    endpoint: `/users/create-adviser/batch`,
+    endpoint: `/advisers/batch`,
     requiresAuthorization: true,
   });
 
@@ -91,7 +91,7 @@ const BatchAdd: NextPage = () => {
   const [addMentorsData, setAddMentorsData] = useState<AddMentorsData>([]);
   const batchAddMentors = useApiCall({
     method: HTTP_METHOD.POST,
-    endpoint: `/users/create-mentor/batch`,
+    endpoint: `/mentors/batch`,
     requiresAuthorization: true,
   });
 
