@@ -22,14 +22,15 @@ import { PAGES } from "@/helpers/navigation";
 import { useRouter } from "next/router";
 import { isNotUndefined } from "@/helpers/types";
 // Types
-import { GetUserResponse, User } from "@/types/users";
+import { User } from "@/types/users";
+import { GetUserResponse } from "@/types/api";
 
 const Profile: NextPage = () => {
   const router = useRouter();
-  const { email } = router.query;
+  const { userId } = router.query;
 
   const { data: userResponse, status } = useFetch<GetUserResponse>({
-    endpoint: `/users/${email}`,
+    endpoint: `/users/${userId}`,
   });
 
   const user = isNotUndefined(userResponse) ? userResponse.user : ({} as User);
@@ -56,7 +57,7 @@ const Profile: NextPage = () => {
         fallback={
           <NoneFound
             showReturnHome
-            message="There is no such user with that email"
+            message="There is no such user with that user ID"
           />
         }
       >
