@@ -17,7 +17,7 @@ import { useRouter } from "next/router";
 import useFetch, { isFetching } from "@/hooks/useFetch";
 // Helpers
 import { Formik, FormikHelpers } from "formik";
-import { areAllEmptyValues } from "@/helpers/forms";
+import { areAllEmptyValues, stripEmptyValues } from "@/helpers/forms";
 // Types
 import { GetProjectResponse, GetUsersResponse, HTTP_METHOD } from "@/types/api";
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
@@ -73,20 +73,14 @@ const EditProject: NextPage = () => {
     values: EditProjectFormValues,
     actions: FormikHelpers<EditProjectFormValues>
   ) => {
-    //TODO: EXTRACT THE VALUE FROM students, adviser and mentor
-    const processedValues = Object.fromEntries(
-      Object.entries(values).filter(([, value]) => value !== "")
-    );
-
+    const processedValues = stripEmptyValues(values);
     try {
-      await EditProject.call({ user: processedValues });
+      await EditProject.call(processedValues);
       setSuccess("You have successfully edited your profile");
       actions.resetForm();
     } catch (error) {
       setError(error);
     }
-
-    actions.setSubmitting(false);
   };
 
   return (
@@ -139,7 +133,6 @@ const EditProject: NextPage = () => {
                               }
                             )}
                           />
-                          {console.log(formik.values)}
                           <MultiDropdown
                             name="students"
                             label="Student IDs"
