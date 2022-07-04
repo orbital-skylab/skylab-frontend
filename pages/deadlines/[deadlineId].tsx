@@ -187,6 +187,7 @@ const DeadlineQuestions: NextPage = () => {
         />
         {!isPreviewMode ? (
           <>
+            {console.log(questions)}
             <EditQuestionsList
               questions={questions}
               generateSetQuestion={generateSetQuestion}

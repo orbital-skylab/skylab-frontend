@@ -7,16 +7,16 @@ export const stripOptions = (questions: LeanQuestion[]) => {
       case QUESTION_TYPE.PARAGRAPH:
       case QUESTION_TYPE.URL:
       case QUESTION_TYPE.DATE:
-      case QUESTION_TYPE.TIME:
-        return question;
-
-      case QUESTION_TYPE.MULTIPLE_CHOICE:
-      case QUESTION_TYPE.CHECKBOXES:
-      case QUESTION_TYPE.DROPDOWN: {
+      case QUESTION_TYPE.TIME: {
         const strippedQuestion: LeanQuestion = { ...question };
         delete strippedQuestion.options;
         return strippedQuestion;
       }
+
+      case QUESTION_TYPE.MULTIPLE_CHOICE:
+      case QUESTION_TYPE.CHECKBOXES:
+      case QUESTION_TYPE.DROPDOWN:
+        return question;
 
       default:
         return null;
