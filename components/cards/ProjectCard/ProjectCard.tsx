@@ -9,8 +9,10 @@ import {
   Typography,
 } from "@mui/material";
 import { Project } from "@/types/projects";
-import { A4_ASPECT_RATIO } from "@/styles/constants";
+import { A4_ASPECT_RATIO, BASE_TRANSITION } from "@/styles/constants";
 import ProjectSubmissionModal from "../../modals/ProjectSubmissionModal";
+import Link from "next/link";
+import { PAGES } from "@/helpers/navigation";
 
 type Props = {
   project: Project;
@@ -29,9 +31,23 @@ const ProjectCard: FC<Props> = ({ project }) => {
       <Card>
         <CardContent>
           <Stack spacing="0.5rem">
-            <Typography variant="h5" align="center" fontWeight={600}>
-              {project.name}
-            </Typography>
+            <Link passHref href={`${PAGES.PROJECTS}/${project.id}`}>
+              <Typography
+                variant="h5"
+                align="center"
+                fontWeight={600}
+                sx={{
+                  cursor: "pointer",
+                  "&:hover": {
+                    textDecoration: "underline",
+                    color: "secondary.main",
+                    transition: BASE_TRANSITION,
+                  },
+                }}
+              >
+                {project.name}
+              </Typography>
+            </Link>
             <Box
               sx={{
                 width: "100%",
