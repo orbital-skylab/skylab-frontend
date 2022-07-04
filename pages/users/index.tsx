@@ -255,7 +255,6 @@ const Users: NextPage = () => {
                 <LoadingSpinner />
               </Box>
             ) : null}
-            <Box sx={{ height: "15vh" }} />
           </NoDataWrapper>
         </LoadingWrapper>
       </Body>
