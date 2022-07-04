@@ -43,13 +43,16 @@ const ProjectCard: FC<Props> = ({ project }) => {
                 borderRadius: "0.5rem",
               }}
             >
-              <img
-                //TODO: Placeholder image
+              <Box
+                component="img"
                 src={
                   "https://nusskylab-dev.comp.nus.edu.sg/posters/2021/2680.jpg"
                 }
                 alt={`${project.name} Project`}
-                className={styles.projectImage}
+                sx={{
+                  width: "100%",
+                  objectFit: "cover",
+                }}
               />
             </Box>
 
