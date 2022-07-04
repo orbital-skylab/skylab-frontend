@@ -1,11 +1,14 @@
 import {
+  Autocomplete,
   FormControl,
   FormHelperText,
   InputLabel,
   MenuItem,
   Select,
+  TextField,
 } from "@mui/material";
 import { FormikProps } from "formik";
+import { useState } from "react";
 import { DropdownOption } from "./Dropdown.types";
 
 type Props<FormValuesType> = {
@@ -14,6 +17,7 @@ type Props<FormValuesType> = {
   options: DropdownOption[];
   formik: FormikProps<FormValuesType>;
   size?: "medium" | "small";
+  isCombobox?: boolean;
 };
 
 function Dropdown<FormValuesType>({
@@ -22,8 +26,30 @@ function Dropdown<FormValuesType>({
   options,
   formik,
   size = "medium",
+  isCombobox,
 }: Props<FormValuesType>) {
-  const { values, handleChange, handleBlur, errors, touched } = formik;
+  /** For combobox */
+  const [inputValue, setInputValue] = useState("");
+  const { values, handleChange, handleBlur, errors, touched, setFieldValue } =
+    formik;
+
+  if (isCombobox) {
+    return (
+      <Autocomplete
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        value={values[name] as any}
+        onChange={(event, newValue) => {
+          setFieldValue(name as string, newValue);
+        }}
+        inputValue={inputValue}
+        onInputChange={(event, newInputValue) => {
+          setInputValue(newInputValue);
+        }}
+        options={options}
+        renderInput={(params) => <TextField {...params} label={label} />}
+      />
+    );
+  }
 
   return (
     <>

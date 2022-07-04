@@ -8,6 +8,8 @@ import { LoadingButton } from "@mui/lab";
 import GoBackButton from "@/components/buttons/GoBackButton";
 import Dropdown from "@/components/formikFormControllers/Dropdown";
 import MultiDropdown from "@/components/formikFormControllers/MultiDropdown";
+import NoneFound from "@/components/emptyStates/NoneFound";
+import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
@@ -19,13 +21,11 @@ import { areAllEmptyValues } from "@/helpers/forms";
 // Types
 import { GetProjectResponse, GetUsersResponse, HTTP_METHOD } from "@/types/api";
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
-import NoneFound from "@/components/emptyStates/NoneFound";
-import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 
 type EditProjectFormValues = Pick<
   Project,
   "name" | "achievement" | "proposalPdf"
-> & { students: number[]; adviser: number; mentor: number };
+> & { students: number[]; adviser: number | ""; mentor: number | "" };
 
 const EditProject: NextPage = () => {
   const router = useRouter();
@@ -46,8 +46,8 @@ const EditProject: NextPage = () => {
     students: project?.students
       ? project?.students.map((student) => student.studentId)
       : [],
-    adviser: project?.adviser?.adviserId ?? 0,
-    mentor: project?.mentor?.mentorId ?? 0,
+    adviser: project?.adviser?.adviserId ?? "",
+    mentor: project?.mentor?.mentorId ?? "",
   };
 
   /** Fetching student, adviser and mentor IDs and names for the dropdown select */
@@ -73,6 +73,7 @@ const EditProject: NextPage = () => {
     values: EditProjectFormValues,
     actions: FormikHelpers<EditProjectFormValues>
   ) => {
+    //TODO: EXTRACT THE VALUE FROM students, adviser and mentor
     const processedValues = Object.fromEntries(
       Object.entries(values).filter(([, value]) => value !== "")
     );
@@ -138,10 +139,12 @@ const EditProject: NextPage = () => {
                               }
                             )}
                           />
+                          {console.log(formik.values)}
                           <MultiDropdown
                             name="students"
                             label="Student IDs"
                             formik={formik}
+                            isCombobox
                             options={
                               studentsResponse && studentsResponse.users
                                 ? studentsResponse.users.map((user) => {
@@ -157,6 +160,7 @@ const EditProject: NextPage = () => {
                             name="adviser"
                             label="Adviser ID"
                             formik={formik}
+                            isCombobox
                             options={
                               advisersResponse && advisersResponse.users
                                 ? advisersResponse.users.map((user) => {
@@ -172,6 +176,7 @@ const EditProject: NextPage = () => {
                             name="mentor"
                             label="Mentor ID"
                             formik={formik}
+                            isCombobox
                             options={
                               mentorsResponse && mentorsResponse.users
                                 ? mentorsResponse.users.map((user) => {
