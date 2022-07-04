@@ -1,4 +1,5 @@
 import { NavbarOption } from "@/helpers/navigation";
+import { userHasRole } from "@/helpers/roles";
 import { User } from "@/types/users";
 import { Button } from "@mui/material";
 import { FC } from "react";
@@ -22,7 +23,11 @@ const NavbarButtonDesktop: FC<Props> = ({
   generateOnClick,
   isCurrentPage,
 }) => {
-  if (!option.checkIfVisible(user)) {
+  // If page requires authorization AND (user is not signed in OR user is not authorized)
+  if (
+    option.authorizedRoles &&
+    (!user || !userHasRole(user, option.authorizedRoles))
+  ) {
     return null;
   }
 
