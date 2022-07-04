@@ -36,17 +36,20 @@ function Dropdown<FormValuesType>({
   if (isCombobox) {
     return (
       <Autocomplete
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        value={values[name] as any}
-        onChange={(event, newValue) => {
-          setFieldValue(name as string, newValue);
+        onChange={(_, selectedOption) => {
+          if (selectedOption) {
+            setFieldValue(name as string, selectedOption.value);
+          }
         }}
         inputValue={inputValue}
-        onInputChange={(event, newInputValue) => {
+        onInputChange={(_, newInputValue) => {
           setInputValue(newInputValue);
         }}
         options={options}
-        renderInput={(params) => <TextField {...params} label={label} />}
+        getOptionLabel={(option) => (option ? String(option.label) : "")}
+        renderInput={(params) => (
+          <TextField {...params} label={label} value={values[name]} />
+        )}
       />
     );
   }

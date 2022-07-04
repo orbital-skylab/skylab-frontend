@@ -55,6 +55,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       method: HTTP_METHOD.POST,
       endpoint: "/auth/sign-in",
       body: { email, password },
+      requiresAuthorization: true,
     });
     const apiService = apiServiceBuilder.build();
     const signInResponse = await apiService();

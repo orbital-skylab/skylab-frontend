@@ -36,24 +36,25 @@ function MultiDropdown<FormValuesType>({
   const { values, handleChange, handleBlur, errors, touched, setFieldValue } =
     formik;
 
-  //TODO:
   if (isCombobox) {
     return (
       <Autocomplete
         multiple
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        value={(values[name] as any) ?? []}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onChange={(event, newValues) => {
-          setFieldValue(name as string, newValues);
+        onChange={(_, newValues) => {
+          setFieldValue(
+            name as string,
+            newValues.map((newValue) => newValue.value)
+          );
         }}
         inputValue={inputValue}
-        onInputChange={(event, newInputValue) => {
+        onInputChange={(_, newInputValue) => {
           setInputValue(newInputValue);
         }}
         options={options}
-        getOptionLabel={(option) => (option ? option.label : "")}
-        renderInput={(params) => <TextField {...params} label={label} />}
+        getOptionLabel={(option) => (option ? String(option.label) : "")}
+        renderInput={(params) => (
+          <TextField {...params} label={label} value={values[name]} />
+        )}
       />
     );
   }
