@@ -8,6 +8,7 @@ import StudentDetailsForm from "@/components/forms/StudentDetailsForm";
 import AdviserDetailsForm from "@/components/forms/AdviserDetailsForm";
 import MentorDetailsForm from "@/components/forms/MentorDetailsForm";
 import AdministratorDetailsForm from "@/components/forms/AdministratorDetailsForm";
+import UserDetailsForm from "@/components/forms/UserDetailsForm";
 // Helpers
 import { Formik, FormikHelpers } from "formik";
 import {
@@ -15,18 +16,18 @@ import {
   processAddUserOrRoleFormValues,
   toSingular,
 } from "@/helpers/roles";
+import { generateValidationSchema } from "./AddUserModal.helpers";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
 // Types
 import { HTTP_METHOD } from "@/types/api";
 import { Mutate } from "@/hooks/useFetch";
-import { CreateUserResponse, User } from "@/types/users";
+import { User } from "@/types/users";
+import { CreateUserResponse } from "@/types/api";
 import { AddUserFormValuesType, ROLES } from "@/types/roles";
-import UserDetailsForm from "@/components/forms/UserDetailsForm";
 import { LeanProject } from "@/types/projects";
 import useCohort from "@/hooks/useCohort";
-import { generateValidationSchema } from "./AddUserModal.helpers";
 
 type Props = {
   open: boolean;
