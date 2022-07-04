@@ -8,10 +8,9 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import styles from "./ProjectCard.module.scss";
 import { Project } from "@/types/projects";
 import { A4_ASPECT_RATIO } from "@/styles/constants";
-import ProjectSubmissionModal from "./ProjectSubmissionModal";
+import ProjectSubmissionModal from "../../modals/ProjectSubmissionModal";
 
 type Props = {
   project: Project;
@@ -43,6 +42,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
                 borderRadius: "0.5rem",
               }}
             >
+              {/* TODO: Change poster placeholder */}
               <Box
                 component="img"
                 src={
@@ -87,7 +87,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
               }}
               onClick={() => setProjectModalOpen(true)}
             >
-              View Submissions
+              View Submission
             </Button>
           </Stack>
         </CardContent>

@@ -1,4 +1,4 @@
-import { ABSOLUTE_CENTER } from "@/styles/constants";
+import { ABSOLUTE_CENTER, FULL_HEIGHT_MINUS_PADDING } from "@/styles/constants";
 import {
   Backdrop,
   Card,
@@ -43,6 +43,8 @@ const Modal: FC<Props> = ({
             ...ABSOLUTE_CENTER,
             minWidth: "400px",
             maxWidth: "600px",
+            maxHeight: FULL_HEIGHT_MINUS_PADDING,
+            overflowY: "auto",
             ...sx,
           }}
         >
