@@ -1,4 +1,5 @@
 import { NavbarOption } from "@/helpers/navigation";
+import { userHasRole } from "@/helpers/roles";
 import { User } from "@/types/users";
 import { MenuItem, Typography } from "@mui/material";
 import { FC } from "react";
@@ -24,7 +25,11 @@ const NavbarButtonMobile: FC<Props> = ({
   isCurrentPage,
   handleCloseNavMenu,
 }) => {
-  if (!option.checkIfVisible(user)) {
+  // If page requires authorization AND (user is not signed in OR user is not authorized)
+  if (
+    option.authorizedRoles &&
+    (!user || !userHasRole(user, option.authorizedRoles))
+  ) {
     return null;
   }
 

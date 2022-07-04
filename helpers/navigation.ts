@@ -1,6 +1,4 @@
 import { ROLES } from "@/types/roles";
-import { User } from "@/types/users";
-import { userHasRole } from "./roles";
 
 export enum PAGES {
   LANDING = "/",
@@ -18,40 +16,38 @@ export enum NAVBAR_ACTIONS {
   SIGN_OUT = "signOut",
 }
 
+/**
+ * If authorized role is not provided, then the option will be visible to all
+ */
 export type NavbarOption = {
   label: string;
   route?: string;
   action?: NAVBAR_ACTIONS;
-  checkIfVisible: (user?: User) => boolean;
+  authorizedRoles?: ROLES[];
 };
 
 export const NAVBAR_OPTIONS: NavbarOption[] = [
   {
     label: "Projects",
     route: PAGES.PROJECTS,
-    checkIfVisible: () => true,
   },
-  { label: "Staff", route: PAGES.STAFF, checkIfVisible: () => true },
+  { label: "Staff", route: PAGES.STAFF },
   {
     label: "Manage Deadlines",
     route: PAGES.DEADLINES,
-    checkIfVisible: (user?: User) =>
-      !!user && userHasRole(user, ROLES.ADMINISTRATORS),
+    authorizedRoles: [ROLES.ADMINISTRATORS],
   },
   {
     label: "Manage Users",
     route: PAGES.USERS,
-    checkIfVisible: (user?: User) =>
-      !!user && userHasRole(user, ROLES.ADMINISTRATORS),
+    authorizedRoles: [ROLES.ADMINISTRATORS],
   },
   {
     label: "Profile",
     route: PAGES.PROFILE,
-    checkIfVisible: (user?: User) => !!user,
   },
   {
     label: "Sign Out",
     action: NAVBAR_ACTIONS.SIGN_OUT,
-    checkIfVisible: () => true,
   },
 ];
