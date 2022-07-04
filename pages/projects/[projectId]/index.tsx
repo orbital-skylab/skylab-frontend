@@ -16,9 +16,7 @@ import useFetch, { isFetching } from "@/hooks/useFetch";
 import { useRouter } from "next/router";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
-import { isNotUndefined } from "@/helpers/types";
 // Types
-import { Project } from "@/types/projects";
 import type { NextPage } from "next";
 import { GetProjectResponse } from "@/types/api";
 
@@ -33,9 +31,7 @@ const ProjectDetails: NextPage = () => {
     });
 
   const isProjectStudentOrAdviser = true; //TODO: UPDATE ONCE AUTH LOGIC IS READY
-  const project = isNotUndefined(projectResponse)
-    ? projectResponse.project
-    : ({} as Project);
+  const project = projectResponse ? projectResponse.project : undefined;
 
   return (
     <Body
@@ -55,7 +51,7 @@ const ProjectDetails: NextPage = () => {
           <Box
             component="img"
             src={"https://nusskylab-dev.comp.nus.edu.sg/posters/2021/2680.jpg"}
-            alt={`${project.name} Project`}
+            alt={`${project?.name} Project`}
             sx={{
               objectFit: "cover",
               height: "50vw",
@@ -74,7 +70,7 @@ const ProjectDetails: NextPage = () => {
             raised
           >
             {isProjectStudentOrAdviser ? (
-              <NextLink href={`${PAGES.PROJECTS}/${project.id}/edit`} passHref>
+              <NextLink href={`${PAGES.PROJECTS}/${project?.id}/edit`} passHref>
                 <Button
                   size="small"
                   variant="contained"
@@ -98,54 +94,56 @@ const ProjectDetails: NextPage = () => {
                 textAlign="center"
                 mb="1.5rem"
               >
-                {`${project.name}`}
+                {`${project?.name}`}
               </Typography>
-              <Stack spacing="0.5rem">
-                <SpreadAttribute attribute="Project ID" value={project.id} />
-                <SpreadAttribute
-                  attribute="Level of Achievement"
-                  value={project.achievement}
-                />
-                <SpreadAttribute
-                  attribute="Students"
-                  value={
-                    project.students
-                      ? project.students.map((student) => {
-                          return {
-                            href: `/profile/${student.id}`,
-                            label: student.name,
-                          };
-                        })
-                      : []
-                  }
-                />
-                {project.adviser && (
+              {project && (
+                <Stack spacing="0.5rem">
+                  <SpreadAttribute attribute="Project ID" value={project?.id} />
                   <SpreadAttribute
-                    attribute="Adviser"
-                    value={{
-                      href: `/profile/${project.adviser.id}`,
-                      label: project.adviser.name,
-                    }}
+                    attribute="Level of Achievement"
+                    value={project?.achievement}
                   />
-                )}
+                  <SpreadAttribute
+                    attribute="Students"
+                    value={
+                      project?.students
+                        ? project?.students.map((student) => {
+                            return {
+                              href: `/profile/${student.id}`,
+                              label: student.name,
+                            };
+                          })
+                        : []
+                    }
+                  />
+                  {project?.adviser && (
+                    <SpreadAttribute
+                      attribute="Adviser"
+                      value={{
+                        href: `/profile/${project.adviser.id}`,
+                        label: project.adviser.name,
+                      }}
+                    />
+                  )}
 
-                {project.mentor && (
+                  {project?.mentor && (
+                    <SpreadAttribute
+                      attribute="Mentor"
+                      value={{
+                        href: `/profile/${project.mentor.id}`,
+                        label: project.mentor.name,
+                      }}
+                    />
+                  )}
                   <SpreadAttribute
-                    attribute="Mentor"
+                    attribute="Proposal PDF"
                     value={{
-                      href: `/profile/${project.mentor.id}`,
-                      label: project.mentor.name,
+                      href: project.proposalPdf,
+                      label: project.proposalPdf,
                     }}
                   />
-                )}
-                <SpreadAttribute
-                  attribute="Proposal PDF"
-                  value={{
-                    href: project.proposalPdf,
-                    label: project.proposalPdf,
-                  }}
-                />
-              </Stack>
+                </Stack>
+              )}
             </CardContent>
           </Card>
         </Stack>

@@ -9,15 +9,14 @@ import GoBackButton from "@/components/buttons/GoBackButton";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
+import useFetch, { isFetching } from "@/hooks/useFetch";
+import { useRouter } from "next/router";
 // Helpers
 import { Formik, FormikHelpers } from "formik";
+import { areAllEmptyValues, stripEmptyValues } from "@/helpers/forms";
 // Types
 import { GetUserResponse, HTTP_METHOD } from "@/types/api";
 import { UserMetadata } from "@/types/users";
-import { useRouter } from "next/router";
-import useFetch, { isFetching } from "@/hooks/useFetch";
-import { areAllEmptyValues, stripEmptyValues } from "@/helpers/forms";
-import { isNotUndefined } from "@/helpers/types";
 
 type EditProfileFormValues = Partial<UserMetadata>;
 
@@ -30,9 +29,7 @@ const EditProfile: NextPage = () => {
       endpoint: `/users/${userId}`,
       enabled: !!userId,
     });
-  const user = isNotUndefined(userResponse)
-    ? userResponse.user
-    : ({} as UserMetadata);
+  const user = userResponse ? userResponse.user : undefined;
 
   const editProfile = useApiCall({
     method: HTTP_METHOD.PUT,
@@ -41,11 +38,11 @@ const EditProfile: NextPage = () => {
   const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
 
   const initialValues: EditProfileFormValues = {
-    profilePicUrl: user.profilePicUrl ?? "",
-    githubUrl: user.githubUrl ?? "",
-    linkedinUrl: user.linkedinUrl ?? "",
-    personalSiteUrl: user.personalSiteUrl ?? "",
-    selfIntro: user.selfIntro ?? "",
+    profilePicUrl: user?.profilePicUrl ?? "",
+    githubUrl: user?.githubUrl ?? "",
+    linkedinUrl: user?.linkedinUrl ?? "",
+    personalSiteUrl: user?.personalSiteUrl ?? "",
+    selfIntro: user?.selfIntro ?? "",
   };
 
   const handleSubmit = async (
@@ -68,11 +65,11 @@ const EditProfile: NextPage = () => {
   return (
     <>
       <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
-      <Body flexColCenter isLoading={isFetching(getUserStatus)}>
-        <GoBackButton sx={{ alignSelf: "start" }} />
+      <Body isLoading={isFetching(getUserStatus)}>
+        <GoBackButton />
         <Container maxWidth="sm" sx={{ padding: 0 }}>
           <Typography variant="h5" fontWeight={600} mb="1rem">
-            {`Edit ${user.name ?? user.email}'s Profile`}
+            {`Edit ${user?.name ?? user?.email}'s Profile`}
           </Typography>
           <Card>
             <CardContent>

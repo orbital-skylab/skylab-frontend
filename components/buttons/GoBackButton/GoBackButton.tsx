@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { FC } from "react";
 
 type Props = {
-  sx: SxProps;
+  sx?: SxProps;
 };
 
 const GoBackButton: FC<Props> = ({ sx }) => {
