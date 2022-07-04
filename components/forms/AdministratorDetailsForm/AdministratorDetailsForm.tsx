@@ -1,4 +1,4 @@
-import TextInput from "@/components/formControllers/TextInput";
+import TextInput from "@/components/formikFormControllers/TextInput";
 import { FormikProps } from "formik";
 import { FC } from "react";
 

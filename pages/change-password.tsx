@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 // Components
 import Body from "@/components/layout/Body";
-import TextInput from "@/components/formControllers/TextInput";
+import TextInput from "@/components/formikFormControllers/TextInput";
 import SnackbarAlert from "@/components/SnackbarAlert";
 import { Button, Container, Divider, Stack, Typography } from "@mui/material";
 // Helpers

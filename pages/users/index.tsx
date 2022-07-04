@@ -43,10 +43,7 @@ import { ROLES_WITH_ALL } from "@/types/roles";
 import { User } from "@/types/users";
 import { toSingular } from "@/helpers/roles";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
-
-export type GetUsersResponse = {
-  users: User[];
-};
+import { GetUsersResponse } from "@/types/api";
 
 const LIMIT = 20;
 

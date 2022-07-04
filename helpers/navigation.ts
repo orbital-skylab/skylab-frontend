@@ -5,7 +5,6 @@ export enum PAGES {
   PROJECTS = "/projects",
   STAFF = "/staff",
   PROFILE = "/profile",
-  EDIT_PROFILE = "/profile/edit",
   RESET_PASSWORD = "/reset-password",
   DEADLINES = "/deadlines",
   USERS = "/users",

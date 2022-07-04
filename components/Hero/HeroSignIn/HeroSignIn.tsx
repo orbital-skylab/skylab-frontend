@@ -1,6 +1,6 @@
 import { FC } from "react";
 // Components
-import TextInput from "@/components/formControllers/TextInput";
+import TextInput from "@/components/formikFormControllers/TextInput";
 import SnackbarAlert from "@/components/SnackbarAlert/SnackbarAlert";
 import { Box, Stack, Typography, Button } from "@mui/material";
 import Link from "next/link";

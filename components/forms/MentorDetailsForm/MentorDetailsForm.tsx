@@ -1,5 +1,5 @@
-import Dropdown from "@/components/formControllers/Dropdown";
-import MultiDropdown from "@/components/formControllers/MultiDropdown";
+import Dropdown from "@/components/formikFormControllers/Dropdown";
+import MultiDropdown from "@/components/formikFormControllers/MultiDropdown";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import { Cohort } from "@/types/cohorts";

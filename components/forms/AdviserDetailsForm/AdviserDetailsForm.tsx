@@ -1,6 +1,6 @@
-import Dropdown from "@/components/formControllers/Dropdown";
-import MultiDropdown from "@/components/formControllers/MultiDropdown";
-import TextInput from "@/components/formControllers/TextInput";
+import Dropdown from "@/components/formikFormControllers/Dropdown";
+import MultiDropdown from "@/components/formikFormControllers/MultiDropdown";
+import TextInput from "@/components/formikFormControllers/TextInput";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import { Cohort } from "@/types/cohorts";
