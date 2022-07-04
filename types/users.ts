@@ -27,9 +27,3 @@ export type RoleMetadata = {
   administrator?: AdministratorRole;
   facilitator?: FacilitatorRole;
 };
-
-export type GetUserResponse = {
-  user: UserMetadata;
-};
-
-export type CreateUserResponse = User;

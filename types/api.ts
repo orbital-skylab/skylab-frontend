@@ -1,3 +1,5 @@
+import { User, UserMetadata } from "./users";
+
 export enum HTTP_METHOD {
   GET = "GET",
   POST = "POST",
@@ -9,3 +11,13 @@ export enum HTTP_METHOD {
 export enum CONTENT_TYPE {
   JSON = "application/json",
 }
+
+/**
+ * Users Endpoints:
+ * https://github.com/orbital-skylab/skylab-backend/wiki/Users-Endpoints
+ */
+export type GetUserResponse = {
+  user: UserMetadata;
+};
+
+export type CreateUserResponse = User;
