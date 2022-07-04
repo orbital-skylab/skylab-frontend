@@ -34,6 +34,11 @@ type Props = {
   setAnswer?: (newAnswer: string) => void;
 };
 
+/**
+ * This component renders the:
+ * 1. Question in ANSWER form where users can type in inputs
+ * 2. Question in EDIT form where users can edit the question
+ */
 const QuestionCard: FC<Props> = ({
   isEditMode,
   question,

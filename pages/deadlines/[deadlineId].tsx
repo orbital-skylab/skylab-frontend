@@ -6,13 +6,15 @@ import AddQuestionButton from "@/components/questions/AddQuestionButton";
 import EditQuestionsList from "@/components/questions/EditQuestionsList";
 import SnackbarAlert from "@/components/SnackbarAlert";
 import QuestionsList from "@/components/questions/QuestionsList";
-import DeadlineDescriptionCard from "@/components/questions/DeadlineDescriptionCard/DeadlineDescriptionCard";
+import DeadlineDescriptionCard from "@/components/questions/DeadlineDescriptionCard";
 import { Button, Stack } from "@mui/material";
 // Hooks
 import useFetch, { isError, isFetching } from "@/hooks/useFetch";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 import { useRouter } from "next/router";
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
+// Helpers
+import { stripOptions } from "@/components/questions/EditQuestionsList/EditQuestionsList.helpers";
 // Types
 import {
   Deadline,
@@ -76,7 +78,7 @@ const DeadlineQuestions: NextPage = () => {
   const saveQuestionsAndDescription = async () => {
     try {
       await Promise.all([
-        saveQuestions.call(questions),
+        saveQuestions.call({ questions: stripOptions(questions) }),
         saveDeadlineDescription.call({
           deadline: { desc: deadlineDescription },
         }),
