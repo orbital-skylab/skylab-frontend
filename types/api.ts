@@ -1,3 +1,5 @@
+import { Adviser } from "./advisers";
+import { Mentor } from "./mentors";
 import { Project } from "./projects";
 import {
   AdministratorRole,
@@ -42,6 +44,8 @@ export type CreateRoleResponse =
   | CreateMentorResponse
   | CreateAdministratorResponse;
 
+export type GetStaffsResponse = GetAdvisersResponse | GetMentorsResponse;
+
 /**
  * Students Endpoints:
  * https://github.com/orbital-skylab/skylab-backend/wiki/Students-Endpoints
@@ -58,12 +62,20 @@ export type CreateAdviserResponse = {
   adviser: AdviserRole;
 };
 
+export type GetAdvisersResponse = {
+  advisers: Adviser[];
+};
+
 /**
  * Mentors Endpoints:
  * https://github.com/orbital-skylab/skylab-backend/wiki/Mentors-Endpoints
  */
 export type CreateMentorResponse = {
   mentor: MentorRole;
+};
+
+export type GetMentorsResponse = {
+  mentors: Mentor[];
 };
 
 /**

@@ -13,7 +13,7 @@ import useFetch, { isFetching } from "@/hooks/useFetch";
 import { useRouter } from "next/router";
 // Helpers
 import { Formik, FormikHelpers } from "formik";
-import { areAllEmptyValues, stripEmptyValues } from "@/helpers/forms";
+import { areAllEmptyValues, stripEmptyStrings } from "@/helpers/forms";
 // Types
 import { GetUserResponse, HTTP_METHOD } from "@/types/api";
 import { UserMetadata } from "@/types/users";
@@ -50,7 +50,7 @@ const EditProfile: NextPage = () => {
     values: EditProfileFormValues,
     actions: FormikHelpers<EditProfileFormValues>
   ) => {
-    const processedValues = stripEmptyValues(values);
+    const processedValues = stripEmptyStrings(values);
 
     try {
       await editProfile.call({ user: processedValues });

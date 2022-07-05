@@ -1,9 +1,8 @@
 import { AdministratorMetadata } from "./administrators";
 import { AdviserMetadata } from "./advisers";
-import { FacilitatorMetadata } from "./facilitators";
 import { MentorMetadata } from "./mentors";
 import { StudentMetadata } from "./students";
-import { User, UserMetadata } from "./users";
+import { UserMetadata } from "./users";
 
 export enum ROLES {
   STUDENTS = "Students",

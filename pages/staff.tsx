@@ -30,26 +30,11 @@ import useCohort from "@/hooks/useCohort";
 // Types
 import { STAFF_TYPES, STAFF_VALUES } from "@/types/staff";
 import { Cohort } from "@/types/cohorts";
-import { Facilitator } from "@/types/facilitators";
-import { Adviser } from "@/types/advisers";
-import { Mentor } from "@/types/mentors";
-
-type GetFacilitatorsResponse = {
-  facilitators: Facilitator[];
-};
-
-type GetAdvisersResponse = {
-  advisers: Adviser[];
-};
-
-type GetMentorsResponse = {
-  mentors: Mentor[];
-};
-
-type GetStaffResponse =
-  | GetFacilitatorsResponse
-  | GetAdvisersResponse
-  | GetMentorsResponse;
+import {
+  GetAdvisersResponse,
+  GetMentorsResponse,
+  GetStaffsResponse,
+} from "@/types/api";
 
 const Staff: NextPage = () => {
   const [querySearch, setQuerySearch] = useState("");
@@ -73,12 +58,14 @@ const Staff: NextPage = () => {
       search: querySearch,
     };
   }, [selectedCohortYear, querySearch]);
-  const { data: staff, status: fetchStaffStatus } = useFetch<GetStaffResponse>({
-    endpoint: `/${selectedType.toLowerCase()}`,
-    queryParams: memoQueryParams,
-  });
+  const { data: staff, status: fetchStaffStatus } = useFetch<GetStaffsResponse>(
+    {
+      endpoint: `/${selectedType.toLowerCase()}`,
+      queryParams: memoQueryParams,
+    }
+  );
 
-  const unwrapStaff = (staff: GetStaffResponse, selectedType: STAFF_TYPES) => {
+  const unwrapStaff = (staff: GetStaffsResponse, selectedType: STAFF_TYPES) => {
     switch (selectedType) {
       case STAFF_TYPES.ADVISERS:
         staff = staff as GetAdvisersResponse;
@@ -92,12 +79,6 @@ const Staff: NextPage = () => {
           return [];
         }
         return staff.mentors;
-      case STAFF_TYPES.FACILITATORS:
-        staff = staff as GetFacilitatorsResponse;
-        if (!staff.facilitators) {
-          return [];
-        }
-        return staff.facilitators;
     }
   };
 
