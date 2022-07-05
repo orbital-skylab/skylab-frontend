@@ -1,9 +1,9 @@
-import useApiCall from "@/hooks/useApiCall";
+import useApiCall, { isCalling } from "@/hooks/useApiCall";
 import { Mutate } from "@/hooks/useFetch";
 import { HTTP_METHOD } from "@/types/api";
 import { Project } from "@/types/projects";
 import { Stack, Button } from "@mui/material";
-import { Dispatch, FC, SetStateAction, useState } from "react";
+import { Dispatch, FC, SetStateAction } from "react";
 import Modal from "../Modal";
 
 type Props = {
@@ -23,8 +23,6 @@ const DeleteProjectModal: FC<Props> = ({
   setSuccess,
   setError,
 }) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const deleteProject = useApiCall({
     method: HTTP_METHOD.DELETE,
     endpoint: `/projects/${project.id}`,
@@ -42,7 +40,6 @@ const DeleteProjectModal: FC<Props> = ({
   });
 
   const handleDelete = async () => {
-    setIsSubmitting(true);
     try {
       await deleteProject.call();
       setSuccess(`You have successfully deleted the project ${project.name}!`);
@@ -50,7 +47,6 @@ const DeleteProjectModal: FC<Props> = ({
     } catch (error) {
       setError(error);
     }
-    setIsSubmitting(false);
   };
 
   const handleCloseModal = () => {
@@ -75,7 +71,7 @@ const DeleteProjectModal: FC<Props> = ({
             variant="contained"
             color="error"
             onClick={handleDelete}
-            disabled={isSubmitting}
+            disabled={isCalling(deleteProject.status)}
           >
             Delete
           </Button>
