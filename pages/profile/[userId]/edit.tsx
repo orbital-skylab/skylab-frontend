@@ -38,6 +38,7 @@ const EditProfile: NextPage = () => {
   const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
 
   const initialValues: EditProfileFormValues = {
+    name: user?.name ?? "",
     profilePicUrl: user?.profilePicUrl ?? "",
     githubUrl: user?.githubUrl ?? "",
     linkedinUrl: user?.linkedinUrl ?? "",
@@ -78,6 +79,7 @@ const EditProfile: NextPage = () => {
                   return (
                     <form onSubmit={formik.handleSubmit}>
                       <Stack direction="column" spacing="1rem">
+                        <TextInput name="name" label="Name" formik={formik} />
                         <TextInput
                           name="profilePicUrl"
                           label="Profile Picture URL"

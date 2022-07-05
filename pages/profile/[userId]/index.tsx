@@ -97,12 +97,12 @@ const Profile: NextPage = () => {
               }}
             >
               {user?.name ? (
-                <Typography variant="h1" fontWeight={600} textAlign="center">
+                <Typography fontWeight={600} textAlign="center">
                   {user.name}
                 </Typography>
               ) : null}
               {user?.selfIntro ? (
-                <Typography variant="body2" marginY="1rem" textAlign="center">
+                <Typography variant="body2" marginY="0.5rem" textAlign="center">
                   &quot;{user?.selfIntro}&quot;
                 </Typography>
               ) : null}
