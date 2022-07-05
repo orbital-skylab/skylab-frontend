@@ -5,24 +5,21 @@ import Body from "@/components/layout/Body";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import {
   Avatar,
-  Box,
   Button,
   Card,
   CardContent,
-  Link,
   Stack,
   Typography,
 } from "@mui/material";
 import NoneFound from "@/components/emptyStates/NoneFound/NoneFound";
+import SpreadAttribute from "@/components/typography/SpreadAttribute";
 // Hooks
 import useAuth from "@/hooks/useAuth";
 import useFetch, { FETCH_STATUS } from "@/hooks/useFetch";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
 import { useRouter } from "next/router";
-import { isNotUndefined } from "@/helpers/types";
 // Types
-import { User } from "@/types/users";
 import { GetUserResponse } from "@/types/api";
 
 const Profile: NextPage = () => {
@@ -31,21 +28,12 @@ const Profile: NextPage = () => {
 
   const { data: userResponse, status } = useFetch<GetUserResponse>({
     endpoint: `/users/${userId}`,
+    enabled: !!userId,
   });
 
-  const user = isNotUndefined(userResponse) ? userResponse.user : ({} as User);
+  const user = userResponse ? userResponse.user : undefined;
 
   const isCurrentUser = useAuth()?.user?.email === user?.email;
-
-  const attributes = [
-    {
-      label: "Email",
-      value: user?.email,
-    },
-    { label: "GitHub", value: user?.githubUrl },
-    { label: "LinkedIn", value: user?.linkedinUrl },
-    { label: "Website", value: user?.personalSiteUrl },
-  ];
 
   return (
     <Body
@@ -84,7 +72,7 @@ const Profile: NextPage = () => {
             raised
           >
             {isCurrentUser ? (
-              <NextLink href={PAGES.EDIT_PROFILE} passHref>
+              <NextLink href={`${PAGES.PROFILE}/${user?.id}/edit`} passHref>
                 <Button
                   size="small"
                   variant="contained"
@@ -109,12 +97,7 @@ const Profile: NextPage = () => {
               }}
             >
               {user?.name ? (
-                <Typography
-                  variant="h1"
-                  sx={{ fontSize: { xs: "1rem", md: "2rem" } }}
-                  fontWeight={600}
-                  textAlign="center"
-                >
+                <Typography variant="h1" fontWeight={600} textAlign="center">
                   {user.name}
                 </Typography>
               ) : null}
@@ -123,45 +106,39 @@ const Profile: NextPage = () => {
                   &quot;{user?.selfIntro}&quot;
                 </Typography>
               ) : null}
-              <Stack direction="column" spacing="0.5rem">
-                {attributes.map(({ label, value }) => {
-                  if (!value) {
-                    return null;
-                  }
-
-                  return (
-                    <Box
-                      key={label}
-                      sx={{
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "baseline",
-                        gap: "2rem",
+              {user && (
+                <Stack spacing="0.5rem">
+                  <SpreadAttribute attribute="User ID" value={user.id} />
+                  <SpreadAttribute
+                    attribute="Email"
+                    value={{ href: `mailto:${user.email}`, label: user.email }}
+                  />
+                  {user.githubUrl && (
+                    <SpreadAttribute
+                      attribute="GitHub"
+                      value={{ href: user.githubUrl, label: user.githubUrl }}
+                    />
+                  )}
+                  {user.linkedinUrl && (
+                    <SpreadAttribute
+                      attribute="LinkedIn"
+                      value={{
+                        href: user.linkedinUrl,
+                        label: user.linkedinUrl,
                       }}
-                    >
-                      <Typography
-                        fontWeight={600}
-                        fontSize={{ xs: "1rem", md: "1.2rem" }}
-                      >
-                        {label}
-                      </Typography>
-                      <Link
-                        href={value}
-                        variant="body1"
-                        underline="hover"
-                        target="_blank"
-                        rel="noreferrer"
-                        whiteSpace="nowrap"
-                        textOverflow="ellipsis"
-                        overflow="hidden"
-                      >
-                        {value}
-                      </Link>
-                    </Box>
-                  );
-                })}
-              </Stack>
+                    />
+                  )}
+                  {user.personalSiteUrl && (
+                    <SpreadAttribute
+                      attribute="Website"
+                      value={{
+                        href: user.personalSiteUrl,
+                        label: user.personalSiteUrl,
+                      }}
+                    />
+                  )}
+                </Stack>
+              )}
             </CardContent>
           </Card>
         </Stack>

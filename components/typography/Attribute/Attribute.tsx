@@ -7,6 +7,10 @@ type Props = {
   value: string | number | string[] | number[];
 };
 
+/**
+ * Renders an attribute and its value(s)
+ * (eg. ID: 1)
+ */
 const Attribute: FC<Props> = ({ attribute, value }) => {
   return (
     <Typography variant="subtitle2">

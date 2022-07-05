@@ -1,7 +1,7 @@
 import { Dispatch, FC, SetStateAction } from "react";
 // Components
-import Dropdown from "@/components/formControllers/Dropdown";
-import TextInput from "@/components/formControllers/TextInput";
+import Dropdown from "@/components/formikFormControllers/Dropdown";
+import TextInput from "@/components/formikFormControllers/TextInput";
 import Modal from "../Modal";
 import { Button, Stack } from "@mui/material";
 // Helpers

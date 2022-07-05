@@ -1,3 +1,4 @@
+import { Project } from "./projects";
 import { User, UserMetadata } from "./users";
 
 export enum HTTP_METHOD {
@@ -20,4 +21,16 @@ export type GetUserResponse = {
   user: UserMetadata;
 };
 
+export type GetUsersResponse = {
+  users: User[];
+};
+
 export type CreateUserResponse = User;
+
+/**
+ * Projects Endpoints:
+ * https://github.com/orbital-skylab/skylab-backend/wiki/Projects-Endpoints
+ */
+export type GetProjectResponse = {
+  project: Project;
+};

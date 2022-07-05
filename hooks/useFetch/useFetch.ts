@@ -15,7 +15,7 @@ import { HTTP_METHOD } from "@/types/api";
  * A custom wrapper hook to fetch data while providing state and the ability to update the fetched data manually.
  * @param {string} param0.endpoint the endpoint of where to fetch data from (the apiservicebuilder automatically prepends the backend api url).
  * @param {boolean} param0.requiresAuthorization whether the endpoint requires the user to be authorized.
- * @param {QueryParam} param0.queryParam the parameter queries to be sent
+ * @param {QueryParam} param0.queryParam the parameter queries to be sent. Take note the object MUST be memoized using `useMemo` else the function will fire infinitely
  * @param {(data: T) => void} param0.onFetch receives a callback that is invoked upon successfully fetching any data
  * @returns an object where status is the status of fetching the data, error is any encountered error (if any), data is the data fetched, and mutate is a function that takes in a callback to modify the data.
  */

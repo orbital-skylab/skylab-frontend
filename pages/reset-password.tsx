@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import Link from "next/link";
 // Components
 import Body from "@/components/layout/Body";
-import TextInput from "@/components/formControllers/TextInput";
+import TextInput from "@/components/formikFormControllers/TextInput";
 import SnackbarAlert from "@/components/SnackbarAlert";
 import {
   Box,

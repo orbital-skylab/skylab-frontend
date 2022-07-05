@@ -184,7 +184,7 @@ const UserRow: FC<Props> = ({
               horizontal: "right",
             }}
           >
-            <Link href={`${PAGES.PROFILE}/${user.email}`} passHref>
+            <Link href={`${PAGES.PROFILE}/${user.id}`} passHref>
               <MenuItem>View Profile</MenuItem>
             </Link>
             <MenuItem onClick={handlePreviewSiteAs}>Preview</MenuItem>
