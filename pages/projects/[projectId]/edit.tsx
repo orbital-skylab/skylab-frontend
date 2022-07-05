@@ -44,12 +44,13 @@ const EditProject: NextPage = () => {
     achievement: project?.achievement ?? LEVELS_OF_ACHIEVEMENT.VOSTOK,
     proposalPdf: project?.proposalPdf ?? "",
     students: project?.students
-      ? project?.students.map((student) => student.studentId)
+      ? project?.students.map(({ studentId }) => studentId)
       : [],
     adviser: project?.adviser?.adviserId ?? "",
     mentor: project?.mentor?.mentorId ?? "",
   };
 
+  //TODO: Replace with lean routes
   /** Fetching student, adviser and mentor IDs and names for the dropdown select */
   const { data: studentsResponse } = useFetch<GetUsersResponse>({
     endpoint: `/users?cohortYear=${project?.cohortYear}&role=Student`,

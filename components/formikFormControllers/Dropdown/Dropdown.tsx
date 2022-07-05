@@ -36,6 +36,8 @@ function Dropdown<FormValuesType>({
   if (isCombobox) {
     return (
       <Autocomplete
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        value={values[name] as any}
         onChange={(_, selectedOption) => {
           if (selectedOption) {
             setFieldValue(name as string, selectedOption.value);
@@ -46,7 +48,21 @@ function Dropdown<FormValuesType>({
           setInputValue(newInputValue);
         }}
         options={options}
-        getOptionLabel={(option) => (option ? String(option.label) : "")}
+        getOptionLabel={(option) => {
+          /**
+           * option could be:
+           * 1. DropdownOption object (when rendering label in the dropdown)
+           * 2. value primitive (when rendering selected chips)
+           */
+          const foundOption = options.find(
+            (opt) =>
+              opt.value === (typeof option === "object" ? option.value : option)
+          );
+          return foundOption ? String(foundOption.label) : "";
+        }}
+        isOptionEqualToValue={(option, value) => {
+          return option.value === value;
+        }}
         renderInput={(params) => (
           <TextField {...params} label={label} value={values[name]} />
         )}
