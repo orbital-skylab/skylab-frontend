@@ -57,6 +57,7 @@ const AdviserDetailsForm: FC<Props> = ({
           <MultiDropdown
             name="projectIds"
             label="Project IDs"
+            isCombobox
             formik={formik}
             options={
               leanProjects

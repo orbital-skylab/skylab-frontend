@@ -17,21 +17,21 @@ export const generateInitialValues = ({
   switch (selectedRole) {
     case ROLES.STUDENTS:
       return {
-        nusnetId: user.student?.nusnetId,
-        matricNo: user.student?.matricNo,
-        projectId: user.student?.projectId,
+        nusnetId: user.student?.nusnetId ?? "",
+        matricNo: user.student?.matricNo ?? "",
+        projectId: user.student?.projectId ?? "",
       };
 
     case ROLES.ADVISERS:
       return {
-        nusnetId: user.adviser?.nusnetId,
-        matricNo: user.adviser?.matricNo,
-        projectIds: user.adviser?.projectIds,
+        nusnetId: user.adviser?.nusnetId ?? "",
+        matricNo: user.adviser?.matricNo ?? "",
+        projectIds: user.adviser?.projectIds ?? [],
       };
 
     case ROLES.MENTORS:
       return {
-        projectIds: user.adviser?.projectIds,
+        projectIds: user.adviser?.projectIds ?? [],
       };
 
     case ROLES.ADMINISTRATORS:

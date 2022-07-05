@@ -40,6 +40,7 @@ function MultiDropdown<FormValuesType>({
     return (
       <Autocomplete
         multiple
+        disableCloseOnSelect
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         value={values[name] as any}
         onChange={(_, newValues) => {
@@ -68,6 +69,7 @@ function MultiDropdown<FormValuesType>({
           return foundOption ? String(foundOption.label) : "";
         }}
         isOptionEqualToValue={(option, value) => {
+          // console.log(option, value);
           return option.value === value;
         }}
         renderInput={(params) => (
