@@ -20,12 +20,11 @@ export enum ROLES_WITH_ALL {
   ADMINISTRATORS = "Administrators",
 }
 
-type WithRoleSpecificId<T> = T & { id: number };
-export type StudentRole = WithRoleSpecificId<StudentMetadata>;
-export type AdviserRole = WithRoleSpecificId<AdviserMetadata>;
-export type MentorRole = WithRoleSpecificId<MentorMetadata>;
-export type AdministratorRole = WithRoleSpecificId<AdministratorMetadata>;
-export type FacilitatorRole = WithRoleSpecificId<FacilitatorMetadata>;
+type WithId<T> = T & { id: number };
+export type StudentRole = WithId<StudentMetadata>;
+export type AdviserRole = WithId<AdviserMetadata>;
+export type MentorRole = WithId<MentorMetadata>;
+export type AdministratorRole = WithId<AdministratorMetadata>;
 
 /**
  * General user data for the following components
@@ -39,9 +38,9 @@ export type AddUserFormValuesType = Omit<UserMetadata, "id"> &
  * 1. `components/modals/AddRoleModal`
  * 2. `components/modals/ViewRoleModal/EditRole`
  */
-export type AddOrEditRoleFormValuesType = Partial<StudentMetadata> &
+export type AddOrEditRoleFormValuesType = Partial<
+  Omit<StudentMetadata, "projectId"> & { projectId: number | "" }
+> &
   Partial<AdviserMetadata> &
   Partial<MentorMetadata> &
   Partial<AdministratorMetadata>;
-
-export type CreateRoleResponse = User;

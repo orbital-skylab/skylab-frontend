@@ -1,4 +1,4 @@
-export const stripEmptyValues = (values: Record<string, unknown>) => {
+export const stripEmptyStrings = (values: Record<string, unknown>) => {
   return Object.fromEntries(
     Object.entries(values).filter(([, value]) => value !== "")
   );

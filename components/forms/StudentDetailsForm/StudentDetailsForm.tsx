@@ -57,6 +57,7 @@ const StudentDetailsForm: FC<Props> = ({
             name="projectId"
             label="Project ID"
             formik={formik}
+            isCombobox
             options={
               leanProjects
                 ? leanProjects.map((leanProject) => {

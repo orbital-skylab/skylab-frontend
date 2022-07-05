@@ -1,7 +1,6 @@
 import {
   AdministratorRole,
   AdviserRole,
-  FacilitatorRole,
   MentorRole,
   StudentRole,
 } from "./roles";
@@ -25,5 +24,4 @@ export type RoleMetadata = {
   adviser?: AdviserRole;
   mentor?: MentorRole;
   administrator?: AdministratorRole;
-  facilitator?: FacilitatorRole;
 };

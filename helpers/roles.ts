@@ -7,6 +7,7 @@ import {
 import { User } from "@/types/users";
 import { dateTimeLocalInputToIsoDate } from "@/helpers/dates";
 import { isAddUserFormValuesType } from "./types";
+import { stripEmptyStrings } from "./forms";
 
 /**
  * Changes a role string to be singular
@@ -107,7 +108,7 @@ export const generateEmptyInitialValues = (
     cohortYear: currentCohortYear,
     nusnetId: "",
     matricNo: "",
-    projectId: -1,
+    projectId: "",
     projectIds: [],
     startDate: "",
     endDate: "",
@@ -153,9 +154,11 @@ export const processAddUserOrRoleFormValues = ({
       return {
         ...user,
         student: {
-          matricNo: values.matricNo,
-          nusnetId: values.nusnetId,
-          projectId: values.projectId,
+          ...stripEmptyStrings({
+            matricNo: values.matricNo,
+            nusnetId: values.nusnetId,
+            projectId: values.projectId,
+          }),
           ...cohortYear,
         },
       };
@@ -164,9 +167,13 @@ export const processAddUserOrRoleFormValues = ({
       return {
         ...user,
         adviser: {
-          matricNo: values.matricNo,
-          nusnetId: values.nusnetId,
-          projectIds: values.projectIds,
+          ...stripEmptyStrings({
+            matricNo: values.matricNo,
+            nusnetId: values.nusnetId,
+          }),
+          ...(values.projectIds && values.projectIds.length
+            ? { projectIds: values.projectIds }
+            : undefined),
           ...cohortYear,
         },
       };
@@ -175,7 +182,9 @@ export const processAddUserOrRoleFormValues = ({
       return {
         ...user,
         mentor: {
-          projectIds: values.projectIds,
+          ...(values.projectIds && values.projectIds.length
+            ? { projectIds: values.projectIds }
+            : undefined),
           ...cohortYear,
         },
       };

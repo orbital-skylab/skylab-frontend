@@ -23,16 +23,19 @@ import useApiCall from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
 import useCohort from "@/hooks/useCohort";
 // Types
-import { HTTP_METHOD } from "@/types/api";
-import { Mutate } from "@/hooks/useFetch";
 import {
-  AddOrEditRoleFormValuesType,
+  CreateAdministratorResponse,
+  CreateAdviserResponse,
+  CreateMentorResponse,
   CreateRoleResponse,
-  ROLES,
-} from "@/types/roles";
+  CreateStudentResponse,
+  HTTP_METHOD,
+} from "@/types/api";
+import { Mutate } from "@/hooks/useFetch";
+import { AddOrEditRoleFormValuesType, ROLES } from "@/types/roles";
 import { Cohort } from "@/types/cohorts";
 import { LeanProject } from "@/types/projects";
-import { User } from "@/types/users";
+import { RoleMetadata, User } from "@/types/users";
 
 type Props = {
   open: boolean;
@@ -70,13 +73,34 @@ const AddRoleModal: FC<Props> = ({
     method: HTTP_METHOD.PUT,
     endpoint: `/users/${user.id}/${toSingular(selectedRole).toLowerCase()}`,
     requiresAuthorization: true,
-    // TODO: Check newRole type
-    onSuccess: (newRole: CreateRoleResponse) => {
+    onSuccess: (response: CreateRoleResponse) => {
+      const role: RoleMetadata = {};
+      switch (selectedRole) {
+        case ROLES.STUDENTS:
+          role.student = (response as CreateStudentResponse).student;
+          break;
+        case ROLES.ADVISERS:
+          role.adviser = (response as CreateAdviserResponse).adviser;
+          break;
+        case ROLES.MENTORS:
+          role.mentor = (response as CreateMentorResponse).mentor;
+          break;
+        case ROLES.ADMINISTRATORS:
+          role.administrator = (
+            response as CreateAdministratorResponse
+          ).administrator;
+          break;
+        default:
+          break;
+      }
+
       mutate((users) => {
         const userId = user.id;
         const userIdx = users.findIndex((user) => user.id === userId);
-        console.log(userIdx, newRole);
-        return users;
+        const newUsers = [...users];
+        const newUser = { ...user, ...role };
+        newUsers.splice(userIdx, 1, newUser);
+        return newUsers;
       });
     },
   });
