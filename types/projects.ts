@@ -10,6 +10,14 @@ export enum LEVELS_OF_ACHIEVEMENT {
   VOSTOK = "Vostok",
 }
 
+export enum LEVELS_OF_ACHIEVEMENT_WITH_ALL {
+  ALL = "All",
+  ARTEMIS = "Artemis",
+  APOLLO = "Apollo",
+  GEMINI = "Gemini",
+  VOSTOK = "Vostok",
+}
+
 export type Project = {
   id: number;
   name: string;
