@@ -179,20 +179,18 @@ const ProjectsList = () => {
           noDataCondition={projects === undefined || projects.length === 0}
           fallback={<NoneFound message="No such projects found" />}
         >
-          <ProjectTable projects={projects} mutate={mutate}>
-            <div ref={bottomOfPageRef} />
-            {isFetching(fetchProjectsStatus) ? (
-              <Box
-                sx={{
-                  display: "grid",
-                  placeItems: "center",
-                }}
-              >
-                <LoadingSpinner />
-              </Box>
-            ) : null}
-            <Box sx={{ height: "15vh" }} />
-          </ProjectTable>
+          <ProjectTable projects={projects} mutate={mutate} />
+          <div ref={bottomOfPageRef} />
+          {isFetching(fetchProjectsStatus) ? (
+            <Box
+              sx={{
+                display: "grid",
+                placeItems: "center",
+              }}
+            >
+              <LoadingSpinner />
+            </Box>
+          ) : null}
         </NoDataWrapper>
       </LoadingWrapper>
     </Body>
