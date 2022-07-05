@@ -21,7 +21,7 @@ import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
 import { HTTP_METHOD } from "@/types/api";
 import { Deadline, DEADLINE_TYPE } from "@/types/deadlines";
 import { Mutate } from "@/hooks/useFetch";
-import { GetDeadlinesResponse } from "@/pages/deadlines";
+import { GetDeadlinesResponse } from "@/pages/manage/deadlines";
 
 interface AddDeadlineFormValuesType {
   name: string;

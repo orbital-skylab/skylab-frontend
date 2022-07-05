@@ -13,7 +13,7 @@ import DeadlineRow from "./DeadlineRow";
 // Types
 import { Deadline } from "@/types/deadlines";
 import { Mutate } from "@/hooks/useFetch";
-import { GetDeadlinesResponse } from "@/pages/deadlines";
+import { GetDeadlinesResponse } from "@/pages/manage/deadlines";
 
 type Props = { deadlines: Deadline[]; mutate: Mutate<GetDeadlinesResponse> };
 

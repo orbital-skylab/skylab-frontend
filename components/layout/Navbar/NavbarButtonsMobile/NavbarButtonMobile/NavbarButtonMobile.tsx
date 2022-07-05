@@ -40,7 +40,9 @@ const NavbarButtonMobile: FC<Props> = ({
         handleCloseNavMenu();
       }}
       selected={isCurrentPage(option.route)}
-      disabled={isCurrentPage(option.route)}
+      sx={{
+        color: isCurrentPage(option.route) ? "gray" : "inherit",
+      }}
     >
       <Typography textAlign="center">{option.label}</Typography>
     </MenuItem>

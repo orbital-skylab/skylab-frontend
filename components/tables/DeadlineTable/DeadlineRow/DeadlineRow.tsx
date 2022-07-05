@@ -13,7 +13,7 @@ import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Types
 import { Deadline } from "@/types/deadlines";
 import { Mutate } from "@/hooks/useFetch";
-import { GetDeadlinesResponse } from "@/pages/deadlines";
+import { GetDeadlinesResponse } from "@/pages/manage/deadlines";
 
 type Props = { deadline: Deadline; mutate: Mutate<GetDeadlinesResponse> };
 
@@ -55,7 +55,7 @@ const DeadlineRow: FC<Props> = ({ deadline, mutate }) => {
         <TableCell>{isoDateToLocaleDateWithTime(deadline.dueBy)}</TableCell>
         <TableCell>
           <Stack direction="row" spacing="0.5rem">
-            <Link href={`${PAGES.DEADLINES}/${deadline.id}`} passHref>
+            <Link href={`${PAGES.MANAGE_DEADLINES}/${deadline.id}`} passHref>
               <Button
                 size="small"
                 sx={{

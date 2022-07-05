@@ -173,7 +173,7 @@ const Users: NextPage = () => {
             />
 
             <Stack direction="row" spacing="1rem">
-              <Link passHref href={PAGES.BATCH_ADD}>
+              <Link passHref href={PAGES.MANAGE_USERS_BATCH_ADD}>
                 <Button size="small" variant="outlined">
                   <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
                   Batch Add

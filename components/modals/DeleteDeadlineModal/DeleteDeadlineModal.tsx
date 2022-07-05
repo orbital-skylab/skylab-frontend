@@ -8,7 +8,7 @@ import useApiCall, { isCalling } from "@/hooks/useApiCall";
 import { HTTP_METHOD } from "@/types/api";
 import { Deadline } from "@/types/deadlines";
 import { Mutate } from "@/hooks/useFetch";
-import { GetDeadlinesResponse } from "@/pages/deadlines";
+import { GetDeadlinesResponse } from "@/pages/manage/deadlines";
 
 type Props = {
   open: boolean;

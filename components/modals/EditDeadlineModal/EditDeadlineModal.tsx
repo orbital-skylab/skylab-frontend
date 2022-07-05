@@ -17,7 +17,7 @@ import useApiCall from "@/hooks/useApiCall";
 // Types
 import { HTTP_METHOD } from "@/types/api";
 import { Deadline, DEADLINE_TYPE } from "@/types/deadlines";
-import { GetDeadlinesResponse } from "@/pages/deadlines";
+import { GetDeadlinesResponse } from "@/pages/manage/deadlines";
 import { Mutate } from "@/hooks/useFetch";
 
 interface EditDeadlineFormValuesType {

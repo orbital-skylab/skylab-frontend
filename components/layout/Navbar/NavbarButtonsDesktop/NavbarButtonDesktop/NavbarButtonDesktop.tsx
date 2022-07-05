@@ -38,12 +38,11 @@ const NavbarButtonDesktop: FC<Props> = ({
       sx={{
         my: 2,
         display: "block",
-        color: "inherit",
+        color: isCurrentPage(option.route) ? "gray" : "inherit",
         background: isCurrentPage(option.route)
           ? "rgba(13, 13, 13, 0.08)"
           : "inherit",
       }}
-      disabled={isCurrentPage(option.route)}
     >
       {option.label}
     </Button>
