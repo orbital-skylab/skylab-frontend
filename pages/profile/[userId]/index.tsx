@@ -33,7 +33,7 @@ const Profile: NextPage = () => {
 
   const user = userResponse ? userResponse.user : undefined;
 
-  const isCurrentUser = useAuth()?.user?.email === user?.email;
+  const isCurrentUser = useAuth()?.user?.id === user?.id;
 
   return (
     <Body

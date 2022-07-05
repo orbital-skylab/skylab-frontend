@@ -39,7 +39,7 @@ import useInfiniteFetch, {
 // Types
 import { Cohort } from "@/types/cohorts";
 import { LeanProject } from "@/types/projects";
-import { ROLES_WITH_ALL } from "@/types/roles";
+import { ROLES, ROLES_WITH_ALL } from "@/types/roles";
 import { User } from "@/types/users";
 import { toSingular } from "@/helpers/roles";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
@@ -156,7 +156,10 @@ const Users: NextPage = () => {
         leanProjects={leanProjects}
         isFetchingLeanProjects={isFetching(fetchLeanProjectsStatus)}
       />
-      <Body isLoading={isLoadingCohorts}>
+      <Body
+        isLoading={isLoadingCohorts}
+        authorizedRoles={[ROLES.ADMINISTRATORS]}
+      >
         <Stack direction="column" mt="0.5rem" mb="1rem">
           <Stack
             direction="row"

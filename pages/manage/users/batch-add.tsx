@@ -32,6 +32,7 @@ import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 import type { NextPage } from "next";
 import { HTTP_METHOD } from "@/types/api";
 import GoBackButton from "@/components/buttons/GoBackButton";
+import { ROLES } from "@/types/roles";
 
 const BatchAdd: NextPage = () => {
   const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
@@ -135,7 +136,7 @@ const BatchAdd: NextPage = () => {
   return (
     <>
       <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
-      <Body>
+      <Body authorizedRoles={[ROLES.ADMINISTRATORS]}>
         <GoBackButton />
         <Stack direction="column" spacing="2rem">
           <Box>

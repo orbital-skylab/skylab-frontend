@@ -1,6 +1,7 @@
 import Body from "@/components/layout/Body";
 import { PAGES } from "@/helpers/navigation";
 import { BASE_TRANSITION } from "@/styles/constants";
+import { ROLES } from "@/types/roles";
 import { Card, CardContent, Grid, Typography } from "@mui/material";
 import type { NextPage } from "next";
 import Link from "next/link";
@@ -34,7 +35,7 @@ const pages = [
 
 const Manage: NextPage = () => {
   return (
-    <Body>
+    <Body authorizedRoles={[ROLES.ADMINISTRATORS]}>
       <Grid container spacing="1rem" sx={{ paddingX: { xs: "0", md: "10%" } }}>
         {pages.map((page) => (
           <Grid item xs={12} sm={4} key={page.title}>

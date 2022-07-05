@@ -19,9 +19,11 @@ import { PAGES } from "@/helpers/navigation";
 // Types
 import type { NextPage } from "next";
 import { GetProjectResponse } from "@/types/api";
+import useAuth from "@/hooks/useAuth";
 
 const ProjectDetails: NextPage = () => {
   const router = useRouter();
+  const { user } = useAuth();
   const { projectId } = router.query;
 
   const { data: projectResponse, status: getProjectStatus } =
@@ -30,7 +32,17 @@ const ProjectDetails: NextPage = () => {
       enabled: !!projectId,
     });
 
-  const isProjectStudentOrAdviser = true; //TODO: UPDATE ONCE AUTH LOGIC IS READY
+  const isProjectsStudent =
+    user && projectResponse
+      ? projectResponse.project.students.map(({ id }) => id).includes(user?.id)
+      : false;
+
+  const isProjectsAdviser =
+    user && projectResponse ? projectResponse.project.adviser?.id : false;
+
+  const showEditButton =
+    isProjectsStudent || isProjectsAdviser || Boolean(user?.administrator?.id);
+
   const project = projectResponse ? projectResponse.project : undefined;
 
   return (
@@ -69,7 +81,7 @@ const ProjectDetails: NextPage = () => {
             }}
             raised
           >
-            {isProjectStudentOrAdviser ? (
+            {showEditButton ? (
               <NextLink href={`${PAGES.PROJECTS}/${project?.id}/edit`} passHref>
                 <Button
                   size="small"

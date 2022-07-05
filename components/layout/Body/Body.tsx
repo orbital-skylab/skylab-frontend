@@ -63,29 +63,29 @@ const Body: FC<Props> = ({
           loadingText={loadingText}
           fullScreen
         >
+          {isPreviewMode && user && (
+            <Alert
+              color="warning"
+              sx={{
+                mb: "1rem",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              {`You are currently previewing the page as: ${user.name}`}
+              <Button
+                sx={{ marginLeft: "1rem" }}
+                color="warning"
+                size="small"
+                variant="outlined"
+                onClick={stopPreview}
+              >
+                Stop Preview
+              </Button>
+            </Alert>
+          )}
           <UnauthorizedWrapper isUnauthorized={!isAuthorized}>
             <ErrorWrapper isError={!!isError}>
-              {isPreviewMode && user && (
-                <Alert
-                  color="warning"
-                  sx={{
-                    mb: "1rem",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  {`You are currently previewing the page as: ${user.name}`}
-                  <Button
-                    sx={{ marginLeft: "1rem" }}
-                    color="warning"
-                    size="small"
-                    variant="outlined"
-                    onClick={stopPreview}
-                  >
-                    Stop Preview
-                  </Button>
-                </Alert>
-              )}
               {children}
               <Box height="24px" />
             </ErrorWrapper>

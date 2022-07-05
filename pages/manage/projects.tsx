@@ -11,6 +11,7 @@ import useInfiniteFetch, {
 } from "@/hooks/useInfiniteFetch";
 import { Cohort } from "@/types/cohorts";
 import { LEVELS_OF_ACHIEVEMENT_WITH_ALL, Project } from "@/types/projects";
+import { ROLES } from "@/types/roles";
 import {
   Box,
   debounce,
@@ -118,7 +119,7 @@ const ProjectsList = () => {
   }, [currentCohortYear]);
 
   return (
-    <Body isLoading={isLoadingCohorts}>
+    <Body isLoading={isLoadingCohorts} authorizedRoles={[ROLES.ADMINISTRATORS]}>
       <Stack direction="column" mt="0.5rem" mb="1rem">
         <Stack
           direction="row"
