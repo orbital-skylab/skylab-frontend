@@ -1,6 +1,8 @@
 import { isoDateToDateTimeLocalInput } from "@/helpers/dates";
+import { ERRORS } from "@/helpers/errors";
 import { AddOrEditRoleFormValuesType, ROLES } from "@/types/roles";
 import { User } from "@/types/users";
+import * as Yup from "yup";
 
 /**
  * Generate initial form values for Formik by using user's pre-existing data
@@ -41,4 +43,34 @@ export const generateInitialValues = ({
     default:
       return {};
   }
+};
+
+/**
+ * Generates the validation schema for:
+ * - Editing a user's role
+ * @param selectedRole The selected role to being edited
+ */
+export const generateEditRoleValidationSchema = (
+  selectedRole: ROLES | null
+) => {
+  return Yup.object().shape({
+    nusnetId: Yup.string().when("null", {
+      is: () =>
+        selectedRole === ROLES.STUDENTS || selectedRole === ROLES.ADVISERS,
+      then: Yup.string().required(ERRORS.REQUIRED),
+    }),
+    matricNo: Yup.string().when("null", {
+      is: () =>
+        selectedRole === ROLES.STUDENTS || selectedRole === ROLES.ADVISERS,
+      then: Yup.string().required(ERRORS.REQUIRED),
+    }),
+    startDate: Yup.string().when("null", {
+      is: () => selectedRole === ROLES.ADMINISTRATORS,
+      then: Yup.string().required(ERRORS.REQUIRED),
+    }),
+    endDate: Yup.string().when("null", {
+      is: () => selectedRole === ROLES.ADMINISTRATORS,
+      then: Yup.string().required(ERRORS.REQUIRED),
+    }),
+  });
 };

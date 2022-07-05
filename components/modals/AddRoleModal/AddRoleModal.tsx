@@ -17,25 +17,18 @@ import {
   toSingular,
   userHasRole,
 } from "@/helpers/roles";
-import { generateValidationSchema } from "./AddRoleModal.helpers";
+import { generateAddRoleValidationSchema } from "./AddRoleModal.helpers";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
 import useCohort from "@/hooks/useCohort";
 // Types
-import {
-  CreateAdministratorResponse,
-  CreateAdviserResponse,
-  CreateMentorResponse,
-  CreateRoleResponse,
-  CreateStudentResponse,
-  HTTP_METHOD,
-} from "@/types/api";
+import { CreateRoleResponse, HTTP_METHOD } from "@/types/api";
 import { Mutate } from "@/hooks/useFetch";
 import { AddOrEditRoleFormValuesType, ROLES } from "@/types/roles";
 import { Cohort } from "@/types/cohorts";
 import { LeanProject } from "@/types/projects";
-import { RoleMetadata, User } from "@/types/users";
+import { User } from "@/types/users";
 
 type Props = {
   open: boolean;
@@ -74,33 +67,13 @@ const AddRoleModal: FC<Props> = ({
     endpoint: `/users/${user.id}/${toSingular(selectedRole).toLowerCase()}`,
     requiresAuthorization: true,
     onSuccess: (response: CreateRoleResponse) => {
-      const role: RoleMetadata = {};
-      switch (selectedRole) {
-        case ROLES.STUDENTS:
-          role.student = (response as CreateStudentResponse).student;
-          break;
-        case ROLES.ADVISERS:
-          role.adviser = (response as CreateAdviserResponse).adviser;
-          break;
-        case ROLES.MENTORS:
-          role.mentor = (response as CreateMentorResponse).mentor;
-          break;
-        case ROLES.ADMINISTRATORS:
-          role.administrator = (
-            response as CreateAdministratorResponse
-          ).administrator;
-          break;
-        default:
-          break;
-      }
-
       mutate((users) => {
-        const userId = user.id;
-        const userIdx = users.findIndex((user) => user.id === userId);
-        const newUsers = [...users];
-        const newUser = { ...user, ...role };
-        newUsers.splice(userIdx, 1, newUser);
-        return newUsers;
+        const editedUserIdx = users.findIndex(({ id }) => id === user.id);
+        const editedUser: User = { ...user, ...response };
+
+        const editedUsers = [...users];
+        editedUsers.splice(editedUserIdx, 1, editedUser);
+        return editedUsers;
       });
     },
   });
@@ -158,7 +131,7 @@ const AddRoleModal: FC<Props> = ({
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmit}
-          validationSchema={generateValidationSchema(selectedRole)}
+          validationSchema={generateAddRoleValidationSchema(selectedRole)}
         >
           {(formik) => (
             <>

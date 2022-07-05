@@ -36,13 +36,19 @@ export type GetUsersResponse = {
 export type CreateUserResponse = User;
 
 /**
- * Roles Endpoints:
+ * Combined Roles Endpoints:
  */
 export type CreateRoleResponse =
   | CreateStudentResponse
   | CreateAdviserResponse
   | CreateMentorResponse
   | CreateAdministratorResponse;
+
+export type EditRoleResponse =
+  | EditStudentResponse
+  | EditAdviserResponse
+  | EditMentorResponse
+  | EditAdministratorResponse;
 
 export type GetStaffsResponse = GetAdvisersResponse | GetMentorsResponse;
 
@@ -54,11 +60,19 @@ export type CreateStudentResponse = {
   student: StudentRole;
 };
 
+export type EditStudentResponse = {
+  student: StudentRole;
+};
+
 /**
  * Advisers Endpoints:
  * https://github.com/orbital-skylab/skylab-backend/wiki/Advisers-Endpoints
  */
 export type CreateAdviserResponse = {
+  adviser: AdviserRole;
+};
+
+export type EditAdviserResponse = {
   adviser: AdviserRole;
 };
 
@@ -74,6 +88,10 @@ export type CreateMentorResponse = {
   mentor: MentorRole;
 };
 
+export type EditMentorResponse = {
+  mentor: MentorRole;
+};
+
 export type GetMentorsResponse = {
   mentors: Mentor[];
 };
@@ -83,6 +101,10 @@ export type GetMentorsResponse = {
  * https://github.com/orbital-skylab/skylab-backend/wiki/Administrators-Endpoints
  */
 export type CreateAdministratorResponse = {
+  administrator: AdministratorRole;
+};
+
+export type EditAdministratorResponse = {
   administrator: AdministratorRole;
 };
 

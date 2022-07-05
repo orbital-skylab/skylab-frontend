@@ -20,10 +20,11 @@ export enum ROLES_WITH_ALL {
 }
 
 type WithId<T> = T & { id: number };
-export type StudentRole = WithId<StudentMetadata>;
-export type AdviserRole = WithId<AdviserMetadata>;
-export type MentorRole = WithId<MentorMetadata>;
-export type AdministratorRole = WithId<AdministratorMetadata>;
+type WithUserId<T> = T & { userId: number };
+export type StudentRole = WithUserId<WithId<StudentMetadata>>;
+export type AdviserRole = WithUserId<WithId<AdviserMetadata>>;
+export type MentorRole = WithUserId<WithId<MentorMetadata>>;
+export type AdministratorRole = WithUserId<WithId<AdministratorMetadata>>;
 
 /**
  * General user data for the following components

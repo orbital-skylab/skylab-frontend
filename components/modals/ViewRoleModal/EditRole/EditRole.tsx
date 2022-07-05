@@ -7,7 +7,10 @@ import AdviserDetailsForm from "@/components/forms/AdviserDetailsForm";
 import MentorDetailsForm from "@/components/forms/MentorDetailsForm";
 import StudentDetailsForm from "@/components/forms/StudentDetailsForm";
 // Helpers
-import { generateInitialValues } from "./EditRole.helpers";
+import {
+  generateInitialValues,
+  generateEditRoleValidationSchema,
+} from "./EditRole.helpers";
 import { Formik, FormikHelpers, FormikProps } from "formik";
 import {
   getRoleId,
@@ -18,11 +21,10 @@ import {
 import useApiCall from "@/hooks/useApiCall";
 // Types
 import { Mutate } from "@/hooks/useFetch";
-import { HTTP_METHOD } from "@/types/api";
+import { EditRoleResponse, HTTP_METHOD } from "@/types/api";
 import { AddOrEditRoleFormValuesType, ROLES } from "@/types/roles";
-import { RoleMetadata, User } from "@/types/users";
+import { User } from "@/types/users";
 import { LeanProject } from "@/types/projects";
-import { generateValidationSchema } from "../../AddRoleModal";
 
 type Props = {
   user: User;
@@ -54,24 +56,14 @@ const EditRole: FC<Props> = ({
       selectedRole
     )}`,
     requiresAuthorization: true,
-    // TODO: Check newRoleDetails type
-    onSuccess: (newRoleDetails) => {
+    onSuccess: (response: EditRoleResponse) => {
       mutate((users) => {
-        const userId = user.id;
-        const userIdx = users.findIndex((user) => user.id === userId);
+        const editedUserIdx = users.findIndex(({ id }) => id === user.id);
+        const editedUser: User = { ...user, ...response };
 
-        const newUserWithEditedRole: User = { ...user };
-        const editedRole = toSingular(
-          selectedRole
-        ).toLowerCase() as keyof RoleMetadata;
-        newUserWithEditedRole[editedRole] = {
-          ...newUserWithEditedRole[editedRole],
-          ...newRoleDetails,
-        };
-
-        const newUsers = [...users];
-        newUsers.splice(userIdx, 1, newUserWithEditedRole);
-        return newUsers;
+        const editedUsers = [...users];
+        editedUsers.splice(editedUserIdx, 1, editedUser);
+        return editedUsers;
       });
     },
   });
@@ -89,7 +81,6 @@ const EditRole: FC<Props> = ({
       values,
       selectedRole,
     });
-
     try {
       await editRole.call(processedValues);
       setSuccess(
@@ -143,7 +134,7 @@ const EditRole: FC<Props> = ({
     <Formik
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      validationSchema={generateValidationSchema(selectedRole)}
+      validationSchema={generateEditRoleValidationSchema(selectedRole)}
     >
       {(formik) => (
         <>

@@ -2,7 +2,12 @@ import { ERRORS } from "@/helpers/errors";
 import { ROLES } from "@/types/roles";
 import * as Yup from "yup";
 
-export const generateValidationSchema = (selectedRole: ROLES | null) => {
+/**
+ * Generates the validation schema for:
+ * - Adding new a role to users
+ * @param selectedRole The selected role to being added
+ */
+export const generateAddRoleValidationSchema = (selectedRole: ROLES | null) => {
   return Yup.object().shape({
     cohortYear: Yup.number().required(ERRORS.REQUIRED),
     nusnetId: Yup.string().when("null", {
