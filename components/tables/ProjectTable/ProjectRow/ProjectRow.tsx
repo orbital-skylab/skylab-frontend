@@ -13,6 +13,7 @@ import {
   Stack,
   TableCell,
   TableRow,
+  Tooltip,
 } from "@mui/material";
 import Link from "next/link";
 import { FC, MouseEvent, useState } from "react";
@@ -135,7 +136,9 @@ const ProjectRow: FC<Props> = ({ project, mutate }) => {
             }}
           >
             <Link href={`${PAGES.PROJECTS}/${project.id}`} passHref>
-              <MenuItem>View Details</MenuItem>
+              <Tooltip title="View and edit project details">
+                <MenuItem>View Details</MenuItem>
+              </Tooltip>
             </Link>
             <MenuItem
               onClick={handleOpenDeleteModal}
