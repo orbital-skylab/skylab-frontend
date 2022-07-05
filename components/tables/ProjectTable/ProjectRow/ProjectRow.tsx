@@ -42,13 +42,12 @@ const ProjectRow: FC<Props> = ({ project, mutate }) => {
     setIsDeleteProjectOpen(true);
   };
 
-  const renderTags = () => {
-    const tags = [];
-
+  const renderTag = () => {
     if (!project?.achievement) return;
+
     switch (project.achievement) {
       case LEVELS_OF_ACHIEVEMENT.VOSTOK:
-        tags.push(
+        return (
           <Chip
             key={`project ${project.id}`}
             label={LEVELS_OF_ACHIEVEMENT.VOSTOK}
@@ -56,9 +55,8 @@ const ProjectRow: FC<Props> = ({ project, mutate }) => {
             size="small"
           />
         );
-        break;
       case LEVELS_OF_ACHIEVEMENT.GEMINI:
-        tags.push(
+        return (
           <Chip
             key={`project ${project.id}`}
             label={LEVELS_OF_ACHIEVEMENT.GEMINI}
@@ -66,9 +64,8 @@ const ProjectRow: FC<Props> = ({ project, mutate }) => {
             size="small"
           />
         );
-        break;
       case LEVELS_OF_ACHIEVEMENT.APOLLO:
-        tags.push(
+        return (
           <Chip
             key={`project ${project.id}`}
             label={LEVELS_OF_ACHIEVEMENT.APOLLO}
@@ -76,10 +73,9 @@ const ProjectRow: FC<Props> = ({ project, mutate }) => {
             size="small"
           />
         );
-        break;
 
       case LEVELS_OF_ACHIEVEMENT.ARTEMIS:
-        tags.push(
+        return (
           <Chip
             key={`project ${project.id}`}
             label={LEVELS_OF_ACHIEVEMENT.ARTEMIS}
@@ -87,11 +83,7 @@ const ProjectRow: FC<Props> = ({ project, mutate }) => {
             size="small"
           />
         );
-        break;
-      default:
-        break;
     }
-    return tags;
   };
 
   return (
@@ -110,7 +102,7 @@ const ProjectRow: FC<Props> = ({ project, mutate }) => {
         <TableCell>{project.name}</TableCell>
         <TableCell>
           <Stack direction="row" spacing="0.25rem">
-            {renderTags()}
+            {renderTag()}
           </Stack>
         </TableCell>
         <TableCell>
