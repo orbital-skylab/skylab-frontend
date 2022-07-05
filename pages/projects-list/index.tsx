@@ -38,7 +38,7 @@ const ProjectsList = () => {
     useState<LEVELS_OF_ACHIEVEMENT_WITH_ALL>(
       LEVELS_OF_ACHIEVEMENT_WITH_ALL.ALL
     );
-  const [page, setPage] = useState<number>(0);
+  const [page, setPage] = useState(0);
   const [searchTextInput, setSearchTextInput] = useState(""); // The input value
   const [querySearch, setQuerySearch] = useState(""); // The debounced input value for searching
   const {
