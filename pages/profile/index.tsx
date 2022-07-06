@@ -19,7 +19,7 @@ const CurrentUserProfile: NextPage = () => {
   }, [router, user]);
 
   return (
-    <Body flexColCenter>
+    <Body sx={{ display: "grid", placeItems: "center" }}>
       <LoadingSpinner />
     </Body>
   );

@@ -16,6 +16,7 @@ import { Deadline } from "@/types/deadlines";
 import { Add } from "@mui/icons-material";
 import AddDeadlineModal from "@/components/modals/AddDeadlineModal";
 import useCohort from "@/hooks/useCohort";
+import { ROLES } from "@/types/roles";
 
 export type GetDeadlinesResponse = {
   deadlines: Deadline[];
@@ -73,6 +74,7 @@ const Deadlines: NextPage = () => {
       <Body
         isError={isError(fetchDeadlinesStatus)}
         isLoading={isLoadingCohorts}
+        authorizedRoles={[ROLES.ADMINISTRATORS]}
       >
         <Stack
           direction="row"

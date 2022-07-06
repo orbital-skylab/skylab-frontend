@@ -1,25 +1,46 @@
 import { FC } from "react";
+// Components
 import { Box, SxProps } from "@mui/system";
-import { NAVBAR_HEIGHT_REM } from "@/styles/constants";
+import { Alert, Button } from "@mui/material";
 import LoadingWrapper from "../../wrappers/LoadingWrapper";
 import ErrorWrapper from "../../wrappers/ErrorWrapper";
-import useAuth from "@/hooks/useAuth";
-import { Alert, Button } from "@mui/material";
-import { ROLES } from "@/types/roles";
 import UnauthorizedWrapper from "@/components/wrappers/UnauthorizedWrapper";
+// Hooks
+import useAuth from "@/hooks/useAuth";
+// Helpers
 import { userHasRole } from "@/helpers/roles";
+// Constants
+import { NAVBAR_HEIGHT_REM, WIDTH_XL } from "@/styles/constants";
+// Types
+import { ROLES } from "@/types/roles";
 
 type Props = {
-  flexColCenter?: boolean;
+  sx?: SxProps;
   isLoading?: boolean;
   loadingText?: string;
   isError?: boolean;
   authorizedRoles?: ROLES[];
 };
 
+/**
+ * Component that should wrap every page. Provides the following functionalities:
+ * - Authorize users based on role
+ * - Show alternate empty states (loading or error)
+ * - Alert when user is in preview mode
+ * - Styling
+ *   - Max width size
+ *   - Horizontal padding
+ *   - Minimum height
+ * @param {ReactNode} param0.children Children component to render
+ * @param {SxProps} param0.sx MUI Styling props
+ * @param {boolean} param0.isLoading Renders a loading spinner if true
+ * @param {string} param0.loadingText Text to be rendered with the loading spinner
+ * @param {boolean} param0.isError Renders an error page
+ * @param {ROLES[]} param0.authorizedRoles An array of roles that are authorized to view a page. All roles can view the page if not provided.
+ */
 const Body: FC<Props> = ({
   children,
-  flexColCenter,
+  sx,
   isLoading = false,
   loadingText,
   isError = false,
@@ -37,16 +58,11 @@ const Body: FC<Props> = ({
     height: "100%",
     paddingTop: NAVBAR_HEIGHT_REM,
     paddingX: "24px",
-    maxWidth: "1536px",
+    paddingBottom: "24px",
+    maxWidth: WIDTH_XL,
     marginX: "auto",
+    ...sx,
   };
-
-  if (flexColCenter) {
-    boxSx.display = "flex";
-    boxSx.flexDirection = "column";
-    boxSx.justifyContent = "center";
-    boxSx.alignItems = "center";
-  }
 
   const requiresAuthorizationAndIsLoadingUser = Boolean(
     authorizedRoles && isLoadingUser
@@ -85,10 +101,7 @@ const Body: FC<Props> = ({
             </Alert>
           )}
           <UnauthorizedWrapper isUnauthorized={!isAuthorized}>
-            <ErrorWrapper isError={!!isError}>
-              {children}
-              <Box height="24px" />
-            </ErrorWrapper>
+            <ErrorWrapper isError={!!isError}>{children}</ErrorWrapper>
           </UnauthorizedWrapper>
         </LoadingWrapper>
       </Box>

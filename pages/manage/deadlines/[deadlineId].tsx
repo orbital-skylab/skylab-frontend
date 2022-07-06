@@ -25,6 +25,7 @@ import {
 } from "@/types/deadlines";
 import type { NextPage } from "next";
 import { HTTP_METHOD } from "@/types/api";
+import { ROLES } from "@/types/roles";
 
 export type DeadlineDetailsResponse = {
   deadline: Deadline;
@@ -176,6 +177,7 @@ const DeadlineQuestions: NextPage = () => {
       <Body
         isLoading={isFetching(fetchDeadlineDetailsStatus)}
         isError={isError(fetchDeadlineDetailsStatus)}
+        authorizedRoles={[ROLES.ADMINISTRATORS]}
       >
         <GoBackButton />
         <DeadlineDescriptionCard

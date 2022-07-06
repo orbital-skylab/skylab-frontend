@@ -61,7 +61,7 @@ const ChangePassword: NextPage = () => {
   return (
     <>
       <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
-      <Body flexColCenter>
+      <Body sx={{ display: "grid", placeItems: "center" }}>
         <Container maxWidth="xs">
           <Stack gap="1rem" justifyContent="center">
             <Typography variant="h6" fontWeight={600}>
