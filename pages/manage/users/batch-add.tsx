@@ -1,6 +1,8 @@
 import { useState } from "react";
 // Components
 import Body from "@/components/layout/Body";
+import GoBackButton from "@/components/buttons/GoBackButton";
+import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
 import SnackbarAlert from "@/components/SnackbarAlert";
 import HeadingWithCsvTemplate from "@/components/batchForms/HeadingWithCsvTemplate/HeadingWithCsvTemplate";
 import BatchAddProjectsAndStudentsForm, {
@@ -31,7 +33,6 @@ import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Types
 import type { NextPage } from "next";
 import { HTTP_METHOD } from "@/types/api";
-import GoBackButton from "@/components/buttons/GoBackButton";
 import { ROLES } from "@/types/roles";
 
 const BatchAdd: NextPage = () => {
@@ -137,6 +138,7 @@ const BatchAdd: NextPage = () => {
     <>
       <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <Body authorizedRoles={[ROLES.ADMINISTRATORS]}>
+        <AutoBreadcrumbs />
         <GoBackButton />
         <Stack direction="column" spacing="2rem">
           <Box>

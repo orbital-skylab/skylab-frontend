@@ -44,6 +44,7 @@ import { User } from "@/types/users";
 import { toSingular } from "@/helpers/roles";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import { GetUsersResponse } from "@/types/api";
+import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
 
 const LIMIT = 20;
 
@@ -160,6 +161,7 @@ const Users: NextPage = () => {
         isLoading={isLoadingCohorts}
         authorizedRoles={[ROLES.ADMINISTRATORS]}
       >
+        <AutoBreadcrumbs />
         <Stack direction="column" mt="0.5rem" mb="1rem">
           <Stack
             direction="row"

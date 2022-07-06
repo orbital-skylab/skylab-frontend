@@ -1,3 +1,4 @@
+import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
 import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import Body from "@/components/layout/Body";
@@ -120,6 +121,7 @@ const ProjectsList = () => {
 
   return (
     <Body isLoading={isLoadingCohorts} authorizedRoles={[ROLES.ADMINISTRATORS]}>
+      <AutoBreadcrumbs />
       <Stack direction="column" mt="0.5rem" mb="1rem">
         <Stack
           direction="row"

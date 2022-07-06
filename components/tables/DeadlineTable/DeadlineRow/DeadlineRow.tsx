@@ -56,39 +56,16 @@ const DeadlineRow: FC<Props> = ({ deadline, mutate }) => {
         <TableCell>
           <Stack direction="row" spacing="0.5rem">
             <Link href={`${PAGES.MANAGE_DEADLINES}/${deadline.id}`} passHref>
-              <Button
-                size="small"
-                sx={{
-                  "&:hover": {
-                    color: "white",
-                    backgroundColor: "info.main",
-                  },
-                }}
-              >
-                Questions
-              </Button>
+              <Button size="small">Questions</Button>
             </Link>
-            <Button
-              size="small"
-              onClick={handleOpenEditModal}
-              sx={{
-                "&:hover": {
-                  color: "white",
-                  backgroundColor: "warning.main",
-                },
-              }}
-            >
+            <Button size="small" onClick={handleOpenEditModal}>
               Edit
             </Button>
             <Button
               size="small"
               onClick={handleOpenDeleteModal}
-              sx={{
-                "&:hover": {
-                  color: "white",
-                  backgroundColor: "error.main",
-                },
-              }}
+              variant="outlined"
+              color="error"
             >
               Delete
             </Button>

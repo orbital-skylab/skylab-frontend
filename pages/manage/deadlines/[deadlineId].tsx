@@ -26,6 +26,8 @@ import {
 import type { NextPage } from "next";
 import { HTTP_METHOD } from "@/types/api";
 import { ROLES } from "@/types/roles";
+import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
+import { PAGES } from "@/helpers/navigation";
 
 export type DeadlineDetailsResponse = {
   deadline: Deadline;
@@ -179,6 +181,15 @@ const DeadlineQuestions: NextPage = () => {
         isError={isError(fetchDeadlineDetailsStatus)}
         authorizedRoles={[ROLES.ADMINISTRATORS]}
       >
+        <AutoBreadcrumbs
+          breadcrumbs={[
+            {
+              label: `Editing ${deadlineId}`,
+              href: `${PAGES.MANAGE_DEADLINES}/${deadlineId}`,
+            },
+          ]}
+          replaceLast
+        />
         <GoBackButton />
         <DeadlineDescriptionCard
           isPreviewMode={isPreviewMode}
@@ -189,7 +200,6 @@ const DeadlineQuestions: NextPage = () => {
         />
         {!isPreviewMode ? (
           <>
-            {console.log(questions)}
             <EditQuestionsList
               questions={questions}
               generateSetQuestion={generateSetQuestion}
