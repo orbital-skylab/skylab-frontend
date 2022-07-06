@@ -1,9 +1,7 @@
+import { FC, MouseEvent, useState } from "react";
+// Components
 import DeleteProjectModal from "@/components/modals/DeleteProjectModal";
 import SnackbarAlert from "@/components/SnackbarAlert";
-import { PAGES } from "@/helpers/navigation";
-import { Mutate } from "@/hooks/useFetch";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert";
-import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
 import { KeyboardArrowDown } from "@mui/icons-material";
 import {
   Button,
@@ -16,7 +14,13 @@ import {
   Tooltip,
 } from "@mui/material";
 import Link from "next/link";
-import { FC, MouseEvent, useState } from "react";
+// Hooks
+import useSnackbarAlert from "@/hooks/useSnackbarAlert";
+// Helpers
+import { PAGES } from "@/helpers/navigation";
+// Types
+import { Mutate } from "@/hooks/useFetch";
+import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
 
 type Props = {
   project: Project;

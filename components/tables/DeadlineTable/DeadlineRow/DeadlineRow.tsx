@@ -1,10 +1,19 @@
-import { FC, useState } from "react";
+import { FC, useState, MouseEvent } from "react";
 import Link from "next/link";
 // Components
-import { Button, Stack, TableCell, TableRow } from "@mui/material";
+import {
+  Button,
+  Menu,
+  MenuItem,
+  Stack,
+  TableCell,
+  TableRow,
+  Tooltip,
+} from "@mui/material";
 import EditDeadlineModal from "@/components/modals/EditDeadlineModal";
 import SnackbarAlert from "@/components/SnackbarAlert";
 import DeleteDeadlineModal from "@/components/modals/DeleteDeadlineModal";
+import { KeyboardArrowDown } from "@mui/icons-material";
 // Helpers
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
 import { PAGES } from "@/helpers/navigation";
@@ -19,8 +28,18 @@ type Props = { deadline: Deadline; mutate: Mutate<GetDeadlinesResponse> };
 
 const DeadlineRow: FC<Props> = ({ deadline, mutate }) => {
   const { snackbar, setSuccess, setError, handleClose } = useSnackbarAlert();
+  const [dropdownAnchorElement, setDropdownAnchorElement] =
+    useState<HTMLElement | null>(null);
   const [isEditDeadlineOpen, setIsEditDeadlineOpen] = useState(false);
   const [isDeleteDeadlineOpen, setIsDeleteDeadlineOpen] = useState(false);
+
+  const handleOpenDropdown = (e: MouseEvent<HTMLButtonElement>) => {
+    setDropdownAnchorElement(e.currentTarget);
+  };
+
+  const handleCloseDropdown = () => {
+    setDropdownAnchorElement(null);
+  };
 
   const handleOpenEditModal = () => {
     setIsEditDeadlineOpen(true);
@@ -54,22 +73,36 @@ const DeadlineRow: FC<Props> = ({ deadline, mutate }) => {
         <TableCell>{deadline.type}</TableCell>
         <TableCell>{isoDateToLocaleDateWithTime(deadline.dueBy)}</TableCell>
         <TableCell>
-          <Stack direction="row" spacing="0.5rem">
+          <Stack direction="row" spacing="0.5rem"></Stack>
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={handleOpenDropdown}
+            endIcon={<KeyboardArrowDown />}
+          >
+            Options
+          </Button>
+          <Menu
+            anchorEl={dropdownAnchorElement}
+            open={Boolean(dropdownAnchorElement)}
+            onClose={handleCloseDropdown}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+          >
             <Link href={`${PAGES.MANAGE_DEADLINES}/${deadline.id}`} passHref>
-              <Button size="small">Questions</Button>
+              <Tooltip title="View and edit deadline questions">
+                <MenuItem>View Questions</MenuItem>
+              </Tooltip>
             </Link>
-            <Button size="small" onClick={handleOpenEditModal}>
-              Edit
-            </Button>
-            <Button
-              size="small"
-              onClick={handleOpenDeleteModal}
-              variant="outlined"
-              color="error"
-            >
-              Delete
-            </Button>
-          </Stack>
+            <MenuItem onClick={handleOpenEditModal}>Edit</MenuItem>
+            <MenuItem onClick={handleOpenDeleteModal}>Delete</MenuItem>
+          </Menu>
         </TableCell>
       </TableRow>
     </>

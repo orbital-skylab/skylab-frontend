@@ -77,16 +77,16 @@ const Deadlines: NextPage = () => {
         isLoading={isLoadingCohorts}
         authorizedRoles={[ROLES.ADMINISTRATORS]}
       >
-        <AutoBreadcrumbs />
+        <AutoBreadcrumbs sx={{ mb: "0" }} />
         <Stack
           direction="row"
-          justifyContent="space-between"
+          justifyContent="end"
           width="100%"
-          mt="0.5rem"
           mb="1rem"
+          spacing="1rem"
         >
           <Button
-            variant="contained"
+            variant="outlined"
             size="small"
             onClick={handleOpenAddDeadlineModal}
           >
@@ -122,10 +122,7 @@ const Deadlines: NextPage = () => {
             )}
             fallback={<NoneFound message="No deadlines found" />}
           >
-            <DeadlineTable
-              deadlines={response?.deadlines ?? []}
-              mutate={mutate}
-            />
+            <DeadlineTable deadlines={response?.deadlines} mutate={mutate} />
           </NoDataWrapper>
         </LoadingWrapper>
       </Body>
