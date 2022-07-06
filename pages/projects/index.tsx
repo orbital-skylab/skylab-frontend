@@ -33,10 +33,11 @@ import Body from "@/components/layout/Body";
 import ProjectCard from "@/components/cards/ProjectCard";
 import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
-// Constants
-import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
+// Constants
+import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
+import { GetProjectsResponse } from "@/types/api";
 
 const LIMIT = 16;
 
@@ -69,11 +70,12 @@ const Projects: NextPage = () => {
     data: projects,
     status: fetchProjectsStatus,
     hasMore,
-  } = useInfiniteFetch<Project[], Project>({
+  } = useInfiniteFetch<GetProjectsResponse, Project>({
     endpoint: `/projects`,
     queryParams: memoQueryParams,
     page,
-    responseToData: (response) => response,
+    responseToData: (response) => response.projects,
+    enabled: !!selectedCohortYear,
   });
 
   /** Input Change Handlers */

@@ -82,7 +82,8 @@ const ProjectsList = () => {
     endpoint: `/projects`,
     queryParams: memoProjectsQueryParams,
     page,
-    responseToData: (response) => response,
+    responseToData: (response) => response.projects,
+    enabled: !!selectedCohortYear,
   });
 
   /** Input Change Handlers */

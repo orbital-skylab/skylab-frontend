@@ -1,5 +1,5 @@
 import { FC, ReactNode } from "react";
-// Libraries
+// Components
 import {
   Card,
   CardActions,
@@ -13,8 +13,10 @@ import {
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkIcon from "@mui/icons-material/Link";
+// Types
 import { User } from "@/types/users";
-import { SQUARE_ASPECT_RATIO } from "@/styles/constants";
+// Constants
+import { BASE_TRANSITION, SQUARE_ASPECT_RATIO } from "@/styles/constants";
 
 type Props = {
   staff: User;
@@ -22,7 +24,15 @@ type Props = {
 
 const StaffCard: FC<Props> = ({ staff }) => {
   return (
-    <Card raised>
+    <Card
+      raised
+      sx={{
+        transition: BASE_TRANSITION,
+        "&:hover": {
+          transform: "scale(102%)",
+        },
+      }}
+    >
       <CardMedia
         component="img"
         image={staff.profilePicUrl}
@@ -34,7 +44,7 @@ const StaffCard: FC<Props> = ({ staff }) => {
         }}
       />
       <CardContent>
-        <Typography variant="h5" align="center" fontWeight={600}>
+        <Typography align="center" fontWeight={600}>
           {staff.name}
         </Typography>
       </CardContent>

@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-// Libraries
+// Components
 import {
   Box,
   Button,
@@ -8,11 +8,15 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { Project } from "@/types/projects";
-import { A4_ASPECT_RATIO, BASE_TRANSITION } from "@/styles/constants";
 import ProjectSubmissionModal from "../../modals/ProjectSubmissionModal";
 import Link from "next/link";
+// Helpers
 import { PAGES } from "@/helpers/navigation";
+// Types
+import { User } from "@/types/users";
+import { Project } from "@/types/projects";
+// Constants
+import { A4_ASPECT_RATIO, BASE_TRANSITION } from "@/styles/constants";
 
 type Props = {
   project: Project;
@@ -28,7 +32,14 @@ const ProjectCard: FC<Props> = ({ project }) => {
         setOpen={setProjectModalOpen}
         project={project}
       />
-      <Card>
+      <Card
+        sx={{
+          transition: BASE_TRANSITION,
+          "&:hover": {
+            transform: "scale(102%)",
+          },
+        }}
+      >
         <CardContent>
           <Stack spacing="0.5rem">
             <Link passHref href={`${PAGES.PROJECTS}/${project.id}`}>
@@ -38,10 +49,10 @@ const ProjectCard: FC<Props> = ({ project }) => {
                 fontWeight={600}
                 sx={{
                   cursor: "pointer",
+                  transition: BASE_TRANSITION,
                   "&:hover": {
                     textDecoration: "underline",
                     color: "secondary.main",
-                    transition: BASE_TRANSITION,
                   },
                 }}
               >
@@ -77,20 +88,20 @@ const ProjectCard: FC<Props> = ({ project }) => {
                 <Box>
                   <Typography fontWeight={600}>Orbitees</Typography>
                   {project.students.map((student) => (
-                    <UsersName key={student.id}>{student.name}</UsersName>
+                    <UsersName key={student.id} user={student} />
                   ))}
                 </Box>
               ) : null}
               {project.adviser ? (
                 <Box>
                   <Typography fontWeight={600}>Adviser</Typography>
-                  <UsersName> {project.adviser.name}</UsersName>
+                  <UsersName user={project.adviser} />
                 </Box>
               ) : null}
               {project.mentor ? (
                 <Box>
                   <Typography fontWeight={600}>Mentor</Typography>
-                  <UsersName>{project.mentor.name}</UsersName>
+                  <UsersName user={project.mentor} />
                 </Box>
               ) : null}
             </Stack>
@@ -114,17 +125,25 @@ const ProjectCard: FC<Props> = ({ project }) => {
 
 export default ProjectCard;
 
-const UsersName: FC = ({ children }) => {
+const UsersName: FC<{ user: User }> = ({ user }) => {
   return (
-    <Typography
-      variant="subtitle1"
-      sx={{
-        whiteSpace: "nowrap",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-      }}
-    >
-      {children}
-    </Typography>
+    <Link href={`${PAGES.USERS}/${user.id}`} passHref>
+      <Typography
+        variant="subtitle1"
+        sx={{
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          transition: BASE_TRANSITION,
+          "&:hover": {
+            textDecoration: "underline",
+            color: "secondary.main",
+          },
+          cursor: "pointer",
+        }}
+      >
+        {user.name}
+      </Typography>
+    </Link>
   );
 };

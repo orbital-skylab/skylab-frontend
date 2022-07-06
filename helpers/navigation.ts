@@ -2,10 +2,11 @@ import { ROLES } from "@/types/roles";
 
 export enum PAGES {
   LANDING = "/",
-  PROJECTS = "/projects",
   STAFF = "/staff",
-  PROFILE = "/profile",
+  PROJECTS = "/projects",
+  USERS = "/users",
   RESET_PASSWORD = "/reset-password",
+  CHANGE_PASSWORD = "/change-password",
   MANAGE = "/manage",
   MANAGE_DEADLINES = "/manage/deadlines",
   MANAGE_USERS = "/manage/users",
@@ -29,7 +30,7 @@ export type NavbarOption = {
 
 export const NAVBAR_OPTIONS: NavbarOption[] = [
   {
-    label: "Gallery",
+    label: "Projects",
     route: PAGES.PROJECTS,
   },
   { label: "Staff", route: PAGES.STAFF },
@@ -40,7 +41,7 @@ export const NAVBAR_OPTIONS: NavbarOption[] = [
   },
   {
     label: "Profile",
-    route: PAGES.PROFILE,
+    route: PAGES.USERS,
   },
   {
     label: "Sign Out",

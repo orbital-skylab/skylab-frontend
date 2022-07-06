@@ -117,11 +117,9 @@ export type GetProjectResponse = {
   project: Project;
 };
 
-export type GetProjectsResponse = Project[];
-// TODO: UPDATE during revamp
-//  {
-//   projects: Project[];
-// }
+export type GetProjectsResponse = {
+  projects: Project[];
+};
 
 export type CreateProjectResponse = {
   project: Project;

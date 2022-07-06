@@ -72,7 +72,7 @@ const Profile: NextPage = () => {
             raised
           >
             {isCurrentUser ? (
-              <NextLink href={`${PAGES.PROFILE}/${user?.id}/edit`} passHref>
+              <NextLink href={`${PAGES.USERS}/${user?.id}/edit`} passHref>
                 <Button
                   size="small"
                   variant="contained"

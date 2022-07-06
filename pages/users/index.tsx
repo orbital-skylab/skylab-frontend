@@ -12,7 +12,7 @@ const CurrentUserProfile: NextPage = () => {
 
   useEffect(() => {
     if (user) {
-      router.push(`${PAGES.PROFILE}/${user.id}`);
+      router.push(`${PAGES.USERS}/${user.id}`);
     } else {
       router.push(PAGES.LANDING);
     }
