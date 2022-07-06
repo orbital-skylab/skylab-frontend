@@ -148,7 +148,7 @@ const ProjectRow: FC<Props> = ({ project, mutate }) => {
             }}
           >
             <Link href={`${PAGES.PROJECTS}/${project.id}`} passHref>
-              <Tooltip title="View and edit project details">
+              <Tooltip title="View and edit project details" placement="left">
                 <MenuItem>View Details</MenuItem>
               </Tooltip>
             </Link>

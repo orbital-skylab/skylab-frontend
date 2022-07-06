@@ -1,7 +1,7 @@
 import { Adviser } from "./advisers";
 import { Deadline, Question } from "./deadlines";
 import { Mentor } from "./mentors";
-import { Project } from "./projects";
+import { LeanProject, Project } from "./projects";
 import {
   AdministratorRole,
   AdviserRole,
@@ -119,6 +119,10 @@ export type GetProjectResponse = {
 
 export type GetProjectsResponse = {
   projects: Project[];
+};
+
+export type GetLeanProjectsResponse = {
+  projects: LeanProject[];
 };
 
 export type CreateProjectResponse = {

@@ -69,7 +69,6 @@ function MultiDropdown<FormValuesType>({
           return foundOption ? String(foundOption.label) : "";
         }}
         isOptionEqualToValue={(option, value) => {
-          // console.log(option, value);
           return option.value === value;
         }}
         renderInput={(params) => (

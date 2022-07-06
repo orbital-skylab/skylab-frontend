@@ -119,7 +119,6 @@ const Staff: NextPage = () => {
             justifyContent="space-between"
             alignItems="center"
             width="100%"
-            mb={{ md: "0.5rem" }}
           >
             <TextField
               label="Search"

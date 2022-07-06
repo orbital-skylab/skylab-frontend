@@ -146,7 +146,7 @@ const ProjectsList = () => {
         authorizedRoles={[ROLES.ADMINISTRATORS]}
       >
         <AutoBreadcrumbs />
-        <Stack direction="column" mt="0.5rem" mb="1rem">
+        <Stack direction="column" mb="0.5rem">
           <Stack
             direction="row"
             justifyContent="space-between"

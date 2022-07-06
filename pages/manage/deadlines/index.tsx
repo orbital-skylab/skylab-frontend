@@ -43,6 +43,7 @@ const Deadlines: NextPage = () => {
   } = useFetch<GetDeadlinesResponse>({
     endpoint: `/deadlines`,
     queryParams: memoQueryParams,
+    enabled: Boolean(selectedCohortYear),
   });
 
   /** Input Change Handlers */
@@ -78,7 +79,7 @@ const Deadlines: NextPage = () => {
           direction="row"
           justifyContent="end"
           width="100%"
-          mb="1rem"
+          mb="0.5rem"
           spacing="1rem"
         >
           <Button

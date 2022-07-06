@@ -20,6 +20,9 @@ import { PAGES } from "@/helpers/navigation";
 import type { NextPage } from "next";
 import { GetProjectResponse } from "@/types/api";
 import useAuth from "@/hooks/useAuth";
+import { userHasRole } from "@/helpers/roles";
+import { ROLES } from "@/types/roles";
+import GoBackButton from "@/components/buttons/GoBackButton";
 
 const ProjectDetails: NextPage = () => {
   const router = useRouter();
@@ -32,16 +35,16 @@ const ProjectDetails: NextPage = () => {
       enabled: !!projectId,
     });
 
-  const isProjectsStudent =
-    user && projectResponse
-      ? projectResponse.project.students.map(({ id }) => id).includes(user?.id)
-      : false;
-
   const isProjectsAdviser =
-    user && projectResponse ? projectResponse.project.adviser?.id : false;
+    user &&
+    user.adviser &&
+    projectResponse &&
+    projectResponse.project &&
+    projectResponse.project.adviser &&
+    user.adviser.id === projectResponse.project.adviser.adviserId;
 
   const showEditButton =
-    isProjectsStudent || isProjectsAdviser || Boolean(user?.administrator?.id);
+    isProjectsAdviser || (user && userHasRole(user, ROLES.ADMINISTRATORS));
 
   const project = projectResponse ? projectResponse.project : undefined;
 
@@ -59,6 +62,7 @@ const ProjectDetails: NextPage = () => {
           />
         }
       >
+        <GoBackButton />
         <Stack direction="column" alignItems="center">
           <Box
             component="img"
@@ -121,7 +125,7 @@ const ProjectDetails: NextPage = () => {
                       project?.students
                         ? project?.students.map((student) => {
                             return {
-                              href: `/profile/${student.id}`,
+                              href: `${PAGES.USERS}/${student.id}`,
                               label: student.name,
                             };
                           })
@@ -132,7 +136,7 @@ const ProjectDetails: NextPage = () => {
                     <SpreadAttribute
                       attribute="Adviser"
                       value={{
-                        href: `/profile/${project.adviser.id}`,
+                        href: `${PAGES.USERS}/${project.adviser.id}`,
                         label: project.adviser.name,
                       }}
                     />
@@ -142,7 +146,7 @@ const ProjectDetails: NextPage = () => {
                     <SpreadAttribute
                       attribute="Mentor"
                       value={{
-                        href: `/profile/${project.mentor.id}`,
+                        href: `${PAGES.USERS}/${project.mentor.id}`,
                         label: project.mentor.name,
                       }}
                     />

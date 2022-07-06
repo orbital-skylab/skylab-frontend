@@ -8,6 +8,12 @@ import Link from "next/link";
 
 const pages = [
   {
+    title: "Cohorts",
+    description:
+      "Create, edit and delete cohorts, their start dates, and end dates.",
+    href: PAGES.MANAGE_COHORTS,
+  },
+  {
     title: "Deadlines and Questions",
     description:
       "Create, edit and delete milestones, evaluations and other submissions. Additionally, configure the questions for each submission.",

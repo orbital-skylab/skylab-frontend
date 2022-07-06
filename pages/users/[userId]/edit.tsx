@@ -12,7 +12,7 @@ import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import { useRouter } from "next/router";
 // Helpers
-import { Formik, FormikHelpers } from "formik";
+import { Formik } from "formik";
 import { areAllEmptyValues, stripEmptyStrings } from "@/helpers/forms";
 // Types
 import { GetUserResponse, HTTP_METHOD } from "@/types/api";
@@ -46,10 +46,7 @@ const EditProfile: NextPage = () => {
     selfIntro: user?.selfIntro ?? "",
   };
 
-  const handleSubmit = async (
-    values: EditProfileFormValues,
-    actions: FormikHelpers<EditProfileFormValues>
-  ) => {
+  const handleSubmit = async (values: EditProfileFormValues) => {
     const processedValues = stripEmptyStrings(values);
 
     try {
@@ -57,7 +54,6 @@ const EditProfile: NextPage = () => {
       setSuccess(
         `You have successfully edited ${userResponse?.user.name}'s profile`
       );
-      actions.resetForm();
     } catch (error) {
       setError(error);
     }
@@ -117,7 +113,7 @@ const EditProfile: NextPage = () => {
                             }
                             loading={formik.isSubmitting}
                           >
-                            Edit
+                            Save
                           </LoadingButton>
                         </Stack>
                       </Stack>

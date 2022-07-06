@@ -16,7 +16,7 @@ import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 import { useRouter } from "next/router";
 import useFetch, { isFetching } from "@/hooks/useFetch";
 // Helpers
-import { Formik, FormikHelpers } from "formik";
+import { Formik } from "formik";
 import { areAllEmptyValues, stripEmptyStrings } from "@/helpers/forms";
 // Types
 import { GetProjectResponse, GetUsersResponse, HTTP_METHOD } from "@/types/api";
@@ -70,15 +70,11 @@ const EditProject: NextPage = () => {
     endpoint: `/projects/${projectId}`,
   });
 
-  const handleSubmit = async (
-    values: EditProjectFormValues,
-    actions: FormikHelpers<EditProjectFormValues>
-  ) => {
+  const handleSubmit = async (values: EditProjectFormValues) => {
     const processedValues = stripEmptyStrings(values);
     try {
       await EditProject.call(processedValues);
       setSuccess("You have successfully edited your profile");
-      actions.resetForm();
     } catch (error) {
       setError(error);
     }
@@ -109,16 +105,6 @@ const EditProject: NextPage = () => {
                     return (
                       <form onSubmit={formik.handleSubmit}>
                         <Stack direction="column" spacing="1rem">
-                          <Dropdown
-                            name="achievement"
-                            label="Level of Achivement"
-                            formik={formik}
-                            options={Object.values(LEVELS_OF_ACHIEVEMENT).map(
-                              (option) => {
-                                return { label: option, value: option };
-                              }
-                            )}
-                          />
                           <TextInput
                             name="name"
                             label="Project Name"
@@ -198,7 +184,7 @@ const EditProject: NextPage = () => {
                               }
                               loading={formik.isSubmitting}
                             >
-                              Edit
+                              Save
                             </LoadingButton>
                           </Stack>
                         </Stack>

@@ -14,6 +14,7 @@ import useFetch, { isFetching } from "@/hooks/useFetch";
 import { GetCohortsResponse } from "@/types/cohorts";
 import { Add } from "@mui/icons-material";
 import AddCohortModal from "@/components/modals/AddCohortModal";
+import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
 
 const Cohorts: NextPage = () => {
   const [isAddCohortOpen, setIsAddCohortOpen] = useState(false);
@@ -39,18 +40,9 @@ const Cohorts: NextPage = () => {
         mutate={mutate}
       />
       <Body>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          width="100%"
-          mt="0.5rem"
-          mb="1rem"
-        >
-          <Button
-            variant="contained"
-            size="small"
-            onClick={handleOpenAddCohortModal}
-          >
+        <AutoBreadcrumbs sx={{ mb: "0" }} />
+        <Stack direction="row" justifyContent="end" width="100%">
+          <Button variant="outlined" onClick={handleOpenAddCohortModal}>
             <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
             Cohort
           </Button>

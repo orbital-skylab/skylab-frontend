@@ -24,6 +24,7 @@ const UsersName: FC<Props> = ({ user }) => {
             color: "secondary.main",
           },
           cursor: "pointer",
+          width: "fit-content",
         }}
       >
         {user.name}

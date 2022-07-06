@@ -8,6 +8,7 @@ export enum PAGES {
   RESET_PASSWORD = "/reset-password",
   CHANGE_PASSWORD = "/change-password",
   MANAGE = "/manage",
+  MANAGE_COHORTS = "/manage/cohorts",
   MANAGE_DEADLINES = "/manage/deadlines",
   MANAGE_USERS = "/manage/users",
   MANAGE_USERS_BATCH_ADD = "/manage/users/batch-add",

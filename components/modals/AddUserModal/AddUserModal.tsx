@@ -113,7 +113,6 @@ const AddUserModal: FC<Props> = ({
         >
           {(formik) => (
             <>
-              {console.log(formik.errors)}
               <Stack direction="column" spacing="1rem">
                 <Typography>User Details</Typography>
                 <UserDetailsForm formik={formik} />

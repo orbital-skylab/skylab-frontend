@@ -25,6 +25,10 @@ type Props = {
 const ProjectCard: FC<Props> = ({ project }) => {
   const [isProjectModalOpen, setProjectModalOpen] = useState(false);
 
+  const handleOpenProjectModal = () => {
+    setProjectModalOpen(true);
+  };
+
   return (
     <>
       <ProjectSubmissionModal
@@ -35,16 +39,30 @@ const ProjectCard: FC<Props> = ({ project }) => {
       <Card
         sx={{
           transition: BASE_TRANSITION,
+          position: "relative",
           "&:hover": {
             transform: "scale(102%)",
           },
         }}
       >
+        <Typography
+          sx={{
+            position: "absolute",
+            top: "0",
+            left: "0",
+            padding: "2px 6px",
+            borderRadius: "0 0 4px 0",
+            backgroundColor: "primary.main",
+            color: "white",
+          }}
+          fontWeight={600}
+        >
+          {project.id}
+        </Typography>
         <CardContent>
           <Stack spacing="0.5rem">
             <Link passHref href={`${PAGES.PROJECTS}/${project.id}`}>
               <Typography
-                variant="h5"
                 align="center"
                 fontWeight={600}
                 sx={{
@@ -56,7 +74,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
                   },
                 }}
               >
-                {project.name}
+                {`${project.name}`}
               </Typography>
             </Link>
             <Box
@@ -105,17 +123,34 @@ const ProjectCard: FC<Props> = ({ project }) => {
                 </Box>
               ) : null}
             </Stack>
-            <Button
-              variant="contained"
-              sx={{
-                textTransform: "none",
-                width: "fit-content",
-                alignSelf: "center",
-              }}
-              onClick={() => setProjectModalOpen(true)}
-            >
-              View Submission
-            </Button>
+            <Stack direction="row" gap="0.5rem">
+              <Link passHref href={`${PAGES.PROJECTS}/${project.id}`}>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  sx={{
+                    width: "100%",
+                    textTransform: "none",
+                    alignSelf: "center",
+                  }}
+                  onClick={() => setProjectModalOpen(true)}
+                >
+                  Profile
+                </Button>
+              </Link>
+              <Button
+                size="small"
+                variant="contained"
+                sx={{
+                  width: "100%",
+                  textTransform: "none",
+                  alignSelf: "center",
+                }}
+                onClick={handleOpenProjectModal}
+              >
+                Submission
+              </Button>
+            </Stack>
           </Stack>
         </CardContent>
       </Card>

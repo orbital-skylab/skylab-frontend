@@ -1,5 +1,5 @@
 import { Project } from "@/types/projects";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { Dispatch, FC, SetStateAction } from "react";
 import Modal from "../Modal";
 
@@ -55,6 +55,13 @@ const ProjectSubmissionModal: FC<Props> = ({ open, setOpen, project }) => {
         {/* TODO: Put poster URL here */}
         <iframe src="poster.videoUrl" />
       </Box>
+      <Button
+        sx={{ mb: "-0.5rem", mt: "0.5rem" }}
+        variant="outlined"
+        onClick={handleClose}
+      >
+        Close
+      </Button>
     </Modal>
   );
 };

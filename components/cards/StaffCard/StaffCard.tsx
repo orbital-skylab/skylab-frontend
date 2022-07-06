@@ -6,17 +6,21 @@ import {
   CardContent,
   CardMedia,
   IconButton,
+  Link,
   Stack,
+  SxProps,
   Tooltip,
   Typography,
 } from "@mui/material";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkIcon from "@mui/icons-material/Link";
+import PersonIcon from "@mui/icons-material/Person";
 // Types
 import { User } from "@/types/users";
 // Constants
 import { BASE_TRANSITION, SQUARE_ASPECT_RATIO } from "@/styles/constants";
+import { PAGES } from "@/helpers/navigation";
 
 type Props = {
   staff: User;
@@ -51,19 +55,28 @@ const StaffCard: FC<Props> = ({ staff }) => {
       <CardActions sx={{ paddingTop: 0 }}>
         <Stack direction="row" sx={{ width: "100%" }} justifyContent="end">
           <SocialButton
+            title="View Profile"
+            icon={<PersonIcon />}
+            url={`${PAGES.USERS}/${staff.id}`}
+            sx={{ marginRight: "auto" }}
+          />
+          <SocialButton
             title="Github"
             icon={<GitHubIcon />}
             url={String(staff.githubUrl)}
+            isDisabled={!staff.githubUrl}
           />
           <SocialButton
             title="LinkedIn"
             icon={<LinkedInIcon />}
             url={String(staff.linkedinUrl)}
+            isDisabled={!staff.linkedinUrl}
           />
           <SocialButton
             title="Personal Portfolio"
             icon={<LinkIcon />}
             url={String(staff.personalSiteUrl)}
+            isDisabled={!staff.personalSiteUrl}
           />
         </Stack>
       </CardActions>
@@ -75,15 +88,33 @@ type SocialButtonProps = {
   title: string;
   icon: ReactNode;
   url: string;
+  isDisabled?: boolean;
+  sx?: SxProps;
 };
 
-const SocialButton: FC<SocialButtonProps> = ({ title, icon, url }) => {
-  return (
-    <a href={url} target="_blank" rel="noopener noreferrer">
+const SocialButton: FC<SocialButtonProps> = ({
+  title,
+  icon,
+  url,
+  isDisabled,
+  sx,
+}) => {
+  const renderButton = () => {
+    return (
       <Tooltip title={title}>
-        <IconButton>{icon}</IconButton>
+        <IconButton disabled={isDisabled}>{icon}</IconButton>
       </Tooltip>
-    </a>
+    );
+  };
+
+  if (isDisabled) {
+    return renderButton();
+  }
+
+  return (
+    <Link sx={sx} href={url} target="_blank" rel="noopener noreferrer">
+      {renderButton()}
+    </Link>
   );
 };
 

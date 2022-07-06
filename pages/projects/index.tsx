@@ -124,7 +124,7 @@ const Projects: NextPage = () => {
   return (
     <>
       <Body isError={isError(fetchProjectsStatus)} isLoading={isLoadingCohorts}>
-        <Stack direction="column" mt="0.5rem" mb="1rem">
+        <Stack direction="column" mt="0.5rem">
           <Stack
             direction="row"
             justifyContent="space-between"
@@ -183,11 +183,11 @@ const Projects: NextPage = () => {
             noDataCondition={projects === undefined || projects.length === 0}
             fallback={<NoneFound message="No such projects found" />}
           >
-            <Grid container spacing={{ xs: 2, md: 4, xl: 8 }}>
+            <Grid container spacing={{ xs: 2, md: 4 }}>
               {projects
                 ? projects.map((project) => {
                     return (
-                      <Grid item key={project.id} xs={12} md={4} xl={3}>
+                      <Grid item key={project.id} xs={12 / 2} md={12 / 4}>
                         <ProjectCard project={project} />
                       </Grid>
                     );

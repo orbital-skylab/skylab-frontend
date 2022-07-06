@@ -38,12 +38,11 @@ import useInfiniteFetch, {
 } from "@/hooks/useInfiniteFetch";
 // Types
 import { Cohort } from "@/types/cohorts";
-import { LeanProject } from "@/types/projects";
 import { ROLES, ROLES_WITH_ALL } from "@/types/roles";
 import { User } from "@/types/users";
 import { toSingular } from "@/helpers/roles";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
-import { GetUsersResponse } from "@/types/api";
+import { GetLeanProjectsResponse, GetUsersResponse } from "@/types/api";
 import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
 
 const LIMIT = 20;
@@ -94,14 +93,13 @@ const Users: NextPage = () => {
       cohortYear: selectedCohortYear,
     };
   }, [selectedCohortYear]);
-  const { data: leanProjects, status: fetchLeanProjectsStatus } = useFetch<
-    LeanProject[]
-  >({
-    endpoint: `/projects/lean`,
-    queryParams: memoLeanProjectsQueryParams,
-    requiresAuthorization: true,
-    enabled: typeof selectedCohortYear === "number",
-  });
+  const { data: leanProjectsResponse, status: fetchLeanProjectsStatus } =
+    useFetch<GetLeanProjectsResponse>({
+      endpoint: `/projects/lean`,
+      queryParams: memoLeanProjectsQueryParams,
+      requiresAuthorization: true,
+      enabled: typeof selectedCohortYear === "number",
+    });
 
   /** Input Change Handlers */
   const handleTabChange = (event: SyntheticEvent, newRole: ROLES_WITH_ALL) => {
@@ -154,7 +152,7 @@ const Users: NextPage = () => {
         setOpen={setIsAddUserOpen}
         mutate={mutate}
         hasMore={hasMore}
-        leanProjects={leanProjects}
+        leanProjects={leanProjectsResponse?.projects ?? []}
         isFetchingLeanProjects={isFetching(fetchLeanProjectsStatus)}
       />
       <Body
@@ -162,7 +160,7 @@ const Users: NextPage = () => {
         authorizedRoles={[ROLES.ADMINISTRATORS]}
       >
         <AutoBreadcrumbs />
-        <Stack direction="column" mt="0.5rem" mb="1rem">
+        <Stack direction="column" mb="0.5rem">
           <Stack
             direction="row"
             justifyContent="space-between"
@@ -243,7 +241,7 @@ const Users: NextPage = () => {
             <UserTable
               users={users}
               mutate={mutate}
-              leanProjects={leanProjects}
+              leanProjects={leanProjectsResponse?.projects ?? []}
               isFetchingLeanProjects={isFetching(fetchLeanProjectsStatus)}
             />
             <div ref={bottomOfPageRef} />
