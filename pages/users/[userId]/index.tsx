@@ -21,6 +21,7 @@ import { PAGES } from "@/helpers/navigation";
 import { useRouter } from "next/router";
 // Types
 import { GetUserResponse } from "@/types/api";
+import GoBackButton from "@/components/buttons/GoBackButton";
 
 const Profile: NextPage = () => {
   const router = useRouter();
@@ -49,6 +50,7 @@ const Profile: NextPage = () => {
           />
         }
       >
+        <GoBackButton />
         <Stack direction="column" alignItems="center">
           <Avatar
             variant="circular"

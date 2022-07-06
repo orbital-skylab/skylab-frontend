@@ -16,12 +16,11 @@ import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
 // Types
 import {
   HTTP_METHOD,
-  GetProjectsResponse,
   CreateProjectResponse,
   GetUsersResponse,
 } from "@/types/api";
 import useFetch, { Mutate } from "@/hooks/useFetch";
-import { LEVELS_OF_ACHIEVEMENT } from "@/types/projects";
+import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
 import { Cohort } from "@/types/cohorts";
 
 interface AddProjectFormValuesType {
@@ -35,7 +34,7 @@ interface AddProjectFormValuesType {
 type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  mutate: Mutate<GetProjectsResponse>;
+  mutate: Mutate<Project[]>;
   cohortYear: Cohort["academicYear"];
 };
 
@@ -56,12 +55,6 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate, cohortYear }) => {
         newProjects.push(project);
         return newProjects;
       });
-      //TODO: UPDATE FOR REVAMP
-      // mutate(({ projects }) => {
-      //   const newProjects = [...projects];
-      //   newProjects.push(project);
-      //   return { projects: newProjects };
-      // });
     },
   });
 

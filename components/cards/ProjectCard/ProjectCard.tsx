@@ -10,10 +10,10 @@ import {
 } from "@mui/material";
 import ProjectSubmissionModal from "../../modals/ProjectSubmissionModal";
 import Link from "next/link";
+import UsersName from "@/components/typography/UsersName/UsersName";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
 // Types
-import { User } from "@/types/users";
 import { Project } from "@/types/projects";
 // Constants
 import { A4_ASPECT_RATIO, BASE_TRANSITION } from "@/styles/constants";
@@ -124,26 +124,3 @@ const ProjectCard: FC<Props> = ({ project }) => {
 };
 
 export default ProjectCard;
-
-const UsersName: FC<{ user: User }> = ({ user }) => {
-  return (
-    <Link href={`${PAGES.USERS}/${user.id}`} passHref>
-      <Typography
-        variant="subtitle1"
-        sx={{
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          transition: BASE_TRANSITION,
-          "&:hover": {
-            textDecoration: "underline",
-            color: "secondary.main",
-          },
-          cursor: "pointer",
-        }}
-      >
-        {user.name}
-      </Typography>
-    </Link>
-  );
-};

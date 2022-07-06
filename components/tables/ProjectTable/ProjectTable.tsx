@@ -20,6 +20,9 @@ const ColumnHeadings = [
   "Project ID",
   "Project Name",
   "Level of Achievement",
+  "Students",
+  "Adviser",
+  "Mentor",
   "Actions",
 ];
 

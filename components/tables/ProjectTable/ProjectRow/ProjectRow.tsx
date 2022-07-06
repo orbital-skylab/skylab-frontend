@@ -14,6 +14,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import Link from "next/link";
+import UsersName from "@/components/typography/UsersName";
 // Hooks
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Helpers
@@ -109,6 +110,21 @@ const ProjectRow: FC<Props> = ({ project, mutate }) => {
             {renderTag()}
           </Stack>
         </TableCell>
+        <TableCell>
+          {project.students.map((student) => (
+            <UsersName key={student.id} user={student} />
+          ))}
+        </TableCell>
+        {project.adviser && project.adviser.id ? (
+          <TableCell>
+            <UsersName user={project.adviser} />
+          </TableCell>
+        ) : null}
+        {project.mentor && project.mentor.id ? (
+          <TableCell>
+            <UsersName user={project.mentor} />
+          </TableCell>
+        ) : null}
         <TableCell>
           <Button
             variant="outlined"
