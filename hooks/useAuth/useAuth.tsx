@@ -51,14 +51,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [user]);
 
   const signIn = async (email: string, password: string) => {
-    const apiServiceBuilder = new ApiServiceBuilder({
+    const signInApiService = new ApiServiceBuilder({
       method: HTTP_METHOD.POST,
       endpoint: "/auth/sign-in",
       body: { email, password },
       requiresAuthorization: true,
-    });
-    const apiService = apiServiceBuilder.build();
-    const signInResponse = await apiService();
+    }).build();
+
+    const signInResponse = await signInApiService();
 
     /**
      * Unsuccessful user login
@@ -73,13 +73,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signOut = async () => {
-    const apiServiceBuilder = new ApiServiceBuilder({
+    const signOutApiService = new ApiServiceBuilder({
       method: HTTP_METHOD.GET,
       endpoint: "/auth/sign-out",
       requiresAuthorization: true,
-    });
-    const apiService = apiServiceBuilder.build();
-    const signOutResponse = await apiService();
+    }).build();
+    const signOutResponse = await signOutApiService();
 
     if (!signOutResponse.ok) {
       const error = await signOutResponse.json();
