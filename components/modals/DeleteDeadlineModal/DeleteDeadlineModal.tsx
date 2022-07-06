@@ -5,10 +5,9 @@ import { Button, Stack } from "@mui/material";
 // Hooks
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
 // Types
-import { HTTP_METHOD } from "@/types/api";
+import { HTTP_METHOD, GetDeadlinesResponse } from "@/types/api";
 import { Deadline } from "@/types/deadlines";
 import { Mutate } from "@/hooks/useFetch";
-import { GetDeadlinesResponse } from "@/pages/manage/deadlines";
 
 type Props = {
   open: boolean;

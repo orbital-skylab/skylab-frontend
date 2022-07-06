@@ -87,8 +87,8 @@ export class ApiServiceBuilder {
       requestInit.credentials = "include";
     }
 
-    const apiService = async () => {
-      return await fetch(requestResource, requestInit);
+    const apiService = () => {
+      return fetch(requestResource, requestInit);
     };
     return apiService;
   }

@@ -1,4 +1,5 @@
 import { Adviser } from "./advisers";
+import { Deadline, Question } from "./deadlines";
 import { Mentor } from "./mentors";
 import { Project } from "./projects";
 import {
@@ -114,4 +115,31 @@ export type EditAdministratorResponse = {
  */
 export type GetProjectResponse = {
   project: Project;
+};
+
+export type GetProjectsResponse = Project[];
+// TODO: UPDATE during revamp
+//  {
+//   projects: Project[];
+// }
+
+export type CreateProjectResponse = {
+  project: Project;
+};
+
+/**
+ * Deadlines Endpoints;
+ * https://github.com/orbital-skylab/skylab-backend/wiki/Deadlines-Endpoints
+ */
+export type GetDeadlinesResponse = {
+  deadlines: Deadline[];
+};
+
+export type GetDeadlineDetailsResponse = {
+  deadline: Deadline;
+  questions: Question[];
+};
+
+export type CreateDeadlineResponse = {
+  deadline: Deadline;
 };

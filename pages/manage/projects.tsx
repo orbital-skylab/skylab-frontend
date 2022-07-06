@@ -1,28 +1,3 @@
-import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
-import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
-import NoneFound from "@/components/emptyStates/NoneFound";
-import Body from "@/components/layout/Body";
-import ProjectTable from "@/components/tables/ProjectTable";
-import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
-import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
-import useCohort from "@/hooks/useCohort";
-import { isFetching } from "@/hooks/useFetch";
-import useInfiniteFetch, {
-  createBottomOfPageRef,
-} from "@/hooks/useInfiniteFetch";
-import { Cohort } from "@/types/cohorts";
-import { LEVELS_OF_ACHIEVEMENT_WITH_ALL, Project } from "@/types/projects";
-import { ROLES } from "@/types/roles";
-import {
-  Box,
-  debounce,
-  MenuItem,
-  Stack,
-  Tab,
-  Tabs,
-  tabsClasses,
-  TextField,
-} from "@mui/material";
 import {
   ChangeEvent,
   SyntheticEvent,
@@ -32,6 +7,38 @@ import {
   useRef,
   useState,
 } from "react";
+// Components
+import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
+import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
+import NoneFound from "@/components/emptyStates/NoneFound";
+import Body from "@/components/layout/Body";
+import AddProjectModal from "@/components/modals/AddProjectModal";
+import ProjectTable from "@/components/tables/ProjectTable";
+import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
+import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
+import {
+  Box,
+  Button,
+  debounce,
+  MenuItem,
+  Stack,
+  Tab,
+  Tabs,
+  tabsClasses,
+  TextField,
+} from "@mui/material";
+import { Add } from "@mui/icons-material";
+// Hooks
+import useCohort from "@/hooks/useCohort";
+import { isFetching } from "@/hooks/useFetch";
+import useInfiniteFetch, {
+  createBottomOfPageRef,
+} from "@/hooks/useInfiniteFetch";
+// Types
+import { GetProjectsResponse } from "@/types/api";
+import { Cohort } from "@/types/cohorts";
+import { LEVELS_OF_ACHIEVEMENT_WITH_ALL, Project } from "@/types/projects";
+import { ROLES } from "@/types/roles";
 
 const LIMIT = 20;
 
@@ -51,6 +58,8 @@ const ProjectsList = () => {
   const [selectedCohortYear, setSelectedCohortYear] = useState<
     Cohort["academicYear"] | string
   >("");
+  const [isAddProjectOpen, setIsAddProjectOpen] = useState(false);
+
   /** For fetching projects based on filters */
   const memoProjectsQueryParams = useMemo(() => {
     return {
@@ -69,7 +78,7 @@ const ProjectsList = () => {
     status: fetchProjectsStatus,
     hasMore,
     mutate,
-  } = useInfiniteFetch<Project[], Project>({
+  } = useInfiniteFetch<GetProjectsResponse, Project>({
     endpoint: `/projects`,
     queryParams: memoProjectsQueryParams,
     page,
@@ -104,6 +113,10 @@ const ProjectsList = () => {
     setPage(0);
   };
 
+  const handleOpenAddProjectModal = () => {
+    setIsAddProjectOpen(true);
+  };
+
   /** To fetch more projects when the bottom of the page is reached */
   const observer = useRef<IntersectionObserver | null>(null);
   const bottomOfPageRef = createBottomOfPageRef(
@@ -120,83 +133,104 @@ const ProjectsList = () => {
   }, [currentCohortYear]);
 
   return (
-    <Body isLoading={isLoadingCohorts} authorizedRoles={[ROLES.ADMINISTRATORS]}>
-      <AutoBreadcrumbs />
-      <Stack direction="column" mt="0.5rem" mb="1rem">
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          width="100%"
-          mb={{ md: "0.5rem" }}
-        >
-          <TextField
-            label="Search"
-            value={searchTextInput}
-            onChange={handleSearchInputChange}
-            size="small"
-          />
-          <TextField
-            name="cohort"
-            label="Cohort"
-            value={selectedCohortYear}
-            onChange={handleCohortYearChange}
-            select
-            size="small"
-          >
-            {cohorts &&
-              cohorts.map(({ academicYear }) => (
-                <MenuItem key={academicYear} value={academicYear}>
-                  {academicYear}
-                </MenuItem>
-              ))}
-          </TextField>
-        </Stack>
-
-        <Tabs
-          value={selectedLevelOfAchievement}
-          onChange={handleTabChange}
-          textColor="secondary"
-          indicatorColor="secondary"
-          aria-label="project-level-tabs"
-          variant="scrollable"
-          scrollButtons="auto"
-          allowScrollButtonsMobile
-          sx={{
-            [`& .${tabsClasses.scrollButtons}`]: { color: "primary" },
-            marginY: { xs: 2, md: 0 },
-          }}
-        >
-          {Object.values(LEVELS_OF_ACHIEVEMENT_WITH_ALL).map((level) => {
-            return <Tab key={level} value={level} label={level} />;
-          })}
-        </Tabs>
-      </Stack>
-      <LoadingWrapper
-        isLoading={
-          (projects === undefined || projects.length === 0) &&
-          isFetching(fetchProjectsStatus)
-        }
+    <>
+      <AddProjectModal
+        open={isAddProjectOpen}
+        setOpen={setIsAddProjectOpen}
+        cohortYear={selectedCohortYear as Cohort["academicYear"]}
+        mutate={mutate}
+      />
+      <Body
+        isLoading={isLoadingCohorts}
+        authorizedRoles={[ROLES.ADMINISTRATORS]}
       >
-        <NoDataWrapper
-          noDataCondition={projects === undefined || projects.length === 0}
-          fallback={<NoneFound message="No such projects found" />}
+        <AutoBreadcrumbs />
+        <Stack direction="column" mt="0.5rem" mb="1rem">
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            width="100%"
+            mb={{ md: "0.5rem" }}
+          >
+            <TextField
+              label="Search"
+              value={searchTextInput}
+              onChange={handleSearchInputChange}
+              size="small"
+            />
+            <Stack direction="row" spacing="1rem">
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={handleOpenAddProjectModal}
+              >
+                <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
+                Project
+              </Button>
+              <TextField
+                name="cohort"
+                label="Cohort"
+                value={selectedCohortYear}
+                onChange={handleCohortYearChange}
+                select
+                size="small"
+              >
+                {cohorts &&
+                  cohorts.map(({ academicYear }) => (
+                    <MenuItem key={academicYear} value={academicYear}>
+                      {academicYear}
+                    </MenuItem>
+                  ))}
+              </TextField>
+            </Stack>
+          </Stack>
+
+          <Tabs
+            value={selectedLevelOfAchievement}
+            onChange={handleTabChange}
+            textColor="secondary"
+            indicatorColor="secondary"
+            aria-label="project-level-tabs"
+            variant="scrollable"
+            scrollButtons="auto"
+            allowScrollButtonsMobile
+            sx={{
+              [`& .${tabsClasses.scrollButtons}`]: { color: "primary" },
+              marginY: { xs: 2, md: 0 },
+            }}
+          >
+            {Object.values(LEVELS_OF_ACHIEVEMENT_WITH_ALL).map((level) => {
+              return <Tab key={level} value={level} label={level} />;
+            })}
+          </Tabs>
+        </Stack>
+        <LoadingWrapper
+          isLoading={
+            (projects === undefined || projects.length === 0) &&
+            isFetching(fetchProjectsStatus)
+          }
         >
-          <ProjectTable projects={projects} mutate={mutate} />
-          <div ref={bottomOfPageRef} />
-          {isFetching(fetchProjectsStatus) ? (
-            <Box
-              sx={{
-                display: "grid",
-                placeItems: "center",
-              }}
-            >
-              <LoadingSpinner />
-            </Box>
-          ) : null}
-        </NoDataWrapper>
-      </LoadingWrapper>
-    </Body>
+          <NoDataWrapper
+            noDataCondition={projects === undefined || projects.length === 0}
+            fallback={<NoneFound message="No such projects found" />}
+          >
+            <ProjectTable projects={projects} mutate={mutate} />
+            <div ref={bottomOfPageRef} />
+            {isFetching(fetchProjectsStatus) ? (
+              <Box
+                sx={{
+                  display: "grid",
+                  placeItems: "center",
+                }}
+              >
+                <LoadingSpinner />
+              </Box>
+            ) : null}
+          </NoDataWrapper>
+        </LoadingWrapper>
+      </Body>
+    </>
   );
 };
 

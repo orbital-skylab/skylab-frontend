@@ -28,9 +28,9 @@ const StudentDetailsForm: FC<Props> = ({
         <Dropdown
           label="Cohort"
           name="cohortYear"
-          options={cohorts.map((cohort) => ({
-            value: cohort.academicYear,
-            label: cohort.academicYear,
+          options={cohorts.map(({ academicYear }) => ({
+            value: academicYear,
+            label: academicYear,
           }))}
           size="small"
           formik={formik}

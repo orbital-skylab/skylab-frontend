@@ -13,15 +13,11 @@ import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
 import useFetch, { isFetching, isError } from "@/hooks/useFetch";
 // Types
 import { Cohort } from "@/types/cohorts";
-import { Deadline } from "@/types/deadlines";
 import { Add } from "@mui/icons-material";
 import AddDeadlineModal from "@/components/modals/AddDeadlineModal";
 import useCohort from "@/hooks/useCohort";
 import { ROLES } from "@/types/roles";
-
-export type GetDeadlinesResponse = {
-  deadlines: Deadline[];
-};
+import { GetDeadlinesResponse } from "@/types/api";
 
 const Deadlines: NextPage = () => {
   const [isAddDeadlineOpen, setIsAddDeadlineOpen] = useState(false);

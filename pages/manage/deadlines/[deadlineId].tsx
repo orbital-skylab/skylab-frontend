@@ -16,23 +16,13 @@ import useApiCall, { isCalling } from "@/hooks/useApiCall";
 // Helpers
 import { stripOptions } from "@/components/questions/EditQuestionsList/EditQuestionsList.helpers";
 // Types
-import {
-  Deadline,
-  LeanQuestion,
-  Option,
-  Question,
-  QUESTION_TYPE,
-} from "@/types/deadlines";
+import { LeanQuestion, Option, QUESTION_TYPE } from "@/types/deadlines";
+import { GetDeadlineDetailsResponse } from "@/types/api";
 import type { NextPage } from "next";
 import { HTTP_METHOD } from "@/types/api";
 import { ROLES } from "@/types/roles";
 import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
 import { PAGES } from "@/helpers/navigation";
-
-export type DeadlineDetailsResponse = {
-  deadline: Deadline;
-  questions: Question[];
-};
 
 const DeadlineQuestions: NextPage = () => {
   const router = useRouter();
@@ -53,7 +43,7 @@ const DeadlineQuestions: NextPage = () => {
     data: deadlineDetailsResponse,
     status: fetchDeadlineDetailsStatus,
     refetch,
-  } = useFetch<DeadlineDetailsResponse>({
+  } = useFetch<GetDeadlineDetailsResponse>({
     endpoint: `/deadlines/${deadlineId}/questions`,
     onFetch: (deadlineDetailsResponse) => {
       setDeadlineDescription(deadlineDetailsResponse.deadline.desc ?? "");

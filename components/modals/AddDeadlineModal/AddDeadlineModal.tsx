@@ -18,10 +18,13 @@ import { ERRORS } from "@/helpers/errors";
 import useApiCall from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
 // Types
-import { HTTP_METHOD } from "@/types/api";
-import { Deadline, DEADLINE_TYPE } from "@/types/deadlines";
+import {
+  HTTP_METHOD,
+  GetDeadlinesResponse,
+  CreateDeadlineResponse,
+} from "@/types/api";
+import { DEADLINE_TYPE } from "@/types/deadlines";
 import { Mutate } from "@/hooks/useFetch";
-import { GetDeadlinesResponse } from "@/pages/manage/deadlines";
 
 interface AddDeadlineFormValuesType {
   name: string;
@@ -47,7 +50,7 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
   const addDeadline = useApiCall({
     method: HTTP_METHOD.POST,
     endpoint: `/deadlines`,
-    onSuccess: ({ deadline }: { deadline: Deadline }) => {
+    onSuccess: ({ deadline }: CreateDeadlineResponse) => {
       mutate((data) => {
         const newDeadlines = [...data.deadlines];
         newDeadlines.push(deadline);

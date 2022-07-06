@@ -22,7 +22,7 @@ import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Types
 import { Deadline } from "@/types/deadlines";
 import { Mutate } from "@/hooks/useFetch";
-import { GetDeadlinesResponse } from "@/pages/manage/deadlines";
+import { GetDeadlinesResponse } from "@/types/api";
 
 type Props = { deadline: Deadline; mutate: Mutate<GetDeadlinesResponse> };
 
