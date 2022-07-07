@@ -41,6 +41,8 @@ function Dropdown<FormValuesType>({
         onChange={(_, selectedOption) => {
           if (selectedOption) {
             setFieldValue(name as string, selectedOption.value);
+          } else if (selectedOption === null || selectedOption === "") {
+            setFieldValue(name as string, "");
           }
         }}
         inputValue={inputValue}
