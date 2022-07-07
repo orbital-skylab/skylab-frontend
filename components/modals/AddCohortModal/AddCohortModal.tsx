@@ -145,5 +145,12 @@ const addCohortValidationSchema = Yup.object().shape({
     .min(new Date().getFullYear(), ERRORS.MIN_YEAR)
     .required(ERRORS.REQUIRED),
   startDate: Yup.string().required(ERRORS.REQUIRED),
-  endDate: Yup.string().required(ERRORS.REQUIRED),
+  endDate: Yup.date()
+    .when(
+      "startDate",
+      (startDate, yup) =>
+        startDate &&
+        yup.min(startDate, ERRORS.END_DATE_MUST_BE_LATER_THAN_START)
+    )
+    .required(ERRORS.REQUIRED),
 });

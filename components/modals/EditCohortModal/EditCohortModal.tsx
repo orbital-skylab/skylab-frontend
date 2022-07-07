@@ -142,6 +142,13 @@ const EditCohortModal: FC<Props> = ({
 export default EditCohortModal;
 
 const editCohortValidationSchema = Yup.object().shape({
-  startDate: Yup.string().required(ERRORS.REQUIRED),
-  endDate: Yup.string().required(ERRORS.REQUIRED),
+  startDate: Yup.date().required(ERRORS.REQUIRED),
+  endDate: Yup.date()
+    .when(
+      "startDate",
+      (startDate, yup) =>
+        startDate &&
+        yup.min(startDate, ERRORS.END_DATE_MUST_BE_LATER_THAN_START)
+    )
+    .required(ERRORS.REQUIRED),
 });
