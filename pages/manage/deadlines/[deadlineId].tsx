@@ -14,7 +14,7 @@ import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 import { useRouter } from "next/router";
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
 // Helpers
-import { stripOptions } from "@/components/questions/EditQuestionsList/EditQuestionsList.helpers";
+import { processQuestions } from "@/components/questions/EditQuestionsList/EditQuestionsList.helpers";
 // Types
 import { LeanQuestion, Option, QUESTION_TYPE } from "@/types/deadlines";
 import { GetDeadlineDetailsResponse } from "@/types/api";
@@ -71,7 +71,7 @@ const DeadlineQuestions: NextPage = () => {
   const saveQuestionsAndDescription = async () => {
     try {
       await Promise.all([
-        saveQuestions.call({ questions: stripOptions(questions) }),
+        saveQuestions.call({ questions: processQuestions(questions) }),
         saveDeadlineDescription.call({
           deadline: { desc: deadlineDescription },
         }),
