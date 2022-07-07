@@ -19,6 +19,7 @@ import {
   TextField,
   debounce,
   Box,
+  Typography,
 } from "@mui/material";
 import CustomHead from "@/components/CustomHead";
 // Hooks
@@ -200,16 +201,19 @@ const Projects: NextPage = () => {
                 : null}
             </Grid>
             <div ref={bottomOfPageRef} />
-            {isFetching(fetchProjectsStatus) ? (
-              <Box
-                sx={{
-                  display: "grid",
-                  placeItems: "center",
-                }}
-              >
-                <LoadingSpinner />
-              </Box>
-            ) : null}
+            <Box
+              sx={{
+                display: "grid",
+                placeItems: "center",
+                height: "100px",
+              }}
+            >
+              {isFetching(fetchProjectsStatus) ? (
+                <LoadingSpinner size={50} />
+              ) : !hasMore ? (
+                <Typography>No more projects found</Typography>
+              ) : null}
+            </Box>
           </NoDataWrapper>
         </LoadingWrapper>
       </Body>

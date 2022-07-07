@@ -26,6 +26,7 @@ import {
   Tabs,
   tabsClasses,
   TextField,
+  Typography,
 } from "@mui/material";
 import { Add } from "@mui/icons-material";
 // Hooks
@@ -218,16 +219,19 @@ const ProjectsList = () => {
           >
             <ProjectTable projects={projects} mutate={mutate} />
             <div ref={bottomOfPageRef} />
-            {isFetching(fetchProjectsStatus) ? (
-              <Box
-                sx={{
-                  display: "grid",
-                  placeItems: "center",
-                }}
-              >
-                <LoadingSpinner />
-              </Box>
-            ) : null}
+            <Box
+              sx={{
+                display: "grid",
+                placeItems: "center",
+                height: "100px",
+              }}
+            >
+              {isFetching(fetchProjectsStatus) ? (
+                <LoadingSpinner size={50} />
+              ) : !hasMore ? (
+                <Typography>No more projects found</Typography>
+              ) : null}
+            </Box>
           </NoDataWrapper>
         </LoadingWrapper>
       </Body>

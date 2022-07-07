@@ -14,11 +14,14 @@ export const createBottomOfPageRef = (
     if (observer.current) {
       observer.current.disconnect();
     }
-    observer.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && hasMore) {
-        setPage((prevPage) => prevPage + 1);
-      }
-    });
+    observer.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      },
+      { rootMargin: "30%" }
+    );
     if (node) {
       observer.current.observe(node);
     }

@@ -27,6 +27,7 @@ import {
   Tabs,
   tabsClasses,
   TextField,
+  Typography,
 } from "@mui/material";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
@@ -250,16 +251,19 @@ const Users: NextPage = () => {
               isFetchingLeanProjects={isFetching(fetchLeanProjectsStatus)}
             />
             <div ref={bottomOfPageRef} />
-            {isFetching(fetchUsersStatus) ? (
-              <Box
-                sx={{
-                  display: "grid",
-                  placeItems: "center",
-                }}
-              >
-                <LoadingSpinner />
-              </Box>
-            ) : null}
+            <Box
+              sx={{
+                display: "grid",
+                placeItems: "center",
+                height: "100px",
+              }}
+            >
+              {isFetching(fetchUsersStatus) ? (
+                <LoadingSpinner size={50} />
+              ) : !hasMore ? (
+                <Typography>No more users found</Typography>
+              ) : null}
+            </Box>
           </NoDataWrapper>
         </LoadingWrapper>
       </Body>
