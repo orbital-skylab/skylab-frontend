@@ -13,7 +13,7 @@ const CustomHead: FC<Props> = ({ title, description }) => {
   const descriptionContent =
     description ??
     "Orbital provides a platform for students to gain hands-on industrial experience for computing technologies related to students’ own interests. Done in pairs of two, Orbital students propose, design, execute, implement and market their project to peers and faculty. Peer assessment and critique of others’ projects are key components of the modules’ deliverables.";
-  const url = window.location.href;
+  const url = "https://skylab-frontend.vercel.app/";
   const imageLink = "https://imgur.com/Nq3N8Jc";
 
   return (
