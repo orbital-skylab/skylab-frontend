@@ -23,6 +23,7 @@ import { HTTP_METHOD } from "@/types/api";
 import { ROLES } from "@/types/roles";
 import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
 import { PAGES } from "@/helpers/navigation";
+import { LoadingButton } from "@mui/lab";
 
 const DeadlineQuestions: NextPage = () => {
   const router = useRouter();
@@ -197,13 +198,14 @@ const DeadlineQuestions: NextPage = () => {
             <AddQuestionButton addQuestion={addNewQuestion} />
             <Stack direction="row" justifyContent="space-between" mt="2rem">
               <Button onClick={resetQuestions}>Reset</Button>
-              <Button
+              <LoadingButton
                 variant="contained"
                 onClick={saveQuestionsAndDescription}
+                loading={isCalling(saveQuestions.status)}
                 disabled={isCalling(saveQuestions.status)}
               >
                 Save
-              </Button>
+              </LoadingButton>
             </Stack>
           </>
         ) : (

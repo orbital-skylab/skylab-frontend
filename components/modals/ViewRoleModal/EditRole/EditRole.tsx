@@ -25,6 +25,7 @@ import { EditRoleResponse, HTTP_METHOD } from "@/types/api";
 import { AddOrEditRoleFormValuesType, ROLES } from "@/types/roles";
 import { User } from "@/types/users";
 import { LeanProject } from "@/types/projects";
+import { LoadingButton } from "@mui/lab";
 
 type Props = {
   user: User;
@@ -159,15 +160,16 @@ const EditRole: FC<Props> = ({
             <Button size="small" onClick={setViewMode}>
               Back
             </Button>
-            <Button
+            <LoadingButton
               size="small"
               variant="contained"
               color="warning"
               onClick={formik.submitForm}
               disabled={formik.isSubmitting}
+              loading={formik.isSubmitting}
             >
-              Edit
-            </Button>
+              Save
+            </LoadingButton>
           </Stack>
         </>
       )}

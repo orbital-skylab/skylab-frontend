@@ -21,6 +21,7 @@ import {
   EditCohortResponse,
   GetCohortsResponse,
 } from "@/types/cohorts";
+import { LoadingButton } from "@mui/lab";
 
 type EditCohortFormValuesType = Omit<Cohort, "academicYear">;
 
@@ -123,14 +124,15 @@ const EditCohortModal: FC<Props> = ({
                 <Button size="small" onClick={handleCloseModal}>
                   Cancel
                 </Button>
-                <Button
+                <LoadingButton
                   size="small"
                   variant="contained"
                   onClick={formik.submitForm}
                   disabled={formik.isSubmitting}
+                  loading={formik.isSubmitting}
                 >
-                  Edit
-                </Button>
+                  Save
+                </LoadingButton>
               </Stack>
             </>
           )}

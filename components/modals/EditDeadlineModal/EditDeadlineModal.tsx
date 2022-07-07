@@ -18,6 +18,7 @@ import useApiCall from "@/hooks/useApiCall";
 import { HTTP_METHOD, GetDeadlinesResponse } from "@/types/api";
 import { Deadline, DEADLINE_TYPE } from "@/types/deadlines";
 import { Mutate } from "@/hooks/useFetch";
+import { LoadingButton } from "@mui/lab";
 
 interface EditDeadlineFormValuesType {
   name: string;
@@ -134,14 +135,15 @@ const EditDeadlineModal: FC<Props> = ({
                 <Button size="small" onClick={handleCloseModal}>
                   Cancel
                 </Button>
-                <Button
+                <LoadingButton
                   size="small"
                   variant="contained"
                   onClick={formik.submitForm}
                   disabled={formik.isSubmitting}
+                  loading={formik.isSubmitting}
                 >
-                  Edit
-                </Button>
+                  Save
+                </LoadingButton>
               </Stack>
             </>
           )}
