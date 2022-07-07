@@ -25,6 +25,7 @@ import { ROLES } from "@/types/roles";
 import { LeanProject } from "@/types/projects";
 import { KeyboardArrowDown } from "@mui/icons-material";
 import useAuth from "@/hooks/useAuth";
+import { BASE_TRANSITION } from "@/styles/constants";
 
 type Props = {
   user: User;
@@ -191,6 +192,7 @@ const UserRow: FC<Props> = ({
             <MenuItem
               onClick={handleOpenDeleteModal}
               sx={{
+                transition: BASE_TRANSITION,
                 "&:hover": {
                   backgroundColor: "error.main",
                   color: "white",

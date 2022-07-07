@@ -52,16 +52,7 @@ const CohortRow: FC<Props> = ({ cohort, mutate }) => {
         <TableCell>{isoDateToLocaleDateWithTime(cohort.endDate)}</TableCell>
         <TableCell>
           <Stack direction="row" spacing="0.5rem">
-            <Button
-              size="small"
-              onClick={handleOpenEditModal}
-              sx={{
-                "&:hover": {
-                  color: "white",
-                  backgroundColor: "warning.main",
-                },
-              }}
-            >
+            <Button size="small" onClick={handleOpenEditModal}>
               Edit
             </Button>
             <Button

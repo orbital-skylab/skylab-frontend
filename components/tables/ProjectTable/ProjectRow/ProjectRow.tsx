@@ -22,6 +22,7 @@ import { PAGES } from "@/helpers/navigation";
 // Types
 import { Mutate } from "@/hooks/useFetch";
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
+import { BASE_TRANSITION } from "@/styles/constants";
 
 type Props = {
   project: Project;
@@ -155,6 +156,7 @@ const ProjectRow: FC<Props> = ({ project, mutate }) => {
             <MenuItem
               onClick={handleOpenDeleteModal}
               sx={{
+                transition: BASE_TRANSITION,
                 "&:hover": {
                   backgroundColor: "error.main",
                   color: "white",

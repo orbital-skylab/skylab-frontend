@@ -23,6 +23,7 @@ import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 import { Deadline } from "@/types/deadlines";
 import { Mutate } from "@/hooks/useFetch";
 import { GetDeadlinesResponse } from "@/types/api";
+import { BASE_TRANSITION } from "@/styles/constants";
 
 type Props = { deadline: Deadline; mutate: Mutate<GetDeadlinesResponse> };
 
@@ -101,7 +102,15 @@ const DeadlineRow: FC<Props> = ({ deadline, mutate }) => {
               </Tooltip>
             </Link>
             <MenuItem onClick={handleOpenEditModal}>Edit</MenuItem>
-            <MenuItem onClick={handleOpenDeleteModal}>Delete</MenuItem>
+            <MenuItem
+              onClick={handleOpenDeleteModal}
+              sx={{
+                transition: BASE_TRANSITION,
+                "&:hover": { backgroundColor: "error.main", color: "white" },
+              }}
+            >
+              Delete
+            </MenuItem>
           </Menu>
         </TableCell>
       </TableRow>
