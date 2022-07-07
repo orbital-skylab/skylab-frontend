@@ -46,6 +46,7 @@ import { GetLeanProjectsResponse, GetUsersResponse } from "@/types/api";
 import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
 
 const LIMIT = 20;
+const ALL = "All";
 
 const Users: NextPage = () => {
   const [selectedRole, setSelectedRole] = useState<ROLES_WITH_ALL>(
@@ -60,14 +61,14 @@ const Users: NextPage = () => {
     isLoading: isLoadingCohorts,
   } = useCohort();
   const [selectedCohortYear, setSelectedCohortYear] = useState<
-    Cohort["academicYear"] | string
+    Cohort["academicYear"] | "" | typeof ALL
   >("");
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
 
   /** For fetching users based on filters */
   const memoUsersQueryParams = useMemo(() => {
     return {
-      cohortYear: selectedCohortYear,
+      cohortYear: selectedCohortYear !== ALL ? selectedCohortYear : "",
       role: selectedRole !== ROLES_WITH_ALL.ALL ? toSingular(selectedRole) : "",
       search: querySearch,
       limit: LIMIT,
@@ -84,7 +85,7 @@ const Users: NextPage = () => {
     page,
     responseToData: (response) => response.users,
     requiresAuthorization: true,
-    enabled: typeof selectedCohortYear === "number",
+    enabled: !!selectedCohortYear,
   });
 
   /** For fetching project ID and names to create new users/roles */
@@ -122,7 +123,11 @@ const Users: NextPage = () => {
   };
 
   const handleCohortYearChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSelectedCohortYear(Number(e.target.value) as Cohort["academicYear"]);
+    if (e.target.value === ALL) {
+      setSelectedCohortYear(e.target.value);
+    } else {
+      setSelectedCohortYear(Number(e.target.value) as Cohort["academicYear"]);
+    }
     setPage(0);
   };
 
@@ -191,13 +196,13 @@ const Users: NextPage = () => {
                 User
               </Button>
               <TextField
-                name="cohort"
                 label="Cohort"
                 value={selectedCohortYear}
                 onChange={handleCohortYearChange}
                 select
                 size="small"
               >
+                <MenuItem value={ALL}>{ALL}</MenuItem>
                 {cohorts &&
                   cohorts.map(({ academicYear }) => (
                     <MenuItem key={academicYear} value={academicYear}>
