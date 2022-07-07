@@ -92,7 +92,7 @@ const DeadlineQuestions: NextPage = () => {
       setAnswers({});
     } else {
       setIsPreviewMode(true);
-      // Answers are accessed via the index of the question
+      // On Edit Deadlines Page, answers are accessed via the index of the question
       const emptyAnswers: Record<number, Option> = {};
       questions.forEach((question, idx) => (emptyAnswers[idx] = ""));
       setAnswers(emptyAnswers);
@@ -211,6 +211,7 @@ const DeadlineQuestions: NextPage = () => {
             questions={questions}
             answers={answers}
             generateSetAnswer={generateSetAnswer}
+            accessAnswersWithQuestionIndex
           />
         )}
       </Body>

@@ -8,22 +8,42 @@ type Props = {
   questions: (Question | LeanQuestion)[];
   answers: Record<string, Option>;
   generateSetAnswer: (questionIdOrIdx: number) => (newAnswer: string) => void;
+  accessAnswersWithQuestionIndex?: boolean;
 };
 
+/**
+ * Render a list of questions that users can interact with (i.e. can input answers)
+ * @param param0.questions List of questions to render
+ * @param param0.answers Object of answers where key is (question ID OR question index) and value is the answer to the question.
+ * (For 'Checkboxes' questions, the answer is stored as a stringifed JSON object where the key is the option and the value is 'true' is the option is selected)
+ * @param param0.generateSetAnswer Generates the set answer callback based on the question ID or index
+ * @param param0.accessAnswersWithQuestionIndex If true, access a question's answer via the question index; Else access a question's answer via the question ID
+ */
 const QuestionsList: FC<Props> = ({
   questions,
   answers,
   generateSetAnswer,
+  accessAnswersWithQuestionIndex = false,
 }) => {
   return (
     <Stack spacing="1rem">
       {questions.map((question, idx) => {
         /**
          * In preview mode (question is of type LeanQuestion instead of type Question) while editing Deadline questions,
-         * the answer is accessed via its index because it does not have a questionId yet.
-         * Else it is accessed via its questionId.
+         * the answer is stored and accessed via its index because it does not have a questionId yet.
+         * Else it is stored and accessed via its questionId.
          */
-        const questionIdOrIdx = isQuestion(question) ? question.id : idx;
+        let questionIdOrIdx = idx;
+        if (!accessAnswersWithQuestionIndex) {
+          if (isQuestion(question)) {
+            questionIdOrIdx = question.id;
+          } else {
+            return alert(
+              "You should not enable the `accessAnswersWithQuestionIndex` flag if the questions do not have an ID. (i.e. edit deadline questions page)"
+            );
+          }
+        }
+
         const answer = answers[questionIdOrIdx];
         const setAnswer = generateSetAnswer(questionIdOrIdx);
 
