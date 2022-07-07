@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 // Helpers
 import Papa from "papaparse";
-import { checkHeadersMatch } from "@/helpers/batchForms";
+import { checkValidity } from "@/helpers/batchForms";
 // Hooks
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Types
@@ -51,18 +51,14 @@ const BatchAddStudentsForm: FC<Props> = ({
         header: true,
         dynamicTyping: true,
         complete: function (results) {
-          if (!results.data || !results.data.length) {
+          const { isValid, errorMessage } = checkValidity(
+            results.data,
+            Object.values(ADD_ADVISERS_CSV_HEADERS)
+          );
+
+          if (!isValid) {
             setUnsuccessfulParseStatus(
-              "No advisers were detected. Please upload another file."
-            );
-          } else if (
-            !checkHeadersMatch(
-              results.data,
-              Object.values(ADD_ADVISERS_CSV_HEADERS)
-            )
-          ) {
-            setUnsuccessfulParseStatus(
-              "The detected file does not follow the format of the provided Add Adviser CSV template. Please upload another file or try again."
+              errorMessage ?? "An error has been encountered."
             );
           } else {
             setSuccessfulParseStatus(

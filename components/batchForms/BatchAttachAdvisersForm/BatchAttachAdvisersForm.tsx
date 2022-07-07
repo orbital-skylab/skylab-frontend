@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 // Helpers
 import Papa from "papaparse";
+import { checkValidity } from "@/helpers/batchForms";
 // Hooks
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Types
@@ -21,7 +22,6 @@ import {
   AttachAdvisersData,
   ATTACH_ADVISERS_CSV_HEADERS,
 } from "./BatchAttachAdvisersForm.types";
-import { checkHeadersMatch } from "@/helpers/batchForms";
 
 type Props = {
   setAttachAdvisersData: Dispatch<SetStateAction<AttachAdvisersData>>;
@@ -51,18 +51,14 @@ const BatchAddAdvisersForm: FC<Props> = ({
         header: true,
         dynamicTyping: true,
         complete: function (results) {
-          if (!results.data || !results.data.length) {
+          const { isValid, errorMessage } = checkValidity(
+            results.data,
+            Object.values(ATTACH_ADVISERS_CSV_HEADERS)
+          );
+
+          if (!isValid) {
             setUnsuccessfulParseStatus(
-              "No NUSNET IDs were detected. Please upload another file."
-            );
-          } else if (
-            !checkHeadersMatch(
-              results.data,
-              Object.values(ATTACH_ADVISERS_CSV_HEADERS)
-            )
-          ) {
-            setUnsuccessfulParseStatus(
-              "The detected file does not follow the format of the provided Attach Advisers CSV template. Please upload another file or try again."
+              errorMessage ?? "An error has been encountered."
             );
           } else {
             setSuccessfulParseStatus(
