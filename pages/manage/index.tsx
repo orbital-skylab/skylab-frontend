@@ -1,10 +1,15 @@
-import Body from "@/components/layout/Body";
-import { PAGES } from "@/helpers/navigation";
-import { BASE_TRANSITION } from "@/styles/constants";
-import { ROLES } from "@/types/roles";
+// Components
 import { Card, CardContent, Grid, Typography } from "@mui/material";
-import type { NextPage } from "next";
+import CustomHead from "@/components/CustomHead";
+import Body from "@/components/layout/Body";
 import Link from "next/link";
+// Helpers
+import { PAGES } from "@/helpers/navigation";
+// Constants
+import { BASE_TRANSITION } from "@/styles/constants";
+// Types
+import type { NextPage } from "next";
+import { ROLES } from "@/types/roles";
 
 const pages = [
   {
@@ -41,37 +46,47 @@ const pages = [
 
 const Manage: NextPage = () => {
   return (
-    <Body authorizedRoles={[ROLES.ADMINISTRATORS]}>
-      <Grid container spacing="1rem" sx={{ paddingX: { xs: "0", md: "10%" } }}>
-        {pages.map((page) => (
-          <Grid item xs={12} sm={4} key={page.title}>
-            <Card
-              sx={{
-                height: "100%",
-                cursor: "pointer",
-                transition: BASE_TRANSITION,
-                "&:hover": {
-                  transform: "scale(105%)",
-                },
-              }}
-            >
-              <Link passHref href={page.href}>
-                <CardContent
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "1rem",
-                  }}
-                >
-                  <Typography fontWeight={600}>{page.title}</Typography>
-                  <Typography variant="body2">{page.description}</Typography>
-                </CardContent>
-              </Link>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-    </Body>
+    <>
+      <CustomHead
+        title="Manage Platform"
+        description="Only authorized administrators can view this page. Here, you can manage the deadlines, cohorts, users and projects of NUS Orbital!"
+      />
+      <Body authorizedRoles={[ROLES.ADMINISTRATORS]}>
+        <Grid
+          container
+          spacing="1rem"
+          sx={{ paddingX: { xs: "0", md: "10%" } }}
+        >
+          {pages.map((page) => (
+            <Grid item xs={12} sm={4} key={page.title}>
+              <Card
+                sx={{
+                  height: "100%",
+                  cursor: "pointer",
+                  transition: BASE_TRANSITION,
+                  "&:hover": {
+                    transform: "scale(105%)",
+                  },
+                }}
+              >
+                <Link passHref href={page.href}>
+                  <CardContent
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "1rem",
+                    }}
+                  >
+                    <Typography fontWeight={600}>{page.title}</Typography>
+                    <Typography variant="body2">{page.description}</Typography>
+                  </CardContent>
+                </Link>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Body>
+    </>
   );
 };
 export default Manage;

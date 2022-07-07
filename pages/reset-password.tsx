@@ -12,14 +12,15 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import CustomHead from "@/components/CustomHead";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
 import { Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
+import { ERRORS } from "@/helpers/errors";
 // Hooks
 import useAuth from "@/hooks/useAuth";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
-import { ERRORS } from "@/helpers/errors";
 
 interface SignUpFormValuesType {
   email: string;
@@ -56,6 +57,10 @@ const ResetPassword: NextPage = () => {
 
   return (
     <>
+      <CustomHead
+        title="Reset Password"
+        description="Forgot your password? Reset your password using your email here!"
+      />
       <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <Body sx={{ display: "grid", placeItems: "center" }}>
         <Container maxWidth="xs">

@@ -20,6 +20,7 @@ import {
   debounce,
   Box,
 } from "@mui/material";
+import CustomHead from "@/components/CustomHead";
 // Hooks
 import useInfiniteFetch from "@/hooks/useInfiniteFetch";
 import { isError, isFetching } from "@/hooks/useFetch";
@@ -123,8 +124,12 @@ const Projects: NextPage = () => {
 
   return (
     <>
+      <CustomHead
+        title="Project Gallery"
+        description="View the posters and videos of NUS Orbital projects from current and past cohorts!"
+      />
       <Body isError={isError(fetchProjectsStatus)} isLoading={isLoadingCohorts}>
-        <Stack direction="column" mt="0.5rem">
+        <Stack direction="column" my="0.5rem">
           <Stack
             direction="row"
             justifyContent="space-between"

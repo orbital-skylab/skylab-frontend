@@ -24,6 +24,7 @@ import StaffCard from "@/components/cards/StaffCard";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import NoneFound from "@/components/emptyStates/NoneFound";
+import CustomHead from "@/components/CustomHead";
 // Hooks
 import useFetch, { isFetching, isError } from "@/hooks/useFetch";
 import useCohort from "@/hooks/useCohort";
@@ -112,6 +113,10 @@ const Staff: NextPage = () => {
 
   return (
     <>
+      <CustomHead
+        title="Staff Gallery"
+        description="View the mentors, advisers and facilitators of NUS Orbital!"
+      />
       <Body isError={isError(fetchStaffStatus)} isLoading={isLoadingCohorts}>
         <Stack direction="column" mt="0.5rem" mb="1rem">
           <Stack

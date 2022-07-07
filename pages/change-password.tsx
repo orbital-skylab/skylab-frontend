@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import NoneFound from "@/components/emptyStates/NoneFound";
+import CustomHead from "@/components/CustomHead";
 // Helpers
 import { Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
@@ -74,6 +75,10 @@ const ChangePassword: NextPage = () => {
 
   return (
     <>
+      <CustomHead
+        title="Change Password"
+        description="Change your password using the link received in your inbox!"
+      />
       <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <Body sx={{ display: "grid", placeItems: "center" }}>
         <NoDataWrapper
