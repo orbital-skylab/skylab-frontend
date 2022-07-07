@@ -112,6 +112,7 @@ const Users: NextPage = () => {
   const debouncedSetQuerySearch = useCallback(
     debounce((val) => {
       setQuerySearch(val);
+      setPage(0);
     }, 500),
     []
   );
@@ -119,7 +120,6 @@ const Users: NextPage = () => {
   const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchTextInput(e.target.value);
     debouncedSetQuerySearch(e.target.value);
-    setPage(0);
   };
 
   const handleCohortYearChange = (e: ChangeEvent<HTMLInputElement>) => {
