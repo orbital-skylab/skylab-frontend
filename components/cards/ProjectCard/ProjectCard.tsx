@@ -38,6 +38,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
       />
       <Card
         sx={{
+          height: "100%",
           transition: BASE_TRANSITION,
           position: "relative",
           "&:hover": {
@@ -59,8 +60,12 @@ const ProjectCard: FC<Props> = ({ project }) => {
         >
           {project.id}
         </Typography>
-        <CardContent>
-          <Stack spacing="0.5rem">
+        <CardContent
+          sx={{
+            height: "100%",
+          }}
+        >
+          <Stack sx={{ height: "100%", gap: "0.5rem" }}>
             <Link passHref href={`${PAGES.PROJECTS}/${project.id}`}>
               <Typography
                 align="center"
@@ -101,7 +106,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
               />
             </Box>
 
-            <Stack mt={2} spacing="0.5rem">
+            <Stack spacing="0.5rem">
               {project.students && project.students.length ? (
                 <Box>
                   <Typography fontWeight={600}>Orbitees</Typography>
@@ -123,7 +128,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
                 </Box>
               ) : null}
             </Stack>
-            <Stack direction="row" gap="0.5rem">
+            <Stack direction="row" gap="0.5rem" sx={{ marginTop: "auto" }}>
               <Link passHref href={`${PAGES.PROJECTS}/${project.id}`}>
                 <Button
                   variant="outlined"
