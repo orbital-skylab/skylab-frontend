@@ -34,7 +34,8 @@ export type GetUsersResponse = {
   users: User[];
 };
 
-export type CreateUserResponse = User;
+// TODO: Jira Ticket 117
+export type CreateUserResponse = unknown;
 
 /**
  * Combined Roles Endpoints:

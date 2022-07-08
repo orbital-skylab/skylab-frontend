@@ -28,6 +28,7 @@ import { CreateUserResponse } from "@/types/api";
 import { AddUserFormValuesType, ROLES } from "@/types/roles";
 import { LeanProject } from "@/types/projects";
 import useCohort from "@/hooks/useCohort";
+import { useRouter } from "next/router";
 
 type Props = {
   open: boolean;
@@ -41,11 +42,15 @@ type Props = {
 const AddUserModal: FC<Props> = ({
   open,
   setOpen,
+  // TODO: Fix Jira Ticket 117
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   mutate,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   hasMore,
   leanProjects,
   isFetchingLeanProjects,
 }) => {
+  const router = useRouter();
   const { cohorts, currentCohortYear } = useCohort();
   const {
     snackbar,
@@ -59,10 +64,12 @@ const AddUserModal: FC<Props> = ({
     method: HTTP_METHOD.POST,
     endpoint: `/${selectedRole.toLowerCase()}`,
     requiresAuthorization: true,
+    // TODO: Fix Jira Ticket 117
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSuccess: (newUser: CreateUserResponse) => {
-      if (!hasMore) {
-        mutate((users) => [...users, newUser]);
-      }
+      setTimeout(() => {
+        router.reload();
+      }, 3000);
     },
   });
 
@@ -85,7 +92,7 @@ const AddUserModal: FC<Props> = ({
       setSuccess(
         `You have successfully created a new ${toSingular(selectedRole)}: ${
           values.name
-        }`
+        }. Refreshing in 3 seconds...`
       );
       handleCloseModal();
       actions.resetForm();
