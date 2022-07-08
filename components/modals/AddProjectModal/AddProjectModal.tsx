@@ -66,16 +66,18 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate, cohortYear }) => {
     mentor: "",
   };
 
-  //TODO: Replace with lean routes
   /** Fetching student, adviser and mentor IDs and names for the dropdown select */
   const { data: studentsResponse } = useFetch<GetUsersResponse>({
-    endpoint: `/users?cohortYear=${cohortYear}&role=Student`,
+    endpoint: `/users/lean?cohortYear=${cohortYear}&role=Student`,
+    enabled: Boolean(cohortYear),
   });
   const { data: advisersResponse } = useFetch<GetUsersResponse>({
-    endpoint: `/users?cohortYear=${cohortYear}&role=Adviser`,
+    endpoint: `/users/lean?cohortYear=${cohortYear}&role=Adviser`,
+    enabled: Boolean(cohortYear),
   });
   const { data: mentorsResponse } = useFetch<GetUsersResponse>({
-    endpoint: `/users?cohortYear=${cohortYear}&role=Mentor`,
+    endpoint: `/users/lean?cohortYear=${cohortYear}&role=Mentor`,
+    enabled: Boolean(cohortYear),
   });
 
   const handleSubmit = async (

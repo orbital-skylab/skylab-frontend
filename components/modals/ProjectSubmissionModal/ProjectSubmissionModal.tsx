@@ -52,7 +52,7 @@ const ProjectSubmissionModal: FC<Props> = ({ open, setOpen, project }) => {
           placeItems: "center",
         }}
       >
-        {/* TODO: Put poster URL here */}
+        {/* TODO: Change poster placeholder */}
         <iframe src="poster.videoUrl" />
       </Box>
       <Button

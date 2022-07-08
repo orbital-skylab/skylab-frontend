@@ -34,7 +34,7 @@ export type GetUsersResponse = {
   users: User[];
 };
 
-// TODO: Jira Ticket 117
+// TODO: Fix Jira Ticket 117
 export type CreateUserResponse = unknown;
 
 /**

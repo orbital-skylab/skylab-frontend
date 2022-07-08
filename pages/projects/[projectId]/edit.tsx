@@ -50,7 +50,6 @@ const EditProject: NextPage = () => {
     mentor: project?.mentor?.mentorId ?? "",
   };
 
-  //TODO: Replace with lean routes
   /** Fetching student, adviser and mentor IDs and names for the dropdown select */
   const { data: studentsResponse } = useFetch<GetUsersResponse>({
     endpoint: `/users?cohortYear=${project?.cohortYear}&role=Student`,
