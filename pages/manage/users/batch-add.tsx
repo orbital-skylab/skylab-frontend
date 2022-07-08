@@ -97,7 +97,7 @@ const BatchAdd: NextPage = () => {
   const handleAddMentors = async () => {
     try {
       const processedValues = processBatchAddMentorsData(addMentorsData);
-      await batchAddAdvisers.call(processedValues);
+      await batchAddMentors.call(processedValues);
       setSuccess("Successfully added the mentors!");
       handleClearAddMentors();
     } catch (error) {
