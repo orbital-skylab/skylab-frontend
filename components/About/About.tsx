@@ -1,10 +1,21 @@
-import { Container, Stack, Typography } from "@mui/material";
+import { Box, Container, Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import { ORBITAL_WORDPRESS } from "../layout/Footer/Footer.constants";
 
 const About: FC = () => {
   return (
     <Container maxWidth="md" sx={{ padding: 0, mb: "15vh" }}>
+      <Box
+        component="img"
+        src="/skylab-logo.png"
+        alt="Skylab Logo"
+        sx={{
+          margin: "auto",
+          width: { xs: "300px", md: "400px" },
+          height: { xs: "300px", md: "400px" },
+          mb: { md: "-1rem" },
+        }}
+      />
       <Typography
         variant="h2"
         fontWeight={600}
@@ -20,6 +31,7 @@ const About: FC = () => {
           the School of Computing’s 1st year summer self-directed, independent
           work course.
         </Typography>
+
         <Typography variant="body1" textAlign="justify">
           This programme gives students the opportunity to pick up software
           development skills on their own, using sources on the web. All while

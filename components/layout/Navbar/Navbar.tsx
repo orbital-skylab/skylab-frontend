@@ -6,6 +6,8 @@ import {
   Typography,
   Container,
   useScrollTrigger,
+  Box,
+  Stack,
 } from "@mui/material";
 import NavbarButtonsMobile from "./NavbarButtonsMobile";
 import NavbarButtonsDesktop from "./NavbarButtonsDesktop";
@@ -101,22 +103,48 @@ const Navbar: FC = () => {
       <Container maxWidth="xl" sx={{ marginY: "auto" }}>
         <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
           <Link href={PAGES.LANDING} passHref>
-            <Typography
-              variant="h6"
-              fontWeight={600}
-              noWrap
-              component="a"
+            <Stack
+              direction="row"
+              spacing="0.5rem"
+              alignItems="center"
               sx={{
-                display: "flex",
-                letterSpacing: ".25rem",
-                color: "inherit",
-                textDecoration: "none",
-                "&:hover": { color: "secondary.main" },
+                cursor: "pointer",
                 transition: BASE_TRANSITION,
+                "&:hover": {
+                  transform: "scale(105%)",
+                  "& .skylab": {
+                    color: "secondary.main",
+                    transform: "scale(105%)",
+                  },
+                },
               }}
             >
-              Skylab
-            </Typography>
+              <Box
+                component="img"
+                src="/skylab-logo.png"
+                alt="Skylab Logo"
+                sx={{
+                  height: "24px",
+                  width: "24px",
+                }}
+              />
+              <Typography
+                variant="h6"
+                fontWeight={600}
+                noWrap
+                component="a"
+                className="skylab"
+                sx={{
+                  display: "flex",
+                  letterSpacing: ".25rem",
+                  color: "inherit",
+                  textDecoration: "none",
+                  transition: BASE_TRANSITION,
+                }}
+              >
+                Skylab
+              </Typography>
+            </Stack>
           </Link>
           {renderNavigationButtons()}
         </Toolbar>

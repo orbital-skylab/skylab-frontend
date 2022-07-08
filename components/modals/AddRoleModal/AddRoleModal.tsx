@@ -75,6 +75,11 @@ const AddRoleModal: FC<Props> = ({
         editedUsers.splice(editedUserIdx, 1, editedUser);
         return editedUsers;
       });
+      setSelectedRole(
+        Object.values(ROLES).filter(
+          (role) => !getUserRoles(user).includes(role)
+        )[0] ?? null
+      );
     },
   });
 
