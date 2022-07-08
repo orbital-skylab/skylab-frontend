@@ -8,6 +8,8 @@ import SnackbarAlert from "@/components/SnackbarAlert";
 import QuestionsList from "@/components/questions/QuestionsList";
 import DeadlineDescriptionCard from "@/components/questions/DeadlineDescriptionCard";
 import { Button, Stack } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
 // Hooks
 import useFetch, { isError, isFetching } from "@/hooks/useFetch";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
@@ -15,15 +17,13 @@ import { useRouter } from "next/router";
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
 // Helpers
 import { processQuestions } from "@/components/questions/EditQuestionsList/EditQuestionsList.helpers";
+import { PAGES } from "@/helpers/navigation";
 // Types
 import { LeanQuestion, Option, QUESTION_TYPE } from "@/types/deadlines";
 import { GetDeadlineDetailsResponse } from "@/types/api";
 import type { NextPage } from "next";
 import { HTTP_METHOD } from "@/types/api";
 import { ROLES } from "@/types/roles";
-import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
-import { PAGES } from "@/helpers/navigation";
-import { LoadingButton } from "@mui/lab";
 
 const DeadlineQuestions: NextPage = () => {
   const router = useRouter();
@@ -40,22 +40,19 @@ const DeadlineQuestions: NextPage = () => {
   // For controlled inputs in preview mode
   const [answers, setAnswers] = useState<Record<number, Option>>({});
 
-  const {
-    data: deadlineDetailsResponse,
-    status: fetchDeadlineDetailsStatus,
-    refetch,
-  } = useFetch<GetDeadlineDetailsResponse>({
-    endpoint: `/deadlines/${deadlineId}/questions`,
-    onFetch: (deadlineDetailsResponse) => {
-      setDeadlineDescription(deadlineDetailsResponse.deadline.desc ?? "");
-      if (deadlineDetailsResponse.questions.length) {
-        setQuestions(deadlineDetailsResponse.questions);
-      } else {
-        addNewQuestion();
-      }
-    },
-    enabled: !!deadlineId,
-  });
+  const { data: deadlineDetailsResponse, status: fetchDeadlineDetailsStatus } =
+    useFetch<GetDeadlineDetailsResponse>({
+      endpoint: `/deadlines/${deadlineId}/questions`,
+      onFetch: (deadlineDetailsResponse) => {
+        setDeadlineDescription(deadlineDetailsResponse.deadline.desc ?? "");
+        if (deadlineDetailsResponse.questions.length) {
+          setQuestions(deadlineDetailsResponse.questions);
+        } else {
+          addNewQuestion(true);
+        }
+      },
+      enabled: !!deadlineId,
+    });
 
   const saveQuestions = useApiCall({
     method: HTTP_METHOD.PUT,
@@ -80,7 +77,6 @@ const DeadlineQuestions: NextPage = () => {
       setSuccess(
         `Successfully updated ${deadlineDetailsResponse?.deadline.name}'s description and questions!`
       );
-      refetch();
     } catch (error) {
       setError(error);
     }
@@ -100,7 +96,7 @@ const DeadlineQuestions: NextPage = () => {
     }
   };
 
-  const addNewQuestion = () => {
+  const addNewQuestion = (asOnlyQuestion = false) => {
     const newDefaultQuestion = {
       question: "",
       desc: "",
@@ -109,19 +105,29 @@ const DeadlineQuestions: NextPage = () => {
       isAnonymous: false,
     };
 
-    setQuestions((questions) => [...questions, newDefaultQuestion]);
+    if (asOnlyQuestion === true) {
+      setQuestions([newDefaultQuestion]);
+    } else {
+      setQuestions((questions) => [...questions, newDefaultQuestion]);
+    }
   };
 
   const resetQuestions = () => {
     if (
-      !deadlineDetailsResponse?.questions ||
       !confirm("Are you sure you want to reset the form to its original state?")
     ) {
       return null;
     }
 
-    setQuestions(deadlineDetailsResponse.questions);
-    addNewQuestion();
+    if (
+      deadlineDetailsResponse &&
+      deadlineDetailsResponse.questions &&
+      deadlineDetailsResponse.questions.length
+    ) {
+      setQuestions(deadlineDetailsResponse.questions);
+    } else {
+      addNewQuestion(true);
+    }
   };
 
   /**
@@ -195,7 +201,7 @@ const DeadlineQuestions: NextPage = () => {
               questions={questions}
               generateSetQuestion={generateSetQuestion}
             />
-            <AddQuestionButton addQuestion={addNewQuestion} />
+            <AddQuestionButton addNewQuestion={addNewQuestion} />
             <Stack direction="row" justifyContent="space-between" mt="2rem">
               <Button onClick={resetQuestions}>Reset</Button>
               <LoadingButton

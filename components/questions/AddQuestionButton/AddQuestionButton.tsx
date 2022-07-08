@@ -4,14 +4,14 @@ import { Add } from "@mui/icons-material";
 import { Button, Stack } from "@mui/material";
 
 type Props = {
-  addQuestion: () => void;
+  addNewQuestion: (asOnlyQuestion: boolean) => void;
 };
 
-const AddQuestionButton: FC<Props> = ({ addQuestion }) => {
+const AddQuestionButton: FC<Props> = ({ addNewQuestion }) => {
   return (
     <Stack width="100%" justifyContent="center" sx={{ marginTop: "1rem" }}>
       <Button
-        onClick={addQuestion}
+        onClick={() => addNewQuestion(false)}
         variant="contained"
         sx={{ marginX: "auto" }}
         size="small"
