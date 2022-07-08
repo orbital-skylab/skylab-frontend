@@ -103,7 +103,7 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate, cohortYear }) => {
   return (
     <>
       <SnackbarAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
-      <Modal open={open} handleClose={handleCloseModal} title={`Add Deadline`}>
+      <Modal open={open} handleClose={handleCloseModal} title={`Add Project`}>
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmit}
@@ -131,6 +131,7 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate, cohortYear }) => {
                   name="students"
                   label="Student IDs"
                   formik={formik}
+                  size="small"
                   isCombobox
                   options={
                     studentsResponse && studentsResponse.users
@@ -147,6 +148,7 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate, cohortYear }) => {
                   name="adviser"
                   label="Adviser ID"
                   formik={formik}
+                  size="small"
                   isCombobox
                   options={
                     advisersResponse && advisersResponse.users
@@ -163,6 +165,7 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate, cohortYear }) => {
                   name="mentor"
                   label="Mentor ID"
                   formik={formik}
+                  size="small"
                   isCombobox
                   options={
                     mentorsResponse && mentorsResponse.users
@@ -205,7 +208,6 @@ export default AddProjectModal;
 const addProjectValidationSchema = Yup.object().shape({
   name: Yup.string().required(ERRORS.REQUIRED),
   achievement: Yup.string().required(ERRORS.REQUIRED),
-  cohortYear: Yup.number().required(ERRORS.REQUIRED),
   students: Yup.array().of(Yup.number()).required(ERRORS.REQUIRED),
   adviser: Yup.number().required(ERRORS.REQUIRED),
   mentor: Yup.number(),

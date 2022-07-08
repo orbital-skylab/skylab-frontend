@@ -112,20 +112,22 @@ const ProjectRow: FC<Props> = ({ project, mutate }) => {
           </Stack>
         </TableCell>
         <TableCell>
-          {project.students.map((student) => (
-            <UsersName key={student.id} user={student} />
-          ))}
+          {project.students
+            ? project.students.map((student) => (
+                <UsersName key={student.id} user={student} />
+              ))
+            : null}
         </TableCell>
-        {project.adviser && project.adviser.id ? (
-          <TableCell>
+        <TableCell>
+          {project.adviser && project.adviser.id ? (
             <UsersName user={project.adviser} />
-          </TableCell>
-        ) : null}
-        {project.mentor && project.mentor.id ? (
-          <TableCell>
+          ) : null}
+        </TableCell>
+        <TableCell>
+          {project.mentor && project.mentor.id ? (
             <UsersName user={project.mentor} />
-          </TableCell>
-        ) : null}
+          ) : null}
+        </TableCell>
         <TableCell>
           <Button
             variant="outlined"
