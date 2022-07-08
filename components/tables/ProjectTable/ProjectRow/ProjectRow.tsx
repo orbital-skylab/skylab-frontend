@@ -1,7 +1,6 @@
 import { FC, MouseEvent, useState } from "react";
 // Components
 import DeleteProjectModal from "@/components/modals/DeleteProjectModal";
-import SnackbarAlert from "@/components/SnackbarAlert";
 import { KeyboardArrowDown } from "@mui/icons-material";
 import {
   Button,
@@ -15,8 +14,6 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import UsersName from "@/components/typography/UsersName";
-// Hooks
-import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
 // Types
@@ -27,10 +24,11 @@ import { BASE_TRANSITION } from "@/styles/constants";
 type Props = {
   project: Project;
   mutate: Mutate<Project[]>;
+  setSuccess: (message: string) => void;
+  setError: (error: unknown) => void;
 };
 
-const ProjectRow: FC<Props> = ({ project, mutate }) => {
-  const { snackbar, setSuccess, setError, handleClose } = useSnackbarAlert();
+const ProjectRow: FC<Props> = ({ project, mutate, setSuccess, setError }) => {
   const [dropdownAnchorElement, setDropdownAnchorElement] =
     useState<HTMLElement | null>(null);
   const isDropdownOpen = Boolean(dropdownAnchorElement);
@@ -102,7 +100,6 @@ const ProjectRow: FC<Props> = ({ project, mutate }) => {
         setSuccess={setSuccess}
         setError={setError}
       />
-      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <TableRow>
         <TableCell>{project.id}</TableCell>
         <TableCell>{project.name}</TableCell>

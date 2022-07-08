@@ -208,7 +208,7 @@ export default AddProjectModal;
 const addProjectValidationSchema = Yup.object().shape({
   name: Yup.string().required(ERRORS.REQUIRED),
   achievement: Yup.string().required(ERRORS.REQUIRED),
-  students: Yup.array().of(Yup.number()).required(ERRORS.REQUIRED),
+  students: Yup.array().min(1, ERRORS.REQUIRED).required(ERRORS.REQUIRED),
   adviser: Yup.number().required(ERRORS.REQUIRED),
   mentor: Yup.number(),
 });
