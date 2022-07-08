@@ -1,10 +1,12 @@
-import { createContext, useMemo, useContext } from "react";
+import { createContext, useMemo, useContext, useEffect } from "react";
 import {
   ICohort,
   CohortProviderProps,
 } from "@/hooks/useCohort/useCohort.types";
 import { GetCohortResponse, GetCohortsResponse } from "@/types/cohorts";
-import useFetch, { isFetching } from "../useFetch";
+import useFetch, { isError, isFetching } from "../useFetch";
+import SnackbarAlert from "@/components/SnackbarAlert";
+import useSnackbarAlert from "../useSnackbarAlert";
 
 const CohortContext = createContext<ICohort>({
   cohorts: undefined,
@@ -13,8 +15,13 @@ const CohortContext = createContext<ICohort>({
 });
 
 export const CohortProvider = ({ children }: CohortProviderProps) => {
-  const { data: latestCohortResponse, status: currentCohortYearStatus } =
-    useFetch<GetCohortResponse>({ endpoint: "/cohorts/current" });
+  const { snackbar, handleClose, setError } = useSnackbarAlert();
+
+  const {
+    data: latestCohortResponse,
+    status: currentCohortYearStatus,
+    error,
+  } = useFetch<GetCohortResponse>({ endpoint: "/cohorts/current" });
   const { data: cohortsResponse, status: cohortsStatus } =
     useFetch<GetCohortsResponse>({
       endpoint: "/cohorts",
@@ -22,6 +29,16 @@ export const CohortProvider = ({ children }: CohortProviderProps) => {
   const currentCohortYear = latestCohortResponse?.cohort?.academicYear;
   const cohorts = cohortsResponse?.cohorts;
   const isLoading = isFetching(currentCohortYearStatus, cohortsStatus);
+
+  useEffect(() => {
+    if (isError(currentCohortYearStatus)) {
+      setError(
+        error ??
+          "An error has been encountered while fetching the latest cohort"
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentCohortYearStatus]);
 
   const memoedValue = useMemo(
     () => ({
@@ -35,6 +52,7 @@ export const CohortProvider = ({ children }: CohortProviderProps) => {
 
   return (
     <CohortContext.Provider value={memoedValue}>
+      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       {children}
     </CohortContext.Provider>
   );

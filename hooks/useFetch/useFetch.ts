@@ -10,6 +10,7 @@ import {
 } from "./useFetch.types";
 import { ApiServiceBuilder } from "@/helpers/api";
 import { HTTP_METHOD } from "@/types/api";
+import { isErrorType } from "@/helpers/types";
 
 /**
  * A custom wrapper hook to fetch data while providing state and the ability to update the fetched data manually.
@@ -57,6 +58,10 @@ const useFetch = <T>({
       const response = await apiService();
       const data: T = await response.json();
       if (cancelRequest) return;
+
+      if (isErrorType(data)) {
+        throw new Error(data.message);
+      }
 
       dispatch({ type: ACTION_TYPE.SET_FETCHED_DATA, payload: data });
       if (onFetch) {

@@ -145,3 +145,8 @@ export type GetDeadlineDetailsResponse = {
 export type CreateDeadlineResponse = {
   deadline: Deadline;
 };
+
+/**
+ * Error
+ */
+export type Error = { message: string };

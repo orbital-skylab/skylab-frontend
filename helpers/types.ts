@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Error } from "@/types/api";
 import { Question } from "@/types/deadlines";
 import { AddUserFormValuesType } from "@/types/roles";
 
@@ -34,6 +35,10 @@ export function isQuestion(value: any): value is Question {
     value.desc !== undefined &&
     value.type
   );
+}
+
+export function isErrorType(value: any): value is Error {
+  return value && value.message;
 }
 
 export type DeepPartial<T> = T extends object
