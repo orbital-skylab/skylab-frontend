@@ -5,9 +5,24 @@ import { LeanQuestion, Question, QUESTION_TYPE } from "@/types/deadlines";
  * @param questions List of questions (can be a mix of LeanQuestions (new) and Questions (existing))
  */
 export const processQuestions = (questions: (Question | LeanQuestion)[]) => {
-  return stripOptions(stripQuestionsToLeanQuestions(questions));
+  return stripOptions(
+    stripQuestionsToLeanQuestions(stripEmptyQuestions(questions))
+  );
 };
 
+/**
+ * Strips questions that do not have any 'questions' (i.e. question.question === "")
+ */
+const stripEmptyQuestions = (
+  questions: (Question | LeanQuestion)[]
+): (Question | LeanQuestion)[] => {
+  return questions.filter(({ question }) => !!question);
+};
+
+/**
+ * Strips Questions to LeanQuestions (eg. remove id, deadlineId, questionNumber)
+ * Some questions will contain these attributes as they are existing questions
+ */
 const stripQuestionsToLeanQuestions = (
   questions: (Question | LeanQuestion)[]
 ): LeanQuestion[] => {
@@ -22,6 +37,9 @@ const stripQuestionsToLeanQuestions = (
   });
 };
 
+/**
+ * Strips options from questions that do not need options (eg. Paragraph, ShortAnswer, etc.)
+ */
 const stripOptions = (questions: LeanQuestion[]) => {
   const strippedQuestions = questions.map((question) => {
     switch (question.type) {

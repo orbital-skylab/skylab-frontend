@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ApiServiceBuilder } from "@/helpers/api";
-import { HTTP_METHOD } from "@/types/api";
+import { Error as ErrorType, HTTP_METHOD } from "@/types/api";
 import { CALL_STATUS } from "./useApiCall.types";
 import { useState } from "react";
 
@@ -51,14 +51,15 @@ const useApiCall = ({
 
       const apiService = apiServiceBuilder.build();
       const res = await apiService();
-
       if (!res.ok) {
+        let errorMessage = "";
         try {
-          const error = await res.json();
-          throw error;
+          errorMessage = ((await res.json()) as ErrorType).message;
         } catch {
-          throw res.statusText;
+          errorMessage =
+            "An error has occurred. Please check the Network tab and inform the developers.";
         }
+        throw new Error(errorMessage);
       }
 
       const data = await res.json();

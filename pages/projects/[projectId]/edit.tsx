@@ -74,7 +74,7 @@ const EditProject: NextPage = () => {
     const processedValues = stripEmptyStrings(values);
     try {
       await EditProject.call(processedValues);
-      setSuccess("You have successfully edited your profile");
+      setSuccess("You have successfully edited the project details");
     } catch (error) {
       setError(error);
     }

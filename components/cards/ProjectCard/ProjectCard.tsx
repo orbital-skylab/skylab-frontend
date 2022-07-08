@@ -128,7 +128,11 @@ const ProjectCard: FC<Props> = ({ project }) => {
                 </Box>
               ) : null}
             </Stack>
-            <Stack direction="row" gap="0.5rem" sx={{ marginTop: "auto" }}>
+            <Stack
+              direction={{ xs: "column-reverse", md: "row" }}
+              gap="0.5rem"
+              sx={{ marginTop: "auto" }}
+            >
               <Link passHref href={`${PAGES.PROJECTS}/${project.id}`}>
                 <Button
                   variant="outlined"
@@ -140,7 +144,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
                   }}
                   onClick={() => setProjectModalOpen(true)}
                 >
-                  Profile
+                  Details
                 </Button>
               </Link>
               <Button
@@ -153,7 +157,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
                 }}
                 onClick={handleOpenProjectModal}
               >
-                Submission
+                Poster and Video
               </Button>
             </Stack>
           </Stack>
