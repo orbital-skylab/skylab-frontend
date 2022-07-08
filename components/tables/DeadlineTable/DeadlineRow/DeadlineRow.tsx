@@ -97,7 +97,10 @@ const DeadlineRow: FC<Props> = ({ deadline, mutate }) => {
             }}
           >
             <Link href={`${PAGES.MANAGE_DEADLINES}/${deadline.id}`} passHref>
-              <Tooltip title="View and edit deadline questions">
+              <Tooltip
+                title="View and edit deadline questions"
+                placement="left"
+              >
                 <MenuItem>View Questions</MenuItem>
               </Tooltip>
             </Link>

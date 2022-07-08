@@ -34,7 +34,7 @@ export const isoDateToDateTimeLocalInput = (isoDate: string | undefined) => {
 
   const d = new Date(isoDate);
   const yyyy = d.getFullYear();
-  const mm = d.getMonth().toString().padStart(2, "0");
+  const mm = (d.getMonth() + 1).toString().padStart(2, "0");
   const dd = d.getDate().toString().padStart(2, "0");
   const dateString = `${yyyy}-${mm}-${dd}`;
   const timeString = d.toLocaleTimeString().slice(0, 5);
