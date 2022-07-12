@@ -1,12 +1,13 @@
 import { isQuestion } from "@/helpers/types";
-import { LeanQuestion, Question, Option } from "@/types/deadlines";
+import { LeanQuestion, Question } from "@/types/deadlines";
+import { Answer } from "@/types/submissions";
 import { Stack } from "@mui/material";
 import { FC } from "react";
-import QuestionCard from "../QuestionCard";
+import QuestionCard from "../../QuestionCard";
 
 type Props = {
   questions: (Question | LeanQuestion)[];
-  answers: Record<string, Option>;
+  answers: Record<Answer["questionId"], Answer["answer"]>;
   generateSetAnswer: (questionIdOrIdx: number) => (newAnswer: string) => void;
   accessAnswersWithQuestionIndex?: boolean;
 };
