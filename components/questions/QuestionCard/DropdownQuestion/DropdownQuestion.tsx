@@ -1,7 +1,7 @@
 import { ChangeEvent, FC } from "react";
 // Components
-import { MenuItem, Stack, TextField, Typography } from "@mui/material";
-import AnonymousChip from "../AnonymousChip";
+import { MenuItem, Stack, TextField } from "@mui/material";
+import QuestionAndDesc from "../QuestionAndDesc";
 // Types
 import { LeanQuestion, Option, Question } from "@/types/deadlines";
 
@@ -18,15 +18,7 @@ const DropdownQuestion: FC<Props> = ({ question, answer, setAnswer }) => {
 
   return (
     <Stack spacing="0.5rem" sx={{ width: "100%" }}>
-      <Stack direction="row" spacing="0.25rem">
-        <Typography fontWeight={600}>
-          {question.question ? question.question : "<Empty Dropdown Question>"}
-        </Typography>
-        {question.isAnonymous && <AnonymousChip />}
-      </Stack>
-      {question.desc ? (
-        <Typography variant="caption">{question.desc}</Typography>
-      ) : null}
+      <QuestionAndDesc question={question} questionType="Dropdown" />
       <TextField value={answer} onChange={handleChange} select>
         {question.options &&
           question.options.map((option, idx) => (

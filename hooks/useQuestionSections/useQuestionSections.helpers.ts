@@ -1,29 +1,29 @@
 import { LeanQuestion, LeanSection, QUESTION_TYPE } from "@/types/deadlines";
 import { Action, ACTION_TYPE, State } from "./useQuestionSections.types";
 
-export const reducer = (state: State, action: Action) => {
+export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case ACTION_TYPE.SET_SECTION_DETAILS: {
-      const newState = { ...state };
+      const newState = JSON.parse(JSON.stringify(state));
       const { sections } = newState;
 
       if (!action.payload) {
-        alert("An error has occurred while setting a section details");
+        alert("An error has occurred while setting a section's details");
         return state;
       }
 
       const { sectionIdx, name, desc } = action.payload;
 
-      if (sectionIdx === undefined || (!name && !desc)) {
-        alert("An error has occurred while setting a section details");
+      if (sectionIdx === undefined) {
+        alert("An error has occurred while setting a section's details");
         return state;
       }
 
-      if (name) {
+      if (name !== undefined) {
         sections[sectionIdx].name = name;
       }
 
-      if (desc) {
+      if (desc !== undefined) {
         sections[sectionIdx].desc = desc;
       }
 
@@ -31,7 +31,7 @@ export const reducer = (state: State, action: Action) => {
     }
 
     case ACTION_TYPE.ADD_QUESTION: {
-      const newState = { ...state };
+      const newState = JSON.parse(JSON.stringify(state));
       const { sections } = newState;
 
       if (!action.payload) {
@@ -52,7 +52,7 @@ export const reducer = (state: State, action: Action) => {
     }
 
     case ACTION_TYPE.SET_QUESTION: {
-      const newState = { ...state };
+      const newState = JSON.parse(JSON.stringify(state));
       const { sections } = newState;
 
       if (!action.payload) {
@@ -80,7 +80,8 @@ export const reducer = (state: State, action: Action) => {
     }
 
     case ACTION_TYPE.DELETE_QUESTION: {
-      const newState = { ...state };
+      const newState = JSON.parse(JSON.stringify(state));
+
       const { sections } = newState;
 
       if (!action.payload) {
@@ -107,7 +108,7 @@ export const reducer = (state: State, action: Action) => {
     }
 
     case ACTION_TYPE.ADD_SECTION: {
-      const newState = { ...state };
+      const newState = JSON.parse(JSON.stringify(state));
       const { sections } = newState;
 
       sections.push(newDefaultSection);
@@ -125,7 +126,7 @@ export const reducer = (state: State, action: Action) => {
     }
 
     case ACTION_TYPE.DELETE_SECTION: {
-      const newState = { ...state };
+      const newState = JSON.parse(JSON.stringify(state));
       const { sections } = newState;
 
       if (!action.payload) {
@@ -141,8 +142,13 @@ export const reducer = (state: State, action: Action) => {
       }
 
       if (sections[sectionIdx].questions.length) {
-        alert("You cannot delete sections that still have questions");
-        return state;
+        if (
+          !confirm(
+            "Are you sure you want to delete this section? There are still questions in this section."
+          )
+        ) {
+          return state;
+        }
       }
 
       sections.splice(sectionIdx, 1);
@@ -152,6 +158,9 @@ export const reducer = (state: State, action: Action) => {
     case ACTION_TYPE.CLEAR_SECTIONS: {
       return { sections: [] };
     }
+
+    default:
+      return state;
   }
 };
 
@@ -159,12 +168,12 @@ const newDefaultQuestion: LeanQuestion = {
   question: "",
   desc: "",
   type: QUESTION_TYPE.MULTIPLE_CHOICE,
-  options: [""],
+  options: ["Option 1"],
   isAnonymous: false,
 };
 
 const newDefaultSection: LeanSection = {
-  name: "",
+  name: "Untitled Section",
   desc: "",
   questions: [newDefaultQuestion],
 };

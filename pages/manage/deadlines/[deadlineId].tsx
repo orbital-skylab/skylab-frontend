@@ -48,7 +48,10 @@ const DeadlineQuestions: NextPage = () => {
       endpoint: `/deadlines/${deadlineId}/questions`,
       onFetch: (deadlineDetailsResponse) => {
         setDeadlineDescription(deadlineDetailsResponse.deadline.desc ?? "");
-        if (deadlineDetailsResponse.sections.length) {
+        if (
+          deadlineDetailsResponse.sections &&
+          deadlineDetailsResponse.sections.length
+        ) {
           setSections(stripSections(deadlineDetailsResponse.sections));
         } else {
           addSection();

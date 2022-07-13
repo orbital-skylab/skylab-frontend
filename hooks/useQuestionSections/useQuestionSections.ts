@@ -24,7 +24,7 @@ const useSections = () => {
     });
   };
 
-  const addQuestion = (sectionIdx: number) => {
+  const generateAddQuestion = (sectionIdx: number) => () => {
     dispatch({ type: ACTION_TYPE.ADD_QUESTION, payload: { sectionIdx } });
   };
 
@@ -73,7 +73,7 @@ const useSections = () => {
 
   const actions = {
     setSectionDetails,
-    addQuestion,
+    generateAddQuestion,
     generateSetQuestionGenerator,
     addSection,
     setSections,

@@ -71,9 +71,11 @@ const EditQuestionConfig: FC<Props> = ({ question, setQuestion }) => {
             labelPlacement="start"
           />
         </Tooltip>
-        <IconButton color="error" onClick={handleDeleteQuestion}>
-          <Delete />
-        </IconButton>
+        <Tooltip title="Delete Question" placement="top">
+          <IconButton color="error" onClick={handleDeleteQuestion}>
+            <Delete />
+          </IconButton>
+        </Tooltip>
       </Stack>
     </Stack>
   );

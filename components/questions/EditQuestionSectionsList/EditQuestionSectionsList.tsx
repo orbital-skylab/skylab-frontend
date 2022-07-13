@@ -1,10 +1,13 @@
-import { UseSectionsActions } from "@/hooks/useQuestionSections";
-import { LeanSection } from "@/types/deadlines";
+import { FC, useState } from "react";
+// Components
+import EditQuestionSection from "./EditQuestionSection";
 import { Add } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
-import { Button, Card, CardContent, Stack, TextField } from "@mui/material";
-import { ChangeEvent, FC } from "react";
-import EditQuestionsList from "./EditQuestionsList";
+import { Button, Stack } from "@mui/material";
+// Hooks
+import { UseSectionsActions } from "@/hooks/useQuestionSections";
+// Types
+import { LeanSection } from "@/types/deadlines";
 
 type Props = {
   sections: LeanSection[];
@@ -21,47 +24,34 @@ const EditQuestionSectionsList: FC<Props> = ({
   isSubmitting,
   resetQuestionSections,
 }) => {
-  const { generateSetQuestionGenerator, addSection, setSectionDetails } =
-    questionSectionsActions;
+  const { addSection } = questionSectionsActions;
 
-  const generateHandleChangeSectionName =
-    (sectionIdx: number) => (e: ChangeEvent<HTMLInputElement>) => {
-      setSectionDetails(sectionIdx, { name: e.target.value });
-    };
-  const generateHandleChangeSectionDesc =
-    (sectionIdx: number) => (e: ChangeEvent<HTMLInputElement>) => {
-      setSectionDetails(sectionIdx, { desc: e.target.value });
-    };
+  const [selectedSection, setSelectedSection] = useState(0);
 
   return (
     <Stack spacing="1rem">
-      {sections.map(({ name, desc, questions }, idx) => (
-        <Card key={idx}>
-          <CardContent>
-            <Stack>
-              <TextField
-                size="small"
-                fullWidth
-                value={name}
-                onChange={generateHandleChangeSectionName(idx)}
-              />
-              <TextField
-                size="small"
-                rows={3}
-                multiline
-                fullWidth
-                value={desc}
-                onChange={generateHandleChangeSectionDesc(idx)}
-              />
-              <EditQuestionsList
-                questions={questions}
-                generateSetQuestion={generateSetQuestionGenerator(idx)}
-              />
-            </Stack>
-          </CardContent>
-        </Card>
-      ))}
-      <Button variant="contained" size="small" onClick={addSection}>
+      <Stack sx={{ gap: "2rem" }}>
+        {sections.map((section, idx) => (
+          <EditQuestionSection
+            key={idx}
+            idx={idx}
+            section={section}
+            isSelectedSection={selectedSection === idx}
+            setAsSelected={() => setSelectedSection(idx)}
+            numberOfSections={sections.length}
+            questionSectionsActions={questionSectionsActions}
+          />
+        ))}
+      </Stack>
+      <Button
+        variant="outlined"
+        color="secondary"
+        onClick={addSection}
+        sx={{
+          width: "fit-content",
+          alignSelf: "center",
+        }}
+      >
         <Add /> Section
       </Button>
 

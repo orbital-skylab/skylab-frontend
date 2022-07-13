@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Error } from "@/types/api";
-import { Question } from "@/types/deadlines";
+import { Question, Section } from "@/types/deadlines";
 import { AddUserFormValuesType } from "@/types/roles";
 
 /**
@@ -24,7 +24,7 @@ export function isArray<T>(values: any): values is Array<T> {
   return values && typeof values === "object" && values.length !== undefined;
 }
 
-/** To validate that values */
+/** To validate that values is a Question */
 export function isQuestion(value: any): value is Question {
   return (
     value &&
@@ -34,6 +34,18 @@ export function isQuestion(value: any): value is Question {
     value.question &&
     value.desc !== undefined &&
     value.type
+  );
+}
+
+/** To validate that values is a Section */
+export function isSection(value: any): value is Section {
+  return (
+    value &&
+    value.id !== undefined &&
+    value.deadlineId !== undefined &&
+    value.sectionNumber !== undefined &&
+    value.name !== undefined &&
+    value.questions
   );
 }
 

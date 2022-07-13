@@ -24,6 +24,7 @@ import DropdownQuestion from "./DropdownQuestion";
 
 type Props = {
   isEditMode?: boolean;
+  isShowingSettings?: boolean; // Only valid when isEditMode === true
   question: LeanQuestion | Question;
   // Used to generate the question number if not provided. Only valid when editing Deadline questions
   idx?: number;
@@ -41,6 +42,7 @@ type Props = {
  */
 const QuestionCard: FC<Props> = ({
   isEditMode,
+  isShowingSettings,
   question,
   idx,
   setQuestion,
@@ -77,7 +79,9 @@ const QuestionCard: FC<Props> = ({
           return (
             <>
               <EditQuestionWithNoOptions {...editQuestionProps} />
-              <EditQuestionConfig {...editQuestionProps} />
+              {isShowingSettings && (
+                <EditQuestionConfig {...editQuestionProps} />
+              )}
             </>
           );
         case QUESTION_TYPE.MULTIPLE_CHOICE:
@@ -85,8 +89,13 @@ const QuestionCard: FC<Props> = ({
         case QUESTION_TYPE.DROPDOWN:
           return (
             <>
-              <EditQuestionWithOptions {...editQuestionProps} />
-              <EditQuestionConfig {...editQuestionProps} />
+              <EditQuestionWithOptions
+                {...editQuestionProps}
+                isShowingSettings={!!isShowingSettings}
+              />
+              {isShowingSettings && (
+                <EditQuestionConfig {...editQuestionProps} />
+              )}
             </>
           );
       }

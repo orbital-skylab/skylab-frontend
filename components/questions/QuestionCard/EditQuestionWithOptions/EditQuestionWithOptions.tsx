@@ -1,19 +1,24 @@
 import { FC, useCallback } from "react";
 // Components
-import { Stack, TextField, Typography } from "@mui/material";
-import AddOptionButton from "./AddOptionButton";
+import { Button, Stack, TextField, Typography } from "@mui/material";
 import EditOptionsList from "./EditOptionsList";
 // Helpers
 import { generateHandleTextFieldChange } from "../QuestionCard.helpers";
 // Types
 import { LeanQuestion } from "@/types/deadlines";
+import { Add } from "@mui/icons-material";
 
 type Props = {
   question: LeanQuestion;
   setQuestion: (question?: LeanQuestion) => void;
+  isShowingSettings: boolean;
 };
 
-const EditQuestionWithOptions: FC<Props> = ({ question, setQuestion }) => {
+const EditQuestionWithOptions: FC<Props> = ({
+  question,
+  setQuestion,
+  isShowingSettings,
+}) => {
   /** Function to set an option at a specific index so that each option only receives the setter they need */
   const generateSetOption = useCallback(
     (idx: number) => {
@@ -73,7 +78,18 @@ const EditQuestionWithOptions: FC<Props> = ({ question, setQuestion }) => {
           generateSetOption={generateSetOption}
           isOnlyOption={question.options?.length === 1}
         />
-        <AddOptionButton addOption={addOption} />
+        {isShowingSettings && (
+          <Button
+            onClick={addOption}
+            variant="outlined"
+            color="secondary"
+            size="small"
+            sx={{ width: "fit-content" }}
+          >
+            <Add />
+            Option
+          </Button>
+        )}
       </Stack>
     </Stack>
   );

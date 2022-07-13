@@ -10,6 +10,7 @@ type Props = {
   answers: Record<Answer["questionId"], Answer["answer"]>;
   generateSetAnswer: (questionIdOrIdx: number) => (newAnswer: string) => void;
   accessAnswersWithQuestionIndex?: boolean;
+  indexOffset?: number; // Only valid when `accessAnswersWithQuestionIndex` is true
 };
 
 /**
@@ -25,6 +26,7 @@ const QuestionsList: FC<Props> = ({
   answers,
   generateSetAnswer,
   accessAnswersWithQuestionIndex = false,
+  indexOffset,
 }) => {
   return (
     <Stack spacing="1rem">
@@ -33,14 +35,23 @@ const QuestionsList: FC<Props> = ({
          * In preview mode (question is of type LeanQuestion instead of type Question) while editing Deadline questions,
          * the answer is stored and accessed via its index because it does not have a questionId yet.
          * Else it is stored and accessed via its questionId.
+         * (The index is offset as )
          */
-        let questionIdOrIdx = idx;
+        let questionIdOrIdx;
         if (!accessAnswersWithQuestionIndex) {
           if (isQuestion(question)) {
             questionIdOrIdx = question.id;
           } else {
             return alert(
               "You should not enable the `accessAnswersWithQuestionIndex` flag if the questions do not have an ID. (i.e. edit deadline questions page)"
+            );
+          }
+        } else {
+          if (indexOffset !== undefined) {
+            questionIdOrIdx = indexOffset + idx;
+          } else {
+            return alert(
+              "You should not enable the `accessAnswersWithQuestionIndex` flag without providing the indexOffset"
             );
           }
         }
