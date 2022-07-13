@@ -46,7 +46,7 @@ export const reducer = (state: State, action: Action): State => {
         return state;
       }
 
-      sections[sectionIdx].questions.push(newDefaultQuestion);
+      sections[sectionIdx].questions.push({ ...newDefaultQuestion });
 
       return newState;
     }
@@ -111,7 +111,7 @@ export const reducer = (state: State, action: Action): State => {
       const newState = JSON.parse(JSON.stringify(state));
       const { sections } = newState;
 
-      sections.push(newDefaultSection);
+      sections.push({ ...newDefaultSection });
 
       return newState;
     }
@@ -173,7 +173,7 @@ const newDefaultQuestion: LeanQuestion = {
 };
 
 const newDefaultSection: LeanSection = {
-  name: "Untitled Section",
+  name: "",
   desc: "",
-  questions: [newDefaultQuestion],
+  questions: [{ ...newDefaultQuestion }],
 };

@@ -6,8 +6,9 @@ import {
   Section,
 } from "@/types/deadlines";
 /**
- * Strips a section from a Sectino to a LeanSection.
+ * Strips a section from a Section to a LeanSection.
  * Involves stripping all questions from Question[] to LeanQuestion[]
+ * Used when fetching existing sections => Stripping them => Populating the form editor with the stripped data
  * @param {Section[]} sections Sections to be stripped
  * @returns Stripped sections
  */
@@ -35,11 +36,19 @@ export const stripSections = (sections: Section[]): LeanSection[] => {
 
 /**
  * Processes an array of sections to:
- * 1. Remove empty questions
- * 2. Remove options from questions that do not need options
+ * 1. Remove empty sections (Sections with no name)
+ * 2. Remove empty questions (Questions with not question)
+ * 3. Remove options from questions that do not need options
  * @param sections List of sections
  */
 export const processSections = (sections: LeanSection[]): LeanSection[] => {
+  /**
+   * Strips sections that do not have a name
+   */
+  const stripEmptySections = (sections: LeanSection[]): LeanSection[] => {
+    return sections.filter(({ name }) => !!name);
+  };
+
   /**
    * Strips questions that do not have any 'questions' (i.e. question.question === "")
    */
@@ -76,9 +85,9 @@ export const processSections = (sections: LeanSection[]): LeanSection[] => {
     return strippedQuestions;
   };
 
-  return sections.map((section) => {
-    const { questions, ...sectionWithQuestions } = section;
+  return stripEmptySections(sections).map((section) => {
+    const { questions, ...sectionWithoutQuestions } = section;
     const processedQuestions = stripOptions(stripEmptyQuestions(questions));
-    return { ...sectionWithQuestions, questions: processedQuestions };
+    return { ...sectionWithoutQuestions, questions: processedQuestions };
   });
 };

@@ -1,23 +1,29 @@
 import { isSection } from "@/helpers/types";
 import { UseAnswersActions } from "@/hooks/useAnswers";
+import { generateIndexOffset } from "@/hooks/useAnswers/useAnswers.helpers";
 import { LeanSection, Section } from "@/types/deadlines";
 import { Answer } from "@/types/submissions";
-import { Card, CardContent, Stack, Typography } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import { Button, Card, CardContent, Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import QuestionsList from "./QuestionsList";
 
 type Props = {
-  sections: (Section | LeanSection)[];
+  questionSections: (Section | LeanSection)[];
   answers: Record<Answer["questionId"], Answer["answer"]>;
   accessAnswersWithQuestionIndex?: boolean;
   answersActions: UseAnswersActions;
+  submitAnswers: (options?: { isDraft: boolean }) => void;
+  isSubmitting: boolean;
 };
 
 const QuestionSectionsList: FC<Props> = ({
-  sections,
+  questionSections,
   answers,
   accessAnswersWithQuestionIndex,
   answersActions,
+  submitAnswers,
+  isSubmitting,
 }) => {
   const { generateSetAnswer } = answersActions;
 
@@ -33,9 +39,13 @@ const QuestionSectionsList: FC<Props> = ({
 
   return (
     <Stack sx={{ gap: "2rem" }}>
-      {sections.map((section, idx) => {
+      {questionSections.map((section, idx) => {
         const { name, desc, questions } = section;
         const sectionNumber = getSectionNumber(section, idx);
+        // The amount to offset each question based on number of previous questions
+        const indexOffset = accessAnswersWithQuestionIndex
+          ? generateIndexOffset(questionSections, idx)
+          : 0;
 
         return (
           <Card
@@ -59,7 +69,7 @@ const QuestionSectionsList: FC<Props> = ({
                 borderTopRightRadius: "1rem",
               }}
               fontWeight={600}
-            >{`Section ${sectionNumber} of ${sections.length}`}</Typography>
+            >{`Section ${sectionNumber} of ${questionSections.length}`}</Typography>
             <CardContent>
               <Stack spacing="0.5rem" marginBottom="1rem">
                 <Typography fontWeight={600} fontSize="1.2rem">
@@ -75,15 +85,25 @@ const QuestionSectionsList: FC<Props> = ({
                 answers={answers}
                 generateSetAnswer={generateSetAnswer}
                 accessAnswersWithQuestionIndex={accessAnswersWithQuestionIndex}
-                indexOffset={sections
-                  .slice(0, idx)
-                  .map((section) => section.questions.length)
-                  .reduce((a, b) => a + b, 0)}
+                indexOffset={indexOffset}
               />
             </CardContent>
           </Card>
         );
       })}
+      <Stack direction="row" justifyContent="end" gap="1rem">
+        <Button onClick={() => submitAnswers({ isDraft: true })}>
+          Save Draft
+        </Button>
+        <LoadingButton
+          variant="contained"
+          onClick={() => submitAnswers()}
+          loading={isSubmitting}
+          disabled={isSubmitting}
+        >
+          Submit
+        </LoadingButton>
+      </Stack>
     </Stack>
   );
 };

@@ -55,7 +55,7 @@ const EditQuestionSectionsList: FC<Props> = ({
         <Add /> Section
       </Button>
 
-      <Stack direction="row" justifyContent="space-between" mt="2rem">
+      <Stack direction="row" justifyContent="space-between">
         <Button onClick={resetQuestionSections}>Reset</Button>
         <LoadingButton
           variant="contained"

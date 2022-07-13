@@ -129,7 +129,7 @@ const DeadlineQuestions: NextPage = () => {
         <AutoBreadcrumbs
           breadcrumbs={[
             {
-              label: `Editing ${deadlineId}`,
+              label: `Editing Deadline ${deadlineId} Details`,
               href: `${PAGES.MANAGE_DEADLINES}/${deadlineId}`,
             },
           ]}
@@ -158,10 +158,19 @@ const DeadlineQuestions: NextPage = () => {
           />
         ) : (
           <QuestionSectionsList
-            sections={sections}
+            questionSections={sections}
             answers={answers}
             answersActions={answersActions}
             accessAnswersWithQuestionIndex
+            // Dummy props as this is component is just for a preview here
+            submitAnswers={(options) => {
+              if (options && options.isDraft) {
+                alert("Save the answers as a draft");
+              } else {
+                alert("Submitted the answers");
+              }
+            }}
+            isSubmitting={false}
           />
         )}
       </Body>

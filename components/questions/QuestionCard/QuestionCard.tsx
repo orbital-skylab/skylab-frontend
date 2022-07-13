@@ -63,7 +63,9 @@ const QuestionCard: FC<Props> = ({
   const renderContent = () => {
     if (isEditMode) {
       if (!setQuestion) {
-        return null;
+        return alert(
+          `Error with question: ${getQuestionNumber()}: A question setter is not provided even though it is in Edit mode`
+        );
       }
 
       const editQuestionProps = {
@@ -101,7 +103,9 @@ const QuestionCard: FC<Props> = ({
       }
     } else {
       if (answer === undefined || !setAnswer) {
-        return null;
+        return alert(
+          `Error with question: ${getQuestionNumber()}: A answer setter is not provided OR the answer at the questionIdOrIdx is undefined`
+        );
       }
 
       const questionProps = { question, answer, setAnswer };

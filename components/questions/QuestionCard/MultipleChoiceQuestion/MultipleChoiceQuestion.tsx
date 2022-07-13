@@ -34,7 +34,7 @@ const MultipleChoiceQuestion: FC<Props> = ({ question, answer, setAnswer }) => {
                 <FormControlLabel
                   key={idx}
                   value={option}
-                  control={<Radio />}
+                  control={<Radio sx={{ flex: "0 0 fit-content" }} />}
                   label={option ? option : `<Empty Option ${idx + 1}>`}
                 />
               ))}

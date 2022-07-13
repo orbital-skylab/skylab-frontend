@@ -1,4 +1,5 @@
 import { isQuestion } from "@/helpers/types";
+import { LeanSection, Section } from "@/types/deadlines";
 import { Action, ACTION_TYPE, State } from "./useAnswers.types";
 
 export const reducer = (state: State, action: Action): State => {
@@ -64,9 +65,13 @@ export const reducer = (state: State, action: Action): State => {
       const answers: State["answers"] = {};
 
       questionSections.forEach((section, sectionIdx) => {
+        const sectionIndexOffset = generateIndexOffset(
+          questionSections,
+          sectionIdx
+        );
         section.questions.forEach((question, questionIdx) => {
           if (accessAnswersWithQuestionIndex) {
-            const index = sectionIdx * questionSections.length + questionIdx;
+            const index = sectionIndexOffset + questionIdx;
             answers[index] = "";
           } else {
             if (!isQuestion(question)) {
@@ -85,4 +90,21 @@ export const reducer = (state: State, action: Action): State => {
       return { answers: {} };
     }
   }
+};
+
+/**
+ * Generates the index offset for the current section
+ * (AKA number of questions across all sections BEFORE the current section specified by the sectionIdx)
+ * @param questionSections
+ * @param {number} sectionIdx The index of the current section
+ * @returns {number} indexOffset
+ */
+export const generateIndexOffset = (
+  questionSections: (LeanSection | Section)[],
+  sectionIdx: number
+): number => {
+  return questionSections
+    .slice(0, sectionIdx)
+    .map((section) => section.questions.length)
+    .reduce((a, b) => a + b, 0);
 };

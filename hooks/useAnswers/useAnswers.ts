@@ -22,7 +22,6 @@ const useAnswers = () => {
         payload: { questionId, answer },
       });
     };
-    console.log(state.answers);
     return setAnswer;
   };
 

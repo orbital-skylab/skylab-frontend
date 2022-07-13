@@ -10,15 +10,15 @@ import {
 } from "@mui/material";
 
 type Props = {
-  isPreviewMode: boolean;
-  handleTogglePreviewMode: () => void;
+  isPreviewMode?: boolean;
+  handleTogglePreviewMode?: () => void; // Does not render toggle when not provided
   deadlineName: string | undefined;
   deadlineDescription: string;
-  setDeadlineDescription: Dispatch<SetStateAction<string>>;
+  setDeadlineDescription?: Dispatch<SetStateAction<string>>;
 };
 
 const DeadlineDescriptionCard: FC<Props> = ({
-  isPreviewMode,
+  isPreviewMode = false,
   handleTogglePreviewMode,
   deadlineName = "",
   deadlineDescription,
@@ -27,7 +27,9 @@ const DeadlineDescriptionCard: FC<Props> = ({
   const handleDeadlineDescriptionChange = (
     e: ChangeEvent<HTMLInputElement>
   ) => {
-    setDeadlineDescription(e.target.value);
+    if (setDeadlineDescription) {
+      setDeadlineDescription(e.target.value);
+    }
   };
 
   return (
@@ -37,14 +39,16 @@ const DeadlineDescriptionCard: FC<Props> = ({
           <Typography variant="h1" fontSize="1.25rem" fontWeight={600}>
             {deadlineName}
           </Typography>
-          <FormControlLabel
-            value={isPreviewMode}
-            onClick={handleTogglePreviewMode}
-            control={<Switch color="info" />}
-            label="Preview Questions"
-            labelPlacement="start"
-            sx={{ marginLeft: "auto" }}
-          />
+          {handleTogglePreviewMode && (
+            <FormControlLabel
+              value={isPreviewMode}
+              onClick={handleTogglePreviewMode}
+              control={<Switch color="info" />}
+              label="Preview Questions"
+              labelPlacement="start"
+              sx={{ marginLeft: "auto" }}
+            />
+          )}
         </Stack>
 
         {!isPreviewMode ? (
