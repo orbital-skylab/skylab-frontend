@@ -17,71 +17,32 @@ import useAuth from "@/hooks/useAuth";
 // Helpers
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { PAGES, NAVBAR_ACTIONS, NAVBAR_OPTIONS } from "@/helpers/navigation";
+import { PAGES } from "@/helpers/navigation";
 // Constants
 import { BASE_TRANSITION, NAVBAR_HEIGHT_REM } from "@/styles/constants";
+import {
+  generateIsCurrentPage,
+  generateOnClickGenerator,
+} from "./Navbar.helpers";
 
 const Navbar: FC = () => {
   const router = useRouter();
   const { user, signOut } = useAuth();
   const trigger = useScrollTrigger({ threshold: 0 });
 
-  /**
-   * Helper functions
-   */
-  const isCurrentPage = (path: string | undefined) => {
-    if (path === undefined) {
-      return false;
-    } else if (path.split("/").length < 2) {
-      return false;
-    }
-    return (
-      router.asPath.split("/")[1].toLowerCase() ===
-      path.split("/")[1].toLowerCase()
-    );
-  };
-
-  const generateOnClick = ({
-    route,
-    action,
-  }: {
-    route?: string;
-    action?: string;
-  }) => {
-    if (route) {
-      return () => {
-        if (router.pathname !== route) {
-          router.push(route);
-        }
-      };
-    }
-
-    switch (action) {
-      case NAVBAR_ACTIONS.SIGN_OUT:
-        return () => {
-          signOut();
-        };
-
-      default:
-        return () => console.error("Invalid Navbar Action Provided");
-    }
-  };
-
   const renderNavigationButtons = () => {
     if (user) {
       return (
         <>
           <NavbarButtonsMobile
-            options={NAVBAR_OPTIONS}
             user={user}
-            generateOnClick={generateOnClick}
-            isCurrentPage={isCurrentPage}
+            generateOnClick={generateOnClickGenerator(user, router, signOut)}
+            isCurrentPage={generateIsCurrentPage(router)}
           />
           <NavbarButtonsDesktop
-            options={NAVBAR_OPTIONS}
             user={user}
-            generateOnClick={generateOnClick}
-            isCurrentPage={isCurrentPage}
+            generateOnClick={generateOnClickGenerator(user, router, signOut)}
+            isCurrentPage={generateIsCurrentPage(router)}
           />
         </>
       );

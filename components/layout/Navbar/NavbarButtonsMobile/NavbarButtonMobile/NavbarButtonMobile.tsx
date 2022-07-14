@@ -1,8 +1,11 @@
+import { FC } from "react";
+// Components
+import { MenuItem, Typography } from "@mui/material";
+// Helpers
 import { NavbarOption } from "@/helpers/navigation";
 import { userHasRole } from "@/helpers/roles";
+// Types
 import { User } from "@/types/users";
-import { MenuItem, Typography } from "@mui/material";
-import { FC } from "react";
 
 type Props = {
   user?: User;

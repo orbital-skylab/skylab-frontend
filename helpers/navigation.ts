@@ -13,10 +13,13 @@ export enum PAGES {
   MANAGE_USERS = "/manage/users",
   MANAGE_USERS_BATCH_ADD = "/manage/users/batch-add",
   MANAGE_PROJECTS = "/manage/projects",
+  DASHBOARD = "/dashboard",
+  DASHBOARD_STUDENT = "/dashboard/student",
 }
 
 export enum NAVBAR_ACTIONS {
   SIGN_OUT = "signOut",
+  ROUTE_TO_DASHBOARD = "routeToDashboard",
 }
 
 /**
@@ -30,6 +33,16 @@ export type NavbarOption = {
 };
 
 export const NAVBAR_OPTIONS: NavbarOption[] = [
+  {
+    label: "Dashboard",
+    action: NAVBAR_ACTIONS.ROUTE_TO_DASHBOARD,
+    authorizedRoles: [
+      ROLES.STUDENTS,
+      ROLES.ADVISERS,
+      ROLES.MENTORS,
+      ROLES.ADMINISTRATORS,
+    ],
+  },
   {
     label: "Projects",
     route: PAGES.PROJECTS,

@@ -1,12 +1,14 @@
-import { NavbarOption } from "@/helpers/navigation";
-import { User } from "@/types/users";
-import { Box, IconButton, Menu } from "@mui/material";
-import { Menu as MenuIcon } from "@mui/icons-material";
 import React, { FC, useState } from "react";
+// Components
 import NavbarButtonMobile from "./NavbarButtonMobile";
+import { Menu as MenuIcon } from "@mui/icons-material";
+import { Box, IconButton, Menu } from "@mui/material";
+// Helpers
+import { NAVBAR_OPTIONS } from "@/helpers/navigation";
+// Types
+import { User } from "@/types/users";
 
 type Props = {
-  options: NavbarOption[];
   user?: User;
   generateOnClick: ({
     route,
@@ -19,7 +21,6 @@ type Props = {
 };
 
 const NavbarButtonsMobile: FC<Props> = ({
-  options,
   user,
   generateOnClick,
   isCurrentPage,
@@ -69,7 +70,7 @@ const NavbarButtonsMobile: FC<Props> = ({
           display: { xs: "block", md: "none" },
         }}
       >
-        {options.map((option) => (
+        {NAVBAR_OPTIONS.map((option) => (
           <NavbarButtonMobile
             key={option.label}
             option={option}

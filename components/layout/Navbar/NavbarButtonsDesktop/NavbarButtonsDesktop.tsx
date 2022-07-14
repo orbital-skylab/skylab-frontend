@@ -1,11 +1,13 @@
-import { NavbarOption } from "@/helpers/navigation";
-import { User } from "@/types/users";
-import { Box } from "@mui/material";
 import { FC } from "react";
+// Components
+import { Box } from "@mui/material";
 import NavbarButtonDesktop from "./NavbarButtonDesktop";
+// Helpers
+import { NAVBAR_OPTIONS } from "@/helpers/navigation";
+// Types
+import { User } from "@/types/users";
 
 type Props = {
-  options: NavbarOption[];
   user?: User;
   generateOnClick: ({
     route,
@@ -18,7 +20,6 @@ type Props = {
 };
 
 const NavbarButtonsDesktop: FC<Props> = ({
-  options,
   user,
   generateOnClick,
   isCurrentPage,
@@ -30,7 +31,7 @@ const NavbarButtonsDesktop: FC<Props> = ({
         gap: "0.5rem",
       }}
     >
-      {options.map((option) => (
+      {NAVBAR_OPTIONS.map((option) => (
         <NavbarButtonDesktop
           key={option.label}
           option={option}
