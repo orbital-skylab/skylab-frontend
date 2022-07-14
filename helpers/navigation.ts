@@ -15,6 +15,9 @@ export enum PAGES {
   MANAGE_PROJECTS = "/manage/projects",
   DASHBOARD = "/dashboard",
   DASHBOARD_STUDENT = "/dashboard/student",
+  DASHBOARD_ADVISER = "/dashboard/adviser",
+  DASHBOARD_MENTOR = "/dashboard/mentor",
+  DASHBOARD_ADMINISTRATOR = "/dashboard/administrator",
 }
 
 export enum NAVBAR_ACTIONS {

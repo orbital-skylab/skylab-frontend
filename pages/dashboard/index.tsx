@@ -11,8 +11,7 @@ import { BASE_TRANSITION } from "@/styles/constants";
 import type { NextPage } from "next";
 import { ROLES } from "@/types/roles";
 import useAuth from "@/hooks/useAuth";
-import { getUserRoles, userHasRole } from "@/helpers/roles";
-import { useRouter } from "next/router";
+import { userHasRole } from "@/helpers/roles";
 
 const pages = [
   {
@@ -22,22 +21,30 @@ const pages = [
     href: PAGES.DASHBOARD_STUDENT,
     authorizedRole: ROLES.STUDENTS,
   },
+  {
+    title: "Adviser Dashboard",
+    description:
+      "View your teams' milestone submissions and evaluations, evaluate your teams and manage their evaluation groups",
+    href: PAGES.DASHBOARD_ADVISER,
+    authorizedRole: ROLES.ADVISERS,
+  },
+  {
+    title: "Mentor Dashboard",
+    description: "View your teams' milestone submissions",
+    href: PAGES.DASHBOARD_MENTOR,
+    authorizedRole: ROLES.MENTORS,
+  },
+  {
+    title: "Administrator Dashboard",
+    description:
+      "View all teams' submissions to ensure all of them have submitted on time",
+    href: PAGES.DASHBOARD_ADMINISTRATOR,
+    authorizedRole: ROLES.ADMINISTRATORS,
+  },
 ];
 
-const Manage: NextPage = () => {
+const Dashboard: NextPage = () => {
   const { user, isLoading } = useAuth();
-  const router = useRouter();
-
-  if (!isLoading && user && getUserRoles(user).length === 1) {
-    const role = getUserRoles(user)[0];
-    switch (role) {
-      case ROLES.STUDENTS:
-        router.push(PAGES.DASHBOARD_STUDENT);
-        break;
-      default:
-        break;
-    }
-  }
 
   const visiblePages =
     !isLoading && user
@@ -96,4 +103,4 @@ const Manage: NextPage = () => {
     </>
   );
 };
-export default Manage;
+export default Dashboard;
