@@ -17,7 +17,7 @@ export const reducer = (state: State, action: Action): State => {
 
       if (
         questionId === undefined ||
-        !newAnswer ||
+        newAnswer === undefined ||
         answers[questionId] === undefined
       ) {
         alert("An error has occurred while setting an answer");
