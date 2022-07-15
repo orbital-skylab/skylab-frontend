@@ -7,7 +7,7 @@ import QuestionCard from "../../QuestionCard";
 
 type Props = {
   questions: (Question | LeanQuestion)[];
-  answers: Record<Answer["questionId"], Answer["answer"]>;
+  answers: Map<Answer["questionId"], Answer["answer"]>;
   generateSetAnswer: (questionIdOrIdx: number) => (newAnswer: string) => void;
   accessAnswersWithQuestionIndex?: boolean;
   indexOffset?: number; // Only valid when `accessAnswersWithQuestionIndex` is true
@@ -56,7 +56,7 @@ const QuestionsList: FC<Props> = ({
           }
         }
 
-        const answer = answers[questionIdOrIdx];
+        const answer = answers.get(questionIdOrIdx);
         const setAnswer = generateSetAnswer(questionIdOrIdx);
 
         return (

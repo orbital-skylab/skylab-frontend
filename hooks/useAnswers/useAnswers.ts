@@ -5,7 +5,7 @@ import { reducer } from "./useAnswers.helpers";
 import { ACTION_TYPE, State } from "./useAnswers.types";
 
 const useAnswers = () => {
-  const initialState: State = { answers: {} };
+  const initialState: State = { answers: new Map() };
 
   const [state, dispatch] = useReducer(reducer, initialState);
 

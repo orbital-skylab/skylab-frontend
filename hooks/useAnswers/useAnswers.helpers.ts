@@ -5,7 +5,7 @@ import { Action, ACTION_TYPE, State } from "./useAnswers.types";
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case ACTION_TYPE.SET_ANSWER: {
-      const newState = { ...state };
+      const newState = { answers: new Map(state.answers) };
       const { answers } = newState;
 
       if (!action.payload) {
@@ -18,13 +18,13 @@ export const reducer = (state: State, action: Action): State => {
       if (
         questionId === undefined ||
         newAnswer === undefined ||
-        answers[questionId] === undefined
+        !answers.has(questionId)
       ) {
         alert("An error has occurred while setting an answer");
         return state;
       }
 
-      answers[questionId] = newAnswer;
+      answers.set(questionId, newAnswer);
       return newState;
     }
 
@@ -41,9 +41,9 @@ export const reducer = (state: State, action: Action): State => {
         return state;
       }
 
-      const newAnswers: State["answers"] = {};
-      answers.forEach(
-        ({ questionId, answer }) => (newAnswers[questionId] = answer)
+      const newAnswers: State["answers"] = new Map();
+      answers.forEach(({ questionId, answer }) =>
+        newAnswers.set(questionId, answer)
       );
       return { answers: newAnswers };
     }
@@ -62,7 +62,7 @@ export const reducer = (state: State, action: Action): State => {
         return state;
       }
 
-      const answers: State["answers"] = {};
+      const answers: State["answers"] = new Map();
 
       questionSections.forEach((section, sectionIdx) => {
         const sectionIndexOffset = generateIndexOffset(
@@ -72,13 +72,13 @@ export const reducer = (state: State, action: Action): State => {
         section.questions.forEach((question, questionIdx) => {
           if (accessAnswersWithQuestionIndex) {
             const index = sectionIndexOffset + questionIdx;
-            answers[index] = "";
+            answers.set(index, "");
           } else {
             if (!isQuestion(question)) {
               alert("An error has occurred while setting empty answers");
               return state;
             }
-            answers[question.id] = "";
+            answers.set(question.id, "");
           }
         });
       });
@@ -87,7 +87,7 @@ export const reducer = (state: State, action: Action): State => {
     }
 
     case ACTION_TYPE.CLEAR_ANSWERS: {
-      return { answers: {} };
+      return { answers: new Map() };
     }
   }
 };

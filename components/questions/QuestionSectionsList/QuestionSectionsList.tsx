@@ -10,7 +10,7 @@ import QuestionsList from "./QuestionsList";
 
 type Props = {
   questionSections: (Section | LeanSection)[];
-  answers: Record<Answer["questionId"], Answer["answer"]>;
+  answers: Map<Answer["questionId"], Answer["answer"]>;
   accessAnswersWithQuestionIndex?: boolean;
   answersActions: UseAnswersActions;
   submitAnswers: (options?: { isDraft: boolean }) => void;

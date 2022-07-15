@@ -2,7 +2,7 @@ import { Section, LeanSection } from "@/types/deadlines";
 import { Answer } from "@/types/submissions";
 import useAnswers from "./useAnswers";
 
-export type State = { answers: Record<Answer["questionId"], Answer["answer"]> };
+export type State = { answers: Map<Answer["questionId"], Answer["answer"]> };
 
 export type Action = {
   type: ACTION_TYPE;
