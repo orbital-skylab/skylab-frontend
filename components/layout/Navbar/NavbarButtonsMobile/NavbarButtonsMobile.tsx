@@ -4,7 +4,7 @@ import NavbarButtonMobile from "./NavbarButtonMobile";
 import { Menu as MenuIcon } from "@mui/icons-material";
 import { Box, IconButton, Menu } from "@mui/material";
 // Helpers
-import { NAVBAR_OPTIONS } from "@/helpers/navigation";
+import { NAVBAR_OPTIONS } from "../Navbar.helpers";
 // Types
 import { User } from "@/types/users";
 

@@ -1,10 +1,45 @@
 // Helpers
-import { NAVBAR_ACTIONS, PAGES } from "@/helpers/navigation";
+import { PAGES } from "@/helpers/navigation";
 import { getUserRoles } from "@/helpers/roles";
 // Types
 import { ROLES } from "@/types/roles";
 import { User } from "@/types/users";
 import { NextRouter } from "next/router";
+import { NavbarOption, NAVBAR_ACTIONS } from "./Navbar.types";
+
+/**
+ * Options to render in the navigation bar
+ */
+export const NAVBAR_OPTIONS: NavbarOption[] = [
+  {
+    label: "Dashboard",
+    action: NAVBAR_ACTIONS.ROUTE_TO_DASHBOARD,
+    authorizedRoles: [
+      ROLES.STUDENTS,
+      ROLES.ADVISERS,
+      ROLES.MENTORS,
+      ROLES.ADMINISTRATORS,
+    ],
+  },
+  {
+    label: "Projects",
+    route: PAGES.PROJECTS,
+  },
+  { label: "Staff", route: PAGES.STAFF },
+  {
+    label: "Manage",
+    route: PAGES.MANAGE,
+    authorizedRoles: [ROLES.ADMINISTRATORS],
+  },
+  {
+    label: "Profile",
+    route: PAGES.USERS,
+  },
+  {
+    label: "Sign Out",
+    action: NAVBAR_ACTIONS.SIGN_OUT,
+  },
+];
 
 /**
  * Receives router object to generate function to check if the current page is under a provided path
@@ -71,6 +106,12 @@ export const generateOnClickGenerator = (
           switch (role) {
             case ROLES.STUDENTS:
               return () => router.push(PAGES.DASHBOARD_STUDENT);
+            case ROLES.ADVISERS:
+              return () => router.push(PAGES.DASHBOARD_ADVISER);
+            case ROLES.MENTORS:
+              return () => router.push(PAGES.DASHBOARD_MENTOR);
+            case ROLES.ADMINISTRATORS:
+              return () => router.push(PAGES.DASHBOARD_ADMINISTRATOR);
             default:
               return () => router.push(PAGES.LANDING);
           }

@@ -3,8 +3,8 @@ import { FC } from "react";
 import { Button } from "@mui/material";
 // Types
 import { User } from "@/types/users";
+import { NavbarOption } from "../../Navbar.types";
 // Helpers
-import { NavbarOption } from "@/helpers/navigation";
 import { userHasRole } from "@/helpers/roles";
 
 type Props = {

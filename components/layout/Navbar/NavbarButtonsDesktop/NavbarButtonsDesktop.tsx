@@ -3,7 +3,7 @@ import { FC } from "react";
 import { Box } from "@mui/material";
 import NavbarButtonDesktop from "./NavbarButtonDesktop";
 // Helpers
-import { NAVBAR_OPTIONS } from "@/helpers/navigation";
+import { NAVBAR_OPTIONS } from "../Navbar.helpers";
 // Types
 import { User } from "@/types/users";
 
