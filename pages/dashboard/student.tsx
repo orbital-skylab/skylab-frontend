@@ -1,5 +1,3 @@
-// TODO:
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
 // Components
 import Body from "@/components/layout/Body";
@@ -7,9 +5,14 @@ import { Tab, Tabs, tabsClasses, Typography } from "@mui/material";
 import { TabContext, TabPanel } from "@mui/lab";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import DeadlineDeliverableTable from "@/components/tables/DeadlineDeliverableTable";
+import SubmissionTable from "@/components/tables/SubmissionTable";
+import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
+import NoneFound from "@/components/emptyStates/NoneFound";
 // Hooks
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import useAuth from "@/hooks/useAuth";
+// Helpers
+import { isFuture } from "@/helpers/dates";
 // Type
 import type { NextPage } from "next";
 import { ROLES } from "@/types/roles";
@@ -18,8 +21,6 @@ import {
   GetStudentPeerEvaluationAndFeedback,
   GetStudentPeerMilestones,
 } from "@/types/api";
-import { DeadlineDeliverable } from "@/types/deadlines";
-import SubmissionTable from "@/components/tables/SubmissionTable";
 
 enum TAB {
   DEADLINES = "Upcoming Deadlines",
@@ -56,12 +57,8 @@ const StudentDashboard: NextPage = () => {
     setSelectedTab(newValue);
   };
 
-  const isFuture = (deadlineDeliverable: DeadlineDeliverable) => {
-    return new Date(deadlineDeliverable.deadline.dueBy) > new Date();
-  };
-
   const hasPastDeadlines = deadlinesResponse?.deadlines.some(
-    (deadline) => !isFuture(deadline)
+    (deadlineDeliverable) => !isFuture(deadlineDeliverable.deadline.dueBy)
   );
 
   return (
@@ -87,40 +84,93 @@ const StudentDashboard: NextPage = () => {
         </Tabs>
         <TabPanel value={TAB.DEADLINES}>
           <LoadingWrapper isLoading={isFetching(fetchDeadlinesStatus)}>
-            <DeadlineDeliverableTable
-              deadlineDeliverables={deadlinesResponse?.deadlines.filter(
-                (deadline) => isFuture(deadline)
+            <NoDataWrapper
+              noDataCondition={!deadlinesResponse?.deadlines.length}
+              fallback={<NoneFound message="No upcoming or past deadlines" />}
+            >
+              <DeadlineDeliverableTable
+                deadlineDeliverables={deadlinesResponse?.deadlines.filter(
+                  (deadlineDeliverable) =>
+                    isFuture(deadlineDeliverable.deadline.dueBy)
+                )}
+              />
+              {hasPastDeadlines && (
+                <>
+                  <Typography variant="h6" fontWeight={600}>
+                    Past Deadlines
+                  </Typography>
+                  <DeadlineDeliverableTable
+                    deadlineDeliverables={deadlinesResponse?.deadlines.filter(
+                      (deadlineDeliverable) =>
+                        !isFuture(deadlineDeliverable.deadline.dueBy)
+                    )}
+                  />
+                </>
               )}
-            />
-            {hasPastDeadlines && (
-              <>
-                <Typography>Past Deadlines</Typography>
-                <DeadlineDeliverableTable
-                  deadlineDeliverables={deadlinesResponse?.deadlines.filter(
-                    (deadline) => !isFuture(deadline)
-                  )}
-                />
-              </>
-            )}
+            </NoDataWrapper>
           </LoadingWrapper>
         </TabPanel>
         <TabPanel value={TAB.MILESTONES}>
-          {milestonesResponse && milestonesResponse.deadlines && (
-            <>
-              {milestonesResponse.deadlines.map(({ deadline, submissions }) => (
+          <LoadingWrapper isLoading={isFetching(fetchMilestonesStatus)}>
+            <NoDataWrapper
+              noDataCondition={!milestonesResponse?.deadlines.length}
+              fallback={
+                <NoneFound message="No peer milestone submissions available" />
+              }
+            >
+              {milestonesResponse && milestonesResponse.deadlines && (
                 <>
-                  <Typography>{deadline.name}</Typography>
-                  <SubmissionTable
-                    key={deadline.id}
-                    deadline={deadline}
-                    submissions={submissions}
-                  />
+                  {milestonesResponse.deadlines.map(
+                    ({ deadline, submissions }) => (
+                      <>
+                        <Typography variant="h6" fontWeight={600}>
+                          {deadline.name}
+                        </Typography>
+                        <SubmissionTable
+                          key={deadline.id}
+                          deadline={deadline}
+                          submissions={submissions}
+                        />
+                      </>
+                    )
+                  )}
                 </>
-              ))}
-            </>
-          )}
+              )}
+            </NoDataWrapper>
+          </LoadingWrapper>
         </TabPanel>
-        <TabPanel value={TAB.EVALUATIONS}>Received Evaluations</TabPanel>
+        <TabPanel value={TAB.EVALUATIONS}>
+          <LoadingWrapper
+            isLoading={isFetching(fetchEvaluationAndFeedbackStatus)}
+          >
+            <NoDataWrapper
+              noDataCondition={!evaluationAndFeedbackResponse?.deadlines.length}
+              fallback={
+                <NoneFound message="No evaluations or feedback received" />
+              }
+            >
+              {evaluationAndFeedbackResponse &&
+                evaluationAndFeedbackResponse.deadlines && (
+                  <>
+                    {evaluationAndFeedbackResponse.deadlines.map(
+                      ({ deadline, submissions }) => (
+                        <>
+                          <Typography variant="h6" fontWeight={600}>
+                            {deadline.name}
+                          </Typography>
+                          <SubmissionTable
+                            key={deadline.id}
+                            deadline={deadline}
+                            submissions={submissions}
+                          />
+                        </>
+                      )
+                    )}
+                  </>
+                )}
+            </NoDataWrapper>
+          </LoadingWrapper>
+        </TabPanel>
       </TabContext>
     </Body>
   );

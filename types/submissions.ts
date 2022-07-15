@@ -39,6 +39,7 @@ export type PossibleSubmission = {
     name: string;
   };
   // Only applicable for:
+  // 1. Student dashboard
   toProject?: {
     id: number;
     name: string;

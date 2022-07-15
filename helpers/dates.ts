@@ -14,11 +14,9 @@ export const isValidDate = (date: Date): boolean => {
  */
 export const isoDateToLocaleDateWithTime = (isoDate: string) => {
   const date = new Date(isoDate);
-
   if (!isValidDate(date)) {
     return "An invalid date was provided";
   }
-
   return date.toLocaleString().slice(0, 17);
 };
 
@@ -73,4 +71,11 @@ export const getTodayAtTimeIso = (hours: number, minutes?: number) => {
   const today = new Date();
   today.setHours(hours, minutes);
   return today.toISOString();
+};
+
+/**
+ * Returns whether the provided date is in the future.
+ */
+export const isFuture = (date: string) => {
+  return new Date(date) > new Date();
 };
