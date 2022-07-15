@@ -26,7 +26,7 @@ import {
 
 type Props = { deadlineDeliverable: DeadlineDeliverable };
 
-const UpcomingDeadlineRow: FC<Props> = ({ deadlineDeliverable }) => {
+const DeadlineDeliverableRow: FC<Props> = ({ deadlineDeliverable }) => {
   const { user } = useAuth();
   const router = useRouter();
   const { data: projectResponse } = useFetch<GetProjectResponse>({
@@ -163,4 +163,4 @@ const UpcomingDeadlineRow: FC<Props> = ({ deadlineDeliverable }) => {
     </>
   );
 };
-export default UpcomingDeadlineRow;
+export default DeadlineDeliverableRow;

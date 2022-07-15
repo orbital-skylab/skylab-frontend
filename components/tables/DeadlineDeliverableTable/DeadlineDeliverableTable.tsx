@@ -8,7 +8,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import UpcomingDeadlineRow from "./UpcomingDeadlineRow";
+import UpcomingDeadlineRow from "./DeadlineDeliverableRow";
 
 // Types
 import { DeadlineDeliverable } from "@/types/deadlines";
@@ -19,7 +19,7 @@ type Props = {
 
 const ColumnHeadings = ["Deadline", "To", "Due By", "Status", "Actions"];
 
-const UpcomingDeadlineTable: FC<Props> = ({ deadlineDeliverables = [] }) => {
+const DeadlineDeliverableTable: FC<Props> = ({ deadlineDeliverables = [] }) => {
   return (
     <TableContainer>
       <Table>
@@ -42,4 +42,4 @@ const UpcomingDeadlineTable: FC<Props> = ({ deadlineDeliverables = [] }) => {
     </TableContainer>
   );
 };
-export default UpcomingDeadlineTable;
+export default DeadlineDeliverableTable;
