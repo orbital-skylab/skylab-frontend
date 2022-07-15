@@ -46,7 +46,7 @@ export const reducer = (state: State, action: Action): State => {
         return state;
       }
 
-      sections[sectionIdx].questions.push({ ...newDefaultQuestion });
+      sections[sectionIdx].questions.push(getNewDefaultQuestion());
 
       return newState;
     }
@@ -111,7 +111,7 @@ export const reducer = (state: State, action: Action): State => {
       const newState = JSON.parse(JSON.stringify(state));
       const { sections } = newState;
 
-      sections.push({ ...newDefaultSection });
+      sections.push(getNewDefaultSection());
 
       return newState;
     }
@@ -164,16 +164,22 @@ export const reducer = (state: State, action: Action): State => {
   }
 };
 
-const newDefaultQuestion: LeanQuestion = {
-  question: "",
-  desc: "",
-  type: QUESTION_TYPE.MULTIPLE_CHOICE,
-  options: ["Option 1"],
-  isAnonymous: false,
+const getNewDefaultQuestion = () => {
+  const newDefaultQuestion: LeanQuestion = {
+    question: "",
+    desc: "",
+    type: QUESTION_TYPE.MULTIPLE_CHOICE,
+    options: ["Option 1"],
+    isAnonymous: false,
+  };
+  return newDefaultQuestion;
 };
 
-const newDefaultSection: LeanSection = {
-  name: "",
-  desc: "",
-  questions: [{ ...newDefaultQuestion }],
+const getNewDefaultSection = () => {
+  const newDefaultSection: LeanSection = {
+    name: "",
+    desc: "",
+    questions: [getNewDefaultQuestion()],
+  };
+  return newDefaultSection;
 };
