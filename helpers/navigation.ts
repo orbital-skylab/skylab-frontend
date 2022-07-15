@@ -16,4 +16,5 @@ export enum PAGES {
   DASHBOARD_ADVISER = "/dashboard/adviser",
   DASHBOARD_MENTOR = "/dashboard/mentor",
   DASHBOARD_ADMINISTRATOR = "/dashboard/administrator",
+  SUBMISSIONS = "/submissions",
 }

@@ -16,3 +16,10 @@ export type Submission = {
   toUserId?: number;
   updatedAt: string;
 };
+
+export enum STATUS {
+  SUBMITTED,
+  SUBMITTED_LATE,
+  SAVED_DRAFT,
+  NOT_YET_STARTED,
+}

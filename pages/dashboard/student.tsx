@@ -5,8 +5,10 @@ import React, { useState } from "react";
 import Body from "@/components/layout/Body";
 import { Tab, Tabs, tabsClasses } from "@mui/material";
 import { TabContext, TabPanel } from "@mui/lab";
+import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
+import UpcomingDeadlineTable from "@/components/tables/UpcomingDeadlineTable";
 // Hooks
-import useFetch from "@/hooks/useFetch";
+import useFetch, { isFetching } from "@/hooks/useFetch";
 import useAuth from "@/hooks/useAuth";
 // Type
 import type { NextPage } from "next";
@@ -73,7 +75,13 @@ const StudentDashboard: NextPage = () => {
             <Tab key={tab} value={tab} label={tab} />
           ))}
         </Tabs>
-        <TabPanel value={TAB.DEADLINES}>Upcoming Deadlines</TabPanel>
+        <TabPanel value={TAB.DEADLINES}>
+          <LoadingWrapper isLoading={isFetching(fetchDeadlinesStatus)}>
+            <UpcomingDeadlineTable
+              deadlineDeliverables={deadlinesResponse?.deadlines}
+            />
+          </LoadingWrapper>
+        </TabPanel>
         <TabPanel value={TAB.MILESTONES}>Peer Milestone Submission</TabPanel>
         <TabPanel value={TAB.EVALUATIONS}>Received Evaluations</TabPanel>
       </TabContext>

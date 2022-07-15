@@ -60,7 +60,7 @@ export type DeadlineDeliverable = {
     id: number; // project ID
     name: string;
   };
-  // Only applicable for deadline type 'Feedback' where user is the adviser
+  // Only applicable for student role and deadline type 'Feedback' => addressed to the adviser
   toUser?: {
     id: number; // user ID
     name: string;
@@ -69,5 +69,6 @@ export type DeadlineDeliverable = {
   submission?: {
     id: number; // submission ID
     updatedAt: string;
+    isDraft: boolean;
   };
 };

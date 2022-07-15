@@ -8,6 +8,7 @@ import {
   MentorRole,
   StudentRole,
 } from "./roles";
+import { Submission } from "./submissions";
 import { User, UserMetadata } from "./users";
 
 export enum HTTP_METHOD {
@@ -131,7 +132,7 @@ export type CreateProjectResponse = {
 };
 
 /**
- * Deadlines Endpoints;
+ * Deadlines Endpoints:
  * https://github.com/orbital-skylab/skylab-backend/wiki/Deadlines-Endpoints
  */
 export type GetDeadlinesResponse = {
@@ -146,6 +147,12 @@ export type GetDeadlineDetailsResponse = {
 export type CreateDeadlineResponse = {
   deadline: Deadline;
 };
+
+/**
+ * Submissions Endpoints:
+ * https://github.com/orbital-skylab/skylab-backend/wiki/Submissions-Endpoints
+ */
+export type CreateSubmissionResponse = Submission;
 
 /**
  * Dashbard Endpoints:
