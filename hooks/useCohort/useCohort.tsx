@@ -5,7 +5,7 @@ import {
 } from "@/hooks/useCohort/useCohort.types";
 import { GetCohortResponse, GetCohortsResponse } from "@/types/cohorts";
 import useFetch, { isError, isFetching } from "../useFetch";
-import SnackbarAlert from "@/components/SnackbarAlert";
+import SnackbarAlert from "@/components/layout/SnackbarAlert";
 import useSnackbarAlert from "../useSnackbarAlert";
 
 const CohortContext = createContext<ICohort>({

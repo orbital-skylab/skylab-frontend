@@ -1,6 +1,6 @@
 // Components
 import { Card, CardContent, Grid, Typography } from "@mui/material";
-import CustomHead from "@/components/CustomHead";
+import CustomHead from "@/components/layout/CustomHead";
 import Body from "@/components/layout/Body";
 import Link from "next/link";
 // Helpers

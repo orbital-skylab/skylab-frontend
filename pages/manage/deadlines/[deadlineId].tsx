@@ -4,12 +4,12 @@ import GoBackButton from "@/components/buttons/GoBackButton";
 import Body from "@/components/layout/Body";
 import AddQuestionButton from "@/components/questions/AddQuestionButton";
 import EditQuestionsList from "@/components/questions/EditQuestionsList";
-import SnackbarAlert from "@/components/SnackbarAlert";
+import SnackbarAlert from "@/components/layout/SnackbarAlert";
 import QuestionsList from "@/components/questions/QuestionsList";
 import DeadlineDescriptionCard from "@/components/questions/DeadlineDescriptionCard";
 import { Button, Stack } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
+import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
 // Hooks
 import useFetch, { isError, isFetching } from "@/hooks/useFetch";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";

@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 // Components
 import { Button, Stack, TableCell, TableRow } from "@mui/material";
-import SnackbarAlert from "@/components/SnackbarAlert";
+import SnackbarAlert from "@/components/layout/SnackbarAlert";
 // Helpers
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
 // Hooks

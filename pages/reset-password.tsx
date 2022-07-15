@@ -3,7 +3,7 @@ import Link from "next/link";
 // Components
 import Body from "@/components/layout/Body";
 import TextInput from "@/components/formikFormControllers/TextInput";
-import SnackbarAlert from "@/components/SnackbarAlert";
+import SnackbarAlert from "@/components/layout/SnackbarAlert";
 import {
   Box,
   Button,
@@ -12,7 +12,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import CustomHead from "@/components/CustomHead";
+import CustomHead from "@/components/layout/CustomHead";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
 import { Formik, FormikHelpers } from "formik";

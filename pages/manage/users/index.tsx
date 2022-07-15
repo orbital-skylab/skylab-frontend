@@ -44,7 +44,7 @@ import { User } from "@/types/users";
 import { toSingular } from "@/helpers/roles";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import { GetLeanProjectsResponse, GetUsersResponse } from "@/types/api";
-import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
+import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
 
 const LIMIT = 20;
 const ALL = "All";

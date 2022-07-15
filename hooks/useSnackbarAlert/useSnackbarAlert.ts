@@ -1,7 +1,7 @@
 import {
   SnackbarAlertType,
   SNACKBAR_ALERT_INITIAL,
-} from "@/components/SnackbarAlert";
+} from "@/components/layout/SnackbarAlert";
 import { useState } from "react";
 
 const useSnackbarAlert = () => {

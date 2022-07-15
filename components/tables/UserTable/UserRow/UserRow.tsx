@@ -10,7 +10,7 @@ import {
   TableCell,
   TableRow,
 } from "@mui/material";
-import SnackbarAlert from "@/components/SnackbarAlert";
+import SnackbarAlert from "@/components/layout/SnackbarAlert";
 import ViewRoleModal from "@/components/modals/ViewRoleModal";
 import AddRoleModal from "@/components/modals/AddRoleModal";
 import DeleteUserModal from "@/components/modals/DeleteUserModal";

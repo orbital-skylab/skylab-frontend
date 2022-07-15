@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 // Components
 import Body from "@/components/layout/Body";
 import TextInput from "@/components/formikFormControllers/TextInput";
-import SnackbarAlert from "@/components/SnackbarAlert";
+import SnackbarAlert from "@/components/layout/SnackbarAlert";
 import {
   Box,
   Button,
@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import NoneFound from "@/components/emptyStates/NoneFound";
-import CustomHead from "@/components/CustomHead";
+import CustomHead from "@/components/layout/CustomHead";
 // Helpers
 import { Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";

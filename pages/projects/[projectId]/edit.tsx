@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 // Components
 import Body from "@/components/layout/Body";
 import TextInput from "@/components/formikFormControllers/TextInput";
-import SnackbarAlert from "@/components/SnackbarAlert";
+import SnackbarAlert from "@/components/layout/SnackbarAlert";
 import { Card, CardContent, Container, Stack, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import GoBackButton from "@/components/buttons/GoBackButton";

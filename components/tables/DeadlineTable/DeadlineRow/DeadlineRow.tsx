@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import EditDeadlineModal from "@/components/modals/EditDeadlineModal";
-import SnackbarAlert from "@/components/SnackbarAlert";
+import SnackbarAlert from "@/components/layout/SnackbarAlert";
 import DeleteDeadlineModal from "@/components/modals/DeleteDeadlineModal";
 import { KeyboardArrowDown } from "@mui/icons-material";
 // Helpers

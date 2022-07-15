@@ -1,7 +1,7 @@
 import { Dispatch, FC, SetStateAction } from "react";
 // Components
 import TextInput from "@/components/formikFormControllers/TextInput";
-import SnackbarAlert from "@/components/SnackbarAlert";
+import SnackbarAlert from "@/components/layout/SnackbarAlert";
 import Modal from "../Modal";
 import { Button, Stack } from "@mui/material";
 // Helpers

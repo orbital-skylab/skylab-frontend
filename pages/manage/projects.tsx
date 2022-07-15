@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 // Components
-import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
+import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
 import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import Body from "@/components/layout/Body";

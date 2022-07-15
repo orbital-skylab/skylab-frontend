@@ -44,3 +44,28 @@ export type LeanQuestion = Omit<
 >;
 
 export type Option = string;
+
+/**
+ * An 'instance' of a deadline.
+ * Eg.
+ * - 'Milestone 2 Evaluation' is a deadline
+ * - 'Milestone 2 Evaluation for Team 2 by Team 1' is a deadline instance
+ */
+export type DeadlineInstance = {
+  deadline: Omit<Deadline, "cohortYear" | "desc">;
+  // Only applicable for deadline type 'Evaluation' and 'Feedback'
+  toProject?: {
+    id: number; // project ID
+    name: string;
+  };
+  // Only applicable for deadline type 'Feedback' where user is the adviser
+  toUser?: {
+    id: number; // user ID
+    name: string;
+  };
+  // Only exists if a draft OR submission has been created
+  submission?: {
+    id: number; // submission ID
+    updatedAt: string;
+  };
+};

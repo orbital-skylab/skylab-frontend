@@ -1,7 +1,7 @@
 import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from "react";
 // Components
 import { MenuItem, TextField } from "@mui/material";
-import SnackbarAlert from "@/components/SnackbarAlert";
+import SnackbarAlert from "@/components/layout/SnackbarAlert";
 import Modal from "../Modal";
 import { Button, Stack, Typography } from "@mui/material";
 import StudentDetailsForm from "@/components/forms/StudentDetailsForm";

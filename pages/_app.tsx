@@ -4,7 +4,7 @@ import { ThemeProvider } from "@mui/material/styles";
 // Components
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import CustomHead from "@/components/CustomHead/CustomHead";
+import CustomHead from "@/components/layout/CustomHead/CustomHead";
 // Hooks
 import { AuthProvider } from "@/hooks/useAuth";
 import { CohortProvider } from "@/hooks/useCohort";

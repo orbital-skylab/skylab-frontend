@@ -1,5 +1,5 @@
 import { Adviser } from "./advisers";
-import { Deadline, Question } from "./deadlines";
+import { Deadline, DeadlineInstance, Question } from "./deadlines";
 import { Mentor } from "./mentors";
 import { LeanProject, Project } from "./projects";
 import {
@@ -145,6 +145,49 @@ export type GetDeadlineDetailsResponse = {
 
 export type CreateDeadlineResponse = {
   deadline: Deadline;
+};
+
+/**
+ * Dashbard Endpoints:
+ * https://github.com/orbital-skylab/skylab-backend/wiki/Dashboard-Endpoints
+ */
+
+export type GetStudentDeadlines = {
+  deadlines: DeadlineInstance[];
+};
+
+export type GetStudentPeerMilestones = {
+  deadlines: {
+    deadline: Omit<Deadline, "cohortYear" | "desc">;
+    submissions: {
+      submissionId: number;
+      fromProject: {
+        id: number; // project ID
+        name: string;
+      };
+      updatedAt: string;
+    }[];
+  }[];
+};
+
+export type GetStudentPeerEvaluationAndFeedback = {
+  deadlines: {
+    deadline: Omit<Deadline, "cohortYear" | "desc">;
+    submissions: {
+      submissionId: number;
+      // Only applicable for deadline type 'Evaluation' and 'Feedback'
+      fromProject?: {
+        id: number; // project ID
+        name: string;
+      };
+      // Only applicable for deadline type 'Evaluation'
+      fromUser?: {
+        id: number; // user ID
+        name: string;
+      };
+      updatedAt: string;
+    }[];
+  }[];
 };
 
 /**

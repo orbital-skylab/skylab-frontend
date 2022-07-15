@@ -1,8 +1,8 @@
 import { useState } from "react";
 // Components
 import Body from "@/components/layout/Body";
-import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
-import SnackbarAlert from "@/components/SnackbarAlert";
+import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
+import SnackbarAlert from "@/components/layout/SnackbarAlert";
 import HeadingWithCsvTemplate from "@/components/batchForms/HeadingWithCsvTemplate/HeadingWithCsvTemplate";
 import BatchAddProjectsAndStudentsForm, {
   AddProjectsAndStudentsData,

@@ -1,6 +1,6 @@
 import { Dispatch, FC, SetStateAction, useState } from "react";
 // Components
-import SnackbarAlert from "@/components/SnackbarAlert";
+import SnackbarAlert from "@/components/layout/SnackbarAlert";
 import Modal from "../Modal";
 import ViewRole from "./ViewRole";
 import EditRole from "./EditRole";

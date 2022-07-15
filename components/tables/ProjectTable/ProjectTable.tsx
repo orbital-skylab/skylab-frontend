@@ -1,4 +1,4 @@
-import SnackbarAlert from "@/components/SnackbarAlert";
+import SnackbarAlert from "@/components/layout/SnackbarAlert";
 import { Mutate } from "@/hooks/useFetch";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 import { Project } from "@/types/projects";
