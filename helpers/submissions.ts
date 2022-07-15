@@ -1,16 +1,28 @@
 import { DeadlineDeliverable } from "@/types/deadlines";
 import { STATUS } from "@/types/submissions";
 
-export const generateSubmissionStatus = (
-  deadlineDeliverable: DeadlineDeliverable
-) => {
-  if (!deadlineDeliverable.submission) {
+export const generateSubmissionStatus = ({
+  submissionId,
+  isDraft,
+  updatedAt,
+  dueBy,
+}: {
+  submissionId: number | undefined;
+  isDraft: boolean | undefined;
+  updatedAt: string | undefined;
+  dueBy: string;
+}) => {
+  if (
+    submissionId === undefined ||
+    updatedAt === undefined ||
+    isDraft === undefined
+  ) {
     return STATUS.NOT_YET_STARTED;
-  } else if (deadlineDeliverable.submission.isDraft) {
+  } else if (isDraft === true) {
     return STATUS.SAVED_DRAFT;
   }
-  const updatedAtDate = new Date(deadlineDeliverable.submission.updatedAt);
-  const dueByDate = new Date(deadlineDeliverable.deadline.dueBy);
+  const updatedAtDate = new Date(updatedAt);
+  const dueByDate = new Date(dueBy);
   if (updatedAtDate < dueByDate) {
     return STATUS.SUBMITTED;
   } else {

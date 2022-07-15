@@ -19,6 +19,7 @@ import {
   GetStudentPeerMilestones,
 } from "@/types/api";
 import { DeadlineDeliverable } from "@/types/deadlines";
+import SubmissionTable from "@/components/tables/SubmissionTable";
 
 enum TAB {
   DEADLINES = "Upcoming Deadlines",
@@ -103,7 +104,22 @@ const StudentDashboard: NextPage = () => {
             )}
           </LoadingWrapper>
         </TabPanel>
-        <TabPanel value={TAB.MILESTONES}>Peer Milestone Submission</TabPanel>
+        <TabPanel value={TAB.MILESTONES}>
+          {milestonesResponse && milestonesResponse.deadlines && (
+            <>
+              {milestonesResponse.deadlines.map(({ deadline, submissions }) => (
+                <>
+                  <Typography>{deadline.name}</Typography>
+                  <SubmissionTable
+                    key={deadline.id}
+                    deadline={deadline}
+                    submissions={submissions}
+                  />
+                </>
+              ))}
+            </>
+          )}
+        </TabPanel>
         <TabPanel value={TAB.EVALUATIONS}>Received Evaluations</TabPanel>
       </TabContext>
     </Body>

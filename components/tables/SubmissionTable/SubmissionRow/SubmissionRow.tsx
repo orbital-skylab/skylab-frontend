@@ -2,68 +2,80 @@ import { FC } from "react";
 import Link from "next/link";
 // Components
 import { Box, Button, TableCell, TableRow } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
 // Helpers
-import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
-import {
-  generateSubmissionStatus,
-  getToProjectOrUserId,
-} from "@/helpers/submissions";
+import { generateSubmissionStatus } from "@/helpers/submissions";
 import { PAGES } from "@/helpers/navigation";
 // Hooks
-import useFetch from "@/hooks/useFetch";
 import useAuth from "@/hooks/useAuth";
-import { useRouter } from "next/router";
-import useApiCall, { isCalling } from "@/hooks/useApiCall";
 // Types
-import { DeadlineDeliverable } from "@/types/deadlines";
-import { STATUS } from "@/types/submissions";
-import {
-  CreateSubmissionResponse,
-  GetProjectResponse,
-  HTTP_METHOD,
-} from "@/types/api";
+import { PossibleSubmission, STATUS } from "@/types/submissions";
 
-type Props = { deadlineDeliverable: DeadlineDeliverable };
+type Props = {
+  deadlineDueBy: string;
+  submission: PossibleSubmission;
+  shouldIncludeToColumn: boolean;
+};
 
-const SubmissionRow: FC<Props> = ({ deadlineDeliverable }) => {
+const SubmissionRow: FC<Props> = ({
+  deadlineDueBy,
+  submission,
+  shouldIncludeToColumn,
+}) => {
   const { user } = useAuth();
-  const router = useRouter();
-  const { data: projectResponse } = useFetch<GetProjectResponse>({
-    endpoint: `/students/${user?.student?.id}/project`,
-    enabled: Boolean(user && user.student && user.student.id),
+  const status = generateSubmissionStatus({
+    submissionId: submission.submissionId,
+    isDraft: false, // You cannot view other's drafts
+    updatedAt: submission.updatedAt,
+    dueBy: deadlineDueBy,
   });
 
-  const createSubmission = useApiCall({
-    method: HTTP_METHOD.POST,
-    endpoint: "/submissions",
-    body: {
-      deadlineId: deadlineDeliverable.deadline.id,
-      answers: [],
-      fromProjectId: projectResponse?.project.id,
-      ...getToProjectOrUserId(deadlineDeliverable),
-    },
-    onSuccess: (newSubmission: CreateSubmissionResponse) => {
-      router.push(`${PAGES.SUBMISSIONS}/${newSubmission.submissionId}`);
-    },
-  });
-
-  const generateToCell = (deadlineDeliverable: DeadlineDeliverable) => {
-    if (deadlineDeliverable.toProject && deadlineDeliverable.toUser) {
-      alert(
-        "There should not be a deadline deliverable addressed to a project and a user"
-      );
+  const generateFromCell = (submission: PossibleSubmission) => {
+    if (
+      (submission.fromProject && submission.fromUser) ||
+      (!submission.fromProject && !submission.fromUser)
+    ) {
+      alert("The submission should be from EITHER a project OR a user");
       return "Error";
-    } else if (deadlineDeliverable.toProject) {
+    } else if (submission.fromProject) {
       return (
-        <Link href={`${PAGES.PROJECTS}/${deadlineDeliverable.toProject.id}`}>
-          {deadlineDeliverable.toProject.name}
+        <Link href={`${PAGES.PROJECTS}/${submission.fromProject.id}`}>
+          {submission.fromProject.name}
         </Link>
       );
-    } else if (deadlineDeliverable.toUser) {
+    } else if (submission.fromUser) {
       return (
-        <Link href={`${PAGES.USERS}/${deadlineDeliverable.toUser.id}`}>
-          {deadlineDeliverable.toUser.name}
+        <Link href={`${PAGES.USERS}/${submission.fromUser.id}`}>
+          {submission.fromUser.name}
+        </Link>
+      );
+    } else {
+      alert("This line should never be read");
+      return "Error";
+    }
+  };
+
+  const generateToCell = (submission: PossibleSubmission) => {
+    if (submission.toProject && submission.toUser) {
+      alert(
+        "There should not be a submission addressed to a project and a user"
+      );
+      return "Error";
+    } else if (submission.toProject) {
+      if (submission.toProject.id === user?.student?.projectId) {
+        return "<Should not be visible>"; // Column should not be showing
+      }
+      return (
+        <Link href={`${PAGES.PROJECTS}/${submission.toProject.id}`}>
+          {submission.toProject.name}
+        </Link>
+      );
+    } else if (submission.toUser) {
+      if (submission.toUser.id === user?.id) {
+        return "<Should not be visible>"; // Column should not be showing
+      }
+      return (
+        <Link href={`${PAGES.USERS}/${submission.toUser.id}`}>
+          {submission.toUser.name}
         </Link>
       );
     } else {
@@ -71,17 +83,12 @@ const SubmissionRow: FC<Props> = ({ deadlineDeliverable }) => {
     }
   };
 
-  const status = generateSubmissionStatus(deadlineDeliverable);
-
-  const generateStatusCell = (
-    deadlineDeliverable: DeadlineDeliverable,
-    status: STATUS
-  ) => {
+  const generateStatusCell = (status: STATUS) => {
     switch (status) {
       case STATUS.NOT_YET_STARTED: {
         return (
           <Box component="span" sx={{ color: "gray" }}>
-            Not Yet Started
+            Not Yet Submitted
           </Box>
         );
       }
@@ -109,56 +116,27 @@ const SubmissionRow: FC<Props> = ({ deadlineDeliverable }) => {
   };
 
   const generateActionCell = (
-    deadlineDeliverable: DeadlineDeliverable,
+    submissionId: number | undefined,
     status: STATUS
   ) => {
-    switch (status) {
-      case STATUS.NOT_YET_STARTED: {
-        return (
-          <LoadingButton
-            loading={isCalling(createSubmission.status)}
-            onClick={createSubmission.call}
-          >
-            Start
-          </LoadingButton>
-        );
-      }
-      case STATUS.SAVED_DRAFT: {
-        return (
-          <Link
-            href={`${PAGES.SUBMISSIONS}/${deadlineDeliverable.submission?.id}`}
-            passHref
-          >
-            <Button>Continue</Button>
-          </Link>
-        );
-      }
-      case (STATUS.SUBMITTED, STATUS.SUBMITTED_LATE): {
-        return (
-          <Link
-            href={`${PAGES.SUBMISSIONS}/${deadlineDeliverable.submission?.id}`}
-            passHref
-          >
-            <Button>Edit</Button>
-          </Link>
-        );
-      }
-      default:
-        alert("An error has occurred while rendering buttons");
-        return <Button>Error</Button>;
-    }
+    return (
+      <Link href={`${PAGES.SUBMISSIONS}/${submissionId}`} passHref>
+        <Button disabled={status === STATUS.NOT_YET_STARTED}>View</Button>
+      </Link>
+    );
   };
 
   return (
     <>
       <TableRow>
-        <TableCell>{deadlineDeliverable.deadline.name}</TableCell>
-        <TableCell>{generateToCell(deadlineDeliverable)}</TableCell>
+        <TableCell>{generateFromCell(submission)}</TableCell>
+        {shouldIncludeToColumn && (
+          <TableCell>{generateToCell(submission)}</TableCell>
+        )}
+        <TableCell>{generateStatusCell(status)}</TableCell>
         <TableCell>
-          {isoDateToLocaleDateWithTime(deadlineDeliverable.deadline.dueBy)}
+          {generateActionCell(submission.submissionId, status)}
         </TableCell>
-        <TableCell>{generateStatusCell(deadlineDeliverable, status)}</TableCell>
-        <TableCell>{generateActionCell(deadlineDeliverable, status)}</TableCell>
       </TableRow>
     </>
   );

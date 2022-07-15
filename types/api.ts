@@ -8,7 +8,7 @@ import {
   MentorRole,
   StudentRole,
 } from "./roles";
-import { Submission } from "./submissions";
+import { PossibleSubmission, Submission } from "./submissions";
 import { User, UserMetadata } from "./users";
 
 export enum HTTP_METHOD {
@@ -165,35 +165,15 @@ export type GetStudentDeadlines = {
 
 export type GetStudentPeerMilestones = {
   deadlines: {
-    deadline: Omit<Deadline, "cohortYear" | "desc">;
-    submissions: {
-      submissionId: number;
-      fromProject: {
-        id: number; // project ID
-        name: string;
-      };
-      updatedAt: string;
-    }[];
+    deadline: Deadline;
+    submissions: PossibleSubmission[];
   }[];
 };
 
 export type GetStudentPeerEvaluationAndFeedback = {
   deadlines: {
-    deadline: Omit<Deadline, "cohortYear" | "desc">;
-    submissions: {
-      submissionId: number;
-      // Only applicable for deadline type 'Evaluation' and 'Feedback'
-      fromProject?: {
-        id: number; // project ID
-        name: string;
-      };
-      // Only applicable for deadline type 'Evaluation'
-      fromUser?: {
-        id: number; // user ID
-        name: string;
-      };
-      updatedAt: string;
-    }[];
+    deadline: Deadline;
+    submissions: PossibleSubmission[];
   }[];
 };
 

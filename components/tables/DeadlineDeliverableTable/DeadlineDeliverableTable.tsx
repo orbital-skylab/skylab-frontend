@@ -19,6 +19,10 @@ type Props = {
 
 const ColumnHeadings = ["Deadline", "To", "Due By", "Status", "Actions"];
 
+/**
+ * Renders a table to view YOUR OWN deadline deliverables.
+ * Examples: Milestone 1, Milestone 1 Evaluation for Team X, Feedback for Team Y, etc.
+ */
 const DeadlineDeliverableTable: FC<Props> = ({ deadlineDeliverables = [] }) => {
   return (
     <TableContainer>

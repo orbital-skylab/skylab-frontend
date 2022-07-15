@@ -8,33 +8,52 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import UpcomingDeadlineRow from "./SubmissionRow";
+import SubmissionRow from "./SubmissionRow";
 
 // Types
-import { DeadlineDeliverable } from "@/types/deadlines";
+import { Deadline } from "@/types/deadlines";
+import { PossibleSubmission } from "@/types/submissions";
 
 type Props = {
-  deadlineDeliverables: DeadlineDeliverable[] | undefined;
+  deadline: Deadline;
+  submissions: PossibleSubmission[];
+  shouldIncludeToColumn?: boolean;
 };
 
-const ColumnHeadings = ["Deadline", "To", "Due By", "Status", "Actions"];
+const ColumnHeadings = ["From", "To", "Status", "Actions"];
 
-const SubmissionTable: FC<Props> = ({ deadlineDeliverables = [] }) => {
+/**
+ * Renders a table to view OTHER's submissions.
+ * Examples: Peer teams' Milestone submissions, Peer teams' evaluations, Adviser evaluations, Peer teams' feedback, Student's feedbacks, etc.
+ */
+const SubmissionTable: FC<Props> = ({
+  deadline,
+  submissions,
+  shouldIncludeToColumn = false,
+}) => {
+  const getKey = (deadline: Deadline, submission: PossibleSubmission) => {
+    return `${deadline.id}-${submission.submissionId}-${submission.fromProject?.id}-${submission.fromUser?.id}-${submission.toProject?.id}-${submission.toUser?.id}`;
+  };
+
   return (
     <TableContainer>
       <Table>
         <TableHead>
           <TableRow>
-            {ColumnHeadings.map((heading) => (
+            {ColumnHeadings.filter(
+              (heading) => heading !== "To" || shouldIncludeToColumn
+            ).map((heading) => (
               <TableCell key={heading}>{heading}</TableCell>
             ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {deadlineDeliverables.map((deadlineDeliverable) => (
-            <UpcomingDeadlineRow
-              key={`${deadlineDeliverable.deadline.id}-${deadlineDeliverable.toProject?.id}-${deadlineDeliverable.toUser?.id}`}
-              deadlineDeliverable={deadlineDeliverable}
+          {submissions.map((submission) => (
+            <SubmissionRow
+              key={getKey(deadline, submission)}
+              deadlineDueBy={deadline.dueBy}
+              submission={submission}
+              shouldIncludeToColumn={shouldIncludeToColumn}
             />
           ))}
         </TableBody>

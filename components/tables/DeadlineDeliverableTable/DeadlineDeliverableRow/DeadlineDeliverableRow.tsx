@@ -11,28 +11,19 @@ import {
 } from "@/helpers/submissions";
 import { PAGES } from "@/helpers/navigation";
 // Hooks
-import useFetch from "@/hooks/useFetch";
 import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/router";
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
 // Types
 import { DeadlineDeliverable } from "@/types/deadlines";
 import { STATUS } from "@/types/submissions";
-import {
-  CreateSubmissionResponse,
-  GetProjectResponse,
-  HTTP_METHOD,
-} from "@/types/api";
+import { CreateSubmissionResponse, HTTP_METHOD } from "@/types/api";
 
 type Props = { deadlineDeliverable: DeadlineDeliverable };
 
 const DeadlineDeliverableRow: FC<Props> = ({ deadlineDeliverable }) => {
   const { user } = useAuth();
   const router = useRouter();
-  const { data: projectResponse } = useFetch<GetProjectResponse>({
-    endpoint: `/students/${user?.student?.id}/project`,
-    enabled: Boolean(user && user.student && user.student.id),
-  });
 
   const createSubmission = useApiCall({
     method: HTTP_METHOD.POST,
@@ -40,7 +31,7 @@ const DeadlineDeliverableRow: FC<Props> = ({ deadlineDeliverable }) => {
     body: {
       deadlineId: deadlineDeliverable.deadline.id,
       answers: [],
-      fromProjectId: projectResponse?.project.id,
+      fromProjectId: user?.student?.projectId,
       ...getToProjectOrUserId(deadlineDeliverable),
     },
     onSuccess: (newSubmission: CreateSubmissionResponse) => {
@@ -71,12 +62,14 @@ const DeadlineDeliverableRow: FC<Props> = ({ deadlineDeliverable }) => {
     }
   };
 
-  const status = generateSubmissionStatus(deadlineDeliverable);
+  const status = generateSubmissionStatus({
+    submissionId: deadlineDeliverable.submission?.id,
+    isDraft: deadlineDeliverable.submission?.isDraft,
+    updatedAt: deadlineDeliverable.submission?.updatedAt,
+    dueBy: deadlineDeliverable.deadline.dueBy,
+  });
 
-  const generateStatusCell = (
-    deadlineDeliverable: DeadlineDeliverable,
-    status: STATUS
-  ) => {
+  const generateStatusCell = (status: STATUS) => {
     switch (status) {
       case STATUS.NOT_YET_STARTED: {
         return (
@@ -157,7 +150,7 @@ const DeadlineDeliverableRow: FC<Props> = ({ deadlineDeliverable }) => {
         <TableCell>
           {isoDateToLocaleDateWithTime(deadlineDeliverable.deadline.dueBy)}
         </TableCell>
-        <TableCell>{generateStatusCell(deadlineDeliverable, status)}</TableCell>
+        <TableCell>{generateStatusCell(status)}</TableCell>
         <TableCell>{generateActionCell(deadlineDeliverable, status)}</TableCell>
       </TableRow>
     </>
