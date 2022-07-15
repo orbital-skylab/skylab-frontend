@@ -46,12 +46,14 @@ export type LeanQuestion = Omit<
 export type Option = string;
 
 /**
- * An 'instance' of a deadline.
+ * The deliverables of a Deadline
  * Eg.
  * - 'Milestone 2 Evaluation' is a deadline
- * - 'Milestone 2 Evaluation for Team 2 by Team 1' is a deadline instance
+ *   - This is what the administrator sets on the `/manage/deadlines` page
+ * - 'Milestone 2 Evaluation for Team 2 by Team 1' is a deadline deliverable
+ *   - This is what users see on the `/dashboard/<role>` page when viewing upcoming deadlines
  */
-export type DeadlineInstance = {
+export type DeadlineDeliverable = {
   deadline: Omit<Deadline, "cohortYear" | "desc">;
   // Only applicable for deadline type 'Evaluation' and 'Feedback'
   toProject?: {

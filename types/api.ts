@@ -1,5 +1,5 @@
 import { Adviser } from "./advisers";
-import { Deadline, DeadlineInstance, Question } from "./deadlines";
+import { Deadline, DeadlineDeliverable, Question } from "./deadlines";
 import { Mentor } from "./mentors";
 import { LeanProject, Project } from "./projects";
 import {
@@ -153,7 +153,7 @@ export type CreateDeadlineResponse = {
  */
 
 export type GetStudentDeadlines = {
-  deadlines: DeadlineInstance[];
+  deadlines: DeadlineDeliverable[];
 };
 
 export type GetStudentPeerMilestones = {
