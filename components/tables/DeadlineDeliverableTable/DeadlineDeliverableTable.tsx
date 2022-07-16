@@ -8,7 +8,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import UpcomingDeadlineRow from "./DeadlineDeliverableRow";
+import DeadlineDeliverableRow from "./DeadlineDeliverableRow";
 
 // Types
 import { DeadlineDeliverable } from "@/types/deadlines";
@@ -17,7 +17,7 @@ type Props = {
   deadlineDeliverables: DeadlineDeliverable[] | undefined;
 };
 
-const ColumnHeadings = ["Deadline", "To", "Due By", "Status", "Actions"];
+const columnHeadings = ["Deadline", "To", "Due By", "Status", "Actions"];
 
 /**
  * Renders a table to view YOUR OWN deadline deliverables.
@@ -29,14 +29,14 @@ const DeadlineDeliverableTable: FC<Props> = ({ deadlineDeliverables = [] }) => {
       <Table>
         <TableHead>
           <TableRow>
-            {ColumnHeadings.map((heading) => (
+            {columnHeadings.map((heading) => (
               <TableCell key={heading}>{heading}</TableCell>
             ))}
           </TableRow>
         </TableHead>
         <TableBody>
           {deadlineDeliverables.map((deadlineDeliverable) => (
-            <UpcomingDeadlineRow
+            <DeadlineDeliverableRow
               key={`${deadlineDeliverable.deadline.id}-${deadlineDeliverable.toProject?.id}-${deadlineDeliverable.toUser?.id}`}
               deadlineDeliverable={deadlineDeliverable}
             />

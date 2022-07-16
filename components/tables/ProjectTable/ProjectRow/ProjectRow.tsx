@@ -1,16 +1,7 @@
-import { FC, MouseEvent, useState } from "react";
+import { FC, useState } from "react";
 // Components
 import DeleteProjectModal from "@/components/modals/DeleteProjectModal";
-import { KeyboardArrowDown } from "@mui/icons-material";
-import {
-  Button,
-  Chip,
-  Menu,
-  MenuItem,
-  Stack,
-  TableCell,
-  TableRow,
-} from "@mui/material";
+import { Button, Chip, Stack, TableCell, TableRow } from "@mui/material";
 import Link from "next/link";
 import UsersName from "@/components/typography/UsersName";
 // Helpers
@@ -37,18 +28,7 @@ const ProjectRow: FC<Props> = ({
   showEditAction,
   showDeleteAction,
 }) => {
-  const [dropdownAnchorElement, setDropdownAnchorElement] =
-    useState<HTMLElement | null>(null);
-  const isDropdownOpen = Boolean(dropdownAnchorElement);
   const [isDeleteProjectOpen, setIsDeleteProjectOpen] = useState(false);
-
-  const handleOpenDropdown = (e: MouseEvent<HTMLButtonElement>) => {
-    setDropdownAnchorElement(e.currentTarget);
-  };
-
-  const handleCloseDropdown = () => {
-    setDropdownAnchorElement(null);
-  };
 
   const handleOpenDeleteModal = () => {
     setIsDeleteProjectOpen(true);
@@ -136,50 +116,28 @@ const ProjectRow: FC<Props> = ({
           ) : null}
         </TableCell>
         <TableCell>
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={handleOpenDropdown}
-            endIcon={<KeyboardArrowDown />}
-          >
-            Options
-          </Button>
-          <Menu
-            anchorEl={dropdownAnchorElement}
-            open={isDropdownOpen}
-            onClose={handleCloseDropdown}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-          >
-            <Link href={`${PAGES.PROJECTS}/${project.id}`} passHref>
-              <MenuItem>View</MenuItem>
+          <Link href={`${PAGES.PROJECTS}/${project.id}`} passHref>
+            <Button>View</Button>
+          </Link>
+          {showEditAction && (
+            <Link href={`${PAGES.PROJECTS}/${project.id}/edit`} passHref>
+              <Button>Edit</Button>
             </Link>
-            {showEditAction && (
-              <Link href={`${PAGES.PROJECTS}/${project.id}/edit`} passHref>
-                <MenuItem>Edit</MenuItem>
-              </Link>
-            )}
-            {showDeleteAction && (
-              <MenuItem
-                onClick={handleOpenDeleteModal}
-                sx={{
-                  transition: BASE_TRANSITION,
-                  "&:hover": {
-                    backgroundColor: "error.main",
-                    color: "white",
-                  },
-                }}
-              >
-                Delete
-              </MenuItem>
-            )}
-          </Menu>
+          )}
+          {showDeleteAction && (
+            <Button
+              onClick={handleOpenDeleteModal}
+              sx={{
+                transition: BASE_TRANSITION,
+                "&:hover": {
+                  backgroundColor: "error.main",
+                  color: "white",
+                },
+              }}
+            >
+              Delete
+            </Button>
+          )}
         </TableCell>
       </TableRow>
     </>

@@ -2,6 +2,7 @@ import { FC } from "react";
 import Link from "next/link";
 // Components
 import { Box, Button, TableCell, TableRow } from "@mui/material";
+import HoverLink from "@/components/typography/HoverLink";
 // Helpers
 import { generateSubmissionStatus } from "@/helpers/submissions";
 import { PAGES } from "@/helpers/navigation";
@@ -38,15 +39,15 @@ const SubmissionRow: FC<Props> = ({
       return "Error";
     } else if (submission.fromProject) {
       return (
-        <Link href={`${PAGES.PROJECTS}/${submission.fromProject.id}`}>
+        <HoverLink href={`${PAGES.PROJECTS}/${submission.fromProject.id}`}>
           {submission.fromProject.name}
-        </Link>
+        </HoverLink>
       );
     } else if (submission.fromUser) {
       return (
-        <Link href={`${PAGES.USERS}/${submission.fromUser.id}`}>
+        <HoverLink href={`${PAGES.USERS}/${submission.fromUser.id}`}>
           {submission.fromUser.name}
-        </Link>
+        </HoverLink>
       );
     } else {
       alert("This line should never be read");
@@ -65,18 +66,18 @@ const SubmissionRow: FC<Props> = ({
         return "<Should not be visible>"; // Column should not be showing
       }
       return (
-        <Link href={`${PAGES.PROJECTS}/${submission.toProject.id}`}>
+        <HoverLink href={`${PAGES.PROJECTS}/${submission.toProject.id}`}>
           {submission.toProject.name}
-        </Link>
+        </HoverLink>
       );
     } else if (submission.toUser) {
       if (submission.toUser.id === user?.id) {
         return "<Should not be visible>"; // Column should not be showing
       }
       return (
-        <Link href={`${PAGES.USERS}/${submission.toUser.id}`}>
+        <HoverLink href={`${PAGES.USERS}/${submission.toUser.id}`}>
           {submission.toUser.name}
-        </Link>
+        </HoverLink>
       );
     } else {
       return "-";
