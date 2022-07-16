@@ -25,20 +25,19 @@ export const isoDateToLocaleDateWithTime = (isoDate: string) => {
 /**
  * Formats an ISO 8601 date format for usage with type='datetime-local' input
  * @param {string} isoDate Date in ISO 8601 string format
+ * @param {number} offset The number of minutes to offset from UTC time (eg. GMT +8 is 480)
  * @returns {string} Date formatted for usage with type='datetime-local' input
  */
-export const isoDateToDateTimeLocalInput = (isoDate: string | undefined) => {
+export const isoDateToDateTimeLocalInput = (
+  isoDate: string | undefined,
+  offset = 480
+) => {
   if (!isoDate) {
     return "";
   }
 
-  const d = new Date(isoDate);
-  const yyyy = d.getFullYear();
-  const mm = (d.getMonth() + 1).toString().padStart(2, "0");
-  const dd = d.getDate().toString().padStart(2, "0");
-  const dateString = `${yyyy}-${mm}-${dd}`;
-  const timeString = d.toLocaleTimeString().slice(0, 5);
-  const formattedDate = `${dateString}T${timeString}`;
+  const d = new Date(new Date(isoDate).getTime() + offset * 60000);
+  const formattedDate = d.toISOString().slice(0, 16);
 
   return formattedDate;
 };

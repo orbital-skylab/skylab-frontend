@@ -1,16 +1,17 @@
 import { Option } from "./deadlines";
 
-type SubmissionMetadata = {
-  submitter: number;
-  evaluatee?: number;
-};
-
-type Answer = {
+export type Answer = {
   questionId: number;
   answer: Option;
 };
 
 export type Submission = {
-  submission: SubmissionMetadata;
+  submissionId: number;
+  deadlineId: number;
+  isDraft: boolean;
   answers: Answer[];
+  fromProjectId?: number;
+  fromUserId?: number;
+  toProjectId?: number;
+  toUserId?: number;
 };
