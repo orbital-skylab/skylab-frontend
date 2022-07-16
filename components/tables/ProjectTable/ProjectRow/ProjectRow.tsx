@@ -16,6 +16,8 @@ type Props = {
   mutate?: Mutate<Project[]>;
   setSuccess: (message: string) => void;
   setError: (error: unknown) => void;
+  showAdviserColumn: boolean;
+  showMentorColumn: boolean;
   showEditAction: boolean;
   showDeleteAction: boolean;
 };
@@ -25,6 +27,8 @@ const ProjectRow: FC<Props> = ({
   mutate,
   setSuccess,
   setError,
+  showAdviserColumn,
+  showMentorColumn,
   showEditAction,
   showDeleteAction,
 }) => {
@@ -105,16 +109,20 @@ const ProjectRow: FC<Props> = ({
               ))
             : null}
         </TableCell>
-        <TableCell>
-          {project.adviser && project.adviser.id ? (
-            <UsersName user={project.adviser} />
-          ) : null}
-        </TableCell>
-        <TableCell>
-          {project.mentor && project.mentor.id ? (
-            <UsersName user={project.mentor} />
-          ) : null}
-        </TableCell>
+        {showAdviserColumn && (
+          <TableCell>
+            {project.adviser && project.adviser.id ? (
+              <UsersName user={project.adviser} />
+            ) : null}
+          </TableCell>
+        )}
+        {showMentorColumn && (
+          <TableCell>
+            {project.mentor && project.mentor.id ? (
+              <UsersName user={project.mentor} />
+            ) : null}
+          </TableCell>
+        )}
         <TableCell>
           <Link href={`${PAGES.PROJECTS}/${project.id}`} passHref>
             <Button>View</Button>

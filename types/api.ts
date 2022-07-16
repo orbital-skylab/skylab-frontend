@@ -1,5 +1,6 @@
 import { Adviser } from "./advisers";
 import { Deadline, DeadlineDeliverable, Section } from "./deadlines";
+import { EvaluationGroup } from "./groups";
 import { Mentor } from "./mentors";
 import { LeanProject, Project } from "./projects";
 import {
@@ -189,6 +190,17 @@ export type GetAdviserTeamSubmissionsResponse = {
     deadline: Deadline;
     submissions: PossibleSubmission[];
   }[];
+};
+
+/**
+ * Groups Endpoints:
+ */
+export type CreateGroupResponse = {
+  group: EvaluationGroup;
+};
+
+export type EditGroupResponse = {
+  group: EvaluationGroup;
 };
 
 /**

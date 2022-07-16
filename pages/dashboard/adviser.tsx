@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
 // Components
 import Body from "@/components/layout/Body";
-import { Tab, Tabs, tabsClasses, Typography } from "@mui/material";
+import { Button, Tab, Tabs, tabsClasses, Typography } from "@mui/material";
 import { TabContext, TabPanel } from "@mui/lab";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import DeadlineDeliverableTable from "@/components/tables/DeadlineDeliverableTable";
@@ -10,11 +9,15 @@ import SubmissionTable from "@/components/tables/SubmissionTable";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import ProjectTable from "@/components/tables/ProjectTable";
+import GroupTable from "@/components/tables/GroupTable";
+import { Add } from "@mui/icons-material";
+import AddGroupModal from "@/components/modals/AddGroupModal";
 // Hooks
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import useAuth from "@/hooks/useAuth";
 // Helpers
 import { isFuture } from "@/helpers/dates";
+import { groupProjectsByGroupId } from "@/helpers/projects";
 // Type
 import type { NextPage } from "next";
 import { ROLES } from "@/types/roles";
@@ -34,6 +37,7 @@ enum TAB {
 const AdviserDashboard: NextPage = () => {
   const { user } = useAuth();
   const [selectedTab, setSelectedTab] = useState<TAB>(TAB.DEADLINES);
+  const [isAddGroupOpen, setIsAddGroupOpen] = useState(false);
 
   const { data: deadlinesResponse, status: fetchDeadlinesStatus } =
     useFetch<GetAdviserDeadlinesResponse>({
@@ -56,9 +60,15 @@ const AdviserDashboard: NextPage = () => {
     enabled: Boolean(user && user.adviser && user.adviser.id),
   });
 
+  const projectsByGroupMap = groupProjectsByGroupId(projectsResponse?.projects);
+
   /** Helper functions */
   const handleTabChange = (event: React.SyntheticEvent, newValue: TAB) => {
     setSelectedTab(newValue);
+  };
+
+  const handleOpenAddGroupModal = () => {
+    setIsAddGroupOpen(true);
   };
 
   const hasPastDeadlines = deadlinesResponse?.deadlines.some(
@@ -86,6 +96,7 @@ const AdviserDashboard: NextPage = () => {
             <Tab key={tab} value={tab} label={tab} />
           ))}
         </Tabs>
+
         <TabPanel value={TAB.DEADLINES}>
           <LoadingWrapper isLoading={isFetching(fetchDeadlinesStatus)}>
             <NoDataWrapper
@@ -114,6 +125,7 @@ const AdviserDashboard: NextPage = () => {
             </NoDataWrapper>
           </LoadingWrapper>
         </TabPanel>
+
         <TabPanel value={TAB.SUBMISSIONS}>
           <LoadingWrapper isLoading={isFetching(fetchTeamSubmissionsStatus)}>
             <NoDataWrapper
@@ -143,6 +155,7 @@ const AdviserDashboard: NextPage = () => {
             </NoDataWrapper>
           </LoadingWrapper>
         </TabPanel>
+
         <TabPanel value={TAB.MANAGE_TEAMS}>
           <LoadingWrapper isLoading={isFetching(fetchProjectsStatus)}>
             <NoDataWrapper
@@ -159,7 +172,30 @@ const AdviserDashboard: NextPage = () => {
             </NoDataWrapper>
           </LoadingWrapper>
         </TabPanel>
-        <TabPanel value={TAB.MANAGE_GROUPS}></TabPanel>
+
+        <TabPanel value={TAB.MANAGE_GROUPS}>
+          <LoadingWrapper isLoading={isFetching(fetchProjectsStatus)}>
+            <AddGroupModal
+              open={isAddGroupOpen}
+              setOpen={setIsAddGroupOpen}
+              mutate={mutateProjects}
+            />
+            <Button onClick={handleOpenAddGroupModal}>
+              <Add /> Group
+            </Button>
+            <NoDataWrapper
+              noDataCondition={!projectsByGroupMap || !projectsByGroupMap.size}
+              fallback={<NoneFound message="No evaluation groups found." />}
+            >
+              {projectsByGroupMap && (
+                <GroupTable
+                  projectsByGroupMap={projectsByGroupMap}
+                  mutate={mutateProjects}
+                />
+              )}
+            </NoDataWrapper>
+          </LoadingWrapper>
+        </TabPanel>
       </TabContext>
     </Body>
   );

@@ -1,6 +1,7 @@
 import SnackbarAlert from "@/components/layout/SnackbarAlert";
 import { Mutate } from "@/hooks/useFetch";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
+import { GetProjectsResponse } from "@/types/api";
 import { Project } from "@/types/projects";
 import {
   Table,
@@ -11,44 +12,27 @@ import {
   TableRow,
 } from "@mui/material";
 import { FC } from "react";
-import ProjectRow from "./ProjectRow";
+import GroupRow from "./GroupRow";
 
 type Props = {
-  projects: Project[];
-  mutate?: Mutate<Project[]>;
+  projectsByGroupMap: Map<number, Set<Project>>;
+  mutate: Mutate<GetProjectsResponse>;
   showAdviserColumn?: boolean;
-  showMentorColumn?: boolean;
-  showEditAction?: boolean;
-  showDeleteAction?: boolean;
 };
 
-const columnHeadings = [
-  "Project ID",
-  "Project Name",
-  "Level of Achievement",
-  "Students",
-  "Adviser",
-  "Mentor",
-  "Actions",
-];
+const columnHeadings = ["Group ID", "Teams", "Adviser", "Actions"];
 
-const ProjectTable: FC<Props> = ({
-  projects,
+const GroupTable: FC<Props> = ({
+  projectsByGroupMap,
   mutate,
   showAdviserColumn,
-  showMentorColumn,
-  showEditAction,
-  showDeleteAction,
 }) => {
   const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
 
   const filteredColumnHeadings = columnHeadings.filter((heading) => {
     switch (heading) {
       case "Adviser":
-        return showAdviserColumn;
-
-      case "Mentor":
-        return showMentorColumn;
+        return Boolean(showAdviserColumn);
 
       default:
         return true;
@@ -68,17 +52,15 @@ const ProjectTable: FC<Props> = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {projects.map((project) => (
-              <ProjectRow
-                key={project.id}
-                project={project}
+            {Array.from(projectsByGroupMap).map(([groupId, groupSet]) => (
+              <GroupRow
+                key={groupId}
+                groupId={groupId}
+                groupSet={groupSet}
                 mutate={mutate}
+                showAdviserColumn={Boolean(showAdviserColumn)}
                 setSuccess={setSuccess}
                 setError={setError}
-                showAdviserColumn={Boolean(showAdviserColumn)}
-                showMentorColumn={Boolean(showMentorColumn)}
-                showEditAction={Boolean(showEditAction)}
-                showDeleteAction={Boolean(showDeleteAction)}
               />
             ))}
           </TableBody>
@@ -88,4 +70,4 @@ const ProjectTable: FC<Props> = ({
   );
 };
 
-export default ProjectTable;
+export default GroupTable;
