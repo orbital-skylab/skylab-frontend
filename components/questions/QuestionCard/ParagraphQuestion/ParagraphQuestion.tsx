@@ -1,7 +1,7 @@
 import { ChangeEvent, FC } from "react";
 // Components
-import { Stack, TextField, Typography } from "@mui/material";
-import AnonymousChip from "../AnonymousChip";
+import { Stack, TextField } from "@mui/material";
+import QuestionAndDesc from "../QuestionAndDesc";
 // Types
 import { LeanQuestion, Option, Question } from "@/types/deadlines";
 
@@ -18,15 +18,7 @@ const ParagraphQuestion: FC<Props> = ({ question, answer, setAnswer }) => {
 
   return (
     <Stack spacing="0.5rem" sx={{ width: "100%" }}>
-      <Stack direction="row" spacing="0.25rem">
-        <Typography fontWeight={600}>
-          {question.question ? question.question : "<Empty Paragraph Question>"}
-        </Typography>
-        {question.isAnonymous && <AnonymousChip />}
-      </Stack>
-      {question.desc ? (
-        <Typography variant="caption">{question.desc}</Typography>
-      ) : null}
+      <QuestionAndDesc question={question} questionType="Paragraph" />
       <TextField
         value={answer}
         onChange={handleChange}

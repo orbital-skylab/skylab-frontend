@@ -4,7 +4,6 @@ export enum DEADLINE_TYPE {
   MILESTONE = "Milestone",
   EVALUATION = "Evaluation",
   SURVEY = "Survey",
-  OTHER = "Other",
 }
 
 export type Deadline = {
@@ -14,7 +13,23 @@ export type Deadline = {
   desc?: string;
   dueBy: string;
   type: DEADLINE_TYPE;
+  createdAt: string;
+  updatedAt: string;
 };
+
+export type Section = {
+  id: string;
+  deadlineId: number;
+  sectionNumber: number;
+  name: string;
+  desc?: string;
+  questions: Question[];
+};
+
+export type LeanSection = Omit<
+  Section,
+  "id" | "deadlineId" | "sectionNumber" | "questions"
+> & { questions: LeanQuestion[] };
 
 export enum QUESTION_TYPE {
   SHORT_ANSWER = "ShortAnswer",
@@ -29,10 +44,11 @@ export enum QUESTION_TYPE {
 
 export type Question = {
   id: number;
+  sectionId: number;
   deadlineId: number;
   questionNumber: number;
   question: string;
-  desc: string;
+  desc?: string;
   type: QUESTION_TYPE;
   options?: Option[];
   isAnonymous?: boolean;
@@ -40,7 +56,7 @@ export type Question = {
 
 export type LeanQuestion = Omit<
   Question,
-  "id" | "questionNumber" | "deadlineId"
+  "id" | "questionNumber" | "deadlineId" | "sectionId"
 >;
 
 export type Option = string;

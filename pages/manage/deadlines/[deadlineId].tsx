@@ -1,25 +1,26 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 // Components
 import GoBackButton from "@/components/buttons/GoBackButton";
 import Body from "@/components/layout/Body";
-import AddQuestionButton from "@/components/questions/AddQuestionButton";
-import EditQuestionsList from "@/components/questions/EditQuestionsList";
 import SnackbarAlert from "@/components/layout/SnackbarAlert";
-import QuestionsList from "@/components/questions/QuestionsList";
 import DeadlineDescriptionCard from "@/components/questions/DeadlineDescriptionCard";
-import { Button, Stack } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
 import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
+import EditQuestionSectionsList from "@/components/questions/EditQuestionSectionsList";
+import QuestionSectionsList from "@/components/questions/QuestionSectionsList";
 // Hooks
 import useFetch, { isError, isFetching } from "@/hooks/useFetch";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 import { useRouter } from "next/router";
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
+import useQuestionSections from "@/hooks/useQuestionSections";
+import useAnswers from "@/hooks/useAnswers";
 // Helpers
-import { processQuestions } from "@/components/questions/EditQuestionsList/EditQuestionsList.helpers";
+import {
+  processSections,
+  stripSections,
+} from "@/components/questions/EditQuestionSectionsList/EditQuestionsList/EditQuestionsList.helpers";
 import { PAGES } from "@/helpers/navigation";
 // Types
-import { LeanQuestion, Option, QUESTION_TYPE } from "@/types/deadlines";
 import { GetDeadlineDetailsResponse } from "@/types/api";
 import type { NextPage } from "next";
 import { HTTP_METHOD } from "@/types/api";
@@ -35,26 +36,31 @@ const DeadlineQuestions: NextPage = () => {
     setError,
   } = useSnackbarAlert();
   const [deadlineDescription, setDeadlineDescription] = useState("");
-  const [questions, setQuestions] = useState<LeanQuestion[]>([]);
+  const { sections, actions: questionSectionsActions } = useQuestionSections();
+  const { setSections, addSection, clearSections } = questionSectionsActions;
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   // For controlled inputs in preview mode
-  const [answers, setAnswers] = useState<Record<number, Option>>({});
+  const { answers, actions: answersActions } = useAnswers();
+  const { clearAnswers, setEmptyAnswers } = answersActions;
 
   const { data: deadlineDetailsResponse, status: fetchDeadlineDetailsStatus } =
     useFetch<GetDeadlineDetailsResponse>({
       endpoint: `/deadlines/${deadlineId}/questions`,
       onFetch: (deadlineDetailsResponse) => {
         setDeadlineDescription(deadlineDetailsResponse.deadline.desc ?? "");
-        if (deadlineDetailsResponse.questions.length) {
-          setQuestions(deadlineDetailsResponse.questions);
+        if (
+          deadlineDetailsResponse.sections &&
+          deadlineDetailsResponse.sections.length
+        ) {
+          setSections(stripSections(deadlineDetailsResponse.sections));
         } else {
-          addNewQuestion(true);
+          addSection();
         }
       },
       enabled: !!deadlineId,
     });
 
-  const saveQuestions = useApiCall({
+  const saveQuestionSections = useApiCall({
     method: HTTP_METHOD.PUT,
     endpoint: `/deadlines/${deadlineId}/questions`,
     requiresAuthorization: true,
@@ -66,10 +72,10 @@ const DeadlineQuestions: NextPage = () => {
     requiresAuthorization: true,
   });
 
-  const saveQuestionsAndDescription = async () => {
+  const saveQuestionSectionsAndDescription = async () => {
     try {
       await Promise.all([
-        saveQuestions.call({ questions: processQuestions(questions) }),
+        saveQuestionSections.call({ sections: processSections(sections) }),
         saveDeadlineDescription.call({
           deadline: { desc: deadlineDescription },
         }),
@@ -86,33 +92,14 @@ const DeadlineQuestions: NextPage = () => {
   const handleTogglePreviewMode = () => {
     if (isPreviewMode) {
       setIsPreviewMode(false);
-      setAnswers({});
+      clearAnswers();
     } else {
       setIsPreviewMode(true);
-      // On Edit Deadlines Page, answers are accessed via the index of the question
-      const emptyAnswers: Record<number, Option> = {};
-      questions.forEach((question, idx) => (emptyAnswers[idx] = ""));
-      setAnswers(emptyAnswers);
+      setEmptyAnswers(sections, true);
     }
   };
 
-  const addNewQuestion = (asOnlyQuestion = false) => {
-    const newDefaultQuestion = {
-      question: "",
-      desc: "",
-      type: QUESTION_TYPE.MULTIPLE_CHOICE,
-      options: [""],
-      isAnonymous: false,
-    };
-
-    if (asOnlyQuestion === true) {
-      setQuestions([newDefaultQuestion]);
-    } else {
-      setQuestions((questions) => [...questions, newDefaultQuestion]);
-    }
-  };
-
-  const resetQuestions = () => {
+  const resetQuestionSections = () => {
     if (
       !confirm("Are you sure you want to reset the form to its original state?")
     ) {
@@ -121,54 +108,15 @@ const DeadlineQuestions: NextPage = () => {
 
     if (
       deadlineDetailsResponse &&
-      deadlineDetailsResponse.questions &&
-      deadlineDetailsResponse.questions.length
+      deadlineDetailsResponse.sections &&
+      deadlineDetailsResponse.sections.length
     ) {
-      setQuestions(deadlineDetailsResponse.questions);
+      setSections(deadlineDetailsResponse.sections);
     } else {
-      addNewQuestion(true);
+      clearSections();
+      addSection();
     }
   };
-
-  /**
-   * Function to set a question at a specific index.
-   * This is so that each component only receives the setter they need
-   */
-  const generateSetQuestion = useCallback(
-    (idx: number) => {
-      const setQuestion = (newQuestion?: LeanQuestion) => {
-        const newQuestions = [...questions];
-
-        if (newQuestion) {
-          newQuestions.splice(idx, 1, newQuestion);
-        } else {
-          // Delete the question
-          newQuestions.splice(idx, 1);
-        }
-        setQuestions(newQuestions);
-      };
-
-      return setQuestion;
-    },
-    [questions]
-  );
-
-  /**
-   * Function to set an answer for a specific question based on its idx.
-   * This is so that each <QuestionCard/> component only receives the setter they need.
-   */
-  const generateSetAnswer = useCallback(
-    (questionIdx: number) => {
-      const setAnswer = (newAnswer: string) => {
-        const newAnswers = { ...answers };
-        newAnswers[questionIdx] = newAnswer;
-        setAnswers(newAnswers);
-      };
-
-      return setAnswer;
-    },
-    [answers]
-  );
 
   return (
     <>
@@ -181,7 +129,7 @@ const DeadlineQuestions: NextPage = () => {
         <AutoBreadcrumbs
           breadcrumbs={[
             {
-              label: `Editing ${deadlineId}`,
+              label: `Editing Deadline ${deadlineId} Details`,
               href: `${PAGES.MANAGE_DEADLINES}/${deadlineId}`,
             },
           ]}
@@ -196,30 +144,33 @@ const DeadlineQuestions: NextPage = () => {
           setDeadlineDescription={setDeadlineDescription}
         />
         {!isPreviewMode ? (
-          <>
-            <EditQuestionsList
-              questions={questions}
-              generateSetQuestion={generateSetQuestion}
-            />
-            <AddQuestionButton addNewQuestion={addNewQuestion} />
-            <Stack direction="row" justifyContent="space-between" mt="2rem">
-              <Button onClick={resetQuestions}>Reset</Button>
-              <LoadingButton
-                variant="contained"
-                onClick={saveQuestionsAndDescription}
-                loading={isCalling(saveQuestions.status)}
-                disabled={isCalling(saveQuestions.status)}
-              >
-                Save
-              </LoadingButton>
-            </Stack>
-          </>
+          <EditQuestionSectionsList
+            sections={sections}
+            questionSectionsActions={questionSectionsActions}
+            saveQuestionSectionsAndDescription={
+              saveQuestionSectionsAndDescription
+            }
+            isSubmitting={isCalling(
+              saveDeadlineDescription.status,
+              saveQuestionSections.status
+            )}
+            resetQuestionSections={resetQuestionSections}
+          />
         ) : (
-          <QuestionsList
-            questions={questions}
+          <QuestionSectionsList
+            questionSections={sections}
             answers={answers}
-            generateSetAnswer={generateSetAnswer}
+            answersActions={answersActions}
             accessAnswersWithQuestionIndex
+            // Dummy props as this is component is just for a preview here
+            submitAnswers={(options) => {
+              if (options && options.isDraft) {
+                alert("Save the answers as a draft");
+              } else {
+                alert("Submitted the answers");
+              }
+            }}
+            isSubmitting={false}
           />
         )}
       </Body>

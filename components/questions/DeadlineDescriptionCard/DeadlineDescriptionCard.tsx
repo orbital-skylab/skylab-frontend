@@ -10,15 +10,15 @@ import {
 } from "@mui/material";
 
 type Props = {
-  isPreviewMode: boolean;
-  handleTogglePreviewMode: () => void;
+  isPreviewMode?: boolean;
+  handleTogglePreviewMode?: () => void; // Does not render toggle when not provided
   deadlineName: string | undefined;
   deadlineDescription: string;
-  setDeadlineDescription: Dispatch<SetStateAction<string>>;
+  setDeadlineDescription?: Dispatch<SetStateAction<string>>;
 };
 
 const DeadlineDescriptionCard: FC<Props> = ({
-  isPreviewMode,
+  isPreviewMode = false,
   handleTogglePreviewMode,
   deadlineName = "",
   deadlineDescription,
@@ -27,28 +27,34 @@ const DeadlineDescriptionCard: FC<Props> = ({
   const handleDeadlineDescriptionChange = (
     e: ChangeEvent<HTMLInputElement>
   ) => {
-    setDeadlineDescription(e.target.value);
+    if (setDeadlineDescription) {
+      setDeadlineDescription(e.target.value);
+    }
   };
 
   return (
-    <Card elevation={5} sx={{ marginBottom: "1rem" }}>
+    <Card elevation={5} sx={{ marginBottom: "2rem" }}>
       <CardContent>
         <Stack direction="row" alignItems="center" marginBottom="0.5rem">
-          <Typography variant="h6">{deadlineName}</Typography>
-          <FormControlLabel
-            value={isPreviewMode}
-            onClick={handleTogglePreviewMode}
-            control={<Switch color="info" />}
-            label="Preview Questions"
-            labelPlacement="start"
-            sx={{ marginLeft: "auto" }}
-          />
+          <Typography variant="h1" fontSize="1.25rem" fontWeight={600}>
+            {deadlineName}
+          </Typography>
+          {handleTogglePreviewMode && (
+            <FormControlLabel
+              value={isPreviewMode}
+              onClick={handleTogglePreviewMode}
+              control={<Switch color="info" />}
+              label="Preview Questions"
+              labelPlacement="start"
+              sx={{ marginLeft: "auto" }}
+            />
+          )}
         </Stack>
 
         {!isPreviewMode ? (
           <TextField
             size="small"
-            rows={3}
+            minRows={3}
             multiline
             fullWidth
             value={deadlineDescription}

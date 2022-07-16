@@ -1,6 +1,6 @@
 import { Option } from "./deadlines";
 
-type Answer = {
+export type Answer = {
   questionId: number;
   answer: Option;
 };
