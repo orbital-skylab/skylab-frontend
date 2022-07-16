@@ -15,10 +15,14 @@ import ProjectRow from "./ProjectRow";
 
 type Props = {
   projects: Project[];
-  mutate: Mutate<Project[]>;
+  mutate?: Mutate<Project[]>;
+  showAdviserColumn?: boolean;
+  showMentorColumn?: boolean;
+  showEditAction?: boolean;
+  showDeleteAction?: boolean;
 };
 
-const ColumnHeadings = [
+const columnHeadings = [
   "Project ID",
   "Project Name",
   "Level of Achievement",
@@ -28,8 +32,28 @@ const ColumnHeadings = [
   "Actions",
 ];
 
-const ProjectTable: FC<Props> = ({ projects, mutate }) => {
+const ProjectTable: FC<Props> = ({
+  projects,
+  mutate,
+  showAdviserColumn,
+  showMentorColumn,
+  showEditAction,
+  showDeleteAction,
+}) => {
   const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
+
+  const filteredColumnHeadings = columnHeadings.filter((heading) => {
+    switch (heading) {
+      case "Adviser":
+        return showAdviserColumn;
+
+      case "Mentor":
+        return showMentorColumn;
+
+      default:
+        return true;
+    }
+  });
 
   return (
     <>
@@ -38,7 +62,7 @@ const ProjectTable: FC<Props> = ({ projects, mutate }) => {
         <Table>
           <TableHead>
             <TableRow>
-              {ColumnHeadings.map((heading) => (
+              {filteredColumnHeadings.map((heading) => (
                 <TableCell key={heading}>{heading}</TableCell>
               ))}
             </TableRow>
@@ -51,6 +75,8 @@ const ProjectTable: FC<Props> = ({ projects, mutate }) => {
                 mutate={mutate}
                 setSuccess={setSuccess}
                 setError={setError}
+                showEditAction={Boolean(showEditAction)}
+                showDeleteAction={Boolean(showDeleteAction)}
               />
             ))}
           </TableBody>

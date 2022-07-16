@@ -10,7 +10,6 @@ import {
   Stack,
   TableCell,
   TableRow,
-  Tooltip,
 } from "@mui/material";
 import Link from "next/link";
 import UsersName from "@/components/typography/UsersName";
@@ -23,12 +22,21 @@ import { BASE_TRANSITION } from "@/styles/constants";
 
 type Props = {
   project: Project;
-  mutate: Mutate<Project[]>;
+  mutate?: Mutate<Project[]>;
   setSuccess: (message: string) => void;
   setError: (error: unknown) => void;
+  showEditAction: boolean;
+  showDeleteAction: boolean;
 };
 
-const ProjectRow: FC<Props> = ({ project, mutate, setSuccess, setError }) => {
+const ProjectRow: FC<Props> = ({
+  project,
+  mutate,
+  setSuccess,
+  setError,
+  showEditAction,
+  showDeleteAction,
+}) => {
   const [dropdownAnchorElement, setDropdownAnchorElement] =
     useState<HTMLElement | null>(null);
   const isDropdownOpen = Boolean(dropdownAnchorElement);
@@ -92,14 +100,16 @@ const ProjectRow: FC<Props> = ({ project, mutate, setSuccess, setError }) => {
 
   return (
     <>
-      <DeleteProjectModal
-        open={isDeleteProjectOpen}
-        setOpen={setIsDeleteProjectOpen}
-        project={project}
-        mutate={mutate}
-        setSuccess={setSuccess}
-        setError={setError}
-      />
+      {showDeleteAction && mutate && (
+        <DeleteProjectModal
+          open={isDeleteProjectOpen}
+          setOpen={setIsDeleteProjectOpen}
+          project={project}
+          mutate={mutate}
+          setSuccess={setSuccess}
+          setError={setError}
+        />
+      )}
       <TableRow>
         <TableCell>{project.id}</TableCell>
         <TableCell>{project.name}</TableCell>
@@ -148,22 +158,27 @@ const ProjectRow: FC<Props> = ({ project, mutate, setSuccess, setError }) => {
             }}
           >
             <Link href={`${PAGES.PROJECTS}/${project.id}`} passHref>
-              <Tooltip title="View and edit project details" placement="left">
-                <MenuItem>View Details</MenuItem>
-              </Tooltip>
+              <MenuItem>View</MenuItem>
             </Link>
-            <MenuItem
-              onClick={handleOpenDeleteModal}
-              sx={{
-                transition: BASE_TRANSITION,
-                "&:hover": {
-                  backgroundColor: "error.main",
-                  color: "white",
-                },
-              }}
-            >
-              Delete
-            </MenuItem>
+            {showEditAction && (
+              <Link href={`${PAGES.PROJECTS}/${project.id}/edit`} passHref>
+                <MenuItem>Edit</MenuItem>
+              </Link>
+            )}
+            {showDeleteAction && (
+              <MenuItem
+                onClick={handleOpenDeleteModal}
+                sx={{
+                  transition: BASE_TRANSITION,
+                  "&:hover": {
+                    backgroundColor: "error.main",
+                    color: "white",
+                  },
+                }}
+              >
+                Delete
+              </MenuItem>
+            )}
           </Menu>
         </TableCell>
       </TableRow>

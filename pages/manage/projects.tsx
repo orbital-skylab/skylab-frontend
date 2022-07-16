@@ -217,7 +217,14 @@ const ProjectsList = () => {
             noDataCondition={projects === undefined || projects.length === 0}
             fallback={<NoneFound message="No such projects found" />}
           >
-            <ProjectTable projects={projects} mutate={mutate} />
+            <ProjectTable
+              projects={projects}
+              mutate={mutate}
+              showAdviserColumn
+              showMentorColumn
+              showEditAction
+              showDeleteAction
+            />
             <div ref={bottomOfPageRef} />
             <Box
               sx={{

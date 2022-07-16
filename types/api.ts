@@ -157,20 +157,34 @@ export type CreateSubmissionResponse = Submission;
 /**
  * Dashbard Endpoints:
  * https://github.com/orbital-skylab/skylab-backend/wiki/Dashboard-Endpoints
+ * - These endpoints are ONLY used on the dashboard.
+ * - There may be other endpoints used in the dashboard and elsewhere and are hence not dashboard-specific.
  */
-
-export type GetStudentDeadlines = {
+/** Student Dashboard Endpoints */
+export type GetStudentDeadlinesResponse = {
   deadlines: DeadlineDeliverable[];
 };
 
-export type GetStudentPeerMilestones = {
+export type GetStudentPeerMilestonesResponse = {
   deadlines: {
     deadline: Deadline;
     submissions: PossibleSubmission[];
   }[];
 };
 
-export type GetStudentPeerEvaluationAndFeedback = {
+export type GetStudentPeerEvaluationAndFeedbackResponse = {
+  deadlines: {
+    deadline: Deadline;
+    submissions: PossibleSubmission[];
+  }[];
+};
+
+/** Adviser Dashboard Endpoints */
+export type GetAdviserDeadlinesResponse = {
+  deadlines: DeadlineDeliverable[];
+};
+
+export type GetAdviserTeamSubmissionsResponse = {
   deadlines: {
     deadline: Deadline;
     submissions: PossibleSubmission[];

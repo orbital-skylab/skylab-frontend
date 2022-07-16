@@ -17,9 +17,9 @@ import { isFuture } from "@/helpers/dates";
 import type { NextPage } from "next";
 import { ROLES } from "@/types/roles";
 import {
-  GetStudentDeadlines,
-  GetStudentPeerEvaluationAndFeedback,
-  GetStudentPeerMilestones,
+  GetStudentDeadlinesResponse,
+  GetStudentPeerEvaluationAndFeedbackResponse,
+  GetStudentPeerMilestonesResponse,
 } from "@/types/api";
 
 enum TAB {
@@ -33,13 +33,13 @@ const StudentDashboard: NextPage = () => {
   const [selectedTab, setSelectedTab] = useState<TAB>(TAB.DEADLINES);
 
   const { data: deadlinesResponse, status: fetchDeadlinesStatus } =
-    useFetch<GetStudentDeadlines>({
+    useFetch<GetStudentDeadlinesResponse>({
       endpoint: `/dashboard/student/${user?.student?.id}/deadlines`,
       enabled: Boolean(user && user.student && user.student.id),
     });
 
   const { data: milestonesResponse, status: fetchMilestonesStatus } =
-    useFetch<GetStudentPeerMilestones>({
+    useFetch<GetStudentPeerMilestonesResponse>({
       endpoint: `/dashboard/student/${user?.student?.id}/milestones`,
       enabled: Boolean(user && user.student && user.student.id),
     });
@@ -47,7 +47,7 @@ const StudentDashboard: NextPage = () => {
   const {
     data: evaluationAndFeedbackResponse,
     status: fetchEvaluationAndFeedbackStatus,
-  } = useFetch<GetStudentPeerEvaluationAndFeedback>({
+  } = useFetch<GetStudentPeerEvaluationAndFeedbackResponse>({
     endpoint: `/dashboard/student/${user?.student?.id}/evaluations-feedbacks`,
     enabled: Boolean(user && user.student && user.student.id),
   });

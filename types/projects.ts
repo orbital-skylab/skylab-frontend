@@ -27,6 +27,7 @@ export type Project = {
   mentor?: Mentor;
   achievement: LEVELS_OF_ACHIEVEMENT;
   cohortYear: Cohort["academicYear"];
+  groupId?: number;
 };
 
 export type LeanProject = Pick<Project, "id" | "name">;
