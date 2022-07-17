@@ -66,7 +66,8 @@ const AddGroupModal: FC<Props> = ({ open, setOpen, mutate }) => {
     actions: FormikHelpers<AddGroupFormValuesType>
   ) => {
     const processedValues = {
-      project: { ...values },
+      adviserId: user?.adviser?.id,
+      ...values,
     };
 
     try {
