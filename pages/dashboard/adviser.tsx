@@ -28,7 +28,7 @@ import {
 } from "@/types/api";
 
 enum TAB {
-  DEADLINES = "Upcoming Deadlines",
+  DEADLINES = "Upcoming Submissions",
   SUBMISSIONS = "Your Teams' Submissions",
   MANAGE_TEAMS = "Manage Your Teams",
   MANAGE_GROUPS = "Manage Evaluation Groups",
