@@ -23,8 +23,8 @@ import {
 } from "@/types/api";
 
 enum TAB {
-  DEADLINES = "Upcoming Deadlines",
-  MILESTONES = "Peer Milestone Submission",
+  DEADLINES = "Upcoming Submissions",
+  MILESTONES = "Peer Milestone Submissions",
   EVALUATIONS = "Received Evaluations",
 }
 
