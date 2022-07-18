@@ -6,7 +6,7 @@ export type Answer = {
 };
 
 export type Submission = {
-  submissionId: number;
+  id: number;
   deadlineId: number;
   isDraft: boolean;
   answers: Answer[];
