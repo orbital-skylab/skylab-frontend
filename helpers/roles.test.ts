@@ -1,9 +1,10 @@
 /* eslint-disable no-undef */
-import { userHasRole } from "./roles";
+import { userHasRole, checkIfProjectsAdviser } from "./roles";
 import "jest";
 import { ROLES } from "@/types/roles";
 import { User } from "@/types/users";
 import { DeepPartial } from "./types";
+import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
 
 /** Helper function to generate a user with a role */
 const generateUser = (
@@ -26,6 +27,23 @@ const generateUser = (
     default:
       break;
   }
+};
+
+/** Helper function to generate a project with specific attributes */
+const generateProject = (
+  attributes?: Record<string, unknown>
+): DeepPartial<Project> => {
+  return {
+    id: 1,
+    name: "Test Project",
+    proposalPdf: "http://www.africau.edu/images/default/sample.pdf",
+    students: [generateUser(ROLES.STUDENTS)],
+    adviser: generateUser(ROLES.ADVISERS),
+    mentor: generateUser(ROLES.MENTORS),
+    achievement: LEVELS_OF_ACHIEVEMENT.VOSTOK,
+    cohortYear: 2022,
+    ...attributes,
+  };
 };
 
 describe("#userHasRole", () => {
@@ -87,5 +105,37 @@ describe("#userHasRole", () => {
       userHasRole(student, [ROLES.ADVISERS, ROLES.ADMINISTRATORS])
     ).toBeFalsy();
     expect(userHasRole(student, [])).toBeFalsy();
+  });
+});
+
+describe("#checkIfProjectsAdviser", () => {
+  it("can confirm that an adviser is a project's adviser", () => {
+    const project = generateProject({ adviser: { adviserId: 1 } });
+    const user = generateUser(ROLES.ADVISERS);
+    expect(
+      checkIfProjectsAdviser(project as Project, user as User)
+    ).toBeTruthy();
+  });
+
+  it("can confirm that an adviser is NOT a project's adviser", () => {
+    const project = generateProject({ adviser: { adviserId: 2 } });
+    const user = generateUser(ROLES.ADVISERS);
+    expect(
+      checkIfProjectsAdviser(project as Project, user as User)
+    ).toBeFalsy();
+  });
+
+  it("can confirm that an adviser is NOT an undefined project's adviser", () => {
+    const user = generateUser(ROLES.ADVISERS);
+    expect(checkIfProjectsAdviser(undefined, user as User)).toBeFalsy();
+  });
+
+  it("can confirm that an undefined user is NOT a project's adviser", () => {
+    const project = generateProject({ adviser: { adviserId: 2 } });
+    expect(checkIfProjectsAdviser(project as Project, undefined)).toBeFalsy();
+  });
+
+  it("can confirm that an undefined user is NOT an undefined project's adviser", () => {
+    expect(checkIfProjectsAdviser(undefined, undefined)).toBeFalsy();
   });
 });
