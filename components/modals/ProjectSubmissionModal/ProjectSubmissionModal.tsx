@@ -1,3 +1,4 @@
+import { noImageAvailableSrc } from "@/helpers/errors";
 import { Project } from "@/types/projects";
 import { Box, Button, Typography } from "@mui/material";
 import { Dispatch, FC, SetStateAction } from "react";
@@ -28,9 +29,8 @@ const ProjectSubmissionModal: FC<Props> = ({ open, setOpen, project }) => {
           width: "50%",
         }}
       >
-        {/* TODO: Change poster placeholder */}
         <Box
-          src={"https://nusskylab-dev.comp.nus.edu.sg/posters/2021/2680.jpg"}
+          src={project.posterUrl ?? noImageAvailableSrc}
           component="img"
           alt={`${project.teamName} Poster`}
         />
@@ -52,8 +52,7 @@ const ProjectSubmissionModal: FC<Props> = ({ open, setOpen, project }) => {
           placeItems: "center",
         }}
       >
-        {/* TODO: Change poster placeholder */}
-        <iframe src="poster.videoUrl" />
+        <iframe src={project.videoUrl} />
       </Box>
       <Button
         sx={{ mb: "-0.5rem", mt: "0.5rem" }}

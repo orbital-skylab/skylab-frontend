@@ -36,7 +36,13 @@ import Switch from "@/components/formikFormControllers/Switch";
 
 type EditProjectFormValues = Pick<
   Project,
-  "name" | "teamName" | "achievement" | "proposalPdf" | "hasDropped"
+  | "name"
+  | "teamName"
+  | "achievement"
+  | "proposalPdf"
+  | "posterUrl"
+  | "videoUrl"
+  | "hasDropped"
 > & { students: number[]; adviser: number | ""; mentor: number | "" };
 
 const EditProject: NextPage = () => {
@@ -56,13 +62,15 @@ const EditProject: NextPage = () => {
     name: project?.name ?? "",
     teamName: project?.name ?? "",
     achievement: project?.achievement ?? LEVELS_OF_ACHIEVEMENT.VOSTOK,
-    proposalPdf: project?.proposalPdf ?? "",
     students: project?.students
       ? project?.students.map(({ studentId }) => studentId)
       : [],
     adviser: project?.adviser?.adviserId ?? "",
     mentor: project?.mentor?.mentorId ?? "",
     hasDropped: project?.hasDropped ?? false,
+    proposalPdf: project?.proposalPdf ?? "",
+    posterUrl: project?.posterUrl ?? "",
+    videoUrl: project?.videoUrl ?? "",
   };
 
   /** Fetching student, adviser and mentor IDs and names for the dropdown select */
@@ -215,7 +223,17 @@ const EditProject: NextPage = () => {
                           />
                           <TextInput
                             name="proposalPdf"
-                            label="Proposal PDF"
+                            label="Proposal PDF URL"
+                            formik={formik}
+                          />
+                          <TextInput
+                            name="posterUrl"
+                            label="Poster URL"
+                            formik={formik}
+                          />
+                          <TextInput
+                            name="videoUrl"
+                            label="Video URL"
                             formik={formik}
                           />
                           <Switch
