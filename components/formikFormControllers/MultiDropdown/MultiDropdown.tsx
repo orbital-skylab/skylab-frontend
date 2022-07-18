@@ -21,6 +21,7 @@ type Props<FormValuesType> = {
   formik: FormikProps<FormValuesType>;
   size?: "medium" | "small";
   isCombobox?: boolean;
+  isDisabled?: boolean;
 };
 
 function MultiDropdown<FormValuesType>({
@@ -30,6 +31,7 @@ function MultiDropdown<FormValuesType>({
   formik,
   size,
   isCombobox,
+  isDisabled = false,
 }: Props<FormValuesType>) {
   /** For combobox */
   const [inputValue, setInputValue] = useState("");
@@ -66,6 +68,7 @@ function MultiDropdown<FormValuesType>({
           }}
           size={size}
           options={options}
+          disabled={isDisabled}
           getOptionLabel={(option) => {
             /**
              * option could be:
@@ -104,6 +107,7 @@ function MultiDropdown<FormValuesType>({
         onChange={handleChange}
         onBlur={handleBlur}
         input={<OutlinedInput label="Chip" />}
+        disabled={isDisabled}
         renderValue={(selected: DropdownOption["value"][]) => (
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
             {selected.map((value) => (
