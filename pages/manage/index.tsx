@@ -14,30 +14,35 @@ import { ROLES } from "@/types/roles";
 const pages = [
   {
     title: "Cohorts",
+    id: "manage-cohorts-card",
     description:
       "Create, edit and delete cohorts, their start dates, and end dates.",
     href: PAGES.MANAGE_COHORTS,
   },
   {
     title: "Deadlines and Questions",
+    id: "manage-deadlines-card",
     description:
       "Create, edit and delete milestones, evaluations and other submissions. Additionally, configure the questions for each submission.",
     href: PAGES.MANAGE_DEADLINES,
   },
   {
     title: "Users",
+    id: "manage-users-card",
     description:
       "Create, delete, and view all users. Manage user roles by adding, editing or deleting them.",
     href: PAGES.MANAGE_USERS,
   },
   {
     title: "Batch Add Users",
+    id: "batch-add-users-card",
     description:
       "Batch add students with projects, advisers, or mentors. Additionally, batch attach the adviser role to existing users who have been students.",
     href: PAGES.MANAGE_USERS_BATCH_ADD,
   },
   {
     title: "Projects",
+    id: "manage-projects-card",
     description:
       "Create, edit, delete, and view all projects. Change the project name, LOA, students, adviser or mentor.",
     href: PAGES.MANAGE_PROJECTS,
@@ -58,7 +63,7 @@ const Manage: NextPage = () => {
           sx={{ paddingX: { xs: "0", md: "10%" } }}
         >
           {pages.map((page) => (
-            <Grid item xs={12} sm={4} key={page.title}>
+            <Grid id={page.id} item xs={12} sm={4} key={page.title}>
               <Card
                 sx={{
                   height: "100%",

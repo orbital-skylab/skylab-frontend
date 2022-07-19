@@ -55,7 +55,7 @@ const HeroSignIn: FC = () => {
             validationSchema={signInValidationSchema}
           >
             {(formik) => (
-              <form onSubmit={formik.handleSubmit}>
+              <form id="sign-in-form" onSubmit={formik.handleSubmit}>
                 <Stack gap="1rem" width="100%">
                   <Box>
                     <Typography variant="caption">
@@ -67,17 +67,20 @@ const HeroSignIn: FC = () => {
                   </Box>
                   <TextInput
                     label="Email"
+                    id="sign-in-email"
                     type="email"
                     name="email"
                     formik={formik}
                   />
                   <TextInput
                     label="Password"
+                    id="sign-in-password"
                     type="password"
                     name="password"
                     formik={formik}
                   />
                   <Button
+                    id="sign-in-button"
                     variant="contained"
                     disabled={formik.isSubmitting}
                     type="submit"

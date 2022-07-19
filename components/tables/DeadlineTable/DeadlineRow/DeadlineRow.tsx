@@ -70,12 +70,13 @@ const DeadlineRow: FC<Props> = ({ deadline, mutate }) => {
       />
       <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <TableRow>
-        <TableCell>{deadline.name}</TableCell>
+        <TableCell className="deadline-name-td">{deadline.name}</TableCell>
         <TableCell>{deadline.type}</TableCell>
         <TableCell>{isoDateToLocaleDateWithTime(deadline.dueBy)}</TableCell>
-        <TableCell>
+        <TableCell className="deadline-actions-td">
           <Stack direction="row" spacing="0.5rem"></Stack>
           <Button
+            className="deadline-options-button"
             variant="outlined"
             size="small"
             onClick={handleOpenDropdown}
@@ -101,11 +102,12 @@ const DeadlineRow: FC<Props> = ({ deadline, mutate }) => {
                 title="View and edit deadline questions"
                 placement="left"
               >
-                <MenuItem>View Questions</MenuItem>
+                <MenuItem id="view-questions-button">View Questions</MenuItem>
               </Tooltip>
             </Link>
             <MenuItem onClick={handleOpenEditModal}>Edit</MenuItem>
             <MenuItem
+              id="delete-deadline-button"
               onClick={handleOpenDeleteModal}
               sx={{
                 transition: BASE_TRANSITION,

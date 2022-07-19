@@ -44,6 +44,7 @@ const EditQuestionSectionsList: FC<Props> = ({
         ))}
       </Stack>
       <Button
+        id="add-section-button"
         variant="outlined"
         color="secondary"
         onClick={addSection}
@@ -58,6 +59,7 @@ const EditQuestionSectionsList: FC<Props> = ({
       <Stack direction="row" justifyContent="space-between">
         <Button onClick={resetQuestionSections}>Reset</Button>
         <LoadingButton
+          id="save-deadline-questions-button"
           variant="contained"
           onClick={saveQuestionSectionsAndDescription}
           loading={isSubmitting}

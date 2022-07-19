@@ -17,9 +17,10 @@ const TimeQuestion: FC<Props> = ({ question, answer, setAnswer }) => {
   };
 
   return (
-    <Stack spacing="0.5rem" sx={{ width: "100%" }}>
+    <Stack className="time-question" spacing="0.5rem" sx={{ width: "100%" }}>
       <QuestionAndDesc question={question} questionType="Time" />
       <TextField
+        className="time-input"
         value={answer}
         onChange={handleChange}
         type="time"

@@ -83,6 +83,7 @@ const Deadlines: NextPage = () => {
           spacing="1rem"
         >
           <Button
+            id="add-deadline-button"
             variant="outlined"
             size="small"
             onClick={handleOpenAddDeadlineModal}

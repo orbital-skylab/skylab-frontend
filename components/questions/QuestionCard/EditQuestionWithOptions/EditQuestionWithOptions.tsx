@@ -53,6 +53,7 @@ const EditQuestionWithOptions: FC<Props> = ({
   return (
     <Stack spacing="1rem" sx={{ width: "100%" }}>
       <TextField
+        className="question-input"
         label="Question"
         value={question.question}
         onChange={generateHandleTextFieldChange(
@@ -63,6 +64,7 @@ const EditQuestionWithOptions: FC<Props> = ({
         size="small"
       />
       <TextField
+        className="question-description-input"
         label="Description"
         value={question.desc}
         multiline
@@ -80,6 +82,7 @@ const EditQuestionWithOptions: FC<Props> = ({
         />
         {isShowingSettings && (
           <Button
+            className="add-option-button"
             onClick={addOption}
             variant="outlined"
             color="secondary"

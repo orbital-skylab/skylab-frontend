@@ -89,6 +89,7 @@ const EditQuestionSection: FC<Props> = ({
           <Stack direction="row" spacing="1rem">
             <Box sx={{ width: "100%" }}>
               <TextField
+                className="section-name-input"
                 size="small"
                 fullWidth
                 value={name}
@@ -100,6 +101,7 @@ const EditQuestionSection: FC<Props> = ({
                 InputProps={{ sx: { fontSize: "1.2rem" } }}
               />
               <TextField
+                className="section-description-input"
                 size="small"
                 minRows={3}
                 multiline

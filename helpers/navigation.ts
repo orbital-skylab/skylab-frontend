@@ -24,6 +24,7 @@ export enum NAVBAR_ACTIONS {
  */
 export type NavbarOption = {
   label: string;
+  id: string;
   route?: string;
   action?: NAVBAR_ACTIONS;
   authorizedRoles?: ROLES[];
@@ -32,20 +33,24 @@ export type NavbarOption = {
 export const NAVBAR_OPTIONS: NavbarOption[] = [
   {
     label: "Projects",
+    id: "nav-projects",
     route: PAGES.PROJECTS,
   },
-  { label: "Staff", route: PAGES.STAFF },
+  { label: "Staff", id: "nav-staff", route: PAGES.STAFF },
   {
     label: "Manage",
+    id: "nav-manage",
     route: PAGES.MANAGE,
     authorizedRoles: [ROLES.ADMINISTRATORS],
   },
   {
     label: "Profile",
+    id: "nav-profile",
     route: PAGES.USERS,
   },
   {
     label: "Sign Out",
+    id: "nav-sign-out",
     action: NAVBAR_ACTIONS.SIGN_OUT,
   },
 ];

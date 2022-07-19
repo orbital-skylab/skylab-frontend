@@ -106,6 +106,7 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
             <>
               <Stack direction="column" spacing="1rem">
                 <TextInput
+                  id="deadline-name-input"
                   name="name"
                   label="Name"
                   size="small"
@@ -136,6 +137,7 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
                   Cancel
                 </Button>
                 <Button
+                  id="submit-deadline-button"
                   size="small"
                   variant="contained"
                   onClick={formik.submitForm}

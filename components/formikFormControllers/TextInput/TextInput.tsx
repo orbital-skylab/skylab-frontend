@@ -3,6 +3,7 @@ import { FormikProps } from "formik";
 
 type Props<FormValuesType> = {
   label?: string;
+  id?: string;
   name: keyof FormValuesType;
   type?: "email" | "text" | "password" | "date" | "time" | "datetime-local";
   formik: FormikProps<FormValuesType>;
@@ -14,6 +15,7 @@ type Props<FormValuesType> = {
 function TextInput<FormValuesType>({
   label = "",
   type = "text",
+  id,
   name,
   formik,
   multiline = false,
@@ -39,6 +41,7 @@ function TextInput<FormValuesType>({
       InputLabelProps={{
         shrink: type === "datetime-local" ? true : undefined,
       }}
+      id={id}
     />
   );
 }

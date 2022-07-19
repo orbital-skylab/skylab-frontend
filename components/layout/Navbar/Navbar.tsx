@@ -92,6 +92,7 @@ const Navbar: FC = () => {
 
   return (
     <AppBar
+      id="auth-nav-bar"
       position="fixed"
       color="transparent"
       elevation={trigger ? 4 : 0}

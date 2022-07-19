@@ -41,6 +41,7 @@ const DeadlineDescriptionCard: FC<Props> = ({
           </Typography>
           {handleTogglePreviewMode && (
             <FormControlLabel
+              id="preview-questions-button"
               value={isPreviewMode}
               onClick={handleTogglePreviewMode}
               control={<Switch color="info" />}
@@ -53,6 +54,7 @@ const DeadlineDescriptionCard: FC<Props> = ({
 
         {!isPreviewMode ? (
           <TextField
+            id="deadline-description-input"
             size="small"
             minRows={3}
             multiline

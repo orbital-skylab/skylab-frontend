@@ -35,6 +35,7 @@ const NavbarButtonMobile: FC<Props> = ({
 
   return (
     <MenuItem
+      id={option.id}
       onClick={() => {
         generateOnClick(option)();
         handleCloseNavMenu();
