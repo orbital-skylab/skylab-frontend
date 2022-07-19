@@ -38,8 +38,8 @@ const QuestionSectionsList: FC<Props> = ({
   };
 
   return (
-    <Stack sx={{ gap: "2rem" }}>
-      {questionSections.map((section, idx) => {
+    <Stack id="question-section-list-div" sx={{ gap: "2rem" }}>
+      {questionSections.map((section: LeanSection, idx) => {
         const { name, desc, questions } = section;
         const sectionNumber = getSectionNumber(section, idx);
         // The amount to offset each question based on number of previous questions
@@ -49,6 +49,7 @@ const QuestionSectionsList: FC<Props> = ({
 
         return (
           <Card
+            className="section-div"
             key={sectionNumber}
             sx={{
               borderLeft: 5,
@@ -59,6 +60,7 @@ const QuestionSectionsList: FC<Props> = ({
             }}
           >
             <Typography
+              className="section-number-span"
               sx={{
                 padding: "0.5rem 1rem",
                 position: "absolute",
@@ -72,12 +74,23 @@ const QuestionSectionsList: FC<Props> = ({
             >{`Section ${sectionNumber} of ${questionSections.length}`}</Typography>
             <CardContent>
               <Stack spacing="0.5rem" marginBottom="1rem">
-                <Typography fontWeight={600} fontSize="1.2rem">
+                <Typography
+                  className="section-name-span"
+                  fontWeight={600}
+                  fontSize="1.2rem"
+                >
                   {name
                     ? name
                     : "<Empty Section Name> (Will not be saved if a name is not provided)"}
                 </Typography>
-                {desc && <Typography variant="body1">{desc}</Typography>}
+                {desc && (
+                  <Typography
+                    className="section-description-span"
+                    variant="body1"
+                  >
+                    {desc}
+                  </Typography>
+                )}
               </Stack>
 
               <QuestionsList

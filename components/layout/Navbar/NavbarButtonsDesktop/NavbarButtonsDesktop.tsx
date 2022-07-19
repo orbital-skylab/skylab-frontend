@@ -32,6 +32,7 @@ const NavbarButtonsDesktop: FC<Props> = ({
     >
       {options.map((option) => (
         <NavbarButtonDesktop
+          id={option.id}
           key={option.label}
           option={option}
           user={user}

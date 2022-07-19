@@ -43,6 +43,7 @@ const EditQuestionsList: FC<Props> = ({
         )}
         {isShowingSettings && (
           <Button
+            id="add-question-button"
             variant="outlined"
             color="secondary"
             size="small"

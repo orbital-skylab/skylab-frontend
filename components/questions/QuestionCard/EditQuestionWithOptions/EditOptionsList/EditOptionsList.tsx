@@ -37,6 +37,7 @@ const EditOptionsList: FC<Props> = ({
       {options.map((option, idx) => (
         <Stack key={idx} direction="row" spacing="0.5rem">
           <TextField
+            className="option-input"
             value={option}
             onChange={generateHandleChangeOption(idx)}
             size="small"

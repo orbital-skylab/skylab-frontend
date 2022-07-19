@@ -71,6 +71,7 @@ const DeleteDeadlineModal: FC<Props> = ({
             Cancel
           </Button>
           <Button
+            id="delete-deadline-confirm-button"
             size="small"
             variant="contained"
             color="error"
