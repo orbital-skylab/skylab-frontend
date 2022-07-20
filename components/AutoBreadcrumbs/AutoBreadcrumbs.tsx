@@ -3,6 +3,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { FC } from "react";
 
+const acronyms = ["csv"];
+
 type Props = {
   breadcrumbs?: Breadcrumb[];
   sx?: SxProps;
@@ -28,7 +30,13 @@ const AutoBreadcrumbs: FC<Props> = ({
         return {
           label: pathSegment
             .split("-")
-            .map((chars) => chars.charAt(0).toUpperCase() + chars.slice(1))
+            .map((chars) => {
+              if (acronyms.includes(chars)) {
+                return chars.toUpperCase();
+              } else {
+                return chars.charAt(0).toUpperCase() + chars.slice(1);
+              }
+            })
             .join(" "),
           href: "/" + pathSegments.slice(0, idx + 1).join("/"),
         };
