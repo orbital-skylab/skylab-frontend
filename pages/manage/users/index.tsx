@@ -29,8 +29,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
+import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
+import { toSingular } from "@/helpers/roles";
 // Hooks
 import useCohort from "@/hooks/useCohort";
 import useFetch, { isFetching } from "@/hooks/useFetch";
@@ -41,10 +44,7 @@ import useInfiniteFetch, {
 import { Cohort } from "@/types/cohorts";
 import { ROLES, ROLES_WITH_ALL } from "@/types/roles";
 import { User } from "@/types/users";
-import { toSingular } from "@/helpers/roles";
-import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import { GetLeanProjectsResponse, GetUsersResponse } from "@/types/api";
-import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
 
 const LIMIT = 20;
 
