@@ -31,10 +31,10 @@ const pages = [
     href: PAGES.MANAGE_USERS,
   },
   {
-    title: "Batch Add Users",
+    title: "Add Users with CSV files",
     description:
-      "Batch add students with projects, advisers, or mentors. Additionally, batch attach the adviser role to existing users who have been students.",
-    href: PAGES.MANAGE_USERS_BATCH_ADD,
+      "Add students with projects, advisers, or mentors using CSV files.",
+    href: PAGES.MANAGE_USERS_CSV,
   },
   {
     title: "Projects",

@@ -7,7 +7,6 @@ import {
   useRef,
   useState,
 } from "react";
-import Link from "next/link";
 import type { NextPage } from "next";
 // Components
 import Body from "@/components/layout/Body";
@@ -32,7 +31,6 @@ import {
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
 // Helpers
-import { PAGES } from "@/helpers/navigation";
 import { toSingular } from "@/helpers/roles";
 // Hooks
 import useCohort from "@/hooks/useCohort";
@@ -175,12 +173,6 @@ const Users: NextPage = () => {
             />
 
             <Stack direction="row" spacing="1rem">
-              <Link passHref href={PAGES.MANAGE_USERS_BATCH_ADD}>
-                <Button size="small" variant="outlined">
-                  <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
-                  Batch Add
-                </Button>
-              </Link>
               <Button
                 variant="outlined"
                 size="small"
