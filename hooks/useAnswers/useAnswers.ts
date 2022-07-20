@@ -39,10 +39,15 @@ const useAnswers = () => {
     dispatch({ type: ACTION_TYPE.CLEAR_ANSWERS });
   };
 
+  const setAnswers = (answers: Answer[]) => {
+    dispatch({ type: ACTION_TYPE.SET_ANSWERS, payload: { answers } });
+  };
+
   const actions = {
     generateSetAnswer,
     setEmptyAnswers,
     clearAnswers,
+    setAnswers,
   };
 
   return { ...state, dispatch, actions };
