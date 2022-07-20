@@ -49,11 +49,11 @@ export function parseQueryParams(queryParams: QueryParams | undefined): string {
   let numberOfInvalidParams = 0;
 
   for (const [query, param] of Object.entries(queryParamsCopy)) {
-    if (param instanceof Array) {
+    if (Array.isArray(param)) {
       for (const val of param) {
         parsedQueryParams += `${query}=${val}&`;
       }
-    } else if (param !== undefined && param !== "") {
+    } else if (param !== undefined && param !== null && param !== "") {
       parsedQueryParams += `${query}=${param}&`;
     } else {
       numberOfInvalidParams++;
