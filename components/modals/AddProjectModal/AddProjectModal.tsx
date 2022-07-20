@@ -13,13 +13,13 @@ import { ERRORS } from "@/helpers/errors";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
+import useFetch, { Mutate } from "@/hooks/useFetch";
 // Types
 import {
   HTTP_METHOD,
   CreateProjectResponse,
-  GetUsersResponse,
+  GetLeanUsersResponse,
 } from "@/types/api";
-import useFetch, { Mutate } from "@/hooks/useFetch";
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
 import { Cohort } from "@/types/cohorts";
 
@@ -67,15 +67,15 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate, cohortYear }) => {
   };
 
   /** Fetching student, adviser and mentor IDs and names for the dropdown select */
-  const { data: studentsResponse } = useFetch<GetUsersResponse>({
+  const { data: studentsResponse } = useFetch<GetLeanUsersResponse>({
     endpoint: `/users/lean?cohortYear=${cohortYear}&role=Student`,
     enabled: Boolean(cohortYear),
   });
-  const { data: advisersResponse } = useFetch<GetUsersResponse>({
+  const { data: advisersResponse } = useFetch<GetLeanUsersResponse>({
     endpoint: `/users/lean?cohortYear=${cohortYear}&role=Adviser`,
     enabled: Boolean(cohortYear),
   });
-  const { data: mentorsResponse } = useFetch<GetUsersResponse>({
+  const { data: mentorsResponse } = useFetch<GetLeanUsersResponse>({
     endpoint: `/users/lean?cohortYear=${cohortYear}&role=Mentor`,
     enabled: Boolean(cohortYear),
   });

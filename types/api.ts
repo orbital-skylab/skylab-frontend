@@ -8,7 +8,7 @@ import {
   MentorRole,
   StudentRole,
 } from "./roles";
-import { User, UserMetadata } from "./users";
+import { LeanUser, User, UserMetadata } from "./users";
 
 export enum HTTP_METHOD {
   GET = "GET",
@@ -32,6 +32,10 @@ export type GetUserResponse = {
 
 export type GetUsersResponse = {
   users: User[];
+};
+
+export type GetLeanUsersResponse = {
+  users: LeanUser[];
 };
 
 /**

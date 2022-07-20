@@ -30,6 +30,7 @@ import {
 } from "@mui/material";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
+import AddStudentsModal from "@/components/modals/AddStudentsModal";
 // Helpers
 import { toSingular } from "@/helpers/roles";
 // Hooks
@@ -62,6 +63,7 @@ const Users: NextPage = () => {
     Cohort["academicYear"] | ""
   >("");
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
+  const [isAddStudentsOpen, setIsAddStudentsOpen] = useState(false);
 
   /** For fetching users based on filters */
   const memoUsersQueryParams = useMemo(() => {
@@ -129,6 +131,10 @@ const Users: NextPage = () => {
     setIsAddUserOpen(true);
   };
 
+  const handleOpenAddStudentsModal = () => {
+    setIsAddStudentsOpen(true);
+  };
+
   /** To fetch more projects when the bottom of the page is reached */
   const observer = useRef<IntersectionObserver | null>(null);
   const bottomOfPageRef = createBottomOfPageRef(
@@ -151,6 +157,10 @@ const Users: NextPage = () => {
         setOpen={setIsAddUserOpen}
         leanProjects={leanProjectsResponse?.projects ?? []}
         isFetchingLeanProjects={isFetching(fetchLeanProjectsStatus)}
+      />
+      <AddStudentsModal
+        open={isAddStudentsOpen}
+        setOpen={setIsAddStudentsOpen}
       />
       <Body
         isLoading={isLoadingCohorts}
@@ -183,7 +193,7 @@ const Users: NextPage = () => {
             <Button
               variant="outlined"
               size="small"
-              onClick={handleOpenAddUserModal}
+              onClick={handleOpenAddStudentsModal}
             >
               <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
               Students
@@ -191,7 +201,7 @@ const Users: NextPage = () => {
             <Button
               variant="outlined"
               size="small"
-              onClick={handleOpenAddUserModal}
+              // onClick={handleOpenAddUserModal}
             >
               <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
               Advisers
@@ -199,7 +209,7 @@ const Users: NextPage = () => {
             <Button
               variant="outlined"
               size="small"
-              onClick={handleOpenAddUserModal}
+              // onClick={handleOpenAddUserModal}
             >
               <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
               Mentors
@@ -207,7 +217,7 @@ const Users: NextPage = () => {
             <Button
               variant="outlined"
               size="small"
-              onClick={handleOpenAddUserModal}
+              // onClick={handleOpenAddUserModal}
             >
               <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
               Administrators
