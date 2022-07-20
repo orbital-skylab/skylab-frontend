@@ -53,7 +53,7 @@ export function parseQueryParams(queryParams: QueryParams | undefined): string {
       for (const val of param) {
         parsedQueryParams += `${query}=${val}&`;
       }
-    } else if (typeof param === "number" || param) {
+    } else if (param !== undefined && param !== "") {
       parsedQueryParams += `${query}=${param}&`;
     } else {
       numberOfInvalidParams++;
