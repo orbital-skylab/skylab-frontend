@@ -12,14 +12,18 @@ import { useRouter } from "next/router";
 import useAnswers from "@/hooks/useAnswers";
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
+import useAuth from "@/hooks/useAuth";
+// Helpers
+import { isSubmissionsFromProjectOrUser } from "@/helpers/submissions";
 // Types
 import type { NextPage } from "next";
-import { GetSubmissionResponse } from "@/types/api";
+import { GetSubmissionResponse, HTTP_METHOD } from "@/types/api";
 
 const Submission: NextPage = () => {
   const router = useRouter();
+  const { user, isLoading: isLoadingAuth } = useAuth();
   const { submissionId } = router.query;
-  const { answers, actions } = useAnswers();
+  const { answers, actions, getAnswersAsArray } = useAnswers();
   const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
 
   const { data: submissionResponse, status: fetchSubmissionStatus } =
@@ -27,16 +31,25 @@ const Submission: NextPage = () => {
       endpoint: `/api/submissions/${submissionId}`,
       requiresAuthorization: true,
       enabled: submissionId !== undefined,
-      onFetch: (data) => actions.setAnswers(data.submission.answers),
+      onFetch: (data) => actions.setAnswersFromArray(data.submission.answers),
     });
 
+  const isEditMode = isSubmissionsFromProjectOrUser(
+    submissionResponse?.submission,
+    user
+  );
+
   const submitAnswers = useApiCall({
-    endpoint: "TODO:",
+    method: HTTP_METHOD.PUT,
+    endpoint: `/submissions/${submissionId}`,
     requiresAuthorization: true,
   });
 
   const handleSubmit = async (options?: { isDraft: boolean }) => {
-    const processedValues = { ...answers };
+    const processedValues = {
+      answers: getAnswersAsArray(),
+      isDraft: Boolean(options?.isDraft),
+    };
 
     try {
       await submitAnswers.call(processedValues);
@@ -51,7 +64,7 @@ const Submission: NextPage = () => {
   return (
     <>
       <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
-      <Body isLoading={isFetching(fetchSubmissionStatus)}>
+      <Body isLoading={isFetching(fetchSubmissionStatus) || isLoadingAuth}>
         <NoDataWrapper
           noDataCondition={
             !submissionResponse || !submissionResponse.submission
@@ -93,6 +106,7 @@ const Submission: NextPage = () => {
             answersActions={actions}
             submitAnswers={handleSubmit}
             isSubmitting={isCalling(submitAnswers.status)}
+            isReadonly={!isEditMode}
           />
         </NoDataWrapper>
       </Body>

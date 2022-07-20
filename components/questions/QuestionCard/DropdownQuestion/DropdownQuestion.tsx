@@ -9,9 +9,15 @@ type Props = {
   question: LeanQuestion | Question;
   answer: Option;
   setAnswer: (newAnswer: string) => void;
+  isReadonly: boolean;
 };
 
-const DropdownQuestion: FC<Props> = ({ question, answer, setAnswer }) => {
+const DropdownQuestion: FC<Props> = ({
+  question,
+  answer,
+  setAnswer,
+  isReadonly,
+}) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAnswer(e.target.value);
   };
@@ -19,7 +25,12 @@ const DropdownQuestion: FC<Props> = ({ question, answer, setAnswer }) => {
   return (
     <Stack spacing="0.5rem" sx={{ width: "100%" }}>
       <QuestionAndDesc question={question} questionType="Dropdown" />
-      <TextField value={answer} onChange={handleChange} select>
+      <TextField
+        value={answer}
+        onChange={handleChange}
+        select
+        inputProps={{ readOnly: isReadonly }}
+      >
         {question.options &&
           question.options.map((option, idx) => (
             <MenuItem value={option} key={idx}>
@@ -27,6 +38,7 @@ const DropdownQuestion: FC<Props> = ({ question, answer, setAnswer }) => {
             </MenuItem>
           ))}
       </TextField>
+      )
     </Stack>
   );
 };

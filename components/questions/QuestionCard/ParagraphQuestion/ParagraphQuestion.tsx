@@ -9,9 +9,15 @@ type Props = {
   question: LeanQuestion | Question;
   answer: Option;
   setAnswer: (newAnswer: string) => void;
+  isReadonly: boolean;
 };
 
-const ParagraphQuestion: FC<Props> = ({ question, answer, setAnswer }) => {
+const ParagraphQuestion: FC<Props> = ({
+  question,
+  answer,
+  setAnswer,
+  isReadonly,
+}) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAnswer(e.target.value);
   };
@@ -24,8 +30,11 @@ const ParagraphQuestion: FC<Props> = ({ question, answer, setAnswer }) => {
         onChange={handleChange}
         size="small"
         multiline
-        rows={3}
+        minRows={3}
         placeholder="Your answer here"
+        inputProps={{
+          readOnly: isReadonly,
+        }}
       />
     </Stack>
   );
