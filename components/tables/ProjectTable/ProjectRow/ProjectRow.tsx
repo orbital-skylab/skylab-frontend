@@ -1,17 +1,7 @@
-import { FC, MouseEvent, useState } from "react";
+import { FC, useState } from "react";
 // Components
 import DeleteProjectModal from "@/components/modals/DeleteProjectModal";
-import { KeyboardArrowDown } from "@mui/icons-material";
-import {
-  Button,
-  Chip,
-  Menu,
-  MenuItem,
-  Stack,
-  TableCell,
-  TableRow,
-  Tooltip,
-} from "@mui/material";
+import { Button, Chip, Stack, TableCell, TableRow } from "@mui/material";
 import Link from "next/link";
 import UsersName from "@/components/typography/UsersName";
 // Helpers
@@ -29,18 +19,7 @@ type Props = {
 };
 
 const ProjectRow: FC<Props> = ({ project, mutate, setSuccess, setError }) => {
-  const [dropdownAnchorElement, setDropdownAnchorElement] =
-    useState<HTMLElement | null>(null);
-  const isDropdownOpen = Boolean(dropdownAnchorElement);
   const [isDeleteProjectOpen, setIsDeleteProjectOpen] = useState(false);
-
-  const handleOpenDropdown = (e: MouseEvent<HTMLButtonElement>) => {
-    setDropdownAnchorElement(e.currentTarget);
-  };
-
-  const handleCloseDropdown = () => {
-    setDropdownAnchorElement(null);
-  };
 
   const handleOpenDeleteModal = () => {
     setIsDeleteProjectOpen(true);
@@ -126,33 +105,14 @@ const ProjectRow: FC<Props> = ({ project, mutate, setSuccess, setError }) => {
           ) : null}
         </TableCell>
         <TableCell>
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={handleOpenDropdown}
-            endIcon={<KeyboardArrowDown />}
-          >
-            Options
-          </Button>
-          <Menu
-            anchorEl={dropdownAnchorElement}
-            open={isDropdownOpen}
-            onClose={handleCloseDropdown}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-          >
+          <Stack direction="row" spacing="0.5rem">
             <Link href={`${PAGES.PROJECTS}/${project.id}`} passHref>
-              <Tooltip title="View and edit project details" placement="left">
-                <MenuItem>View Details</MenuItem>
-              </Tooltip>
+              <Button>View</Button>
             </Link>
-            <MenuItem
+            <Link href={`${PAGES.PROJECTS}/${project.id}/edit`} passHref>
+              <Button>Edit</Button>
+            </Link>
+            <Button
               onClick={handleOpenDeleteModal}
               sx={{
                 transition: BASE_TRANSITION,
@@ -163,8 +123,8 @@ const ProjectRow: FC<Props> = ({ project, mutate, setSuccess, setError }) => {
               }}
             >
               Delete
-            </MenuItem>
-          </Menu>
+            </Button>
+          </Stack>
         </TableCell>
       </TableRow>
     </>

@@ -30,7 +30,7 @@ export const toSingular = (role: ROLES | ROLES_WITH_ALL | null) => {
  * @returns {boolean}
  */
 export const userHasRole = (
-  user: User,
+  user: User | undefined,
   selectedRole: ROLES | ROLES[]
 ): boolean => {
   if (!user) {
