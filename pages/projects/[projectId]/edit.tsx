@@ -36,7 +36,7 @@ import Switch from "@/components/formikFormControllers/Switch";
 
 type EditProjectFormValues = Pick<
   Project,
-  "name" | "achievement" | "proposalPdf" | "hasDropped"
+  "name" | "teamName" | "achievement" | "proposalPdf" | "hasDropped"
 > & { students: number[]; adviser: number | ""; mentor: number | "" };
 
 const EditProject: NextPage = () => {
@@ -54,6 +54,7 @@ const EditProject: NextPage = () => {
 
   const initialValues: EditProjectFormValues = {
     name: project?.name ?? "",
+    teamName: project?.name ?? "",
     achievement: project?.achievement ?? LEVELS_OF_ACHIEVEMENT.VOSTOK,
     proposalPdf: project?.proposalPdf ?? "",
     students: project?.students
@@ -135,6 +136,11 @@ const EditProject: NextPage = () => {
                           <TextInput
                             name="name"
                             label="Project Name"
+                            formik={formik}
+                          />
+                          <TextInput
+                            name="teamName"
+                            label="Team Name"
                             formik={formik}
                           />
                           <Dropdown

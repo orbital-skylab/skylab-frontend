@@ -21,6 +21,7 @@ export enum LEVELS_OF_ACHIEVEMENT_WITH_ALL {
 export type Project = {
   id: number;
   name: string;
+  teamName: string;
   proposalPdf: string;
   students: Student[];
   adviser?: Adviser;

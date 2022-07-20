@@ -79,7 +79,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
                   },
                 }}
               >
-                {`${project.name}`}
+                {`${project.teamName}`}
               </Typography>
             </Link>
             <Box
@@ -98,7 +98,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
                 src={
                   "https://nusskylab-dev.comp.nus.edu.sg/posters/2021/2680.jpg"
                 }
-                alt={`${project.name} Project`}
+                alt={`${project.teamName} Project`}
                 sx={{
                   width: "100%",
                   objectFit: "cover",
