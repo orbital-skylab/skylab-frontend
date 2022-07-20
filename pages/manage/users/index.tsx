@@ -160,10 +160,11 @@ const Users: NextPage = () => {
         <Stack direction="column" mb="0.5rem">
           <Stack
             direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            width="100%"
-            mb={{ md: "0.5rem" }}
+            justifyContent="start"
+            sx={{
+              gap: "0.5rem",
+              marginBottom: { md: "0.5rem" },
+            }}
           >
             <TextField
               label="Search"
@@ -171,16 +172,48 @@ const Users: NextPage = () => {
               onChange={handleSearchInputChange}
               size="small"
             />
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={handleOpenAddUserModal}
+            >
+              <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
+              User
+            </Button>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={handleOpenAddUserModal}
+            >
+              <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
+              Students
+            </Button>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={handleOpenAddUserModal}
+            >
+              <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
+              Advisers
+            </Button>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={handleOpenAddUserModal}
+            >
+              <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
+              Mentors
+            </Button>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={handleOpenAddUserModal}
+            >
+              <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
+              Administrators
+            </Button>
 
-            <Stack direction="row" spacing="1rem">
-              <Button
-                variant="outlined"
-                size="small"
-                onClick={handleOpenAddUserModal}
-              >
-                <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
-                User
-              </Button>
+            <Stack direction="row" spacing="1rem" marginLeft="auto">
               <TextField
                 label="Cohort"
                 value={selectedCohortYear}
