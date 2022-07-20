@@ -151,8 +151,6 @@ const Users: NextPage = () => {
       <AddUserModal
         open={isAddUserOpen}
         setOpen={setIsAddUserOpen}
-        mutate={mutate}
-        hasMore={hasMore}
         leanProjects={leanProjectsResponse?.projects ?? []}
         isFetchingLeanProjects={isFetching(fetchLeanProjectsStatus)}
       />

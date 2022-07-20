@@ -20,21 +20,16 @@ import { generateValidationSchema } from "./AddUserModal.helpers";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
-// Types
-import { HTTP_METHOD } from "@/types/api";
-import { Mutate } from "@/hooks/useFetch";
-import { User } from "@/types/users";
-import { CreateUserResponse } from "@/types/api";
-import { AddUserFormValuesType, ROLES } from "@/types/roles";
-import { LeanProject } from "@/types/projects";
 import useCohort from "@/hooks/useCohort";
 import { useRouter } from "next/router";
+// Types
+import { HTTP_METHOD } from "@/types/api";
+import { AddUserFormValuesType, ROLES } from "@/types/roles";
+import { LeanProject } from "@/types/projects";
 
 type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  mutate: Mutate<User[]>;
-  hasMore: boolean;
   leanProjects: LeanProject[] | undefined;
   isFetchingLeanProjects: boolean;
 };
@@ -42,11 +37,6 @@ type Props = {
 const AddUserModal: FC<Props> = ({
   open,
   setOpen,
-  // TODO: Fix Jira Ticket 117
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  mutate,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  hasMore,
   leanProjects,
   isFetchingLeanProjects,
 }) => {
@@ -64,13 +54,6 @@ const AddUserModal: FC<Props> = ({
     method: HTTP_METHOD.POST,
     endpoint: `/${selectedRole.toLowerCase()}`,
     requiresAuthorization: true,
-    // TODO: Fix Jira Ticket 117
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onSuccess: (newUser: CreateUserResponse) => {
-      setTimeout(() => {
-        router.reload();
-      }, 3000);
-    },
   });
 
   const initialValues: AddUserFormValuesType =
@@ -94,6 +77,9 @@ const AddUserModal: FC<Props> = ({
           values.name
         }. Refreshing in 3 seconds...`
       );
+      setTimeout(() => {
+        router.reload();
+      }, 3000);
       handleCloseModal();
       actions.resetForm();
     } catch (error) {
