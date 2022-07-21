@@ -11,18 +11,18 @@ import {
   Box,
 } from "@mui/material";
 import NextLink from "next/link";
+import GoBackButton from "@/components/buttons/GoBackButton";
 // Hooks
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import { useRouter } from "next/router";
+import useAuth from "@/hooks/useAuth";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
+import { checkIfProjectsAdviser, userHasRole } from "@/helpers/roles";
 // Types
 import type { NextPage } from "next";
 import { GetProjectResponse } from "@/types/api";
-import useAuth from "@/hooks/useAuth";
-import { userHasRole } from "@/helpers/roles";
 import { ROLES } from "@/types/roles";
-import GoBackButton from "@/components/buttons/GoBackButton";
 
 const ProjectDetails: NextPage = () => {
   const router = useRouter();
@@ -35,13 +35,10 @@ const ProjectDetails: NextPage = () => {
       enabled: !!projectId,
     });
 
-  const isProjectsAdviser =
-    user &&
-    user.adviser &&
-    projectResponse &&
-    projectResponse.project &&
-    projectResponse.project.adviser &&
-    user.adviser.id === projectResponse.project.adviser.adviserId;
+  const isProjectsAdviser = checkIfProjectsAdviser(
+    projectResponse?.project,
+    user
+  );
 
   const showEditButton =
     isProjectsAdviser || (user && userHasRole(user, ROLES.ADMINISTRATORS));

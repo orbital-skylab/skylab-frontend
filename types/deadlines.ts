@@ -13,6 +13,7 @@ export type Deadline = {
   desc?: string;
   dueBy: string;
   type: DEADLINE_TYPE;
+  evaluatingId?: number; // Only applicable for type Evaluation where it evaluates a Milestone
   createdAt: string;
   updatedAt: string;
 };
@@ -75,6 +76,7 @@ export type DeadlineDeliverable = {
   toProject?: {
     id: number; // project ID
     name: string;
+    submissionId?: number; // Only exists if the team has already submitted
   };
   // Only applicable for student role and deadline type 'Feedback' => addressed to the adviser
   toUser?: {

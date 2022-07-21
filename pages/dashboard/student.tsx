@@ -19,12 +19,10 @@ import { ROLES } from "@/types/roles";
 import {
   GetStudentDeadlinesResponse,
   GetStudentPeerEvaluationAndFeedbackResponse,
-  GetStudentPeerMilestonesResponse,
 } from "@/types/api";
 
 enum TAB {
   DEADLINES = "Upcoming Deadlines",
-  MILESTONES = "Peer Milestone Submission",
   EVALUATIONS = "Received Evaluations",
 }
 
@@ -35,12 +33,6 @@ const StudentDashboard: NextPage = () => {
   const { data: deadlinesResponse, status: fetchDeadlinesStatus } =
     useFetch<GetStudentDeadlinesResponse>({
       endpoint: `/dashboard/student/${user?.student?.id}/deadlines`,
-      enabled: Boolean(user && user.student && user.student.id),
-    });
-
-  const { data: milestonesResponse, status: fetchMilestonesStatus } =
-    useFetch<GetStudentPeerMilestonesResponse>({
-      endpoint: `/dashboard/student/${user?.student?.id}/milestones`,
       enabled: Boolean(user && user.student && user.student.id),
     });
 
@@ -105,35 +97,6 @@ const StudentDashboard: NextPage = () => {
                         !isFuture(deadlineDeliverable.deadline.dueBy)
                     )}
                   />
-                </>
-              )}
-            </NoDataWrapper>
-          </LoadingWrapper>
-        </TabPanel>
-        <TabPanel value={TAB.MILESTONES}>
-          <LoadingWrapper isLoading={isFetching(fetchMilestonesStatus)}>
-            <NoDataWrapper
-              noDataCondition={!milestonesResponse?.deadlines.length}
-              fallback={
-                <NoneFound message="No peer milestone submissions available" />
-              }
-            >
-              {milestonesResponse && milestonesResponse.deadlines && (
-                <>
-                  {milestonesResponse.deadlines.map(
-                    ({ deadline, submissions }) => (
-                      <>
-                        <Typography variant="h6" fontWeight={600}>
-                          {deadline.name}
-                        </Typography>
-                        <SubmissionTable
-                          key={deadline.id}
-                          deadline={deadline}
-                          submissions={submissions}
-                        />
-                      </>
-                    )
-                  )}
                 </>
               )}
             </NoDataWrapper>

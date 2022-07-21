@@ -124,28 +124,30 @@ const ProjectRow: FC<Props> = ({
           </TableCell>
         )}
         <TableCell>
-          <Link href={`${PAGES.PROJECTS}/${project.id}`} passHref>
-            <Button>View</Button>
-          </Link>
-          {showEditAction && (
-            <Link href={`${PAGES.PROJECTS}/${project.id}/edit`} passHref>
-              <Button>Edit</Button>
+          <Stack direction="row" spacing="0.5rem">
+            <Link href={`${PAGES.PROJECTS}/${project.id}`} passHref>
+              <Button>View</Button>
             </Link>
-          )}
-          {showDeleteAction && (
-            <Button
-              onClick={handleOpenDeleteModal}
-              sx={{
-                transition: BASE_TRANSITION,
-                "&:hover": {
-                  backgroundColor: "error.main",
-                  color: "white",
-                },
-              }}
-            >
-              Delete
-            </Button>
-          )}
+            {showEditAction && (
+              <Link href={`${PAGES.PROJECTS}/${project.id}/edit`} passHref>
+                <Button>Edit</Button>
+              </Link>
+            )}
+            {showDeleteAction && (
+              <Button
+                onClick={handleOpenDeleteModal}
+                sx={{
+                  transition: BASE_TRANSITION,
+                  "&:hover": {
+                    backgroundColor: "error.main",
+                    color: "white",
+                  },
+                }}
+              >
+                Delete
+              </Button>
+            )}
+          </Stack>
         </TableCell>
       </TableRow>
     </>

@@ -1,7 +1,15 @@
 import { FC } from "react";
 import Link from "next/link";
 // Components
-import { Box, Button, TableCell, TableRow } from "@mui/material";
+import {
+  Box,
+  Button,
+  TableCell,
+  TableRow,
+  Link as MUILink,
+  Typography,
+  Stack,
+} from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 // Helpers
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
@@ -15,7 +23,7 @@ import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/router";
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
 // Types
-import { DeadlineDeliverable } from "@/types/deadlines";
+import { DeadlineDeliverable, DEADLINE_TYPE } from "@/types/deadlines";
 import { STATUS } from "@/types/submissions";
 import { CreateSubmissionResponse, HTTP_METHOD } from "@/types/api";
 
@@ -35,30 +43,48 @@ const DeadlineDeliverableRow: FC<Props> = ({ deadlineDeliverable }) => {
       ...getToProjectOrUserId(deadlineDeliverable),
     },
     onSuccess: (newSubmission: CreateSubmissionResponse) => {
-      router.push(`${PAGES.SUBMISSIONS}/${newSubmission.submissionId}`);
+      router.push(`${PAGES.SUBMISSIONS}/${newSubmission.id}`);
     },
   });
 
-  const generateToCell = (deadlineDeliverable: DeadlineDeliverable) => {
-    if (deadlineDeliverable.toProject && deadlineDeliverable.toUser) {
-      alert(
-        "There should not be a deadline deliverable addressed to a project and a user"
-      );
-      return "Error";
-    } else if (deadlineDeliverable.toProject) {
-      return (
-        <Link href={`${PAGES.PROJECTS}/${deadlineDeliverable.toProject.id}`}>
-          {deadlineDeliverable.toProject.name}
-        </Link>
-      );
-    } else if (deadlineDeliverable.toUser) {
-      return (
-        <Link href={`${PAGES.USERS}/${deadlineDeliverable.toUser.id}`}>
-          {deadlineDeliverable.toUser.name}
-        </Link>
-      );
-    } else {
-      return "-";
+  const generateDeadlineCell = (deadlineDeliverable: DeadlineDeliverable) => {
+    switch (deadlineDeliverable.deadline.type) {
+      case DEADLINE_TYPE.MILESTONE:
+        return `${deadlineDeliverable.deadline.name} Submission`;
+
+      case DEADLINE_TYPE.EVALUATION:
+      case DEADLINE_TYPE.SURVEY: {
+        if (
+          (deadlineDeliverable.toProject && deadlineDeliverable.toUser) ||
+          (!deadlineDeliverable.toProject && !deadlineDeliverable.toUser)
+        ) {
+          alert(
+            "An evaluation and feedback must be addressed to either a project or a user"
+          );
+          return "Error";
+        }
+
+        if (deadlineDeliverable.toProject) {
+          return (
+            <Stack direction="row" spacing="0.5rem">
+              <Typography>{`${deadlineDeliverable.deadline.name} for`}</Typography>
+              <MUILink
+                href={`${PAGES.SUBMISSIONS}/${deadlineDeliverable.toProject.submissionId}`}
+              >
+                <Button variant="outlined" size="small">
+                  {deadlineDeliverable.toProject.name}
+                </Button>
+              </MUILink>
+            </Stack>
+          );
+        } else if (deadlineDeliverable.toUser) {
+          return (
+            <Stack direction="row" spacing="0.5rem">
+              <Typography>{`${deadlineDeliverable.deadline.name} for ${deadlineDeliverable.toUser.name}`}</Typography>
+            </Stack>
+          );
+        }
+      }
     }
   };
 
@@ -69,12 +95,19 @@ const DeadlineDeliverableRow: FC<Props> = ({ deadlineDeliverable }) => {
     dueBy: deadlineDeliverable.deadline.dueBy,
   });
 
-  const generateStatusCell = (status: STATUS) => {
+  const generateStatusCell = (
+    status: STATUS,
+    updatedAt: string | undefined
+  ) => {
+    const dateOn = updatedAt
+      ? `on ${isoDateToLocaleDateWithTime(updatedAt)}`
+      : "";
+
     switch (status) {
       case STATUS.NOT_YET_STARTED: {
         return (
           <Box component="span" sx={{ color: "gray" }}>
-            Not Yet Started
+            Not yet started
           </Box>
         );
       }
@@ -84,14 +117,14 @@ const DeadlineDeliverableRow: FC<Props> = ({ deadlineDeliverable }) => {
       case STATUS.SUBMITTED: {
         return (
           <Box component="span" sx={{ color: "success.main" }}>
-            Submitted
+            Submitted {dateOn}
           </Box>
         );
       }
       case STATUS.SUBMITTED_LATE: {
         return (
           <Box component="span" sx={{ color: "error.main" }}>
-            Submitted Late
+            Submitted late {dateOn}
           </Box>
         );
       }
@@ -102,8 +135,8 @@ const DeadlineDeliverableRow: FC<Props> = ({ deadlineDeliverable }) => {
   };
 
   const generateActionCell = (
-    deadlineDeliverable: DeadlineDeliverable,
-    status: STATUS
+    status: STATUS,
+    deadlineDeliverable: DeadlineDeliverable
   ) => {
     switch (status) {
       case STATUS.NOT_YET_STARTED: {
@@ -145,13 +178,17 @@ const DeadlineDeliverableRow: FC<Props> = ({ deadlineDeliverable }) => {
   return (
     <>
       <TableRow>
-        <TableCell>{deadlineDeliverable.deadline.name}</TableCell>
-        <TableCell>{generateToCell(deadlineDeliverable)}</TableCell>
+        <TableCell>{generateDeadlineCell(deadlineDeliverable)}</TableCell>
         <TableCell>
           {isoDateToLocaleDateWithTime(deadlineDeliverable.deadline.dueBy)}
         </TableCell>
-        <TableCell>{generateStatusCell(status)}</TableCell>
-        <TableCell>{generateActionCell(deadlineDeliverable, status)}</TableCell>
+        <TableCell>
+          {generateStatusCell(
+            status,
+            deadlineDeliverable.submission?.updatedAt
+          )}
+        </TableCell>
+        <TableCell>{generateActionCell(status, deadlineDeliverable)}</TableCell>
       </TableRow>
     </>
   );

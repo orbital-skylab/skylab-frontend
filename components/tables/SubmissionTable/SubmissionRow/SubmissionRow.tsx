@@ -10,15 +10,17 @@ import { PAGES } from "@/helpers/navigation";
 import useAuth from "@/hooks/useAuth";
 // Types
 import { PossibleSubmission, STATUS } from "@/types/submissions";
+import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
+import { Deadline } from "@/types/deadlines";
 
 type Props = {
-  deadlineDueBy: string;
+  deadline: Deadline;
   submission: PossibleSubmission;
   shouldIncludeToColumn: boolean;
 };
 
 const SubmissionRow: FC<Props> = ({
-  deadlineDueBy,
+  deadline,
   submission,
   shouldIncludeToColumn,
 }) => {
@@ -27,7 +29,7 @@ const SubmissionRow: FC<Props> = ({
     submissionId: submission.submissionId,
     isDraft: false, // You cannot view other's drafts
     updatedAt: submission.updatedAt,
-    dueBy: deadlineDueBy,
+    dueBy: deadline.dueBy,
   });
 
   const generateFromCell = (submission: PossibleSubmission) => {
@@ -37,7 +39,9 @@ const SubmissionRow: FC<Props> = ({
     ) {
       alert("The submission should be from EITHER a project OR a user");
       return "Error";
-    } else if (submission.fromProject) {
+    }
+
+    if (submission.fromProject) {
       return (
         <HoverLink href={`${PAGES.PROJECTS}/${submission.fromProject.id}`}>
           {submission.fromProject.name}
@@ -49,9 +53,6 @@ const SubmissionRow: FC<Props> = ({
           {submission.fromUser.name}
         </HoverLink>
       );
-    } else {
-      alert("This line should never be read");
-      return "Error";
     }
   };
 
@@ -84,12 +85,19 @@ const SubmissionRow: FC<Props> = ({
     }
   };
 
-  const generateStatusCell = (status: STATUS) => {
+  const generateStatusCell = (
+    status: STATUS,
+    updatedAt: string | undefined
+  ) => {
+    const dateOn = updatedAt
+      ? `on ${isoDateToLocaleDateWithTime(updatedAt)}`
+      : "";
+
     switch (status) {
       case STATUS.NOT_YET_STARTED: {
         return (
           <Box component="span" sx={{ color: "gray" }}>
-            Not Yet Submitted
+            Not yet submitted
           </Box>
         );
       }
@@ -99,14 +107,14 @@ const SubmissionRow: FC<Props> = ({
       case STATUS.SUBMITTED: {
         return (
           <Box component="span" sx={{ color: "success.main" }}>
-            Submitted
+            Submitted {dateOn}
           </Box>
         );
       }
       case STATUS.SUBMITTED_LATE: {
         return (
           <Box component="span" sx={{ color: "error.main" }}>
-            Submitted Late
+            Submitted late {dateOn}
           </Box>
         );
       }
@@ -117,8 +125,8 @@ const SubmissionRow: FC<Props> = ({
   };
 
   const generateActionCell = (
-    submissionId: number | undefined,
-    status: STATUS
+    status: STATUS,
+    submissionId: number | undefined
   ) => {
     return (
       <Link href={`${PAGES.SUBMISSIONS}/${submissionId}`} passHref>
@@ -134,9 +142,11 @@ const SubmissionRow: FC<Props> = ({
         {shouldIncludeToColumn && (
           <TableCell>{generateToCell(submission)}</TableCell>
         )}
-        <TableCell>{generateStatusCell(status)}</TableCell>
         <TableCell>
-          {generateActionCell(submission.submissionId, status)}
+          {generateStatusCell(status, submission.updatedAt)}
+        </TableCell>
+        <TableCell>
+          {generateActionCell(status, submission.submissionId)}
         </TableCell>
       </TableRow>
     </>
