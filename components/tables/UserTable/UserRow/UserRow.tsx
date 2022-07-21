@@ -1,14 +1,13 @@
-import { FC, MouseEvent, useState } from "react";
+import { FC, useState } from "react";
 import Link from "next/link";
 // Components
 import {
   Button,
   Chip,
-  Menu,
-  MenuItem,
   Stack,
   TableCell,
   TableRow,
+  Tooltip,
 } from "@mui/material";
 import SnackbarAlert from "@/components/layout/SnackbarAlert";
 import ViewRoleModal from "@/components/modals/ViewRoleModal";
@@ -18,13 +17,12 @@ import DeleteUserModal from "@/components/modals/DeleteUserModal";
 import { PAGES } from "@/helpers/navigation";
 // Hooks
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
-import { Mutate } from "@/hooks/useFetch";
+import useAuth from "@/hooks/useAuth";
 // Types
 import { User } from "@/types/users";
 import { ROLES } from "@/types/roles";
+import { Mutate } from "@/hooks/useFetch";
 import { LeanProject } from "@/types/projects";
-import { KeyboardArrowDown } from "@mui/icons-material";
-import useAuth from "@/hooks/useAuth";
 import { BASE_TRANSITION } from "@/styles/constants";
 
 type Props = {
@@ -42,9 +40,6 @@ const UserRow: FC<Props> = ({
 }) => {
   const { previewSiteAs } = useAuth();
   const { snackbar, setSuccess, setError, handleClose } = useSnackbarAlert();
-  const [dropdownAnchorElement, setDropdownAnchorElement] =
-    useState<HTMLElement | null>(null);
-  const isDropdownOpen = Boolean(dropdownAnchorElement);
   const [isDeleteUserOpen, setIsDeleteUserOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState<ROLES | null>(null);
   const [isAddRoleOpen, setIsAddRoleOpen] = useState(false);
@@ -111,14 +106,6 @@ const UserRow: FC<Props> = ({
     return tags;
   };
 
-  const handleOpenDropdown = (e: MouseEvent<HTMLButtonElement>) => {
-    setDropdownAnchorElement(e.currentTarget);
-  };
-
-  const handleCloseDropdown = () => {
-    setDropdownAnchorElement(null);
-  };
-
   const handleOpenDeleteModal = () => {
     setIsDeleteUserOpen(true);
   };
@@ -164,32 +151,17 @@ const UserRow: FC<Props> = ({
           </Stack>
         </TableCell>
         <TableCell>
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={handleOpenDropdown}
-            endIcon={<KeyboardArrowDown />}
-          >
-            Options
-          </Button>
-          <Menu
-            anchorEl={dropdownAnchorElement}
-            open={isDropdownOpen}
-            onClose={handleCloseDropdown}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-          >
+          <Stack direction="row" spacing="0.5rem">
             <Link href={`${PAGES.USERS}/${user.id}`} passHref>
-              <MenuItem>View Profile</MenuItem>
+              <Button>View</Button>
             </Link>
-            <MenuItem onClick={handlePreviewSiteAs}>Preview</MenuItem>
-            <MenuItem
+            <Link href={`${PAGES.USERS}/${user.id}/edit`} passHref>
+              <Button>Edit</Button>
+            </Link>
+            <Tooltip title="Preview the website as this user and their role(s)">
+              <Button onClick={handlePreviewSiteAs}>Preview</Button>
+            </Tooltip>
+            <Button
               onClick={handleOpenDeleteModal}
               sx={{
                 transition: BASE_TRANSITION,
@@ -200,8 +172,8 @@ const UserRow: FC<Props> = ({
               }}
             >
               Delete
-            </MenuItem>
-          </Menu>
+            </Button>
+          </Stack>
         </TableCell>
       </TableRow>
     </>

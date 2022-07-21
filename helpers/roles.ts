@@ -8,6 +8,7 @@ import { User } from "@/types/users";
 import { dateTimeLocalInputToIsoDate } from "@/helpers/dates";
 import { isAddUserFormValuesType } from "./types";
 import { stripEmptyStrings } from "./forms";
+import { Project } from "@/types/projects";
 
 /**
  * Changes a role string to be singular
@@ -29,7 +30,7 @@ export const toSingular = (role: ROLES | ROLES_WITH_ALL | null) => {
  * @returns {boolean}
  */
 export const userHasRole = (
-  user: User,
+  user: User | undefined,
   selectedRole: ROLES | ROLES[]
 ): boolean => {
   if (!user) {
@@ -201,4 +202,21 @@ export const processAddUserOrRoleFormValues = ({
     default:
       return {};
   }
+};
+
+/**
+ * Check if a user is a project's adviser
+ * @returns {boolean}
+ */
+export const checkIfProjectsAdviser = (
+  project: Project | undefined,
+  user: User | undefined
+) => {
+  return (
+    user &&
+    user.adviser &&
+    project &&
+    project.adviser &&
+    user.adviser.id === project.adviser.adviserId
+  );
 };

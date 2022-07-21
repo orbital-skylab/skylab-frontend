@@ -35,9 +35,6 @@ export type GetUsersResponse = {
   users: User[];
 };
 
-// TODO: Fix Jira Ticket 117
-export type CreateUserResponse = unknown;
-
 /**
  * Combined Roles Endpoints:
  */

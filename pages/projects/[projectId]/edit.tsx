@@ -3,24 +3,35 @@ import type { NextPage } from "next";
 import Body from "@/components/layout/Body";
 import TextInput from "@/components/formikFormControllers/TextInput";
 import SnackbarAlert from "@/components/layout/SnackbarAlert";
-import { Card, CardContent, Container, Stack, Typography } from "@mui/material";
+import {
+  Alert,
+  Card,
+  CardContent,
+  Container,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import GoBackButton from "@/components/buttons/GoBackButton";
 import Dropdown from "@/components/formikFormControllers/Dropdown";
 import MultiDropdown from "@/components/formikFormControllers/MultiDropdown";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
+import UnauthorizedWrapper from "@/components/wrappers/UnauthorizedWrapper";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 import { useRouter } from "next/router";
 import useFetch, { isFetching } from "@/hooks/useFetch";
+import useAuth from "@/hooks/useAuth";
 // Helpers
 import { Formik } from "formik";
 import { areAllEmptyValues, stripEmptyStrings } from "@/helpers/forms";
+import { checkIfProjectsAdviser, userHasRole } from "@/helpers/roles";
 // Types
 import { GetProjectResponse, GetUsersResponse, HTTP_METHOD } from "@/types/api";
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
+import { ROLES } from "@/types/roles";
 
 type EditProjectFormValues = Pick<
   Project,
@@ -29,6 +40,7 @@ type EditProjectFormValues = Pick<
 
 const EditProject: NextPage = () => {
   const router = useRouter();
+  const { user, isLoading } = useAuth();
   const { projectId } = router.query;
   const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
 
@@ -52,15 +64,15 @@ const EditProject: NextPage = () => {
 
   /** Fetching student, adviser and mentor IDs and names for the dropdown select */
   const { data: studentsResponse } = useFetch<GetUsersResponse>({
-    endpoint: `/users?cohortYear=${project?.cohortYear}&role=Student`,
+    endpoint: `/users/lean?cohortYear=${project?.cohortYear}&role=Student`,
     enabled: Boolean(!!project && project.cohortYear),
   });
   const { data: advisersResponse } = useFetch<GetUsersResponse>({
-    endpoint: `/users?cohortYear=${project?.cohortYear}&role=Adviser`,
+    endpoint: `/users/lean?cohortYear=${project?.cohortYear}&role=Adviser`,
     enabled: Boolean(!!project && project.cohortYear),
   });
   const { data: mentorsResponse } = useFetch<GetUsersResponse>({
-    endpoint: `/users?cohortYear=${project?.cohortYear}&role=Mentor`,
+    endpoint: `/users/lean?cohortYear=${project?.cohortYear}&role=Mentor`,
     enabled: Boolean(!!project && project.cohortYear),
   });
 
@@ -82,7 +94,10 @@ const EditProject: NextPage = () => {
   return (
     <>
       <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
-      <Body isLoading={isFetching(getProjectStatus)}>
+      <Body
+        isLoading={isFetching(getProjectStatus) || isLoading}
+        authorizedRoles={[ROLES.ADMINISTRATORS]}
+      >
         <NoDataWrapper
           noDataCondition={project === undefined}
           fallback={
@@ -92,18 +107,31 @@ const EditProject: NextPage = () => {
             />
           }
         >
-          <GoBackButton />
-          <Container maxWidth="sm" sx={{ padding: 0 }}>
-            <Typography variant="h5" fontWeight={600} mb="1rem">
-              {`Edit ${project?.name}'s Project`}
-            </Typography>
-            <Card>
-              <CardContent>
-                <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-                  {(formik) => {
-                    return (
+          <UnauthorizedWrapper
+            isUnauthorized={
+              !user ||
+              !userHasRole(user, ROLES.ADMINISTRATORS) ||
+              !checkIfProjectsAdviser(projectResponse?.project, user)
+            }
+          >
+            <GoBackButton />
+            <Container maxWidth="sm" sx={{ padding: 0 }}>
+              <Typography variant="h5" fontWeight={600} mb="1rem">
+                {`Edit ${project?.name}'s Project`}
+              </Typography>
+              <Card>
+                <CardContent>
+                  <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+                    {(formik) => (
                       <form onSubmit={formik.handleSubmit}>
                         <Stack direction="column" spacing="1rem">
+                          {(!user ||
+                            !userHasRole(user, ROLES.ADMINISTRATORS)) && (
+                            <Alert color="warning" icon={<></>}>
+                              You do not have the permissions to edit some of
+                              the team&apos;s details
+                            </Alert>
+                          )}
                           <TextInput
                             name="name"
                             label="Project Name"
@@ -118,6 +146,9 @@ const EditProject: NextPage = () => {
                                 return { label: option, value: option };
                               }
                             )}
+                            isDisabled={
+                              !user || !userHasRole(user, ROLES.ADMINISTRATORS)
+                            }
                           />
                           <MultiDropdown
                             name="students"
@@ -133,6 +164,9 @@ const EditProject: NextPage = () => {
                                     };
                                   })
                                 : []
+                            }
+                            isDisabled={
+                              !user || !userHasRole(user, ROLES.ADMINISTRATORS)
                             }
                           />
                           <Dropdown
@@ -150,6 +184,9 @@ const EditProject: NextPage = () => {
                                   })
                                 : []
                             }
+                            isDisabled={
+                              !user || !userHasRole(user, ROLES.ADMINISTRATORS)
+                            }
                           />
                           <Dropdown
                             name="mentor"
@@ -165,6 +202,9 @@ const EditProject: NextPage = () => {
                                     };
                                   })
                                 : []
+                            }
+                            isDisabled={
+                              !user || !userHasRole(user, ROLES.ADMINISTRATORS)
                             }
                           />
                           <TextInput
@@ -188,12 +228,12 @@ const EditProject: NextPage = () => {
                           </Stack>
                         </Stack>
                       </form>
-                    );
-                  }}
-                </Formik>
-              </CardContent>
-            </Card>
-          </Container>
+                    )}
+                  </Formik>
+                </CardContent>
+              </Card>
+            </Container>
+          </UnauthorizedWrapper>
         </NoDataWrapper>
       </Body>
     </>

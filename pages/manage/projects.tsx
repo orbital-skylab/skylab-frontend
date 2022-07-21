@@ -139,7 +139,6 @@ const ProjectsList = () => {
       <AddProjectModal
         open={isAddProjectOpen}
         setOpen={setIsAddProjectOpen}
-        cohortYear={selectedCohortYear as Cohort["academicYear"]}
         mutate={mutate}
       />
       <Body

@@ -77,7 +77,11 @@ const QuestionSectionsList: FC<Props> = ({
                     ? name
                     : "<Empty Section Name> (Will not be saved if a name is not provided)"}
                 </Typography>
-                {desc && <Typography variant="body1">{desc}</Typography>}
+                {desc && (
+                  <Typography variant="body1" sx={{ whiteSpace: "pre-line" }}>
+                    {desc}
+                  </Typography>
+                )}
               </Stack>
 
               <QuestionsList

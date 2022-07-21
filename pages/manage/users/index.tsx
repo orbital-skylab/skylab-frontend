@@ -29,8 +29,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
+import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
+import { toSingular } from "@/helpers/roles";
 // Hooks
 import useCohort from "@/hooks/useCohort";
 import useFetch, { isFetching } from "@/hooks/useFetch";
@@ -41,13 +44,9 @@ import useInfiniteFetch, {
 import { Cohort } from "@/types/cohorts";
 import { ROLES, ROLES_WITH_ALL } from "@/types/roles";
 import { User } from "@/types/users";
-import { toSingular } from "@/helpers/roles";
-import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import { GetLeanProjectsResponse, GetUsersResponse } from "@/types/api";
-import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
 
 const LIMIT = 20;
-const ALL = "All";
 
 const Users: NextPage = () => {
   const [selectedRole, setSelectedRole] = useState<ROLES_WITH_ALL>(
@@ -62,14 +61,14 @@ const Users: NextPage = () => {
     isLoading: isLoadingCohorts,
   } = useCohort();
   const [selectedCohortYear, setSelectedCohortYear] = useState<
-    Cohort["academicYear"] | "" | typeof ALL
+    Cohort["academicYear"] | ""
   >("");
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
 
   /** For fetching users based on filters */
   const memoUsersQueryParams = useMemo(() => {
     return {
-      cohortYear: selectedCohortYear !== ALL ? selectedCohortYear : "",
+      cohortYear: selectedCohortYear,
       role: selectedRole !== ROLES_WITH_ALL.ALL ? toSingular(selectedRole) : "",
       search: querySearch,
       limit: LIMIT,
@@ -124,11 +123,7 @@ const Users: NextPage = () => {
   };
 
   const handleCohortYearChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value === ALL) {
-      setSelectedCohortYear(e.target.value);
-    } else {
-      setSelectedCohortYear(Number(e.target.value) as Cohort["academicYear"]);
-    }
+    setSelectedCohortYear(Number(e.target.value) as Cohort["academicYear"]);
     setPage(0);
   };
 
@@ -156,8 +151,6 @@ const Users: NextPage = () => {
       <AddUserModal
         open={isAddUserOpen}
         setOpen={setIsAddUserOpen}
-        mutate={mutate}
-        hasMore={hasMore}
         leanProjects={leanProjectsResponse?.projects ?? []}
         isFetchingLeanProjects={isFetching(fetchLeanProjectsStatus)}
       />
@@ -203,7 +196,6 @@ const Users: NextPage = () => {
                 select
                 size="small"
               >
-                <MenuItem value={ALL}>{ALL}</MenuItem>
                 {cohorts &&
                   cohorts.map(({ academicYear }) => (
                     <MenuItem key={academicYear} value={academicYear}>

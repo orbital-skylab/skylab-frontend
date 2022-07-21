@@ -18,6 +18,7 @@ type Props<FormValuesType> = {
   formik: FormikProps<FormValuesType>;
   size?: "medium" | "small";
   isCombobox?: boolean;
+  isDisabled?: boolean;
 };
 
 function Dropdown<FormValuesType>({
@@ -27,6 +28,7 @@ function Dropdown<FormValuesType>({
   formik,
   size = "medium",
   isCombobox,
+  isDisabled = false,
 }: Props<FormValuesType>) {
   /** For combobox */
   const [inputValue, setInputValue] = useState("");
@@ -61,6 +63,7 @@ function Dropdown<FormValuesType>({
           }}
           size={size}
           options={options}
+          disabled={isDisabled}
           getOptionLabel={(option) => {
             /**
              * option could be:
@@ -100,6 +103,7 @@ function Dropdown<FormValuesType>({
           onBlur={handleBlur}
           MenuProps={{ disableScrollLock: true }}
           size={size}
+          disabled={isDisabled}
         >
           {options.map(({ value, label }) => (
             <MenuItem key={value} value={value}>
