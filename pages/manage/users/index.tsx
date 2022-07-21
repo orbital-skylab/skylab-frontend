@@ -101,7 +101,7 @@ const Users: NextPage = () => {
       endpoint: `/projects/lean`,
       queryParams: memoLeanProjectsQueryParams,
       requiresAuthorization: true,
-      enabled: typeof selectedCohortYear === "number",
+      enabled: Boolean(selectedCohortYear),
     });
 
   /** Input Change Handlers */
