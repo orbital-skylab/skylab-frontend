@@ -64,7 +64,7 @@ const ProjectDetails: NextPage = () => {
           <Box
             component="img"
             src={"https://nusskylab-dev.comp.nus.edu.sg/posters/2021/2680.jpg"}
-            alt={`${project?.name} Project`}
+            alt={`${project?.teamName} Project`}
             sx={{
               objectFit: "cover",
               height: "50vw",
@@ -107,7 +107,7 @@ const ProjectDetails: NextPage = () => {
                 textAlign="center"
                 mb="1.5rem"
               >
-                {`${project?.name}`}
+                {`${project?.teamName}`}
               </Typography>
               {project && (
                 <Stack spacing="0.5rem">

@@ -16,7 +16,7 @@ const ProjectSubmissionModal: FC<Props> = ({ open, setOpen, project }) => {
     <Modal
       open={open}
       handleClose={handleClose}
-      title={`Project ${project.id}: ${project.name}`}
+      title={`Project ${project.id}: ${project.teamName}`}
       sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
     >
       <Typography variant="h6" align="center" fontWeight={600} mb="0.5rem">
@@ -32,7 +32,7 @@ const ProjectSubmissionModal: FC<Props> = ({ open, setOpen, project }) => {
         <Box
           src={"https://nusskylab-dev.comp.nus.edu.sg/posters/2021/2680.jpg"}
           component="img"
-          alt={`${project.name} Poster`}
+          alt={`${project.teamName} Poster`}
         />
       </Box>
 
