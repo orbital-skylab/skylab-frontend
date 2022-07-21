@@ -73,7 +73,7 @@ const ProjectsList = () => {
           : selectedLevelOfAchievement,
       search: querySearch,
       limit: LIMIT,
-      hasDropped: viewHasDropped,
+      dropped: viewHasDropped,
     };
   }, [
     selectedCohortYear,
