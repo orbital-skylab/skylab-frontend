@@ -26,13 +26,11 @@ type Props = {
   isEditMode?: boolean;
   isShowingSettings?: boolean; // Only valid when isEditMode === true
   question: LeanQuestion | Question;
-  // Used to generate the question number if not provided. Only valid when editing Deadline questions
-  idx?: number;
-  // Only valid when isEditMode === true
-  setQuestion?: (question?: LeanQuestion) => void;
-  // Only valid when isEditMode === false
-  answer?: Option;
+  idx?: number; // Used to generate the question number if not provided. Only valid when editing Deadline questions
+  setQuestion?: (question?: LeanQuestion) => void; // Only valid when isEditMode === true
+  answer?: Option; // Only valid when isEditMode === false
   setAnswer?: (newAnswer: string) => void;
+  isReadonly?: boolean; // Only valid when isEditMode === false
 };
 
 /**
@@ -48,6 +46,7 @@ const QuestionCard: FC<Props> = ({
   setQuestion,
   answer,
   setAnswer,
+  isReadonly,
 }) => {
   const getQuestionNumber = () => {
     if (isQuestion(question)) {
@@ -108,7 +107,12 @@ const QuestionCard: FC<Props> = ({
         );
       }
 
-      const questionProps = { question, answer, setAnswer };
+      const questionProps = {
+        question,
+        answer,
+        setAnswer,
+        isReadonly: Boolean(isReadonly),
+      };
       switch (question.type) {
         case QUESTION_TYPE.SHORT_ANSWER:
           return <ShortAnswerQuestion {...questionProps} />;

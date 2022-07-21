@@ -152,6 +152,8 @@ export type CreateDeadlineResponse = {
  */
 export type CreateSubmissionResponse = Submission;
 
+export type GetSubmissionResponse = { submission: Submission };
+
 /**
  * Dashbard Endpoints:
  * https://github.com/orbital-skylab/skylab-backend/wiki/Dashboard-Endpoints
