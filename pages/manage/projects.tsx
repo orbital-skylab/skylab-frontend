@@ -129,6 +129,7 @@ const ProjectsList = () => {
 
   const handleToggleViewDropped = () => {
     setViewHasDropped(!viewHasDropped);
+    setPage(0);
   };
 
   /** To fetch more projects when the bottom of the page is reached */

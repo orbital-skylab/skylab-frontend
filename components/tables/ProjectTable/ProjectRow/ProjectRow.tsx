@@ -81,7 +81,7 @@ const ProjectRow: FC<Props> = ({ project, mutate, setSuccess, setError }) => {
       />
       <TableRow>
         <TableCell>{project.id}</TableCell>
-        <TableCell>{project.teamName}</TableCell>
+        <TableCell>{project.name}</TableCell>
         <TableCell>
           <Stack direction="row" spacing="0.25rem">
             {renderTag()}
