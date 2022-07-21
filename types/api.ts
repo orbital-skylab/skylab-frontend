@@ -160,13 +160,6 @@ export type GetStudentDeadlines = {
   deadlines: DeadlineDeliverable[];
 };
 
-export type GetStudentPeerMilestones = {
-  deadlines: {
-    deadline: Deadline;
-    submissions: PossibleSubmission[];
-  }[];
-};
-
 export type GetStudentPeerEvaluationAndFeedback = {
   deadlines: {
     deadline: Deadline;

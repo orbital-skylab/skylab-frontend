@@ -11,38 +11,45 @@ import {
 import SubmissionRow from "./SubmissionRow";
 
 // Types
-import { Deadline } from "@/types/deadlines";
+import { Deadline, DEADLINE_TYPE } from "@/types/deadlines";
 import { PossibleSubmission } from "@/types/submissions";
 
 type Props = {
   deadline: Deadline;
   submissions: PossibleSubmission[];
-  shouldIncludeToColumn?: boolean;
 };
 
-const ColumnHeadings = ["From", "To", "Status", "Actions"];
+const columnHeadings = ["Submitted By", "To", "Status", "Action"];
 
 /**
  * Renders a table to view OTHER's submissions.
  * Examples: Peer teams' Milestone submissions, Peer teams' evaluations, Adviser evaluations, Peer teams' feedback, Student's feedbacks, etc.
  */
-const SubmissionTable: FC<Props> = ({
-  deadline,
-  submissions,
-  shouldIncludeToColumn = false,
-}) => {
+const SubmissionTable: FC<Props> = ({ deadline, submissions }) => {
   const getKey = (deadline: Deadline, submission: PossibleSubmission) => {
     return `${deadline.id}-${submission.submissionId}-${submission.fromProject?.id}-${submission.fromUser?.id}-${submission.toProject?.id}-${submission.toUser?.id}`;
   };
+
+  const shouldIncludeToColumn =
+    deadline.type === DEADLINE_TYPE.EVALUATION ||
+    deadline.type === DEADLINE_TYPE.SURVEY;
+
+  const filteredColumnHeadings = columnHeadings.filter((heading) => {
+    switch (heading) {
+      case "To":
+        return shouldIncludeToColumn;
+
+      default:
+        return true;
+    }
+  });
 
   return (
     <TableContainer>
       <Table>
         <TableHead>
           <TableRow>
-            {ColumnHeadings.filter(
-              (heading) => heading !== "To" || shouldIncludeToColumn
-            ).map((heading) => (
+            {filteredColumnHeadings.map((heading) => (
               <TableCell key={heading}>{heading}</TableCell>
             ))}
           </TableRow>
@@ -51,7 +58,7 @@ const SubmissionTable: FC<Props> = ({
           {submissions.map((submission) => (
             <SubmissionRow
               key={getKey(deadline, submission)}
-              deadlineDueBy={deadline.dueBy}
+              deadline={deadline}
               submission={submission}
               shouldIncludeToColumn={shouldIncludeToColumn}
             />
