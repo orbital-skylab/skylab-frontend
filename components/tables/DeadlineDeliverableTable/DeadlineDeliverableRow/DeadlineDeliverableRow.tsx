@@ -53,7 +53,7 @@ const DeadlineDeliverableRow: FC<Props> = ({ deadlineDeliverable }) => {
         return `${deadlineDeliverable.deadline.name} Submission`;
 
       case DEADLINE_TYPE.EVALUATION:
-      case DEADLINE_TYPE.SURVEY: {
+      case DEADLINE_TYPE.FEEDBACK: {
         if (
           (deadlineDeliverable.toProject && deadlineDeliverable.toUser) ||
           (!deadlineDeliverable.toProject && !deadlineDeliverable.toUser)

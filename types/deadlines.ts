@@ -3,7 +3,8 @@ import { Cohort } from "./cohorts";
 export enum DEADLINE_TYPE {
   MILESTONE = "Milestone",
   EVALUATION = "Evaluation",
-  SURVEY = "Survey",
+  FEEDBACK = "Feedback",
+  APPLICATION = "Application", // TODO: Not implemented yet
 }
 
 export type Deadline = {

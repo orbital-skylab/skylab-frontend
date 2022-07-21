@@ -32,7 +32,7 @@ const SubmissionTable: FC<Props> = ({ deadline, submissions }) => {
 
   const shouldIncludeToColumn =
     deadline.type === DEADLINE_TYPE.EVALUATION ||
-    deadline.type === DEADLINE_TYPE.SURVEY;
+    deadline.type === DEADLINE_TYPE.FEEDBACK;
 
   const filteredColumnHeadings = columnHeadings.filter((heading) => {
     switch (heading) {

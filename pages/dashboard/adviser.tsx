@@ -28,10 +28,10 @@ import {
 } from "@/types/api";
 
 enum TAB {
-  DEADLINES = "Upcoming Submissions",
+  DEADLINES = "Upcoming Deadlines",
   SUBMISSIONS = "Your Teams' Submissions",
   MANAGE_TEAMS = "Manage Your Teams",
-  MANAGE_GROUPS = "Manage Evaluation Groups",
+  MANAGE_RELATIONSHIPS = "Manage Evaluation Relationships",
 }
 
 const AdviserDashboard: NextPage = () => {
@@ -173,7 +173,7 @@ const AdviserDashboard: NextPage = () => {
           </LoadingWrapper>
         </TabPanel>
 
-        <TabPanel value={TAB.MANAGE_GROUPS}>
+        <TabPanel value={TAB.MANAGE_RELATIONSHIPS}>
           <LoadingWrapper isLoading={isFetching(fetchProjectsStatus)}>
             <AddGroupModal
               open={isAddGroupOpen}
@@ -181,11 +181,13 @@ const AdviserDashboard: NextPage = () => {
               mutate={mutateProjects}
             />
             <Button onClick={handleOpenAddGroupModal}>
-              <Add /> Group
+              <Add /> Relationship
             </Button>
             <NoDataWrapper
               noDataCondition={!projectsByGroupMap || !projectsByGroupMap.size}
-              fallback={<NoneFound message="No evaluation groups found." />}
+              fallback={
+                <NoneFound message="No evaluation relationships found." />
+              }
             >
               {projectsByGroupMap && (
                 <GroupTable
