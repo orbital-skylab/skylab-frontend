@@ -1,41 +1,38 @@
+import { ChangeEvent, FC, useEffect, useMemo, useState } from "react";
+// Components
+import Modal from "../Modal";
 import MultiDropdown from "@/components/formikFormControllers/MultiDropdown";
 import SnackbarAlert from "@/components/SnackbarAlert";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
-import { toSingular } from "@/helpers/roles";
+import { Stack, Button, MenuItem, TextField, Typography } from "@mui/material";
+// Hooks
 import useApiCall from "@/hooks/useApiCall";
 import useCohort from "@/hooks/useCohort";
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert";
+import { useRouter } from "next/router";
+// Helpers
+import { Formik } from "formik";
+import { toSingular } from "@/helpers/roles";
+// Types
 import { GetLeanUsersResponse, HTTP_METHOD } from "@/types/api";
 import { Cohort } from "@/types/cohorts";
 import { ROLES } from "@/types/roles";
-import { Stack, Button, MenuItem, TextField, Typography } from "@mui/material";
-import { Formik } from "formik";
-import { useRouter } from "next/router";
-import {
-  ChangeEvent,
-  Dispatch,
-  FC,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import Modal from "../Modal";
 
 type Props = {
-  open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
+  selectedRole: ROLES | null;
+  handleCloseModal: () => void;
 };
 
-type AddStudentsFormValuesType = {
+type AddRolesFormValuesType = {
   userIds: number[];
 };
 
 const refreshSeconds = 3;
 
-const AddStudentsModal: FC<Props> = ({ open, setOpen }) => {
+const AddRolesModal: FC<Props> = ({ selectedRole, handleCloseModal }) => {
+  const open = Boolean(selectedRole);
   const router = useRouter();
   const { cohorts, currentCohortYear } = useCohort();
   const {
@@ -51,9 +48,9 @@ const AddStudentsModal: FC<Props> = ({ open, setOpen }) => {
   const memoUsersQueryParams = useMemo(
     () => ({
       cohortYear: selectedCohortYear,
-      excludeRole: toSingular(ROLES.STUDENTS),
+      excludeRole: toSingular(selectedRole),
     }),
-    [selectedCohortYear]
+    [selectedCohortYear, selectedRole]
   );
   const {
     data: leanUsersWithoutStudentsResponse,
@@ -61,7 +58,7 @@ const AddStudentsModal: FC<Props> = ({ open, setOpen }) => {
   } = useFetch<GetLeanUsersResponse>({
     endpoint: `/users/lean`,
     queryParams: memoUsersQueryParams,
-    enabled: !!selectedCohortYear,
+    enabled: Boolean(selectedCohortYear) && Boolean(selectedCohortYear),
   });
 
   const addStudents = useApiCall({
@@ -70,11 +67,11 @@ const AddStudentsModal: FC<Props> = ({ open, setOpen }) => {
     requiresAuthorization: true,
   });
 
-  const initialValues: AddStudentsFormValuesType = {
+  const initialValues: AddRolesFormValuesType = {
     userIds: [],
   };
 
-  const handleSubmit = async (values: AddStudentsFormValuesType) => {
+  const handleSubmit = async (values: AddRolesFormValuesType) => {
     // TODO: Process values
     const processedValues = { ...values };
 
@@ -84,7 +81,9 @@ const AddStudentsModal: FC<Props> = ({ open, setOpen }) => {
         router.reload();
       }, refreshSeconds * 1000);
       setSuccess(
-        `Successfully added ${values.userIds.length} students! Refreshing in ${refreshSeconds} seconds...`
+        `Successfully added ${
+          values.userIds.length
+        } ${selectedRole?.toLowerCase()}! Refreshing in ${refreshSeconds} seconds...`
       );
     } catch (error) {
       setError(error);
@@ -93,10 +92,6 @@ const AddStudentsModal: FC<Props> = ({ open, setOpen }) => {
 
   const handleCohortYearChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSelectedCohortYear(Number(e.target.value) as Cohort["academicYear"]);
-  };
-
-  const handleCloseModal = () => {
-    setOpen(false);
   };
 
   useEffect(() => {
@@ -108,7 +103,11 @@ const AddStudentsModal: FC<Props> = ({ open, setOpen }) => {
   return (
     <>
       <SnackbarAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
-      <Modal open={open} handleClose={handleCloseModal} title="Adding Students">
+      <Modal
+        open={open}
+        handleClose={handleCloseModal}
+        title={`Adding ${selectedRole}`}
+      >
         <Formik initialValues={initialValues} onSubmit={handleSubmit}>
           {(formik) => (
             <Stack direction="column" spacing="1rem">
@@ -176,4 +175,4 @@ const AddStudentsModal: FC<Props> = ({ open, setOpen }) => {
     </>
   );
 };
-export default AddStudentsModal;
+export default AddRolesModal;

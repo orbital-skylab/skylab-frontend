@@ -100,7 +100,7 @@ const AddUserModal: FC<Props> = ({
   return (
     <>
       <SnackbarAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
-      <Modal open={open} handleClose={handleCloseModal} title={`Add User`}>
+      <Modal open={open} handleClose={handleCloseModal} title={`Adding User`}>
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmit}

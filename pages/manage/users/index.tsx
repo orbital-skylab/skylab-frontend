@@ -30,7 +30,7 @@ import {
 } from "@mui/material";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
-import AddStudentsModal from "@/components/modals/AddStudentsModal";
+import AddRolesModal from "@/components/modals/AddRolesModal";
 // Helpers
 import { toSingular } from "@/helpers/roles";
 // Hooks
@@ -63,7 +63,8 @@ const Users: NextPage = () => {
     Cohort["academicYear"] | ""
   >("");
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
-  const [isAddStudentsOpen, setIsAddStudentsOpen] = useState(false);
+  const [addRolesModalSelectedRole, setAddRolesModalSelectedRole] =
+    useState<ROLES | null>(null);
 
   /** For fetching users based on filters */
   const memoUsersQueryParams = useMemo(() => {
@@ -131,8 +132,12 @@ const Users: NextPage = () => {
     setIsAddUserOpen(true);
   };
 
-  const handleOpenAddStudentsModal = () => {
-    setIsAddStudentsOpen(true);
+  const handleOpenAddRolesModalGenerator = (selectedRole: ROLES) => () => {
+    setAddRolesModalSelectedRole(selectedRole);
+  };
+
+  const handleCloseAddRolesModal = () => {
+    setAddRolesModalSelectedRole(null);
   };
 
   /** To fetch more projects when the bottom of the page is reached */
@@ -158,9 +163,9 @@ const Users: NextPage = () => {
         leanProjects={leanProjectsResponse?.projects ?? []}
         isFetchingLeanProjects={isFetching(fetchLeanProjectsStatus)}
       />
-      <AddStudentsModal
-        open={isAddStudentsOpen}
-        setOpen={setIsAddStudentsOpen}
+      <AddRolesModal
+        selectedRole={addRolesModalSelectedRole}
+        handleCloseModal={handleCloseAddRolesModal}
       />
       <Body
         isLoading={isLoadingCohorts}
@@ -190,39 +195,17 @@ const Users: NextPage = () => {
               <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
               User
             </Button>
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={handleOpenAddStudentsModal}
-            >
-              <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
-              Students
-            </Button>
-            <Button
-              variant="outlined"
-              size="small"
-              // onClick={handleOpenAddUserModal}
-            >
-              <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
-              Advisers
-            </Button>
-            <Button
-              variant="outlined"
-              size="small"
-              // onClick={handleOpenAddUserModal}
-            >
-              <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
-              Mentors
-            </Button>
-            <Button
-              variant="outlined"
-              size="small"
-              // onClick={handleOpenAddUserModal}
-            >
-              <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
-              Administrators
-            </Button>
-
+            {Object.values(ROLES).map((role) => (
+              <Button
+                key={role}
+                variant="outlined"
+                size="small"
+                onClick={handleOpenAddRolesModalGenerator(role)}
+              >
+                <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
+                {role}
+              </Button>
+            ))}
             <Stack direction="row" spacing="1rem" marginLeft="auto">
               <TextField
                 label="Cohort"
