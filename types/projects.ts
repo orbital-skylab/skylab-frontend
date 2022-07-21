@@ -23,6 +23,8 @@ export type Project = {
   name: string;
   teamName: string;
   proposalPdf: string;
+  videoUrl: string;
+  posterUrl: string;
   students: Student[];
   adviser?: Adviser;
   mentor?: Mentor;

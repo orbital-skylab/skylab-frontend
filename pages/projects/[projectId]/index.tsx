@@ -19,6 +19,7 @@ import useAuth from "@/hooks/useAuth";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
 import { checkIfProjectsAdviser, userHasRole } from "@/helpers/roles";
+import { noImageAvailableSrc } from "@/helpers/errors";
 // Types
 import type { NextPage } from "next";
 import { GetProjectResponse } from "@/types/api";
@@ -63,8 +64,8 @@ const ProjectDetails: NextPage = () => {
         <Stack direction="column" alignItems="center">
           <Box
             component="img"
-            src={"https://nusskylab-dev.comp.nus.edu.sg/posters/2021/2680.jpg"}
-            alt={`${project?.teamName} Project`}
+            src={project?.posterUrl ?? noImageAvailableSrc}
+            alt={`${project?.name} Project`}
             sx={{
               objectFit: "cover",
               height: "50vw",
@@ -148,13 +149,33 @@ const ProjectDetails: NextPage = () => {
                       }}
                     />
                   )}
-                  <SpreadAttribute
-                    attribute="Proposal PDF"
-                    value={{
-                      href: project.proposalPdf,
-                      label: project.proposalPdf,
-                    }}
-                  />
+                  {project.proposalPdf && (
+                    <SpreadAttribute
+                      attribute="Proposal PDF"
+                      value={{
+                        href: project.proposalPdf,
+                        label: project.proposalPdf,
+                      }}
+                    />
+                  )}
+                  {project.posterUrl && (
+                    <SpreadAttribute
+                      attribute="Poster"
+                      value={{
+                        href: project.posterUrl,
+                        label: project.posterUrl,
+                      }}
+                    />
+                  )}
+                  {project.videoUrl && (
+                    <SpreadAttribute
+                      attribute="Video"
+                      value={{
+                        href: project.videoUrl,
+                        label: project.videoUrl,
+                      }}
+                    />
+                  )}
                 </Stack>
               )}
             </CardContent>

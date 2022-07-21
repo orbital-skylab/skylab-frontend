@@ -6,3 +6,5 @@ export enum ERRORS {
   MIN_YEAR = "The academic year should be this year at the earliest",
   END_DATE_MUST_BE_LATER_THAN_START = "The end date must be later than the start date",
 }
+
+export const noImageAvailableSrc = "/images/no-image-available.png";
