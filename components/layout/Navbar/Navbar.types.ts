@@ -2,6 +2,8 @@ import { ROLES } from "@/types/roles";
 
 export enum NAVBAR_ACTIONS {
   SIGN_OUT = "signOut",
+  ROUTE_TO_PROFILE = "routeToProfile",
+  ROUTE_TO_TEAM_PROFILE = "routeToTeamProfile",
   ROUTE_TO_DASHBOARD = "routeToDashboard",
 }
 

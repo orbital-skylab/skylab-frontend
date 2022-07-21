@@ -92,6 +92,7 @@ const Users: NextPage = () => {
   const memoLeanProjectsQueryParams = useMemo(() => {
     return {
       cohortYear: selectedCohortYear,
+      dropped: false,
     };
   }, [selectedCohortYear]);
   const { data: leanProjectsResponse, status: fetchLeanProjectsStatus } =

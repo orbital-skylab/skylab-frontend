@@ -32,8 +32,13 @@ export const NAVBAR_OPTIONS: NavbarOption[] = [
     authorizedRoles: [ROLES.ADMINISTRATORS],
   },
   {
+    label: "Team Profile",
+    action: NAVBAR_ACTIONS.ROUTE_TO_TEAM_PROFILE,
+    authorizedRoles: [ROLES.STUDENTS],
+  },
+  {
     label: "Profile",
-    route: PAGES.USERS,
+    action: NAVBAR_ACTIONS.ROUTE_TO_PROFILE,
   },
   {
     label: "Sign Out",
@@ -92,6 +97,16 @@ export const generateOnClickGenerator = (
       case NAVBAR_ACTIONS.SIGN_OUT:
         return () => {
           signOut();
+        };
+
+      case NAVBAR_ACTIONS.ROUTE_TO_PROFILE:
+        return () => {
+          router.push(`${PAGES.USERS}/${user?.id}`);
+        };
+
+      case NAVBAR_ACTIONS.ROUTE_TO_TEAM_PROFILE:
+        return () => {
+          router.push(`${PAGES.PROJECTS}/${user?.student?.projectId}`);
         };
 
       /**

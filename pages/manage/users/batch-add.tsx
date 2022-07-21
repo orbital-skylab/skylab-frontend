@@ -19,11 +19,6 @@ import BatchAddMentorsForm, {
   ADD_MENTORS_CSV_HEADERS,
   processBatchAddMentorsData,
 } from "@/components/batchForms/BatchAddMentorsForm";
-import BatchAttachAdvisersForm, {
-  processBatchAdviserData,
-  ATTACH_ADVISERS_CSV_HEADERS,
-  AttachAdvisersData,
-} from "@/components/batchForms/BatchAttachAdvisersForm";
 import { Box, Stack } from "@mui/material";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
@@ -109,30 +104,6 @@ const BatchAdd: NextPage = () => {
     setAddAdvisersData([]);
   };
 
-  /** Attach Advisers Functions */
-  const [attachAdvisersData, setAttachAdvisersData] =
-    useState<AttachAdvisersData>([]);
-  const batchAttachAdvisers = useApiCall({
-    method: HTTP_METHOD.POST,
-    endpoint: `/users/attach-adviser/batch`,
-    requiresAuthorization: true,
-  });
-
-  const handleAttachAdvisers = async () => {
-    try {
-      const processedValues = processBatchAdviserData(attachAdvisersData);
-      await batchAttachAdvisers.call(processedValues);
-      setSuccess("Successfully attached the advisers!");
-      handleClearAttachAdvisers();
-    } catch (error) {
-      setError(error);
-    }
-  };
-
-  const handleClearAttachAdvisers = () => {
-    setAttachAdvisersData([]);
-  };
-
   return (
     <>
       <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
@@ -178,19 +149,6 @@ const BatchAdd: NextPage = () => {
               handleAddMentors={handleAddMentors}
               handleClearAddMentors={handleClearAddMentors}
               isSubmitting={isCalling(batchAddMentors.status)}
-            />
-          </Box>
-          <Box>
-            <HeadingWithCsvTemplate
-              title="Batch Attach Advisers"
-              tooltipText="This attaches an adviser role onto EXISTING users (with a past student role) via their NUSNET ID"
-              csvTemplateHeaders={[Object.values(ATTACH_ADVISERS_CSV_HEADERS)]}
-            />
-            <BatchAttachAdvisersForm
-              setAttachAdvisersData={setAttachAdvisersData}
-              handleAttachAdvisers={handleAttachAdvisers}
-              handleClearAttachAdvisers={handleClearAttachAdvisers}
-              isSubmitting={isCalling(batchAttachAdvisers.status)}
             />
           </Box>
         </Stack>

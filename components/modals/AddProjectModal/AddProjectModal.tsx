@@ -33,6 +33,7 @@ import { Cohort } from "@/types/cohorts";
 
 interface AddProjectFormValuesType {
   name: string;
+  teamName: string;
   achievement: LEVELS_OF_ACHIEVEMENT;
   students: number[];
   adviser: number | "";
@@ -71,6 +72,7 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate }) => {
 
   const initialValues: AddProjectFormValuesType = {
     name: "",
+    teamName: "",
     achievement: LEVELS_OF_ACHIEVEMENT.VOSTOK,
     students: [],
     adviser: "",
@@ -153,6 +155,12 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate }) => {
                 <TextInput
                   name="name"
                   label="Project Name"
+                  size="small"
+                  formik={formik}
+                />
+                <TextInput
+                  name="teamName"
+                  label="Team Name"
                   size="small"
                   formik={formik}
                 />

@@ -66,6 +66,7 @@ const Projects: NextPage = () => {
       achievement: selectedLevel,
       search: querySearch,
       limit: LIMIT,
+      dropped: false,
     };
   }, [selectedCohortYear, selectedLevel, querySearch]);
   const {
