@@ -9,7 +9,7 @@ export enum PAGES {
   MANAGE_COHORTS = "/manage/cohorts",
   MANAGE_DEADLINES = "/manage/deadlines",
   MANAGE_USERS = "/manage/users",
-  MANAGE_USERS_BATCH_ADD = "/manage/users/batch-add",
+  MANAGE_USERS_CSV = "/manage/users-csv",
   MANAGE_PROJECTS = "/manage/projects",
   DASHBOARD = "/dashboard",
   DASHBOARD_STUDENT = "/dashboard/student",

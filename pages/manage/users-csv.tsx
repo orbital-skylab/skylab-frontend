@@ -3,22 +3,22 @@ import { useState } from "react";
 import Body from "@/components/layout/Body";
 import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
 import SnackbarAlert from "@/components/layout/SnackbarAlert";
-import HeadingWithCsvTemplate from "@/components/batchForms/HeadingWithCsvTemplate/HeadingWithCsvTemplate";
+import HeadingWithCsvTemplate from "@/components/csvForms/HeadingWithCsvTemplate/HeadingWithCsvTemplate";
 import BatchAddProjectsAndStudentsForm, {
   AddProjectsAndStudentsData,
   ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS,
   processBatchStudentData,
-} from "@/components/batchForms/BatchAddProjectsAndStudentsForm";
+} from "@/components/csvForms/BatchAddProjectsAndStudentsForm";
 import BatchAddAdvisersForm, {
   AddAdvisersData,
   ADD_ADVISERS_CSV_HEADERS,
   processBatchAddAdvisersData,
-} from "@/components/batchForms/BatchAddAdvisersForm";
+} from "@/components/csvForms/BatchAddAdvisersForm";
 import BatchAddMentorsForm, {
   AddMentorsData,
   ADD_MENTORS_CSV_HEADERS,
   processBatchAddMentorsData,
-} from "@/components/batchForms/BatchAddMentorsForm";
+} from "@/components/csvForms/BatchAddMentorsForm";
 import { Box, Stack } from "@mui/material";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
@@ -29,7 +29,7 @@ import type { NextPage } from "next";
 import { HTTP_METHOD } from "@/types/api";
 import { ROLES } from "@/types/roles";
 
-const BatchAdd: NextPage = () => {
+const CsvAdd: NextPage = () => {
   const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
 
   /** Add Projects and Students Functions */
@@ -112,7 +112,7 @@ const BatchAdd: NextPage = () => {
         <Stack direction="column" spacing="2rem">
           <Box>
             <HeadingWithCsvTemplate
-              title="Batch Add Projects and Students"
+              title="Add Projects and Students"
               tooltipText="This creates new projects and new users with a student role attached to them"
               csvTemplateHeaders={[
                 Object.values(ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS),
@@ -127,7 +127,7 @@ const BatchAdd: NextPage = () => {
           </Box>
           <Box>
             <HeadingWithCsvTemplate
-              title="Batch Add Advisers"
+              title="Add Advisers"
               tooltipText="This creates new users with an adviser role attached to them"
               csvTemplateHeaders={[Object.values(ADD_ADVISERS_CSV_HEADERS)]}
             />
@@ -140,7 +140,7 @@ const BatchAdd: NextPage = () => {
           </Box>
           <Box>
             <HeadingWithCsvTemplate
-              title="Batch Add Mentors"
+              title="Add Mentors"
               tooltipText="This creates new users with an mentor role attached to them"
               csvTemplateHeaders={[Object.values(ADD_MENTORS_CSV_HEADERS)]}
             />
@@ -156,4 +156,4 @@ const BatchAdd: NextPage = () => {
     </>
   );
 };
-export default BatchAdd;
+export default CsvAdd;

@@ -83,8 +83,10 @@ const AddRoleModal: FC<Props> = ({
     },
   });
 
-  const initialValues: AddOrEditRoleFormValuesType =
-    generateEmptyInitialValues(currentCohortYear);
+  const initialValues: AddOrEditRoleFormValuesType = generateEmptyInitialValues(
+    currentCohortYear,
+    user
+  );
 
   const handleSubmit = async (
     values: AddOrEditRoleFormValuesType,

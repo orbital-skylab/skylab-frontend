@@ -101,14 +101,15 @@ export const getRoleId = (user: User, selectedRole: ROLES | null) => {
  * 2. `/components/modals/AddRoleModal`
  */
 export const generateEmptyInitialValues = (
-  currentCohortYear: number | undefined
+  currentCohortYear: number | undefined,
+  user?: User
 ): AddUserFormValuesType => {
   return {
     name: "",
     email: "",
     cohortYear: currentCohortYear,
-    nusnetId: "",
-    matricNo: "",
+    nusnetId: user?.student?.nusnetId ?? user?.adviser?.nusnetId ?? "",
+    matricNo: user?.student?.matricNo ?? user?.adviser?.matricNo ?? "",
     projectId: "",
     projectIds: [],
     startDate: "",
