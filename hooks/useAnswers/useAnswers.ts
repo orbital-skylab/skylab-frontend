@@ -39,13 +39,35 @@ const useAnswers = () => {
     dispatch({ type: ACTION_TYPE.CLEAR_ANSWERS });
   };
 
+  /**
+   * This function converts answers from
+   * 1. An array of Answer (as fetched from the database) to
+   * 2. An ES6 Map where the key is the `questionId` and the value is the `answer` as stored in `useAnswers`
+   * And sets the Map as the state
+   * @param {Answer[]} answers
+   */
+  const setAnswersFromArray = (answers: Answer[]) => {
+    dispatch({ type: ACTION_TYPE.SET_ANSWERS, payload: { answers } });
+  };
+
+  /**
+   * This function retrieves the answers stored in `useAnswers` and converts it into an array of Answer
+   */
+  const getAnswersAsArray = () => {
+    return Array.from(state.answers).map(([questionId, answer]) => ({
+      questionId,
+      answer,
+    }));
+  };
+
   const actions = {
     generateSetAnswer,
     setEmptyAnswers,
     clearAnswers,
+    setAnswersFromArray,
   };
 
-  return { ...state, dispatch, actions };
+  return { ...state, dispatch, actions, getAnswersAsArray };
 };
 
 export default useAnswers;
