@@ -1,11 +1,18 @@
-import { Dispatch, FC, SetStateAction } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  FC,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 // Components
 import MultiDropdown from "@/components/formikFormControllers/MultiDropdown";
 import Dropdown from "@/components/formikFormControllers/Dropdown";
 import TextInput from "@/components/formikFormControllers/TextInput";
 import SnackbarAlert from "@/components/SnackbarAlert";
 import Modal from "../Modal";
-import { Button, Stack } from "@mui/material";
+import { Button, MenuItem, Stack, TextField } from "@mui/material";
 // Helpers
 import { Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
@@ -13,13 +20,14 @@ import { ERRORS } from "@/helpers/errors";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
+import useCohort from "@/hooks/useCohort";
+import useFetch, { Mutate } from "@/hooks/useFetch";
 // Types
 import {
   HTTP_METHOD,
   CreateProjectResponse,
   GetUsersResponse,
 } from "@/types/api";
-import useFetch, { Mutate } from "@/hooks/useFetch";
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
 import { Cohort } from "@/types/cohorts";
 
@@ -35,16 +43,19 @@ type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   mutate: Mutate<Project[]>;
-  cohortYear: Cohort["academicYear"];
 };
 
-const AddProjectModal: FC<Props> = ({ open, setOpen, mutate, cohortYear }) => {
+const AddProjectModal: FC<Props> = ({ open, setOpen, mutate }) => {
   const {
     snackbar,
     handleClose: handleCloseSnackbar,
     setSuccess,
     setError,
   } = useSnackbarAlert();
+  const { cohorts, currentCohortYear } = useCohort();
+  const [selectedCohortYear, setSelectedCohortYear] = useState(
+    currentCohortYear ?? ""
+  );
 
   const addDeadline = useApiCall({
     method: HTTP_METHOD.POST,
@@ -68,16 +79,16 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate, cohortYear }) => {
 
   /** Fetching student, adviser and mentor IDs and names for the dropdown select */
   const { data: studentsResponse } = useFetch<GetUsersResponse>({
-    endpoint: `/users/lean?cohortYear=${cohortYear}&role=Student`,
-    enabled: Boolean(cohortYear),
+    endpoint: `/users/lean?cohortYear=${selectedCohortYear}&role=Student`,
+    enabled: Boolean(selectedCohortYear),
   });
   const { data: advisersResponse } = useFetch<GetUsersResponse>({
-    endpoint: `/users/lean?cohortYear=${cohortYear}&role=Adviser`,
-    enabled: Boolean(cohortYear),
+    endpoint: `/users/lean?cohortYear=${selectedCohortYear}&role=Adviser`,
+    enabled: Boolean(selectedCohortYear),
   });
   const { data: mentorsResponse } = useFetch<GetUsersResponse>({
-    endpoint: `/users/lean?cohortYear=${cohortYear}&role=Mentor`,
-    enabled: Boolean(cohortYear),
+    endpoint: `/users/lean?cohortYear=${selectedCohortYear}&role=Mentor`,
+    enabled: Boolean(selectedCohortYear),
   });
 
   const handleSubmit = async (
@@ -85,7 +96,7 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate, cohortYear }) => {
     actions: FormikHelpers<AddProjectFormValuesType>
   ) => {
     const processedValues = {
-      project: { ...values, cohortYear },
+      project: { ...values, cohortYear: selectedCohortYear },
     };
 
     try {
@@ -102,6 +113,16 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate, cohortYear }) => {
     setOpen(false);
   };
 
+  const handleCohortYearChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSelectedCohortYear(Number(e.target.value) as Cohort["academicYear"]);
+  };
+
+  useEffect(() => {
+    if (currentCohortYear) {
+      setSelectedCohortYear(currentCohortYear);
+    }
+  }, [currentCohortYear]);
+
   return (
     <>
       <SnackbarAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
@@ -114,6 +135,21 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate, cohortYear }) => {
           {(formik) => (
             <>
               <Stack direction="column" spacing="1rem">
+                <TextField
+                  name="cohort"
+                  label="Cohort"
+                  value={selectedCohortYear}
+                  onChange={handleCohortYearChange}
+                  select
+                  size="small"
+                >
+                  {cohorts &&
+                    cohorts.map(({ academicYear }) => (
+                      <MenuItem key={academicYear} value={academicYear}>
+                        {academicYear}
+                      </MenuItem>
+                    ))}
+                </TextField>
                 <TextInput
                   name="name"
                   label="Project Name"
