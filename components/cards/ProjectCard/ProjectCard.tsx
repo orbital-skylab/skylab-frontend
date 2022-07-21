@@ -13,6 +13,7 @@ import Link from "next/link";
 import UsersName from "@/components/typography/UsersName/UsersName";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
+import { noImageAvailableSrc } from "@/helpers/errors";
 // Types
 import { Project } from "@/types/projects";
 // Constants
@@ -79,7 +80,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
                   },
                 }}
               >
-                {`${project.name}`}
+                {`${project.teamName}`}
               </Typography>
             </Link>
             <Box
@@ -92,13 +93,10 @@ const ProjectCard: FC<Props> = ({ project }) => {
                 borderRadius: "0.5rem",
               }}
             >
-              {/* TODO: Change poster placeholder */}
               <Box
                 component="img"
-                src={
-                  "https://nusskylab-dev.comp.nus.edu.sg/posters/2021/2680.jpg"
-                }
-                alt={`${project.name} Project`}
+                src={project.posterUrl ?? noImageAvailableSrc}
+                alt={`${project.name} Poster`}
                 sx={{
                   width: "100%",
                   objectFit: "cover",

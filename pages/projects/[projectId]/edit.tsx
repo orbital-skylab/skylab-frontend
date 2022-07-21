@@ -32,10 +32,17 @@ import { checkIfProjectsAdviser, userHasRole } from "@/helpers/roles";
 import { GetProjectResponse, GetUsersResponse, HTTP_METHOD } from "@/types/api";
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
 import { ROLES } from "@/types/roles";
+import Switch from "@/components/formikFormControllers/Switch";
 
 type EditProjectFormValues = Pick<
   Project,
-  "name" | "achievement" | "proposalPdf"
+  | "name"
+  | "teamName"
+  | "achievement"
+  | "proposalPdf"
+  | "posterUrl"
+  | "videoUrl"
+  | "hasDropped"
 > & { students: number[]; adviser: number | ""; mentor: number | "" };
 
 const EditProject: NextPage = () => {
@@ -53,13 +60,17 @@ const EditProject: NextPage = () => {
 
   const initialValues: EditProjectFormValues = {
     name: project?.name ?? "",
+    teamName: project?.name ?? "",
     achievement: project?.achievement ?? LEVELS_OF_ACHIEVEMENT.VOSTOK,
-    proposalPdf: project?.proposalPdf ?? "",
     students: project?.students
       ? project?.students.map(({ studentId }) => studentId)
       : [],
     adviser: project?.adviser?.adviserId ?? "",
     mentor: project?.mentor?.mentorId ?? "",
+    hasDropped: project?.hasDropped ?? false,
+    proposalPdf: project?.proposalPdf ?? "",
+    posterUrl: project?.posterUrl ?? "",
+    videoUrl: project?.videoUrl ?? "",
   };
 
   /** Fetching student, adviser and mentor IDs and names for the dropdown select */
@@ -109,8 +120,7 @@ const EditProject: NextPage = () => {
         >
           <UnauthorizedWrapper
             isUnauthorized={
-              !user ||
-              !userHasRole(user, ROLES.ADMINISTRATORS) ||
+              !userHasRole(user, ROLES.ADMINISTRATORS) &&
               !checkIfProjectsAdviser(projectResponse?.project, user)
             }
           >
@@ -125,8 +135,7 @@ const EditProject: NextPage = () => {
                     {(formik) => (
                       <form onSubmit={formik.handleSubmit}>
                         <Stack direction="column" spacing="1rem">
-                          {(!user ||
-                            !userHasRole(user, ROLES.ADMINISTRATORS)) && (
+                          {!userHasRole(user, ROLES.ADMINISTRATORS) && (
                             <Alert color="warning" icon={<></>}>
                               You do not have the permissions to edit some of
                               the team&apos;s details
@@ -135,6 +144,11 @@ const EditProject: NextPage = () => {
                           <TextInput
                             name="name"
                             label="Project Name"
+                            formik={formik}
+                          />
+                          <TextInput
+                            name="teamName"
+                            label="Team Name"
                             formik={formik}
                           />
                           <Dropdown
@@ -147,7 +161,7 @@ const EditProject: NextPage = () => {
                               }
                             )}
                             isDisabled={
-                              !user || !userHasRole(user, ROLES.ADMINISTRATORS)
+                              !userHasRole(user, ROLES.ADMINISTRATORS)
                             }
                           />
                           <MultiDropdown
@@ -166,7 +180,7 @@ const EditProject: NextPage = () => {
                                 : []
                             }
                             isDisabled={
-                              !user || !userHasRole(user, ROLES.ADMINISTRATORS)
+                              !userHasRole(user, ROLES.ADMINISTRATORS)
                             }
                           />
                           <Dropdown
@@ -185,7 +199,7 @@ const EditProject: NextPage = () => {
                                 : []
                             }
                             isDisabled={
-                              !user || !userHasRole(user, ROLES.ADMINISTRATORS)
+                              !userHasRole(user, ROLES.ADMINISTRATORS)
                             }
                           />
                           <Dropdown
@@ -204,13 +218,31 @@ const EditProject: NextPage = () => {
                                 : []
                             }
                             isDisabled={
-                              !user || !userHasRole(user, ROLES.ADMINISTRATORS)
+                              !userHasRole(user, ROLES.ADMINISTRATORS)
                             }
                           />
                           <TextInput
                             name="proposalPdf"
-                            label="Proposal PDF"
+                            label="Proposal PDF URL"
                             formik={formik}
+                          />
+                          <TextInput
+                            name="posterUrl"
+                            label="Poster URL"
+                            formik={formik}
+                          />
+                          <TextInput
+                            name="videoUrl"
+                            label="Video URL"
+                            formik={formik}
+                          />
+                          <Switch
+                            name="hasDropped"
+                            label="Has Dropped"
+                            formik={formik}
+                            isDisabled={
+                              !userHasRole(user, ROLES.ADMINISTRATORS)
+                            }
                           />
 
                           <Stack direction="row" justifyContent="end">

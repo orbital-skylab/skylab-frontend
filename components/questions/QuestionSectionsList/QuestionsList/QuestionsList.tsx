@@ -11,6 +11,7 @@ type Props = {
   generateSetAnswer: (questionIdOrIdx: number) => (newAnswer: string) => void;
   accessAnswersWithQuestionIndex?: boolean;
   indexOffset?: number; // Only valid when `accessAnswersWithQuestionIndex` is true
+  isReadonly: boolean;
 };
 
 /**
@@ -20,6 +21,8 @@ type Props = {
  * (For 'Checkboxes' questions, the answer is stored as a stringifed JSON object where the key is the option and the value is 'true' is the option is selected)
  * @param param0.generateSetAnswer Generates the set answer callback based on the question ID or index
  * @param param0.accessAnswersWithQuestionIndex If true, access a question's answer via the question index; Else access a question's answer via the question ID
+ * @param param0.indexOffset Used to offset the question index
+ * @param param0.isReadonly If true, answers cannot be edited
  */
 const QuestionsList: FC<Props> = ({
   questions,
@@ -27,6 +30,7 @@ const QuestionsList: FC<Props> = ({
   generateSetAnswer,
   accessAnswersWithQuestionIndex = false,
   indexOffset,
+  isReadonly,
 }) => {
   return (
     <Stack spacing="1rem">
@@ -66,6 +70,7 @@ const QuestionsList: FC<Props> = ({
             question={question}
             answer={answer}
             setAnswer={setAnswer}
+            isReadonly={isReadonly}
           />
         );
       })}

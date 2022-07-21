@@ -1,7 +1,7 @@
 import {
   FormControlLabel,
   FormGroup,
-  Checkbox as MuiCheckbox,
+  Checkbox as MUICheckbox,
   FormHelperText,
 } from "@mui/material";
 import { FormikProps } from "formik";
@@ -23,7 +23,7 @@ function Checkbox<FormValuesType>({
     <FormGroup>
       <FormControlLabel
         control={
-          <MuiCheckbox
+          <MUICheckbox
             checked={!!values[name]}
             name={name as string}
             onChange={handleChange}

@@ -16,9 +16,15 @@ type Props = {
   question: LeanQuestion | Question;
   answer: Option;
   setAnswer: (newAnswer: string) => void;
+  isReadonly: boolean;
 };
 
-const MultipleChoiceQuestion: FC<Props> = ({ question, answer, setAnswer }) => {
+const MultipleChoiceQuestion: FC<Props> = ({
+  question,
+  answer,
+  setAnswer,
+  isReadonly,
+}) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAnswer(e.target.value);
   };
@@ -34,7 +40,12 @@ const MultipleChoiceQuestion: FC<Props> = ({ question, answer, setAnswer }) => {
                 <FormControlLabel
                   key={idx}
                   value={option}
-                  control={<Radio sx={{ flex: "0 0 fit-content" }} />}
+                  control={
+                    <Radio
+                      sx={{ flex: "0 0 fit-content" }}
+                      readOnly={isReadonly}
+                    />
+                  }
                   label={option ? option : `<Empty Option ${idx + 1}>`}
                 />
               ))}

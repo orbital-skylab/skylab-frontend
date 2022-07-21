@@ -21,12 +21,16 @@ export enum LEVELS_OF_ACHIEVEMENT_WITH_ALL {
 export type Project = {
   id: number;
   name: string;
+  teamName: string;
   proposalPdf: string;
+  videoUrl: string;
+  posterUrl: string;
   students: Student[];
   adviser?: Adviser;
   mentor?: Mentor;
   achievement: LEVELS_OF_ACHIEVEMENT;
   cohortYear: Cohort["academicYear"];
+  hasDropped: boolean;
 };
 
 export type LeanProject = Pick<Project, "id" | "name">;
