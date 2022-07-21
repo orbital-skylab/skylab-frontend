@@ -7,7 +7,6 @@ import {
   useRef,
   useState,
 } from "react";
-import Link from "next/link";
 import type { NextPage } from "next";
 // Components
 import Body from "@/components/layout/Body";
@@ -31,8 +30,8 @@ import {
 } from "@mui/material";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
+import AddRolesModal from "@/components/modals/AddRolesModal";
 // Helpers
-import { PAGES } from "@/helpers/navigation";
 import { toSingular } from "@/helpers/roles";
 // Hooks
 import useCohort from "@/hooks/useCohort";
@@ -64,6 +63,8 @@ const Users: NextPage = () => {
     Cohort["academicYear"] | ""
   >("");
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
+  const [addRolesModalSelectedRole, setAddRolesModalSelectedRole] =
+    useState<ROLES | null>(null);
 
   /** For fetching users based on filters */
   const memoUsersQueryParams = useMemo(() => {
@@ -132,6 +133,14 @@ const Users: NextPage = () => {
     setIsAddUserOpen(true);
   };
 
+  const handleOpenAddRolesModalGenerator = (selectedRole: ROLES) => () => {
+    setAddRolesModalSelectedRole(selectedRole);
+  };
+
+  const handleCloseAddRolesModal = () => {
+    setAddRolesModalSelectedRole(null);
+  };
+
   /** To fetch more projects when the bottom of the page is reached */
   const observer = useRef<IntersectionObserver | null>(null);
   const bottomOfPageRef = createBottomOfPageRef(
@@ -155,6 +164,10 @@ const Users: NextPage = () => {
         leanProjects={leanProjectsResponse?.projects ?? []}
         isFetchingLeanProjects={isFetching(fetchLeanProjectsStatus)}
       />
+      <AddRolesModal
+        selectedRole={addRolesModalSelectedRole}
+        handleCloseModal={handleCloseAddRolesModal}
+      />
       <Body
         isLoading={isLoadingCohorts}
         authorizedRoles={[ROLES.ADMINISTRATORS]}
@@ -163,10 +176,11 @@ const Users: NextPage = () => {
         <Stack direction="column" mb="0.5rem">
           <Stack
             direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            width="100%"
-            mb={{ md: "0.5rem" }}
+            justifyContent="start"
+            sx={{
+              gap: "0.5rem",
+              marginBottom: { md: "0.5rem" },
+            }}
           >
             <TextField
               label="Search"
@@ -174,22 +188,26 @@ const Users: NextPage = () => {
               onChange={handleSearchInputChange}
               size="small"
             />
-
-            <Stack direction="row" spacing="1rem">
-              <Link passHref href={PAGES.MANAGE_USERS_BATCH_ADD}>
-                <Button size="small" variant="outlined">
-                  <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
-                  Batch Add
-                </Button>
-              </Link>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={handleOpenAddUserModal}
+            >
+              <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
+              User
+            </Button>
+            {Object.values(ROLES).map((role) => (
               <Button
+                key={role}
                 variant="outlined"
                 size="small"
-                onClick={handleOpenAddUserModal}
+                onClick={handleOpenAddRolesModalGenerator(role)}
               >
                 <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
-                User
+                {role}
               </Button>
+            ))}
+            <Stack direction="row" spacing="1rem" marginLeft="auto">
               <TextField
                 label="Cohort"
                 value={selectedCohortYear}

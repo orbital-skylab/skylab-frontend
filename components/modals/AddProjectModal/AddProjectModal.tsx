@@ -26,7 +26,7 @@ import useFetch, { Mutate } from "@/hooks/useFetch";
 import {
   HTTP_METHOD,
   CreateProjectResponse,
-  GetUsersResponse,
+  GetLeanUsersResponse,
 } from "@/types/api";
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
 import { Cohort } from "@/types/cohorts";
@@ -80,15 +80,15 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate }) => {
   };
 
   /** Fetching student, adviser and mentor IDs and names for the dropdown select */
-  const { data: studentsResponse } = useFetch<GetUsersResponse>({
+  const { data: studentsResponse } = useFetch<GetLeanUsersResponse>({
     endpoint: `/users/lean?cohortYear=${selectedCohortYear}&role=Student`,
     enabled: Boolean(selectedCohortYear),
   });
-  const { data: advisersResponse } = useFetch<GetUsersResponse>({
+  const { data: advisersResponse } = useFetch<GetLeanUsersResponse>({
     endpoint: `/users/lean?cohortYear=${selectedCohortYear}&role=Adviser`,
     enabled: Boolean(selectedCohortYear),
   });
-  const { data: mentorsResponse } = useFetch<GetUsersResponse>({
+  const { data: mentorsResponse } = useFetch<GetLeanUsersResponse>({
     endpoint: `/users/lean?cohortYear=${selectedCohortYear}&role=Mentor`,
     enabled: Boolean(selectedCohortYear),
   });
@@ -253,6 +253,7 @@ export default AddProjectModal;
 
 const addProjectValidationSchema = Yup.object().shape({
   name: Yup.string().required(ERRORS.REQUIRED),
+  teamName: Yup.string().required(ERRORS.REQUIRED),
   achievement: Yup.string().required(ERRORS.REQUIRED),
   students: Yup.array().min(1, ERRORS.REQUIRED).required(ERRORS.REQUIRED),
   adviser: Yup.number().required(ERRORS.REQUIRED),

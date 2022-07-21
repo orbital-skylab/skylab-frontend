@@ -34,6 +34,8 @@ type Props = {
   isFetchingLeanProjects: boolean;
 };
 
+const refreshSeconds = 3;
+
 const AddUserModal: FC<Props> = ({
   open,
   setOpen,
@@ -75,11 +77,11 @@ const AddUserModal: FC<Props> = ({
       setSuccess(
         `You have successfully created a new ${toSingular(selectedRole)}: ${
           values.name
-        }. Refreshing in 3 seconds...`
+        }. Refreshing in ${refreshSeconds} seconds...`
       );
       setTimeout(() => {
         router.reload();
-      }, 3000);
+      }, refreshSeconds * 1000);
       handleCloseModal();
       actions.resetForm();
     } catch (error) {
@@ -98,7 +100,7 @@ const AddUserModal: FC<Props> = ({
   return (
     <>
       <SnackbarAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
-      <Modal open={open} handleClose={handleCloseModal} title={`Add User`}>
+      <Modal open={open} handleClose={handleCloseModal} title={`Adding User`}>
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmit}
