@@ -15,8 +15,10 @@ import { Project } from "@/types/projects";
  * @param {ROLES} role The specified role
  * @returns {string}
  */
-export const toSingular = (role: ROLES | ROLES_WITH_ALL | null) => {
+export const toSingular = (role: ROLES | ROLES_WITH_ALL | null | undefined) => {
   if (!role) {
+    return "";
+  } else if (role === ROLES_WITH_ALL.ALL) {
     return "";
   }
 
@@ -67,7 +69,11 @@ export const userHasRole = (
 /**
  * Gets an array of roles that a user has
  */
-export const getUserRoles = (user: User) => {
+export const getUserRoles = (user: User | undefined) => {
+  if (!user) {
+    return [];
+  }
+
   return Object.values(ROLES).filter((role) => userHasRole(user, role));
 };
 
@@ -78,8 +84,11 @@ export const getUserRoles = (user: User) => {
  * @param selectedRole The role to retrieve
  * @returns {number} The roleId
  */
-export const getRoleId = (user: User, selectedRole: ROLES | null) => {
-  if (!selectedRole) {
+export const getRoleId = (
+  user: User | null | undefined,
+  selectedRole: ROLES | null
+) => {
+  if (!selectedRole || !user) {
     return -1;
   }
 
@@ -100,7 +109,7 @@ export const getRoleId = (user: User, selectedRole: ROLES | null) => {
  * 1. `/components/modals/AddUserModal`
  * 2. `/components/modals/AddRoleModal`
  */
-export const generateEmptyInitialValues = (
+export const generateAddUserOrRoleEmptyInitialValues = (
   currentCohortYear: number | undefined,
   user?: User
 ): AddUserFormValuesType => {
@@ -122,6 +131,7 @@ export const generateEmptyInitialValues = (
  * 1. `/components/modals/AddUserModal`
  * 2. `/components/modals/AddRoleModal`
  * 3. `/components/modals/ViewRole/EditRoleModal`
+ * // TODO: Write unit tests
  * @param param0.values The values of the submitted form
  * @returns
  */

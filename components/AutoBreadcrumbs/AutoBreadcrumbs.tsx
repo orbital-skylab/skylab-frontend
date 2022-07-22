@@ -1,3 +1,4 @@
+import { splitOnHyphen } from "@/helpers/string";
 import { Breadcrumbs, Link as MuiLink, SxProps } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -28,16 +29,7 @@ const AutoBreadcrumbs: FC<Props> = ({
       const pathSegments = router.asPath.slice(1).split("/");
       let generatedBreadcrumbs = pathSegments.map((pathSegment, idx) => {
         return {
-          label: pathSegment
-            .split("-")
-            .map((chars) => {
-              if (acronyms.includes(chars)) {
-                return chars.toUpperCase();
-              } else {
-                return chars.charAt(0).toUpperCase() + chars.slice(1);
-              }
-            })
-            .join(" "),
+          label: splitOnHyphen(pathSegment, acronyms),
           href: "/" + pathSegments.slice(0, idx + 1).join("/"),
         };
       });

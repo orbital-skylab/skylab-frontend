@@ -1,31 +1,52 @@
 /* eslint-disable no-undef */
-import { userHasRole, checkIfProjectsAdviser } from "./roles";
+import {
+  userHasRole,
+  checkIfProjectsAdviser,
+  toSingular,
+  getUserRoles,
+  getRoleId,
+  generateAddUserOrRoleEmptyInitialValues,
+} from "./roles";
 import "jest";
-import { ROLES } from "@/types/roles";
+import { ROLES, ROLES_WITH_ALL } from "@/types/roles";
 import { User } from "@/types/users";
 import { DeepPartial } from "./types";
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
 
 /** Helper function to generate a user with a role */
-const generateUser = (
-  role: ROLES | undefined
-): DeepPartial<User> | undefined => {
+const generateUser = (role: ROLES | undefined): User => {
   if (!role) {
-    return role;
+    return { id: 1 } as unknown as User;
   }
-
   switch (role) {
     case ROLES.STUDENTS:
-      return { id: 1, student: { id: 1 } };
+      return {
+        id: 1,
+        student: { id: 2, nusnetId: "e2", matricNo: "a2" },
+      } as unknown as User;
     case ROLES.ADVISERS:
-      return { id: 1, adviser: { id: 1 } };
+      return {
+        id: 1,
+        adviser: { id: 3, nusnetId: "e3", matricNo: "a3" },
+      } as unknown as User;
     case ROLES.MENTORS:
-      return { id: 1, mentor: { id: 1 } };
+      return { id: 1, mentor: { id: 4 } } as unknown as User;
     case ROLES.ADMINISTRATORS:
-      return { id: 1, administrator: { id: 1 } };
+      return { id: 1, administrator: { id: 5 } } as unknown as User;
+  }
+};
 
-    default:
-      break;
+/** Helper function to add a role to a user */
+const addRoleToUser = (role: ROLES, user: User): User => {
+  switch (role) {
+    case ROLES.STUDENTS:
+      return { ...user, student: { id: 2 } } as unknown as User;
+    case ROLES.ADVISERS:
+      return { ...user, adviser: { id: 3 } } as unknown as User;
+    case ROLES.MENTORS:
+      return { ...user, mentor: { id: 4 } } as unknown as User;
+    case ROLES.ADMINISTRATORS:
+      return { ...user, administrator: { id: 5 } } as unknown as User;
   }
 };
 
@@ -45,6 +66,25 @@ const generateProject = (
     ...attributes,
   };
 };
+
+describe("#toSingular", () => {
+  it("can convert a role into a singular", () => {
+    expect(toSingular(ROLES.STUDENTS)).toBe("Student");
+    expect(toSingular(ROLES.ADVISERS)).toBe("Adviser");
+    expect(toSingular(ROLES.MENTORS)).toBe("Mentor");
+    expect(toSingular(ROLES.ADMINISTRATORS)).toBe("Administrator");
+    expect(toSingular(ROLES_WITH_ALL.STUDENTS)).toBe("Student");
+    expect(toSingular(ROLES_WITH_ALL.ADVISERS)).toBe("Adviser");
+    expect(toSingular(ROLES_WITH_ALL.MENTORS)).toBe("Mentor");
+    expect(toSingular(ROLES_WITH_ALL.ADMINISTRATORS)).toBe("Administrator");
+  });
+
+  it("does not convert ALL or unprovided roles", () => {
+    expect(toSingular(ROLES_WITH_ALL.ALL)).toBe("");
+    expect(toSingular(null)).toBe("");
+    expect(toSingular(undefined)).toBe("");
+  });
+});
 
 describe("#userHasRole", () => {
   it("can check a single student role", () => {
@@ -99,18 +139,178 @@ describe("#userHasRole", () => {
   });
 
   it("can check a non existing user", () => {
-    const student = generateUser(undefined) as User;
-    expect(userHasRole(student, [ROLES.ADVISERS])).toBeFalsy();
+    expect(userHasRole(undefined, [ROLES.ADVISERS])).toBeFalsy();
     expect(
-      userHasRole(student, [ROLES.ADVISERS, ROLES.ADMINISTRATORS])
+      userHasRole(undefined, [ROLES.ADVISERS, ROLES.ADMINISTRATORS])
     ).toBeFalsy();
-    expect(userHasRole(student, [])).toBeFalsy();
+    expect(userHasRole(undefined, [])).toBeFalsy();
+  });
+});
+
+describe("#getUserRoles", () => {
+  it("can retrieve a user's student role", () => {
+    const student = generateUser(ROLES.STUDENTS);
+    expect(getUserRoles(student as User).length).toBe(1);
+    expect(getUserRoles(student as User)[0]).toBe(ROLES.STUDENTS);
+  });
+
+  it("can retrieve a user's adviser role", () => {
+    const adviser = generateUser(ROLES.ADVISERS);
+    expect(getUserRoles(adviser as User).length).toBe(1);
+    expect(getUserRoles(adviser as User)[0]).toBe(ROLES.ADVISERS);
+  });
+
+  it("can retrieve a user's mentor role", () => {
+    const mentor = generateUser(ROLES.MENTORS);
+    expect(getUserRoles(mentor as User).length).toBe(1);
+    expect(getUserRoles(mentor as User)[0]).toBe(ROLES.MENTORS);
+  });
+
+  it("can retrieve a user's administrator role", () => {
+    const administrator = generateUser(ROLES.ADMINISTRATORS);
+    expect(getUserRoles(administrator as User).length).toBe(1);
+    expect(getUserRoles(administrator as User)[0]).toBe(ROLES.ADMINISTRATORS);
+  });
+
+  it("can retrieve multiple of a user's role", () => {
+    const administrator = generateUser(ROLES.ADMINISTRATORS);
+    const studentAndAdministrator = addRoleToUser(
+      ROLES.STUDENTS,
+      administrator as User
+    );
+    expect(getUserRoles(studentAndAdministrator as User).length).toBe(2);
+    expect(getUserRoles(studentAndAdministrator as User)[0]).toBe(
+      ROLES.STUDENTS
+    );
+    expect(getUserRoles(studentAndAdministrator as User)[1]).toBe(
+      ROLES.ADMINISTRATORS
+    );
+  });
+
+  it("can retrieve none of a user's roles", () => {
+    const userWithNoRoles = generateUser(undefined);
+    expect(getUserRoles(userWithNoRoles as User).length).toBe(0);
+  });
+});
+
+describe("#getRoleId", () => {
+  it("can return the role ID", () => {
+    expect(getRoleId(generateUser(ROLES.STUDENTS), ROLES.STUDENTS)).toBe(2);
+    expect(getRoleId(generateUser(ROLES.ADVISERS), ROLES.ADVISERS)).toBe(3);
+    expect(getRoleId(generateUser(ROLES.MENTORS), ROLES.MENTORS)).toBe(4);
+    expect(
+      getRoleId(generateUser(ROLES.ADMINISTRATORS), ROLES.ADMINISTRATORS)
+    ).toBe(5);
+  });
+
+  it("can return an invalid id", () => {
+    expect(getRoleId(undefined, ROLES.STUDENTS)).toBe(-1);
+    expect(getRoleId(generateUser(ROLES.STUDENTS), null)).toBe(-1);
+    expect(getRoleId(generateUser(ROLES.STUDENTS), ROLES.ADVISERS)).toBe(-1);
+    expect(getRoleId(undefined, null)).toBe(-1);
+  });
+});
+
+describe("#generateAddUserOrRoleEmptyInitialValues", () => {
+  it("can generate values without a user", () => {
+    const expected = {
+      name: "",
+      email: "",
+      cohortYear: 2022,
+      nusnetId: "",
+      matricNo: "",
+      projectId: "",
+      projectIds: [],
+      startDate: "",
+      endDate: "",
+    };
+    expect(generateAddUserOrRoleEmptyInitialValues(2022)).toEqual(expected);
+  });
+
+  it("can generate values with a non-student and non-adviser user", () => {
+    const expected = {
+      name: "",
+      email: "",
+      cohortYear: 2022,
+      nusnetId: "",
+      matricNo: "",
+      projectId: "",
+      projectIds: [],
+      startDate: "",
+      endDate: "",
+    };
+    expect(
+      generateAddUserOrRoleEmptyInitialValues(
+        2022,
+        generateUser(ROLES.ADMINISTRATORS)
+      )
+    ).toEqual(expected);
+  });
+
+  it("can generate values with a student", () => {
+    const expected = {
+      name: "",
+      email: "",
+      cohortYear: 2022,
+      nusnetId: "e2",
+      matricNo: "a2",
+      projectId: "",
+      projectIds: [],
+      startDate: "",
+      endDate: "",
+    };
+    expect(
+      generateAddUserOrRoleEmptyInitialValues(
+        2022,
+        generateUser(ROLES.STUDENTS)
+      )
+    ).toEqual(expected);
+  });
+
+  it("can generate values with an adviser", () => {
+    const expected = {
+      name: "",
+      email: "",
+      cohortYear: 2022,
+      nusnetId: "e3",
+      matricNo: "a3",
+      projectId: "",
+      projectIds: [],
+      startDate: "",
+      endDate: "",
+    };
+    expect(
+      generateAddUserOrRoleEmptyInitialValues(
+        2022,
+        generateUser(ROLES.ADVISERS)
+      )
+    ).toEqual(expected);
+  });
+
+  it("can generate values with a student and adviser (prioritizes student)", () => {
+    const expected = {
+      name: "",
+      email: "",
+      cohortYear: 2022,
+      nusnetId: "e3",
+      matricNo: "a3",
+      projectId: "",
+      projectIds: [],
+      startDate: "",
+      endDate: "",
+    };
+    expect(
+      generateAddUserOrRoleEmptyInitialValues(
+        2022,
+        addRoleToUser(ROLES.STUDENTS, generateUser(ROLES.ADVISERS))
+      )
+    ).toEqual(expected);
   });
 });
 
 describe("#checkIfProjectsAdviser", () => {
   it("can confirm that an adviser is a project's adviser", () => {
-    const project = generateProject({ adviser: { adviserId: 1 } });
+    const project = generateProject({ adviser: { adviserId: 3 } });
     const user = generateUser(ROLES.ADVISERS);
     expect(
       checkIfProjectsAdviser(project as Project, user as User)

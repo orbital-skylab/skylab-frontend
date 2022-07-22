@@ -34,6 +34,8 @@ export const isoDateToDateTimeLocalInput = (
 ) => {
   if (!isoDate) {
     return "";
+  } else if (!isValidDate(new Date(isoDate))) {
+    return "";
   }
 
   const d = new Date(new Date(isoDate).getTime() + offset * 60000);
@@ -68,7 +70,7 @@ export const dateTimeLocalInputToIsoDate = (
  * @param {number} minutes Minutes to eet
  * @returns {string} ISO 8601 Date
  */
-export const getTodayAtTimeIso = (hours: number, minutes?: number) => {
+export const getTodayAtTimeIso = (hours: number, minutes = 0) => {
   const today = new Date();
   today.setHours(hours, minutes);
   return today.toISOString();

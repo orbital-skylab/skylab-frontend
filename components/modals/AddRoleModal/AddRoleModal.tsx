@@ -11,7 +11,7 @@ import AdministratorDetailsForm from "@/components/forms/AdministratorDetailsFor
 // Helpers
 import { Formik, FormikHelpers } from "formik";
 import {
-  generateEmptyInitialValues,
+  generateAddUserOrRoleEmptyInitialValues,
   getUserRoles,
   processAddUserOrRoleFormValues,
   toSingular,
@@ -83,10 +83,8 @@ const AddRoleModal: FC<Props> = ({
     },
   });
 
-  const initialValues: AddOrEditRoleFormValuesType = generateEmptyInitialValues(
-    currentCohortYear,
-    user
-  );
+  const initialValues: AddOrEditRoleFormValuesType =
+    generateAddUserOrRoleEmptyInitialValues(currentCohortYear, user);
 
   const handleSubmit = async (
     values: AddOrEditRoleFormValuesType,
