@@ -1,7 +1,7 @@
 import SnackbarAlert, {
   AlertType,
   ALERT_INITIAL,
-} from "@/components/SnackbarAlert";
+} from "@/components/layout/SnackbarAlert";
 import { ReactNode, createContext, useContext, useMemo, useState } from "react";
 
 type ISnackbarAlert = {

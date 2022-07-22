@@ -55,7 +55,7 @@ const Modal: FC<Props> = ({
             <CardHeader
               title={title}
               subheader={subheader}
-              sx={{ paddingBottom: 0 }}
+              sx={{ paddingBottom: 0, whiteSpace: "pre-line" }}
             />
           ) : null}
           <CardContent>{children}</CardContent>

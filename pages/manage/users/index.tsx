@@ -29,7 +29,7 @@ import {
   Typography,
 } from "@mui/material";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
-import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
+import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
 import AddRolesModal from "@/components/modals/AddRolesModal";
 // Helpers
 import { toSingular } from "@/helpers/roles";
@@ -101,7 +101,7 @@ const Users: NextPage = () => {
       endpoint: `/projects/lean`,
       queryParams: memoLeanProjectsQueryParams,
       requiresAuthorization: true,
-      enabled: typeof selectedCohortYear === "number",
+      enabled: Boolean(selectedCohortYear),
     });
 
   /** Input Change Handlers */

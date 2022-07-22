@@ -13,10 +13,21 @@ import { BASE_TRANSITION } from "@/styles/constants";
 
 type Props = {
   project: Project;
-  mutate: Mutate<Project[]>;
+  mutate: Mutate<Project[]> | undefined;
+  showAdviserColumn: boolean;
+  showMentorColumn: boolean;
+  showEditAction: boolean;
+  showDeleteAction: boolean;
 };
 
-const ProjectRow: FC<Props> = ({ project, mutate }) => {
+const ProjectRow: FC<Props> = ({
+  project,
+  mutate,
+  showAdviserColumn,
+  showMentorColumn,
+  showEditAction,
+  showDeleteAction,
+}) => {
   const [isDeleteProjectOpen, setIsDeleteProjectOpen] = useState(false);
 
   const handleOpenDeleteModal = () => {
@@ -69,12 +80,14 @@ const ProjectRow: FC<Props> = ({ project, mutate }) => {
 
   return (
     <>
-      <DeleteProjectModal
-        open={isDeleteProjectOpen}
-        setOpen={setIsDeleteProjectOpen}
-        project={project}
-        mutate={mutate}
-      />
+      {showDeleteAction && mutate && (
+        <DeleteProjectModal
+          open={isDeleteProjectOpen}
+          setOpen={setIsDeleteProjectOpen}
+          project={project}
+          mutate={mutate}
+        />
+      )}
       <TableRow>
         <TableCell>{project.id}</TableCell>
         <TableCell>{project.name}</TableCell>
@@ -88,38 +101,50 @@ const ProjectRow: FC<Props> = ({ project, mutate }) => {
             ? project.students.map((student) => (
                 <UsersName key={student.id} user={student} />
               ))
-            : null}
+            : "-"}
         </TableCell>
-        <TableCell>
-          {project.adviser && project.adviser.id ? (
-            <UsersName user={project.adviser} />
-          ) : null}
-        </TableCell>
-        <TableCell>
-          {project.mentor && project.mentor.id ? (
-            <UsersName user={project.mentor} />
-          ) : null}
-        </TableCell>
+        {showAdviserColumn && (
+          <TableCell>
+            {project.adviser && project.adviser.id ? (
+              <UsersName user={project.adviser} />
+            ) : (
+              "-"
+            )}
+          </TableCell>
+        )}
+        {showMentorColumn && (
+          <TableCell>
+            {project.mentor && project.mentor.id ? (
+              <UsersName user={project.mentor} />
+            ) : (
+              "-"
+            )}
+          </TableCell>
+        )}
         <TableCell>
           <Stack direction="row" spacing="0.5rem">
             <Link href={`${PAGES.PROJECTS}/${project.id}`} passHref>
               <Button>View</Button>
             </Link>
-            <Link href={`${PAGES.PROJECTS}/${project.id}/edit`} passHref>
-              <Button>Edit</Button>
-            </Link>
-            <Button
-              onClick={handleOpenDeleteModal}
-              sx={{
-                transition: BASE_TRANSITION,
-                "&:hover": {
-                  backgroundColor: "error.main",
-                  color: "white",
-                },
-              }}
-            >
-              Delete
-            </Button>
+            {showEditAction && (
+              <Link href={`${PAGES.PROJECTS}/${project.id}/edit`} passHref>
+                <Button>Edit</Button>
+              </Link>
+            )}
+            {showDeleteAction && (
+              <Button
+                onClick={handleOpenDeleteModal}
+                sx={{
+                  transition: BASE_TRANSITION,
+                  "&:hover": {
+                    backgroundColor: "error.main",
+                    color: "white",
+                  },
+                }}
+              >
+                Delete
+              </Button>
+            )}
           </Stack>
         </TableCell>
       </TableRow>

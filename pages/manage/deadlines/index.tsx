@@ -8,7 +8,7 @@ import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import DeadlineTable from "@/components/tables/DeadlineTable";
-import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
+import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
 // Hooks
 import useFetch, { isFetching, isError } from "@/hooks/useFetch";
 // Types

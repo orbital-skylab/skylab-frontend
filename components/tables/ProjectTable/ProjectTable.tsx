@@ -16,10 +16,14 @@ import { Project } from "@/types/projects";
 
 type Props = {
   projects: Project[];
-  mutate: Mutate<Project[]>;
+  mutate?: Mutate<Project[]>;
+  showAdviserColumn?: boolean;
+  showMentorColumn?: boolean;
+  showEditAction?: boolean;
+  showDeleteAction?: boolean;
 };
 
-const ColumnHeadings = [
+const columnHeadings = [
   "Project ID",
   "Project Name",
   "Level of Achievement",
@@ -29,21 +33,49 @@ const ColumnHeadings = [
   "Actions",
 ];
 
-const ProjectTable: FC<Props> = ({ projects, mutate }) => {
+const ProjectTable: FC<Props> = ({
+  projects,
+  mutate,
+  showAdviserColumn,
+  showMentorColumn,
+  showEditAction,
+  showDeleteAction,
+}) => {
+  const filteredColumnHeadings = columnHeadings.filter((heading) => {
+    switch (heading) {
+      case "Adviser":
+        return showAdviserColumn;
+
+      case "Mentor":
+        return showMentorColumn;
+
+      default:
+        return true;
+    }
+  });
+
   return (
     <>
       <TableContainer>
         <Table>
           <TableHead>
             <TableRow>
-              {ColumnHeadings.map((heading) => (
+              {filteredColumnHeadings.map((heading) => (
                 <TableCell key={heading}>{heading}</TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
             {projects.map((project) => (
-              <ProjectRow key={project.id} project={project} mutate={mutate} />
+              <ProjectRow
+                key={project.id}
+                project={project}
+                mutate={mutate}
+                showAdviserColumn={Boolean(showAdviserColumn)}
+                showMentorColumn={Boolean(showMentorColumn)}
+                showEditAction={Boolean(showEditAction)}
+                showDeleteAction={Boolean(showDeleteAction)}
+              />
             ))}
           </TableBody>
         </Table>

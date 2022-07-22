@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import NoneFound from "@/components/emptyStates/NoneFound";
-import CustomHead from "@/components/CustomHead";
+import CustomHead from "@/components/layout/CustomHead";
 // Helpers
 import { Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";

@@ -21,7 +21,7 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import CustomHead from "@/components/CustomHead";
+import CustomHead from "@/components/layout/CustomHead";
 // Hooks
 import useInfiniteFetch from "@/hooks/useInfiniteFetch";
 import { isError, isFetching } from "@/hooks/useFetch";

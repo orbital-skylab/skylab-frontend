@@ -1,8 +1,11 @@
-import { NavbarOption } from "@/helpers/navigation";
-import { userHasRole } from "@/helpers/roles";
-import { User } from "@/types/users";
-import { Button } from "@mui/material";
 import { FC } from "react";
+// Components
+import { Button } from "@mui/material";
+// Types
+import { User } from "@/types/users";
+import { NavbarOption } from "../../Navbar.types";
+// Helpers
+import { userHasRole } from "@/helpers/roles";
 
 type Props = {
   user?: User;

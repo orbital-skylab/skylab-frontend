@@ -59,7 +59,7 @@ const DeleteUserModal: FC<Props> = ({ open, setOpen, user, mutate }) => {
         open={open}
         handleClose={handleCloseModal}
         title={`Delete User`}
-        subheader={`You are deleting user ${user.name}. This action is irreversible, are you sure?`}
+        subheader={`You are deleting user ${user.name}.\n\nThis action is irreversible, are you sure?`}
         sx={{ width: "400px" }}
       >
         <Stack direction="row" justifyContent="space-between">

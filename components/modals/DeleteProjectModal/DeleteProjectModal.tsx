@@ -53,7 +53,7 @@ const DeleteProjectModal: FC<Props> = ({ project, open, setOpen, mutate }) => {
         open={open}
         handleClose={handleCloseModal}
         title={`Delete Project`}
-        subheader={`You are deleting project ${project.name}. This action is irreversible, are you sure?`}
+        subheader={`You are deleting project ${project.name}.\n\nThis action is irreversible, are you sure?`}
         sx={{ width: "400px" }}
       >
         <Stack direction="row" justifyContent="space-between">

@@ -2,13 +2,11 @@ import { ChangeEvent, FC, useEffect, useMemo, useState } from "react";
 // Components
 import Modal from "../Modal";
 import MultiDropdown from "@/components/formikFormControllers/MultiDropdown";
-import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
-import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
-import { Stack, Button, MenuItem, TextField, Typography } from "@mui/material";
-// Hooks@/contexts/useCohort
+import { Stack, Button, MenuItem, TextField } from "@mui/material";
+// Hooks
 import useApiCall from "@/hooks/useApiCall";
 import useCohort from "@/contexts/useCohort";
-import useFetch, { isFetching } from "@/hooks/useFetch";
+import useFetch from "@/hooks/useFetch";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 import { useRouter } from "next/router";
 // Helpers
@@ -46,14 +44,12 @@ const AddRolesModal: FC<Props> = ({ selectedRole, handleCloseModal }) => {
     }),
     [selectedCohortYear, selectedRole]
   );
-  const {
-    data: leanUsersWithoutStudentsResponse,
-    status: fetchLeanUsersStatus,
-  } = useFetch<GetLeanUsersResponse>({
-    endpoint: `/users/lean`,
-    queryParams: memoUsersQueryParams,
-    enabled: Boolean(selectedCohortYear) && Boolean(selectedCohortYear),
-  });
+  const { data: leanUsersWithoutStudentsResponse } =
+    useFetch<GetLeanUsersResponse>({
+      endpoint: `/users/lean`,
+      queryParams: memoUsersQueryParams,
+      enabled: Boolean(selectedCohortYear) && Boolean(selectedRole),
+    });
 
   const addStudents = useApiCall({
     method: HTTP_METHOD.POST,
@@ -118,32 +114,23 @@ const AddRolesModal: FC<Props> = ({ selectedRole, handleCloseModal }) => {
                     </MenuItem>
                   ))}
               </TextField>
-              <LoadingWrapper isLoading={isFetching(fetchLeanUsersStatus)}>
-                <NoDataWrapper
-                  noDataCondition={Boolean(
-                    !leanUsersWithoutStudentsResponse?.users.length
-                  )}
-                  fallback={<Typography>No users found</Typography>}
-                >
-                  <MultiDropdown
-                    name="userIds"
-                    label="Users"
-                    formik={formik}
-                    isCombobox
-                    options={
-                      leanUsersWithoutStudentsResponse &&
-                      leanUsersWithoutStudentsResponse.users
-                        ? leanUsersWithoutStudentsResponse.users.map(
-                            (leanUser) => ({
-                              label: `${leanUser.id}: ${leanUser.name}`,
-                              value: leanUser.id,
-                            })
-                          )
-                        : []
-                    }
-                  />
-                </NoDataWrapper>
-              </LoadingWrapper>
+              <MultiDropdown
+                name="userIds"
+                label="Users"
+                formik={formik}
+                isCombobox
+                options={
+                  leanUsersWithoutStudentsResponse &&
+                  leanUsersWithoutStudentsResponse.users
+                    ? leanUsersWithoutStudentsResponse.users.map(
+                        (leanUser) => ({
+                          label: `${leanUser.id}: ${leanUser.name}`,
+                          value: leanUser.id,
+                        })
+                      )
+                    : []
+                }
+              />
               <Stack
                 direction="row"
                 justifyContent="space-between"
