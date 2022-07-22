@@ -1,7 +1,5 @@
-import SnackbarAlert from "@/components/SnackbarAlert";
-import { Mutate } from "@/hooks/useFetch";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert";
-import { Project } from "@/types/projects";
+import { FC } from "react";
+// Components
 import {
   Table,
   TableBody,
@@ -10,8 +8,11 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { FC } from "react";
 import ProjectRow from "./ProjectRow";
+// Hooks
+import { Mutate } from "@/hooks/useFetch";
+// Types
+import { Project } from "@/types/projects";
 
 type Props = {
   projects: Project[];
@@ -29,11 +30,8 @@ const ColumnHeadings = [
 ];
 
 const ProjectTable: FC<Props> = ({ projects, mutate }) => {
-  const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
-
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <TableContainer>
         <Table>
           <TableHead>
@@ -45,13 +43,7 @@ const ProjectTable: FC<Props> = ({ projects, mutate }) => {
           </TableHead>
           <TableBody>
             {projects.map((project) => (
-              <ProjectRow
-                key={project.id}
-                project={project}
-                mutate={mutate}
-                setSuccess={setSuccess}
-                setError={setError}
-              />
+              <ProjectRow key={project.id} project={project} mutate={mutate} />
             ))}
           </TableBody>
         </Table>

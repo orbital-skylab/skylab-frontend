@@ -16,7 +16,7 @@ import {
 import Papa from "papaparse";
 import { checkValidity } from "@/helpers/batchForms";
 // Hooks
-import useSnackbarAlert from "@/hooks/useSnackbarAlert";
+import useAlert from "@/hooks/useAlert";
 // Types
 import {
   ADD_MENTORS_CSV_HEADERS,
@@ -38,11 +38,11 @@ const BatchAddMentorsForm: FC<Props> = ({
 }) => {
   const [fileDetails, setFileDetails] = useState<File | null>(null);
   const {
-    snackbar: parseStatus,
+    alert: parseStatus,
     handleClose: resetParseStatus,
     setSuccess: setSuccessfulParseStatus,
     setError: setUnsuccessfulParseStatus,
-  } = useSnackbarAlert();
+  } = useAlert();
 
   const handleUploadMentors = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length) {

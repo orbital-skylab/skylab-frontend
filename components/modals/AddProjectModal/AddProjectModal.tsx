@@ -10,7 +10,6 @@ import {
 import MultiDropdown from "@/components/formikFormControllers/MultiDropdown";
 import Dropdown from "@/components/formikFormControllers/Dropdown";
 import TextInput from "@/components/formikFormControllers/TextInput";
-import SnackbarAlert from "@/components/SnackbarAlert";
 import Modal from "../Modal";
 import { Button, MenuItem, Stack, TextField } from "@mui/material";
 // Helpers
@@ -19,8 +18,8 @@ import * as Yup from "yup";
 import { ERRORS } from "@/helpers/errors";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
-import useCohort from "@/hooks/useCohort";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
+import useCohort from "@/contexts/useCohort";
 import useFetch, { Mutate } from "@/hooks/useFetch";
 // Types
 import {
@@ -47,12 +46,7 @@ type Props = {
 };
 
 const AddProjectModal: FC<Props> = ({ open, setOpen, mutate }) => {
-  const {
-    snackbar,
-    handleClose: handleCloseSnackbar,
-    setSuccess,
-    setError,
-  } = useSnackbarAlert();
+  const { setSuccess, setError } = useSnackbarAlert();
   const { cohorts, currentCohortYear } = useCohort();
   const [selectedCohortYear, setSelectedCohortYear] = useState(
     currentCohortYear ?? ""
@@ -127,7 +121,6 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate }) => {
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
       <Modal open={open} handleClose={handleCloseModal} title={`Add Project`}>
         <Formik
           initialValues={initialValues}

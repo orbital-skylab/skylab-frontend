@@ -1,7 +1,6 @@
 import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from "react";
 // Components
 import { MenuItem, TextField } from "@mui/material";
-import SnackbarAlert from "@/components/SnackbarAlert";
 import Modal from "../Modal";
 import { Button, Stack, Typography } from "@mui/material";
 import StudentDetailsForm from "@/components/forms/StudentDetailsForm";
@@ -20,8 +19,8 @@ import {
 import { generateAddRoleValidationSchema } from "./AddRoleModal.helpers";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
-import useCohort from "@/hooks/useCohort";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
+import useCohort from "@/contexts/useCohort";
 // Types
 import { CreateRoleResponse, HTTP_METHOD } from "@/types/api";
 import { Mutate } from "@/hooks/useFetch";
@@ -48,12 +47,7 @@ const AddRoleModal: FC<Props> = ({
   isFetchingLeanProjects,
 }) => {
   const { cohorts, currentCohortYear } = useCohort();
-  const {
-    snackbar,
-    handleClose: handleCloseSnackbar,
-    setSuccess,
-    setError,
-  } = useSnackbarAlert();
+  const { setSuccess, setError } = useSnackbarAlert();
   const rolesThatUserDoesNotHave = Object.values(ROLES).filter(
     (role) => !getUserRoles(user).includes(role)
   );
@@ -126,7 +120,6 @@ const AddRoleModal: FC<Props> = ({
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
       <Modal
         open={open}
         handleClose={handleCloseModal}

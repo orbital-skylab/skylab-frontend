@@ -2,10 +2,9 @@ import { createContext, useMemo, useContext, useEffect } from "react";
 import {
   ICohort,
   CohortProviderProps,
-} from "@/hooks/useCohort/useCohort.types";
+} from "@/contexts/useCohort/useCohort.types";
 import { GetCohortResponse, GetCohortsResponse } from "@/types/cohorts";
-import useFetch, { isError, isFetching } from "../useFetch";
-import SnackbarAlert from "@/components/SnackbarAlert";
+import useFetch, { isError, isFetching } from "../../hooks/useFetch";
 import useSnackbarAlert from "../useSnackbarAlert";
 
 const CohortContext = createContext<ICohort>({
@@ -15,7 +14,7 @@ const CohortContext = createContext<ICohort>({
 });
 
 export const CohortProvider = ({ children }: CohortProviderProps) => {
-  const { snackbar, handleClose, setError } = useSnackbarAlert();
+  const { setError } = useSnackbarAlert();
 
   const {
     data: latestCohortResponse,
@@ -52,7 +51,6 @@ export const CohortProvider = ({ children }: CohortProviderProps) => {
 
   return (
     <CohortContext.Provider value={memoedValue}>
-      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       {children}
     </CohortContext.Provider>
   );

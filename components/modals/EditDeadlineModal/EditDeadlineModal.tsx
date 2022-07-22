@@ -4,6 +4,7 @@ import Dropdown from "@/components/formikFormControllers/Dropdown";
 import TextInput from "@/components/formikFormControllers/TextInput";
 import Modal from "../Modal";
 import { Button, Stack } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 // Helpers
 import {
   dateTimeLocalInputToIsoDate,
@@ -14,12 +15,11 @@ import * as Yup from "yup";
 import { ERRORS } from "@/helpers/errors";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Types
 import { HTTP_METHOD, GetDeadlinesResponse } from "@/types/api";
 import { Deadline, DEADLINE_TYPE } from "@/types/deadlines";
 import { Mutate } from "@/hooks/useFetch";
-import { LoadingButton } from "@mui/lab";
-
 interface EditDeadlineFormValuesType {
   name: string;
   dueBy: string;
@@ -31,18 +31,11 @@ type Props = {
   setOpen: Dispatch<SetStateAction<boolean>>;
   deadline: Deadline;
   mutate: Mutate<GetDeadlinesResponse>;
-  setSuccess: (message: string) => void;
-  setError: (error: unknown) => void;
 };
 
-const EditDeadlineModal: FC<Props> = ({
-  open,
-  setOpen,
-  deadline,
-  mutate,
-  setSuccess,
-  setError,
-}) => {
+const EditDeadlineModal: FC<Props> = ({ open, setOpen, deadline, mutate }) => {
+  const { setSuccess, setError } = useSnackbarAlert();
+
   const editDeadline = useApiCall({
     method: HTTP_METHOD.PUT,
     endpoint: `/deadlines/${deadline.id}`,

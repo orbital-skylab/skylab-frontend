@@ -1,11 +1,8 @@
 import { FC, useState } from "react";
 // Components
 import { Button, Stack, TableCell, TableRow } from "@mui/material";
-import SnackbarAlert from "@/components/SnackbarAlert";
 // Helpers
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
-// Hooks
-import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Types
 import { Mutate } from "@/hooks/useFetch";
 import { Cohort, GetCohortsResponse } from "@/types/cohorts";
@@ -15,7 +12,6 @@ import DeleteCohortModal from "@/components/modals/DeleteCohortModal";
 type Props = { cohort: Cohort; mutate: Mutate<GetCohortsResponse> };
 
 const CohortRow: FC<Props> = ({ cohort, mutate }) => {
-  const { snackbar, setSuccess, setError, handleClose } = useSnackbarAlert();
   const [isEditCohortOpen, setIsEditCohortOpen] = useState(false);
   const [isDeleteCohortOpen, setIsDeleteCohortOpen] = useState(false);
 
@@ -34,18 +30,13 @@ const CohortRow: FC<Props> = ({ cohort, mutate }) => {
         open={isDeleteCohortOpen}
         setOpen={setIsDeleteCohortOpen}
         mutate={mutate}
-        setSuccess={setSuccess}
-        setError={setError}
       />
       <EditCohortModal
         cohort={cohort}
         open={isEditCohortOpen}
         setOpen={setIsEditCohortOpen}
         mutate={mutate}
-        setSuccess={setSuccess}
-        setError={setError}
       />
-      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <TableRow>
         <TableCell>{cohort.academicYear}</TableCell>
         <TableCell>{isoDateToLocaleDateWithTime(cohort.startDate)}</TableCell>
