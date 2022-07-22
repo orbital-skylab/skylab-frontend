@@ -15,7 +15,7 @@ import GoBackButton from "@/components/buttons/GoBackButton";
 // Hooks
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import { useRouter } from "next/router";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/contexts/useAuth";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
 import { checkIfProjectsAdviser, userHasRole } from "@/helpers/roles";

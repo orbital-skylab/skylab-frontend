@@ -4,6 +4,7 @@ import Modal from "../Modal";
 import { Button, Stack } from "@mui/material";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Types
 import { HTTP_METHOD } from "@/types/api";
 import { Mutate } from "@/hooks/useFetch";
@@ -14,18 +15,10 @@ type Props = {
   setOpen: Dispatch<SetStateAction<boolean>>;
   user: User;
   mutate: Mutate<User[]>;
-  setSuccess: (message: string) => void;
-  setError: (error: unknown) => void;
 };
 
-const DeleteUserModal: FC<Props> = ({
-  open,
-  setOpen,
-  user,
-  mutate,
-  setSuccess,
-  setError,
-}) => {
+const DeleteUserModal: FC<Props> = ({ open, setOpen, user, mutate }) => {
+  const { setSuccess, setError } = useSnackbarAlert();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const deleteUser = useApiCall({

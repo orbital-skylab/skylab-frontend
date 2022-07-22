@@ -2,15 +2,14 @@ import { ChangeEvent, FC, useEffect, useMemo, useState } from "react";
 // Components
 import Modal from "../Modal";
 import MultiDropdown from "@/components/formikFormControllers/MultiDropdown";
-import SnackbarAlert from "@/components/SnackbarAlert";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import { Stack, Button, MenuItem, TextField, Typography } from "@mui/material";
-// Hooks
+// Hooks@/contexts/useCohort
 import useApiCall from "@/hooks/useApiCall";
-import useCohort from "@/hooks/useCohort";
+import useCohort from "@/contexts/useCohort";
 import useFetch, { isFetching } from "@/hooks/useFetch";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 import { useRouter } from "next/router";
 // Helpers
 import { Formik } from "formik";
@@ -35,12 +34,7 @@ const AddRolesModal: FC<Props> = ({ selectedRole, handleCloseModal }) => {
   const open = Boolean(selectedRole);
   const router = useRouter();
   const { cohorts, currentCohortYear } = useCohort();
-  const {
-    snackbar,
-    handleClose: handleCloseSnackbar,
-    setSuccess,
-    setError,
-  } = useSnackbarAlert();
+  const { setSuccess, setError } = useSnackbarAlert();
   const [selectedCohortYear, setSelectedCohortYear] = useState(
     currentCohortYear ?? ""
   );
@@ -102,7 +96,6 @@ const AddRolesModal: FC<Props> = ({ selectedRole, handleCloseModal }) => {
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
       <Modal
         open={open}
         handleClose={handleCloseModal}

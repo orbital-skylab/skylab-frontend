@@ -3,6 +3,7 @@ import { Dispatch, FC, SetStateAction } from "react";
 import TextInput from "@/components/formikFormControllers/TextInput";
 import Modal from "../Modal";
 import { Button, Stack } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 // Helpers
 import {
   dateTimeLocalInputToIsoDate,
@@ -13,6 +14,7 @@ import * as Yup from "yup";
 import { ERRORS } from "@/helpers/errors";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Types
 import { HTTP_METHOD } from "@/types/api";
 import { Mutate } from "@/hooks/useFetch";
@@ -21,7 +23,6 @@ import {
   EditCohortResponse,
   GetCohortsResponse,
 } from "@/types/cohorts";
-import { LoadingButton } from "@mui/lab";
 
 type EditCohortFormValuesType = Omit<Cohort, "academicYear">;
 
@@ -30,18 +31,11 @@ type Props = {
   setOpen: Dispatch<SetStateAction<boolean>>;
   cohort: Cohort;
   mutate: Mutate<GetCohortsResponse>;
-  setSuccess: (message: string) => void;
-  setError: (error: unknown) => void;
 };
 
-const EditCohortModal: FC<Props> = ({
-  open,
-  setOpen,
-  cohort,
-  mutate,
-  setSuccess,
-  setError,
-}) => {
+const EditCohortModal: FC<Props> = ({ open, setOpen, cohort, mutate }) => {
+  const { setSuccess, setError } = useSnackbarAlert();
+
   const editCohort = useApiCall({
     method: HTTP_METHOD.PUT,
     endpoint: `/cohorts/${cohort.academicYear}`,

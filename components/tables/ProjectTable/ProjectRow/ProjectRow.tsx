@@ -14,11 +14,9 @@ import { BASE_TRANSITION } from "@/styles/constants";
 type Props = {
   project: Project;
   mutate: Mutate<Project[]>;
-  setSuccess: (message: string) => void;
-  setError: (error: unknown) => void;
 };
 
-const ProjectRow: FC<Props> = ({ project, mutate, setSuccess, setError }) => {
+const ProjectRow: FC<Props> = ({ project, mutate }) => {
   const [isDeleteProjectOpen, setIsDeleteProjectOpen] = useState(false);
 
   const handleOpenDeleteModal = () => {
@@ -76,8 +74,6 @@ const ProjectRow: FC<Props> = ({ project, mutate, setSuccess, setError }) => {
         setOpen={setIsDeleteProjectOpen}
         project={project}
         mutate={mutate}
-        setSuccess={setSuccess}
-        setError={setError}
       />
       <TableRow>
         <TableCell>{project.id}</TableCell>

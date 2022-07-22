@@ -1,6 +1,5 @@
 import { Dispatch, FC, SetStateAction, useState } from "react";
 // Components
-import SnackbarAlert from "@/components/SnackbarAlert";
 import Modal from "../Modal";
 import ViewRole from "./ViewRole";
 import EditRole from "./EditRole";
@@ -8,8 +7,6 @@ import DeleteRole from "./DeleteRole";
 
 // Helpers
 import { toSingular } from "@/helpers/roles";
-// Hooks
-import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
 // Types
 import { Mutate } from "@/hooks/useFetch";
 import { User } from "@/types/users";
@@ -39,12 +36,6 @@ const ViewRoleModal: FC<Props> = ({
   leanProjects,
   isFetchingLeanProjects,
 }) => {
-  const {
-    snackbar,
-    handleClose: handleCloseSnackbar,
-    setSuccess,
-    setError,
-  } = useSnackbarAlert();
   const [mode, setMode] = useState<MODE>(MODE.VIEW);
 
   const handleCloseModal = () => {
@@ -84,8 +75,6 @@ const ViewRoleModal: FC<Props> = ({
             selectedRole={selectedRole}
             handleCloseModal={handleCloseModal}
             setViewMode={setViewMode}
-            setSuccess={setSuccess}
-            setError={setError}
             mutate={mutate}
             leanProjects={leanProjects}
             isFetchingLeanProjects={isFetchingLeanProjects}
@@ -99,8 +88,6 @@ const ViewRoleModal: FC<Props> = ({
             selectedRole={selectedRole}
             handleCloseModal={handleCloseModal}
             setViewMode={setViewMode}
-            setSuccess={setSuccess}
-            setError={setError}
             mutate={mutate}
           />
         );
@@ -109,7 +96,6 @@ const ViewRoleModal: FC<Props> = ({
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
       <Modal
         open={Boolean(selectedRole)}
         handleClose={handleCloseModal}

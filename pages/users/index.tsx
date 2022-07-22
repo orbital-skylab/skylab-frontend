@@ -1,7 +1,7 @@
 import Body from "@/components/layout/Body";
 import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 import { PAGES } from "@/helpers/navigation";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/contexts/useAuth";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect } from "react";

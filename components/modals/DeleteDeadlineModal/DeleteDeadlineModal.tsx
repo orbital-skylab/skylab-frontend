@@ -4,6 +4,7 @@ import Modal from "../Modal";
 import { Button, Stack } from "@mui/material";
 // Hooks
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Types
 import { HTTP_METHOD, GetDeadlinesResponse } from "@/types/api";
 import { Deadline } from "@/types/deadlines";
@@ -14,8 +15,6 @@ type Props = {
   setOpen: Dispatch<SetStateAction<boolean>>;
   deadline: Deadline;
   mutate: Mutate<GetDeadlinesResponse>;
-  setSuccess: (message: string) => void;
-  setError: (error: unknown) => void;
 };
 
 const DeleteDeadlineModal: FC<Props> = ({
@@ -23,9 +22,9 @@ const DeleteDeadlineModal: FC<Props> = ({
   setOpen,
   deadline,
   mutate,
-  setSuccess,
-  setError,
 }) => {
+  const { setSuccess, setError } = useSnackbarAlert();
+
   const deleteDeadline = useApiCall({
     method: HTTP_METHOD.DELETE,
     endpoint: `/deadlines/${deadline.id}`,

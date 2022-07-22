@@ -15,7 +15,7 @@ import NoneFound from "@/components/emptyStates/NoneFound/NoneFound";
 import SpreadAttribute from "@/components/typography/SpreadAttribute";
 import CustomHead from "@/components/CustomHead";
 // Hooks
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/contexts/useAuth";
 import useFetch, { FETCH_STATUS } from "@/hooks/useFetch";
 // Helpers
 import { PAGES } from "@/helpers/navigation";

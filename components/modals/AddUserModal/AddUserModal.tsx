@@ -1,7 +1,6 @@
 import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from "react";
 // Components
 import { MenuItem, TextField } from "@mui/material";
-import SnackbarAlert from "@/components/SnackbarAlert";
 import Modal from "../Modal";
 import { Button, Stack, Typography } from "@mui/material";
 import StudentDetailsForm from "@/components/forms/StudentDetailsForm";
@@ -19,8 +18,8 @@ import {
 import { generateValidationSchema } from "./AddUserModal.helpers";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
-import useCohort from "@/hooks/useCohort";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
+import useCohort from "@/contexts/useCohort";
 import { useRouter } from "next/router";
 // Types
 import { HTTP_METHOD } from "@/types/api";
@@ -44,12 +43,7 @@ const AddUserModal: FC<Props> = ({
 }) => {
   const router = useRouter();
   const { cohorts, currentCohortYear } = useCohort();
-  const {
-    snackbar,
-    handleClose: handleCloseSnackbar,
-    setSuccess,
-    setError,
-  } = useSnackbarAlert();
+  const { setSuccess, setError } = useSnackbarAlert();
   const [selectedRole, setSelectedRole] = useState<ROLES>(ROLES.STUDENTS);
 
   const addUser = useApiCall({
@@ -99,7 +93,6 @@ const AddUserModal: FC<Props> = ({
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
       <Modal open={open} handleClose={handleCloseModal} title={`Adding User`}>
         <Formik
           initialValues={initialValues}
