@@ -31,7 +31,7 @@ enum TAB {
   DEADLINES = "Upcoming Deadlines",
   SUBMISSIONS = "Your Teams' Submissions",
   MANAGE_TEAMS = "Manage Your Teams",
-  MANAGE_RELATIONSHIPS = "Manage Evaluation Relationships",
+  MANAGE_RELATIONSHIPS = "Manage Evaluation Relations",
 }
 
 const AdviserDashboard: NextPage = () => {

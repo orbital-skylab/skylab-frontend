@@ -3,6 +3,7 @@ import { Deadline, DeadlineDeliverable, Section } from "./deadlines";
 import { EvaluationGroup } from "./groups";
 import { Mentor } from "./mentors";
 import { LeanProject, Project } from "./projects";
+import { LeanEvaluationRelation } from "./relations";
 import {
   AdministratorRole,
   AdviserRole,
@@ -204,6 +205,28 @@ export type CreateGroupResponse = {
 
 export type EditGroupResponse = {
   group: EvaluationGroup;
+};
+
+/**
+ * Evaluation Relations Endpoints:
+ * TODO: Add Link
+ */
+export type CreateRelationResponse = {
+  relation: {
+    id: number;
+    fromProject: Project;
+    toProject: Project;
+  };
+};
+
+export type GetRelationsUnderAdviserResponse = {
+  relations: LeanEvaluationRelation[];
+};
+
+export type DeleteProjectRelationsResponse = {
+  relations: {
+    count: number;
+  };
 };
 
 /**
