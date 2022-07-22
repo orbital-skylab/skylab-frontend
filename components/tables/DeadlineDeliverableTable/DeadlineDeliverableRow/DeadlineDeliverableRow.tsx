@@ -19,7 +19,7 @@ import {
 } from "@/helpers/submissions";
 import { PAGES } from "@/helpers/navigation";
 // Hooks
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/contexts/useAuth";
 import { useRouter } from "next/router";
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
 // Types

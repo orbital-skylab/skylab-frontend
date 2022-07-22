@@ -2,7 +2,6 @@ import type { NextPage } from "next";
 // Components
 import Body from "@/components/layout/Body";
 import TextInput from "@/components/formikFormControllers/TextInput";
-import SnackbarAlert from "@/components/layout/SnackbarAlert";
 import {
   Box,
   Button,
@@ -18,8 +17,8 @@ import CustomHead from "@/components/layout/CustomHead";
 import { Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
 // Hooks
-import useAuth from "@/hooks/useAuth";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert";
+import useAuth from "@/contexts/useAuth";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 import { useRouter } from "next/router";
 // Constants
 import { ERRORS } from "@/helpers/errors";
@@ -35,7 +34,7 @@ const ChangePassword: NextPage = () => {
   const router = useRouter();
   const { token, id } = router.query;
   const { changePassword } = useAuth();
-  const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
+  const { setSuccess, setError } = useSnackbarAlert();
 
   const initialValues: ChangePasswordFormValuesType = {
     newPassword: "",
@@ -79,7 +78,6 @@ const ChangePassword: NextPage = () => {
         title="Change Password"
         description="Change your password using the link received in your inbox!"
       />
-      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <Body sx={{ display: "grid", placeItems: "center" }}>
         <NoDataWrapper
           noDataCondition={!token || !id}

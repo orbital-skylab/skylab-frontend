@@ -1,7 +1,6 @@
 import { Dispatch, FC, SetStateAction } from "react";
 // Components
 import MultiDropdown from "@/components/formikFormControllers/MultiDropdown";
-import SnackbarAlert from "@/components/layout/SnackbarAlert";
 import Modal from "../Modal";
 import { Button, Stack } from "@mui/material";
 // Helpers
@@ -10,8 +9,8 @@ import * as Yup from "yup";
 import { ERRORS } from "@/helpers/errors";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
-import useAuth from "@/hooks/useAuth";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
+import useAuth from "@/contexts/useAuth";
 import useFetch, { Mutate } from "@/hooks/useFetch";
 // Types
 import {
@@ -32,12 +31,7 @@ type Props = {
 
 const AddGroupModal: FC<Props> = ({ open, setOpen, mutate }) => {
   const { user } = useAuth();
-  const {
-    snackbar,
-    handleClose: handleCloseSnackbar,
-    setSuccess,
-    setError,
-  } = useSnackbarAlert();
+  const { setSuccess, setError } = useSnackbarAlert();
 
   const addGroup = useApiCall({
     method: HTTP_METHOD.POST,
@@ -86,7 +80,6 @@ const AddGroupModal: FC<Props> = ({ open, setOpen, mutate }) => {
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
       <Modal open={open} handleClose={handleCloseModal} title={`Add Group`}>
         <Formik
           initialValues={initialValues}

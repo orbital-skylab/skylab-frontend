@@ -6,6 +6,7 @@ import AdministratorDetailsForm from "@/components/forms/AdministratorDetailsFor
 import AdviserDetailsForm from "@/components/forms/AdviserDetailsForm";
 import MentorDetailsForm from "@/components/forms/MentorDetailsForm";
 import StudentDetailsForm from "@/components/forms/StudentDetailsForm";
+import { LoadingButton } from "@mui/lab";
 // Helpers
 import {
   generateInitialValues,
@@ -19,21 +20,19 @@ import {
 } from "@/helpers/roles";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Types
 import { Mutate } from "@/hooks/useFetch";
 import { EditRoleResponse, HTTP_METHOD } from "@/types/api";
 import { AddOrEditRoleFormValuesType, ROLES } from "@/types/roles";
 import { User } from "@/types/users";
 import { LeanProject } from "@/types/projects";
-import { LoadingButton } from "@mui/lab";
 
 type Props = {
   user: User;
   selectedRole: ROLES | null;
   handleCloseModal: () => void;
   setViewMode: () => void;
-  setSuccess: (message: string) => void;
-  setError: (error: unknown) => void;
   mutate: Mutate<User[]>;
   leanProjects: LeanProject[] | undefined;
   isFetchingLeanProjects: boolean;
@@ -44,12 +43,11 @@ const EditRole: FC<Props> = ({
   selectedRole,
   handleCloseModal,
   setViewMode,
-  setSuccess,
-  setError,
   mutate,
   leanProjects,
   isFetchingLeanProjects,
 }) => {
+  const { setSuccess, setError } = useSnackbarAlert();
   const editRole = useApiCall({
     method: HTTP_METHOD.PUT,
     endpoint: `/${selectedRole?.toLowerCase()}/${getRoleId(

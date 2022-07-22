@@ -1,30 +1,25 @@
-import {
-  SnackbarAlertType,
-  SNACKBAR_ALERT_INITIAL,
-} from "@/components/layout/SnackbarAlert";
+import { AlertType, ALERT_INITIAL } from "@/components/layout/SnackbarAlert";
 import { useState } from "react";
 
-const useSnackbarAlert = () => {
-  const [snackbar, setSnackbar] = useState<SnackbarAlertType>(
-    SNACKBAR_ALERT_INITIAL
-  );
+const useAlert = () => {
+  const [alert, setAlert] = useState<AlertType>(ALERT_INITIAL);
 
   const setInfo = (message: string) => {
-    setSnackbar({
+    setAlert({
       message,
       severity: "info",
     });
   };
 
   const setSuccess = (message: string) => {
-    setSnackbar({
+    setAlert({
       message,
       severity: "success",
     });
   };
 
   const setWarning = (message: string) => {
-    setSnackbar({
+    setAlert({
       message,
       severity: "warning",
     });
@@ -32,12 +27,12 @@ const useSnackbarAlert = () => {
 
   const setError = (error: unknown) => {
     if (typeof error === "string") {
-      setSnackbar({
+      setAlert({
         message: error,
         severity: "error",
       });
     } else {
-      setSnackbar({
+      setAlert({
         message: error instanceof Error ? error.message : String(error),
         severity: "error",
       });
@@ -45,12 +40,12 @@ const useSnackbarAlert = () => {
   };
 
   const handleClose = () => {
-    setSnackbar(SNACKBAR_ALERT_INITIAL);
+    setAlert(ALERT_INITIAL);
   };
 
   return {
-    snackbar,
-    setSnackbar,
+    alert,
+    setAlert,
     setInfo,
     setSuccess,
     setWarning,
@@ -58,4 +53,4 @@ const useSnackbarAlert = () => {
     handleClose,
   };
 };
-export default useSnackbarAlert;
+export default useAlert;

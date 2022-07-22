@@ -2,7 +2,6 @@ import { useState } from "react";
 // Components
 import Body from "@/components/layout/Body";
 import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
-import SnackbarAlert from "@/components/layout/SnackbarAlert";
 import HeadingWithCsvTemplate from "@/components/csvForms/HeadingWithCsvTemplate/HeadingWithCsvTemplate";
 import BatchAddProjectsAndStudentsForm, {
   AddProjectsAndStudentsData,
@@ -21,16 +20,15 @@ import BatchAddMentorsForm, {
 } from "@/components/csvForms/BatchAddMentorsForm";
 import { Box, Stack } from "@mui/material";
 // Hooks
-import useApiCall from "@/hooks/useApiCall";
-import { isCalling } from "@/hooks/useApiCall/useApiCall.helpers";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert";
+import useApiCall, { isCalling } from "@/hooks/useApiCall";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Types
 import type { NextPage } from "next";
 import { HTTP_METHOD } from "@/types/api";
 import { ROLES } from "@/types/roles";
 
 const CsvAdd: NextPage = () => {
-  const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
+  const { setSuccess, setError } = useSnackbarAlert();
 
   /** Add Projects and Students Functions */
   const [addProjectsAndStudentsData, setAddProjectsAndStudentsData] =
@@ -106,7 +104,6 @@ const CsvAdd: NextPage = () => {
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <Body authorizedRoles={[ROLES.ADMINISTRATORS]}>
         <AutoBreadcrumbs />
         <Stack direction="column" spacing="2rem">

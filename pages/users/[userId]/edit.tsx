@@ -2,7 +2,6 @@ import type { NextPage } from "next";
 // Components
 import Body from "@/components/layout/Body";
 import TextInput from "@/components/formikFormControllers/TextInput";
-import SnackbarAlert from "@/components/layout/SnackbarAlert";
 import { Card, CardContent, Container, Stack, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import GoBackButton from "@/components/buttons/GoBackButton";
@@ -11,10 +10,10 @@ import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import UnauthorizedWrapper from "@/components/wrappers/UnauthorizedWrapper";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import { useRouter } from "next/router";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/contexts/useAuth";
 // Helpers
 import { Formik } from "formik";
 import { areAllEmptyValues, stripEmptyStrings } from "@/helpers/forms";
@@ -44,7 +43,7 @@ const EditProfile: NextPage = () => {
     method: HTTP_METHOD.PUT,
     endpoint: `/users/${userId}`,
   });
-  const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
+  const { setSuccess, setError } = useSnackbarAlert();
 
   const initialValues: EditProfileFormValues = {
     name: user?.name ?? "",
@@ -70,7 +69,6 @@ const EditProfile: NextPage = () => {
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <Body
         isLoading={isFetching(getUserStatus)}
         authorizedRoles={[ROLES.ADMINISTRATORS]}
@@ -137,10 +135,7 @@ const EditProfile: NextPage = () => {
                               <LoadingButton
                                 type="submit"
                                 variant="contained"
-                                disabled={
-                                  areAllEmptyValues(formik.values) ||
-                                  snackbar.severity === "success"
-                                }
+                                disabled={areAllEmptyValues(formik.values)}
                                 loading={formik.isSubmitting}
                               >
                                 Save

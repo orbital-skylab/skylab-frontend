@@ -2,7 +2,7 @@
 import { ApiServiceBuilder } from "@/helpers/api";
 import { PAGES } from "@/helpers/navigation";
 import { HTTP_METHOD } from "@/types/api";
-import { AuthProviderProps, IAuth } from "@/hooks/useAuth/useAuth.types";
+import { AuthProviderProps, IAuth } from "@/contexts/useAuth/useAuth.types";
 import { User } from "@/types/users";
 import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";

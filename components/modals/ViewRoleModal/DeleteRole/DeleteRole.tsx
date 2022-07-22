@@ -5,8 +5,9 @@ import { Button, Stack, Typography } from "@mui/material";
 import { getRoleId, toSingular } from "@/helpers/roles";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
-import { Mutate } from "@/hooks/useFetch";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Types
+import { Mutate } from "@/hooks/useFetch";
 import { HTTP_METHOD } from "@/types/api";
 import { ROLES } from "@/types/roles";
 import { RoleMetadata, User } from "@/types/users";
@@ -16,8 +17,6 @@ type Props = {
   selectedRole: ROLES | null;
   handleCloseModal: () => void;
   setViewMode: () => void;
-  setSuccess: (message: string) => void;
-  setError: (error: unknown) => void;
   mutate: Mutate<User[]>;
 };
 
@@ -26,10 +25,9 @@ const DeleteRole: FC<Props> = ({
   selectedRole,
   handleCloseModal,
   setViewMode,
-  setSuccess,
-  setError,
   mutate,
 }) => {
+  const { setSuccess, setError } = useSnackbarAlert();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const deleteRole = useApiCall({

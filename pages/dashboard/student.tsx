@@ -10,7 +10,7 @@ import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import NoneFound from "@/components/emptyStates/NoneFound";
 // Hooks
 import useFetch, { isFetching } from "@/hooks/useFetch";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/contexts/useAuth";
 // Helpers
 import { isFuture } from "@/helpers/dates";
 // Type

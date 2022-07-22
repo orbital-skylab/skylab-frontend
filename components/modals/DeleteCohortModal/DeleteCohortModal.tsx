@@ -4,6 +4,7 @@ import Modal from "../Modal";
 import { Button, Stack } from "@mui/material";
 // Hooks
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Types
 import { HTTP_METHOD } from "@/types/api";
 import { Mutate } from "@/hooks/useFetch";
@@ -14,18 +15,11 @@ type Props = {
   setOpen: Dispatch<SetStateAction<boolean>>;
   cohort: Cohort;
   mutate: Mutate<GetCohortsResponse>;
-  setSuccess: (message: string) => void;
-  setError: (error: unknown) => void;
 };
 
-const DeleteCohortModal: FC<Props> = ({
-  open,
-  setOpen,
-  cohort,
-  mutate,
-  setSuccess,
-  setError,
-}) => {
+const DeleteCohortModal: FC<Props> = ({ open, setOpen, cohort, mutate }) => {
+  const { setSuccess, setError } = useSnackbarAlert();
+
   const deleteCohort = useApiCall({
     method: HTTP_METHOD.DELETE,
     endpoint: `/cohorts/${cohort.academicYear}`,

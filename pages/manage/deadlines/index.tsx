@@ -15,7 +15,7 @@ import useFetch, { isFetching, isError } from "@/hooks/useFetch";
 import { Cohort } from "@/types/cohorts";
 import { Add } from "@mui/icons-material";
 import AddDeadlineModal from "@/components/modals/AddDeadlineModal";
-import useCohort from "@/hooks/useCohort";
+import useCohort from "@/contexts/useCohort";
 import { ROLES } from "@/types/roles";
 import { GetDeadlinesResponse } from "@/types/api";
 

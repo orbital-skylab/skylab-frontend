@@ -34,7 +34,7 @@ import AddRolesModal from "@/components/modals/AddRolesModal";
 // Helpers
 import { toSingular } from "@/helpers/roles";
 // Hooks
-import useCohort from "@/hooks/useCohort";
+import useCohort from "@/contexts/useCohort";
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import useInfiniteFetch, {
   createBottomOfPageRef,

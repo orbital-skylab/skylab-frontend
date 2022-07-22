@@ -10,7 +10,7 @@ import { BASE_TRANSITION } from "@/styles/constants";
 // Types
 import type { NextPage } from "next";
 import { ROLES } from "@/types/roles";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/contexts/useAuth";
 import { userHasRole } from "@/helpers/roles";
 
 const pages = [

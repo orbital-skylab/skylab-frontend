@@ -1,3 +1,3 @@
 import { AlertColor } from "@mui/material";
 
-export type SnackbarAlertType = { severity: AlertColor; message: string };
+export type AlertType = { severity: AlertColor; message: string };

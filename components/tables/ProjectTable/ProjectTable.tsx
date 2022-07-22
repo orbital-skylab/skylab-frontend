@@ -1,7 +1,5 @@
-import SnackbarAlert from "@/components/layout/SnackbarAlert";
-import { Mutate } from "@/hooks/useFetch";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert";
-import { Project } from "@/types/projects";
+import { FC } from "react";
+// Components
 import {
   Table,
   TableBody,
@@ -10,8 +8,11 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { FC } from "react";
 import ProjectRow from "./ProjectRow";
+// Hooks
+import { Mutate } from "@/hooks/useFetch";
+// Types
+import { Project } from "@/types/projects";
 
 type Props = {
   projects: Project[];
@@ -40,8 +41,6 @@ const ProjectTable: FC<Props> = ({
   showEditAction,
   showDeleteAction,
 }) => {
-  const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
-
   const filteredColumnHeadings = columnHeadings.filter((heading) => {
     switch (heading) {
       case "Adviser":
@@ -57,7 +56,6 @@ const ProjectTable: FC<Props> = ({
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <TableContainer>
         <Table>
           <TableHead>
@@ -73,8 +71,6 @@ const ProjectTable: FC<Props> = ({
                 key={project.id}
                 project={project}
                 mutate={mutate}
-                setSuccess={setSuccess}
-                setError={setError}
                 showAdviserColumn={Boolean(showAdviserColumn)}
                 showMentorColumn={Boolean(showMentorColumn)}
                 showEditAction={Boolean(showEditAction)}

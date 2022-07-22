@@ -13,7 +13,7 @@ import NavbarButtonsMobile from "./NavbarButtonsMobile";
 import NavbarButtonsDesktop from "./NavbarButtonsDesktop";
 import SignInButton from "./SignInButton";
 // Hooks
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/contexts/useAuth";
 // Helpers
 import { useRouter } from "next/router";
 import Link from "next/link";

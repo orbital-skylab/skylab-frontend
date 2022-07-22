@@ -7,7 +7,7 @@ import HoverLink from "@/components/typography/HoverLink";
 import { generateSubmissionStatus } from "@/helpers/submissions";
 import { PAGES } from "@/helpers/navigation";
 // Hooks
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/contexts/useAuth";
 // Types
 import { PossibleSubmission, STATUS } from "@/types/submissions";
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";

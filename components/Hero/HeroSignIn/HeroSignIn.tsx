@@ -1,7 +1,6 @@
 import { FC } from "react";
 // Components
 import TextInput from "@/components/formikFormControllers/TextInput";
-import SnackbarAlert from "@/components/layout/SnackbarAlert/SnackbarAlert";
 import { Box, Stack, Typography, Button } from "@mui/material";
 import Link from "next/link";
 // Helpers
@@ -9,8 +8,8 @@ import * as Yup from "yup";
 import { PAGES } from "@/helpers/navigation";
 import { Formik, FormikHelpers } from "formik";
 // Hooks
-import useAuth from "@/hooks/useAuth";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert";
+import useAuth from "@/contexts/useAuth";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 import { ERRORS } from "@/helpers/errors";
 
 export const LANDING_SIGN_IN_ID = "landingSignIn";
@@ -22,7 +21,7 @@ interface SignInFormValuesType {
 
 const HeroSignIn: FC = () => {
   const { user, signIn } = useAuth();
-  const { snackbar, setSuccess, setError, handleClose } = useSnackbarAlert();
+  const { setSuccess, setError } = useSnackbarAlert();
 
   const initialValues: SignInFormValuesType = {
     email: "",
@@ -46,7 +45,6 @@ const HeroSignIn: FC = () => {
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       {!user ? (
         <Box sx={{ width: "100%" }} id={LANDING_SIGN_IN_ID}>
           <Formik

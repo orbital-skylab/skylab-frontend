@@ -14,7 +14,7 @@ import { Add } from "@mui/icons-material";
 import AddGroupModal from "@/components/modals/AddGroupModal";
 // Hooks
 import useFetch, { isFetching } from "@/hooks/useFetch";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/contexts/useAuth";
 // Helpers
 import { isFuture } from "@/helpers/dates";
 import { groupProjectsByGroupId } from "@/helpers/projects";

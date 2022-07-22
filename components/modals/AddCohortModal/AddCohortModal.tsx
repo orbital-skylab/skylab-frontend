@@ -1,7 +1,6 @@
 import { Dispatch, FC, SetStateAction } from "react";
 // Components
 import TextInput from "@/components/formikFormControllers/TextInput";
-import SnackbarAlert from "@/components/layout/SnackbarAlert";
 import Modal from "../Modal";
 import { Button, Stack } from "@mui/material";
 // Helpers
@@ -15,7 +14,7 @@ import * as Yup from "yup";
 import { ERRORS } from "@/helpers/errors";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Types
 import { HTTP_METHOD } from "@/types/api";
 import { Mutate } from "@/hooks/useFetch";
@@ -30,12 +29,7 @@ type Props = {
 };
 
 const AddCohortModal: FC<Props> = ({ open, setOpen, mutate }) => {
-  const {
-    snackbar,
-    handleClose: handleCloseSnackbar,
-    setSuccess,
-    setError,
-  } = useSnackbarAlert();
+  const { setSuccess, setError } = useSnackbarAlert();
 
   const addCohort = useApiCall({
     method: HTTP_METHOD.POST,
@@ -83,7 +77,6 @@ const AddCohortModal: FC<Props> = ({ open, setOpen, mutate }) => {
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
       <Modal open={open} handleClose={handleCloseModal} title={`Add Cohort`}>
         <Formik
           initialValues={initialValues}

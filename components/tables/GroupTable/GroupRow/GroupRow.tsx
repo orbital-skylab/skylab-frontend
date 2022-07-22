@@ -3,6 +3,9 @@ import { FC, useState } from "react";
 import HoverLink from "@/components/typography/HoverLink";
 import DeleteGroupModal from "@/components/modals/DeleteGroupModal";
 import { Box, Button, Stack, TableCell, TableRow } from "@mui/material";
+import EditGroupModal from "@/components/modals/EditGroupModal";
+// Hooks
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
 // Types
@@ -10,15 +13,12 @@ import { Mutate } from "@/hooks/useFetch";
 import { Project } from "@/types/projects";
 import { BASE_TRANSITION } from "@/styles/constants";
 import { GetProjectsResponse } from "@/types/api";
-import EditGroupModal from "@/components/modals/EditGroupModal";
 
 type Props = {
   groupId: number;
   groupSet: Set<Project>;
   mutate: Mutate<GetProjectsResponse>;
   showAdviserColumn: boolean;
-  setSuccess: (message: string) => void;
-  setError: (error: unknown) => void;
 };
 
 const GroupRow: FC<Props> = ({
@@ -26,9 +26,9 @@ const GroupRow: FC<Props> = ({
   groupSet,
   mutate,
   showAdviserColumn,
-  setSuccess,
-  setError,
 }) => {
+  const { setSuccess, setError } = useSnackbarAlert();
+
   const [isEditGroupOpen, setIsEditGroupOpen] = useState(false);
   const [isDeleteGroupOpen, setIsDeleteGroupOpen] = useState(false);
 

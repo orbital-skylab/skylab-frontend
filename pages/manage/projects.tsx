@@ -32,7 +32,7 @@ import {
 } from "@mui/material";
 import { Add } from "@mui/icons-material";
 // Hooks
-import useCohort from "@/hooks/useCohort";
+import useCohort from "@/contexts/useCohort";
 import { isFetching } from "@/hooks/useFetch";
 import useInfiniteFetch, {
   createBottomOfPageRef,

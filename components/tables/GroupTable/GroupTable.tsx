@@ -1,8 +1,5 @@
-import SnackbarAlert from "@/components/layout/SnackbarAlert";
-import { Mutate } from "@/hooks/useFetch";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert";
-import { GetProjectsResponse } from "@/types/api";
-import { Project } from "@/types/projects";
+import { FC } from "react";
+// Components
 import {
   Table,
   TableBody,
@@ -11,8 +8,11 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { FC } from "react";
 import GroupRow from "./GroupRow";
+// Types
+import { Mutate } from "@/hooks/useFetch";
+import { GetProjectsResponse } from "@/types/api";
+import { Project } from "@/types/projects";
 
 type Props = {
   projectsByGroupMap: Map<number, Set<Project>>;
@@ -27,8 +27,6 @@ const GroupTable: FC<Props> = ({
   mutate,
   showAdviserColumn,
 }) => {
-  const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
-
   const filteredColumnHeadings = columnHeadings.filter((heading) => {
     switch (heading) {
       case "Adviser":
@@ -41,7 +39,6 @@ const GroupTable: FC<Props> = ({
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <TableContainer>
         <Table>
           <TableHead>
@@ -59,8 +56,6 @@ const GroupTable: FC<Props> = ({
                 groupSet={groupSet}
                 mutate={mutate}
                 showAdviserColumn={Boolean(showAdviserColumn)}
-                setSuccess={setSuccess}
-                setError={setError}
               />
             ))}
           </TableBody>

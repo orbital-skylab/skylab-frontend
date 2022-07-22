@@ -13,9 +13,7 @@ import { BASE_TRANSITION } from "@/styles/constants";
 
 type Props = {
   project: Project;
-  mutate?: Mutate<Project[]>;
-  setSuccess: (message: string) => void;
-  setError: (error: unknown) => void;
+  mutate: Mutate<Project[]> | undefined;
   showAdviserColumn: boolean;
   showMentorColumn: boolean;
   showEditAction: boolean;
@@ -25,8 +23,6 @@ type Props = {
 const ProjectRow: FC<Props> = ({
   project,
   mutate,
-  setSuccess,
-  setError,
   showAdviserColumn,
   showMentorColumn,
   showEditAction,
@@ -90,8 +86,6 @@ const ProjectRow: FC<Props> = ({
           setOpen={setIsDeleteProjectOpen}
           project={project}
           mutate={mutate}
-          setSuccess={setSuccess}
-          setError={setError}
         />
       )}
       <TableRow>

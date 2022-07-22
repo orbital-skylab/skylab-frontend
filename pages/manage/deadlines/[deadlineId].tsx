@@ -2,14 +2,13 @@ import { useState } from "react";
 // Components
 import GoBackButton from "@/components/buttons/GoBackButton";
 import Body from "@/components/layout/Body";
-import SnackbarAlert from "@/components/layout/SnackbarAlert";
 import DeadlineDescriptionCard from "@/components/questions/DeadlineDescriptionCard";
 import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
 import EditQuestionSectionsList from "@/components/questions/EditQuestionSectionsList";
 import QuestionSectionsList from "@/components/questions/QuestionSectionsList";
 // Hooks
 import useFetch, { isError, isFetching } from "@/hooks/useFetch";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 import { useRouter } from "next/router";
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
 import useQuestionSections from "@/hooks/useQuestionSections";
@@ -29,12 +28,7 @@ import { ROLES } from "@/types/roles";
 const DeadlineQuestions: NextPage = () => {
   const router = useRouter();
   const { deadlineId } = router.query;
-  const {
-    snackbar,
-    handleClose: handleCloseSnackbar,
-    setSuccess,
-    setError,
-  } = useSnackbarAlert();
+  const { setSuccess, setError } = useSnackbarAlert();
   const [deadlineDescription, setDeadlineDescription] = useState("");
   const { sections, actions: questionSectionsActions } = useQuestionSections();
   const { setSections, addSection, clearSections } = questionSectionsActions;
@@ -120,7 +114,6 @@ const DeadlineQuestions: NextPage = () => {
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
       <Body
         isLoading={isFetching(fetchDeadlineDetailsStatus)}
         isError={isError(fetchDeadlineDetailsStatus)}

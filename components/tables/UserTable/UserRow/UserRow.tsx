@@ -9,15 +9,13 @@ import {
   TableRow,
   Tooltip,
 } from "@mui/material";
-import SnackbarAlert from "@/components/layout/SnackbarAlert";
 import ViewRoleModal from "@/components/modals/ViewRoleModal";
 import AddRoleModal from "@/components/modals/AddRoleModal";
 import DeleteUserModal from "@/components/modals/DeleteUserModal";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
 // Hooks
-import useSnackbarAlert from "@/hooks/useSnackbarAlert";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/contexts/useAuth";
 // Types
 import { User } from "@/types/users";
 import { ROLES } from "@/types/roles";
@@ -39,7 +37,6 @@ const UserRow: FC<Props> = ({
   isFetchingLeanProjects,
 }) => {
   const { previewSiteAs } = useAuth();
-  const { snackbar, setSuccess, setError, handleClose } = useSnackbarAlert();
   const [isDeleteUserOpen, setIsDeleteUserOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState<ROLES | null>(null);
   const [isAddRoleOpen, setIsAddRoleOpen] = useState(false);
@@ -137,10 +134,7 @@ const UserRow: FC<Props> = ({
         setOpen={setIsDeleteUserOpen}
         user={user}
         mutate={mutate}
-        setSuccess={setSuccess}
-        setError={setError}
       />
-      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <TableRow>
         <TableCell>{user.id}</TableCell>
         <TableCell>{user.name}</TableCell>

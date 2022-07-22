@@ -5,14 +5,13 @@ import NoneFound from "@/components/emptyStates/NoneFound";
 import GoBackButton from "@/components/buttons/GoBackButton";
 import { Typography } from "@mui/material";
 import QuestionSectionsList from "@/components/questions/QuestionSectionsList";
-import SnackbarAlert from "@/components/layout/SnackbarAlert";
 // Hooks
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import { useRouter } from "next/router";
 import useAnswers from "@/hooks/useAnswers";
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert";
-import useAuth from "@/hooks/useAuth";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
+import useAuth from "@/contexts/useAuth";
 // Helpers
 import { isSubmissionsFromProjectOrUser } from "@/helpers/submissions";
 // Types
@@ -24,7 +23,7 @@ const Submission: NextPage = () => {
   const { user, isLoading: isLoadingAuth } = useAuth();
   const { submissionId } = router.query;
   const { answers, actions, getAnswersAsArray } = useAnswers();
-  const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
+  const { setSuccess, setError } = useSnackbarAlert();
 
   const { data: submissionResponse, status: fetchSubmissionStatus } =
     useFetch<GetSubmissionResponse>({
@@ -63,7 +62,6 @@ const Submission: NextPage = () => {
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <Body isLoading={isFetching(fetchSubmissionStatus) || isLoadingAuth}>
         <NoDataWrapper
           noDataCondition={

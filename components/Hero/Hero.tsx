@@ -1,5 +1,5 @@
 import { PAGES } from "@/helpers/navigation";
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/contexts/useAuth";
 import { FULL_HEIGHT_MINUS_NAV, NAVBAR_HEIGHT_REM } from "@/styles/constants";
 import { Typography, Stack, Grid, Button, Container, Box } from "@mui/material";
 import { useRouter } from "next/router";

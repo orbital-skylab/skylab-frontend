@@ -6,7 +6,7 @@ import LoadingWrapper from "../../wrappers/LoadingWrapper";
 import ErrorWrapper from "../../wrappers/ErrorWrapper";
 import UnauthorizedWrapper from "@/components/wrappers/UnauthorizedWrapper";
 // Hooks
-import useAuth from "@/hooks/useAuth";
+import useAuth from "@/contexts/useAuth";
 // Helpers
 import { userHasRole } from "@/helpers/roles";
 // Constants
