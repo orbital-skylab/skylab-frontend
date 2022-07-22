@@ -43,7 +43,7 @@ const DeadlineDeliverableRow: FC<Props> = ({ deadlineDeliverable }) => {
       ...getToProjectOrUserId(deadlineDeliverable),
     },
     onSuccess: (newSubmission: CreateSubmissionResponse) => {
-      router.push(`${PAGES.SUBMISSIONS}/${newSubmission.submissionId}`);
+      router.push(`${PAGES.SUBMISSIONS}/${newSubmission.id}`);
     },
   });
 
@@ -69,7 +69,7 @@ const DeadlineDeliverableRow: FC<Props> = ({ deadlineDeliverable }) => {
             <Stack direction="row" spacing="0.5rem">
               <Typography>{`${deadlineDeliverable.deadline.name} for`}</Typography>
               <MUILink
-                href={`${PAGES.SUBMISSIONS}/${deadlineDeliverable.toProject.submissionId}`}
+                href={`${PAGES.SUBMISSIONS}/${deadlineDeliverable.toProjectSubmission?.id}`}
               >
                 <Button variant="outlined" size="small">
                   {deadlineDeliverable.toProject.name}

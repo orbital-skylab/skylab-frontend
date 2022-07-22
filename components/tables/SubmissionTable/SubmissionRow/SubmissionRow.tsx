@@ -26,7 +26,7 @@ const SubmissionRow: FC<Props> = ({
 }) => {
   const { user } = useAuth();
   const status = generateSubmissionStatus({
-    submissionId: submission.submissionId,
+    submissionId: submission.id,
     isDraft: false, // You cannot view other's drafts
     updatedAt: submission.updatedAt,
     dueBy: deadline.dueBy,
@@ -145,9 +145,7 @@ const SubmissionRow: FC<Props> = ({
         <TableCell>
           {generateStatusCell(status, submission.updatedAt)}
         </TableCell>
-        <TableCell>
-          {generateActionCell(status, submission.submissionId)}
-        </TableCell>
+        <TableCell>{generateActionCell(status, submission.id)}</TableCell>
       </TableRow>
     </>
   );

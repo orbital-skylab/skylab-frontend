@@ -1,4 +1,7 @@
 import { Cohort } from "./cohorts";
+import { Project } from "./projects";
+import { Submission } from "./submissions";
+import { User } from "./users";
 
 export enum DEADLINE_TYPE {
   MILESTONE = "Milestone",
@@ -73,22 +76,12 @@ export type Option = string;
  *   - This is what users see on the `/dashboard/<role>` page when viewing upcoming deadlines
  */
 export type DeadlineDeliverable = {
-  deadline: Omit<Deadline, "cohortYear" | "desc">;
+  deadline: Deadline;
   // Only applicable for deadline type 'Evaluation' and 'Feedback'
-  toProject?: {
-    id: number; // project ID
-    name: string;
-    submissionId?: number; // Only exists if the team has already submitted
-  };
+  toProject?: Project;
+  toProjectSubmission?: Submission; // Exists only when toProject has a submission for the specified deadline
   // Only applicable for student role and deadline type 'Feedback' => addressed to the adviser
-  toUser?: {
-    id: number; // user ID
-    name: string;
-  };
+  toUser?: User;
   // Only exists if a draft OR submission has been created
-  submission?: {
-    id: number; // submission ID
-    updatedAt: string;
-    isDraft: boolean;
-  };
+  submission?: Submission;
 };

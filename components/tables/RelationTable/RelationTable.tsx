@@ -8,23 +8,32 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import GroupRow from "./GroupRow";
+import RelationRow from "./RelationRow";
 // Types
 import { Mutate } from "@/hooks/useFetch";
-import { GetProjectsResponse } from "@/types/api";
+import { GetRelationsResponse } from "@/types/api";
+import { EvaluationRelation } from "@/types/relations";
 import { Project } from "@/types/projects";
 
 type Props = {
-  projectsByGroupMap: Map<number, Set<Project>>;
-  mutate: Mutate<GetProjectsResponse>;
+  relations: EvaluationRelation[];
+  mutate: Mutate<GetRelationsResponse>;
+  projects: Project[];
   showAdviserColumn?: boolean;
 };
 
-const columnHeadings = ["Group ID", "Teams", "Adviser", "Actions"];
+const columnHeadings = [
+  "Relation ID",
+  "Evaluator",
+  "Evaluatee",
+  "Adviser",
+  "Actions",
+];
 
-const GroupTable: FC<Props> = ({
-  projectsByGroupMap,
+const RelationTable: FC<Props> = ({
+  relations,
   mutate,
+  projects,
   showAdviserColumn,
 }) => {
   const filteredColumnHeadings = columnHeadings.filter((heading) => {
@@ -49,12 +58,12 @@ const GroupTable: FC<Props> = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {Array.from(projectsByGroupMap).map(([groupId, groupSet]) => (
-              <GroupRow
-                key={groupId}
-                groupId={groupId}
-                groupSet={groupSet}
+            {relations.map((relation) => (
+              <RelationRow
+                key={relation.id}
+                relation={relation}
                 mutate={mutate}
+                projects={projects}
                 showAdviserColumn={Boolean(showAdviserColumn)}
               />
             ))}
@@ -65,4 +74,4 @@ const GroupTable: FC<Props> = ({
   );
 };
 
-export default GroupTable;
+export default RelationTable;

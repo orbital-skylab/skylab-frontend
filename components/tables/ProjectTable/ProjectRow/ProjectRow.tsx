@@ -101,20 +101,24 @@ const ProjectRow: FC<Props> = ({
             ? project.students.map((student) => (
                 <UsersName key={student.id} user={student} />
               ))
-            : null}
+            : "-"}
         </TableCell>
         {showAdviserColumn && (
           <TableCell>
             {project.adviser && project.adviser.id ? (
               <UsersName user={project.adviser} />
-            ) : null}
+            ) : (
+              "-"
+            )}
           </TableCell>
         )}
         {showMentorColumn && (
           <TableCell>
             {project.mentor && project.mentor.id ? (
               <UsersName user={project.mentor} />
-            ) : null}
+            ) : (
+              "-"
+            )}
           </TableCell>
         )}
         <TableCell>

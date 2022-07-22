@@ -1,6 +1,6 @@
 import { Dispatch, FC, SetStateAction } from "react";
 // Components
-import MultiDropdown from "@/components/formikFormControllers/MultiDropdown";
+import Dropdown from "@/components/formikFormControllers/Dropdown";
 import Modal from "../Modal";
 import { Button, Stack } from "@mui/material";
 // Helpers
@@ -10,63 +10,57 @@ import { ERRORS } from "@/helpers/errors";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
-import useAuth from "@/contexts/useAuth";
-import useFetch, { Mutate } from "@/hooks/useFetch";
 // Types
+import { Mutate } from "@/hooks/useFetch";
 import {
   HTTP_METHOD,
-  GetProjectsResponse,
-  CreateGroupResponse,
+  GetRelationsResponse,
+  CreateRelationResponse,
 } from "@/types/api";
+import { Project } from "@/types/projects";
 
-interface AddGroupFormValuesType {
-  projects: number[];
+interface AddRelationFormValuesType {
+  fromProjectId: number | "";
+  toProjectId: number | "";
 }
 
 type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  mutate: Mutate<GetProjectsResponse>;
+  mutate: Mutate<GetRelationsResponse>;
+  projects: Project[];
 };
 
-const AddGroupModal: FC<Props> = ({ open, setOpen, mutate }) => {
-  const { user } = useAuth();
+const AddRelationModal: FC<Props> = ({ open, setOpen, mutate, projects }) => {
   const { setSuccess, setError } = useSnackbarAlert();
 
-  const addGroup = useApiCall({
+  const addRelation = useApiCall({
     method: HTTP_METHOD.POST,
-    endpoint: `TODO:`,
-    onSuccess: ({ group }: CreateGroupResponse) => {
-      mutate(({ projects }) => {
-        const newProjects = [...projects];
-        newProjects.concat(group.projects);
-        return { projects: newProjects };
+    endpoint: `/relations`,
+    onSuccess: ({ relation }: CreateRelationResponse) => {
+      mutate(({ relations }) => {
+        const newRelations = [...relations, relation];
+        return { relations: newRelations };
       });
     },
   });
 
-  const initialValues: AddGroupFormValuesType = {
-    projects: [],
+  const initialValues: AddRelationFormValuesType = {
+    fromProjectId: "",
+    toProjectId: "",
   };
 
-  /** Fetching project IDs and names for the dropdown select */
-  const { data: projectsResponse } = useFetch<GetProjectsResponse>({
-    endpoint: `/projects/adviser/${user?.adviser?.id}`,
-    enabled: Boolean(user && user.adviser && user.adviser.id),
-  });
-
   const handleSubmit = async (
-    values: AddGroupFormValuesType,
-    actions: FormikHelpers<AddGroupFormValuesType>
+    values: AddRelationFormValuesType,
+    actions: FormikHelpers<AddRelationFormValuesType>
   ) => {
     const processedValues = {
-      adviserId: user?.adviser?.id,
-      ...values,
+      relation: values,
     };
 
     try {
-      await addGroup.call(processedValues);
-      setSuccess(`You have successfully created a evaluation group!`);
+      await addRelation.call(processedValues);
+      setSuccess(`You have successfully created a new relation!`);
       handleCloseModal();
       actions.resetForm();
     } catch (error) {
@@ -80,24 +74,41 @@ const AddGroupModal: FC<Props> = ({ open, setOpen, mutate }) => {
 
   return (
     <>
-      <Modal open={open} handleClose={handleCloseModal} title={`Add Group`}>
+      <Modal open={open} handleClose={handleCloseModal} title={`Add Relation`}>
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmit}
-          validationSchema={addGroupValidationSchema}
+          validationSchema={addRelationValidationSchema}
         >
           {(formik) => (
             <>
               <Stack direction="column" spacing="1rem">
-                <MultiDropdown
-                  name="projects"
-                  label="Projects"
+                <Dropdown
+                  name="fromProjectId"
+                  label="Evaluator"
                   formik={formik}
                   size="small"
                   isCombobox
                   options={
-                    projectsResponse && projectsResponse.projects
-                      ? projectsResponse.projects.map((project) => {
+                    projects && projects.length
+                      ? projects.map((project) => {
+                          return {
+                            label: `${project.id}: ${project.name}`,
+                            value: project.id,
+                          };
+                        })
+                      : []
+                  }
+                />
+                <Dropdown
+                  name="toProjectId"
+                  label="Evaluatee"
+                  formik={formik}
+                  size="small"
+                  isCombobox
+                  options={
+                    projects && projects.length
+                      ? projects.map((project) => {
                           return {
                             label: `${project.id}: ${project.name}`,
                             value: project.id,
@@ -131,8 +142,9 @@ const AddGroupModal: FC<Props> = ({ open, setOpen, mutate }) => {
     </>
   );
 };
-export default AddGroupModal;
+export default AddRelationModal;
 
-const addGroupValidationSchema = Yup.object().shape({
-  projects: Yup.array().min(1, ERRORS.REQUIRED).required(ERRORS.REQUIRED),
+const addRelationValidationSchema = Yup.object().shape({
+  fromProjectId: Yup.number().required(ERRORS.REQUIRED),
+  toProjectId: Yup.number().required(ERRORS.REQUIRED),
 });

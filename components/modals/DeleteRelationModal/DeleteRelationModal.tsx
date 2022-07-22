@@ -1,51 +1,50 @@
 import { Dispatch, FC, SetStateAction } from "react";
 // Components
+import { Stack, Button } from "@mui/material";
 import Modal from "../Modal";
-import { Button, Stack } from "@mui/material";
-// Hooks
+// Hook
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Types
-import { HTTP_METHOD, GetDeadlinesResponse } from "@/types/api";
-import { Deadline } from "@/types/deadlines";
 import { Mutate } from "@/hooks/useFetch";
+import { GetRelationsResponse, HTTP_METHOD } from "@/types/api";
+import { EvaluationRelation } from "@/types/relations";
 
 type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  deadline: Deadline;
-  mutate: Mutate<GetDeadlinesResponse>;
+  relation: EvaluationRelation;
+  mutate: Mutate<GetRelationsResponse>;
 };
 
-const DeleteDeadlineModal: FC<Props> = ({
+const DeleteRelationModal: FC<Props> = ({
   open,
   setOpen,
-  deadline,
+  relation,
   mutate,
 }) => {
   const { setSuccess, setError } = useSnackbarAlert();
 
-  const deleteDeadline = useApiCall({
+  const deleteRelation = useApiCall({
     method: HTTP_METHOD.DELETE,
-    endpoint: `/deadlines/${deadline.id}`,
+    endpoint: `/relations/${relation.id}`,
     onSuccess: () => {
-      mutate((data) => {
-        const oldDeadlineIdx = data.deadlines.findIndex(
-          (oldDeadline) => oldDeadline.id === deadline.id
+      mutate(({ relations }) => {
+        const newRelations = [...relations];
+        const deleteRelationIdx = newRelations.findIndex(
+          (rel) => rel.id === relation.id
         );
-        const newDeadlines = [...data.deadlines];
-        newDeadlines.splice(oldDeadlineIdx, 1);
-        return { deadlines: newDeadlines };
+        newRelations.splice(deleteRelationIdx, 1);
+
+        return { relations: newRelations };
       });
     },
   });
 
   const handleDelete = async () => {
     try {
-      await deleteDeadline.call();
-      setSuccess(
-        `You have successfully deleted the deadline ${deadline.name}!`
-      );
+      await deleteRelation.call();
+      setSuccess(`You have successfully deleted the relation ${relation.id}!`);
       handleCloseModal();
     } catch (error) {
       setError(error);
@@ -61,11 +60,11 @@ const DeleteDeadlineModal: FC<Props> = ({
       <Modal
         open={open}
         handleClose={handleCloseModal}
-        title={`Delete Deadline`}
-        subheader={`You are deleting the deadline ${deadline.name}.\n\nThis action is irreversible, are you sure?`}
+        title={`Delete Relation`}
+        subheader={`You are deleting relation ${relation.id}. Note that only the relation will be deleted but the projects will not be deleted.\n\nThis action is irreversible, are you sure?`}
         sx={{ width: "400px" }}
       >
-        <Stack direction="row" justifyContent="space-between">
+        <Stack direction="row" justifyContent="space-between" marginTop="2rem">
           <Button size="small" onClick={handleCloseModal}>
             Cancel
           </Button>
@@ -74,7 +73,7 @@ const DeleteDeadlineModal: FC<Props> = ({
             variant="contained"
             color="error"
             onClick={handleDelete}
-            disabled={isCalling(deleteDeadline.status)}
+            disabled={isCalling(deleteRelation.status)}
           >
             Delete
           </Button>
@@ -83,4 +82,5 @@ const DeleteDeadlineModal: FC<Props> = ({
     </>
   );
 };
-export default DeleteDeadlineModal;
+
+export default DeleteRelationModal;

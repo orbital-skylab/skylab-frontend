@@ -48,7 +48,7 @@ const AddRolesModal: FC<Props> = ({ selectedRole, handleCloseModal }) => {
     useFetch<GetLeanUsersResponse>({
       endpoint: `/users/lean`,
       queryParams: memoUsersQueryParams,
-      enabled: Boolean(selectedCohortYear) && Boolean(selectedCohortYear),
+      enabled: Boolean(selectedCohortYear) && Boolean(selectedRole),
     });
 
   const addStudents = useApiCall({

@@ -8,7 +8,7 @@ export type Answer = {
 };
 
 export type Submission = {
-  submissionId: number;
+  id: number;
   deadline: Deadline;
   sections: Section[];
   isDraft: boolean;
@@ -27,7 +27,7 @@ export type Submission = {
  */
 export type PossibleSubmission = {
   // If the submission does not exist, these two fields do not exist
-  submissionId?: number;
+  id?: number;
   updatedAt?: string;
   // Only applicable for:
   // 1. Student dashboard is fetching Milestones, Evaluations, and Feedbacks from peer teams

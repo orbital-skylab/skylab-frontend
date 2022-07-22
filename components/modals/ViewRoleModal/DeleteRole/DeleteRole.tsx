@@ -76,7 +76,7 @@ const DeleteRole: FC<Props> = ({
         <Typography>{`You are deleting the ${toSingular(
           selectedRole
         )} role from ${user.name}`}</Typography>
-        <Typography>{`Note: This will not delete the actual user, just remove the ${toSingular(
+        <Typography>{`Note that this will not delete the actual user, just remove the ${toSingular(
           selectedRole
         )} role from them`}</Typography>
       </Stack>

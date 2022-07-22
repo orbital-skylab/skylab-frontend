@@ -1,3 +1,4 @@
+import { Adviser } from "./advisers";
 import { Project } from "./projects";
 
 export type EvaluationRelation = {
@@ -6,9 +7,5 @@ export type EvaluationRelation = {
   toProjectId: number;
   fromProject?: Project;
   toProject?: Project;
+  adviser: Adviser;
 };
-
-export type LeanEvaluationRelation = Omit<
-  EvaluationRelation,
-  "fromProject" | "toProject"
->;

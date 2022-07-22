@@ -3,7 +3,7 @@ import { Deadline, DeadlineDeliverable, Section } from "./deadlines";
 import { EvaluationGroup } from "./groups";
 import { Mentor } from "./mentors";
 import { LeanProject, Project } from "./projects";
-import { LeanEvaluationRelation } from "./relations";
+import { EvaluationRelation } from "./relations";
 import {
   AdministratorRole,
   AdviserRole,
@@ -196,6 +196,14 @@ export type GetAdviserTeamSubmissionsResponse = {
   }[];
 };
 
+/** Mentor Dashboard Endpoints */
+export type GetMentorTeamSubmissionsResponse = {
+  deadlines: {
+    deadline: Deadline;
+    submissions: PossibleSubmission[];
+  }[];
+};
+
 /**
  * Groups Endpoints:
  */
@@ -209,18 +217,18 @@ export type EditGroupResponse = {
 
 /**
  * Evaluation Relations Endpoints:
- * TODO: Add Link
+ * https://github.com/orbital-skylab/skylab-backend/wiki/Evaluation-Relationships-Endpoints
  */
 export type CreateRelationResponse = {
-  relation: {
-    id: number;
-    fromProject: Project;
-    toProject: Project;
-  };
+  relation: EvaluationRelation;
 };
 
-export type GetRelationsUnderAdviserResponse = {
-  relations: LeanEvaluationRelation[];
+export type GetRelationsResponse = {
+  relations: EvaluationRelation[];
+};
+
+export type EditRelationResponse = {
+  relation: EvaluationRelation;
 };
 
 export type DeleteProjectRelationsResponse = {

@@ -58,7 +58,7 @@ const DeleteCohortModal: FC<Props> = ({ open, setOpen, cohort, mutate }) => {
         open={open}
         handleClose={handleCloseModal}
         title={`Delete Cohort`}
-        subheader={`You are deleting the cohort ${cohort.academicYear}. This action is irreversible, are you sure?`}
+        subheader={`You are deleting the cohort ${cohort.academicYear}.\n\nThis action is irreversible, are you sure?`}
         sx={{ width: "400px" }}
       >
         <Stack direction="row" justifyContent="space-between">
