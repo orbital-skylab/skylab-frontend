@@ -12,7 +12,7 @@ import UserDetailsForm from "@/components/forms/UserDetailsForm";
 // Helpers
 import { Formik, FormikHelpers } from "formik";
 import {
-  generateEmptyInitialValues,
+  generateAddUserOrRoleEmptyInitialValues,
   processAddUserOrRoleFormValues,
   toSingular,
 } from "@/helpers/roles";
@@ -59,7 +59,7 @@ const AddUserModal: FC<Props> = ({
   });
 
   const initialValues: AddUserFormValuesType =
-    generateEmptyInitialValues(currentCohortYear);
+    generateAddUserOrRoleEmptyInitialValues(currentCohortYear);
 
   const handleSubmit = async (
     values: AddUserFormValuesType,

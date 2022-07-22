@@ -4,6 +4,8 @@ import { MentorMetadata } from "./mentors";
 import { StudentMetadata } from "./students";
 import { UserMetadata } from "./users";
 
+// export type ROLES = Exclude<ROLES_WITH_ALL, typeof ROLES_WITH_ALL.ALL>;
+
 export enum ROLES {
   STUDENTS = "Students",
   ADVISERS = "Advisers",
