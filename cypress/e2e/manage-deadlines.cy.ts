@@ -6,24 +6,23 @@ import { QUESTION_TYPE } from "@/types/deadlines";
 context("Actions", () => {
   before(() => {
     cy.visit("http://localhost:3000/");
+  });
+
+  it("sign in", () => {
+    cy.get("#sign-in-email-input").type("admin@skylab.com");
+    cy.get("#sign-in-password-input").type("Password123");
+    cy.get("#sign-in-button").click();
+    cy.wait(3000);
+  });
+
+  it("navigate to manage deadlines page", () => {
     cy.get("#nav-manage").click();
     cy.location("pathname").should("include", "manage");
     cy.get("#manage-deadlines-card").click();
     cy.location("pathname").should("include", "manage/deadlines");
   });
 
-  it("delete deadline", () => {
-    cy.contains(".deadline-name-td", "Test Milestone")
-      .parent()
-      .find(".deadline-actions-td>.deadline-options-button")
-      .click();
-    cy.get("#delete-deadline-button").click();
-    cy.get("#delete-deadline-confirm-button").click();
-
-    cy.contains(".deadline-name-td", "Test Milestone").should("not.exist");
-  });
-
-  it("add deadline", () => {
+  it("add Test Milestone deadline", () => {
     cy.get("#add-deadline-button").click();
     cy.get("#deadline-name-input").type("Test Milestone");
     cy.get("#submit-deadline-button").click();
@@ -50,7 +49,7 @@ context("Actions", () => {
       .type("description for section 1");
   });
 
-  it("fill up first mcq question to section 1", () => {
+  it("add mcq question to section 1", () => {
     cy.get(".question-input").first().type("question 1 of section 1");
     cy.get(".question-description-input").first().type("mcq question");
     cy.get(".option-input")
@@ -175,8 +174,15 @@ context("Actions", () => {
     cy.get(".option-input").should("have.length", 6);
   });
 
-  it("save", () => {
+  it("save and reopen deadline page", () => {
     cy.get("#save-deadline-questions-button").click();
+    cy.go("back");
+
+    cy.contains(".deadline-name-td", "Test Milestone")
+      .parent()
+      .find(".deadline-actions-td>.deadline-options-button")
+      .click();
+    cy.get("#view-questions-button").click();
   });
 
   it("enter preview mode", () => {
@@ -384,5 +390,22 @@ context("Actions", () => {
       .should("have.text", "question 3 of section 4");
 
     cy.get(".section-div").eq(3).find(".time-input").should("have.length", 1);
+  });
+
+  it("delete deadline", () => {
+    cy.go("back");
+    cy.contains(".deadline-name-td", "Test Milestone")
+      .parent()
+      .find(".deadline-actions-td>.deadline-options-button")
+      .click();
+    cy.get("#delete-deadline-button").click();
+    cy.get("#delete-deadline-confirm-button").click();
+
+    cy.contains(".deadline-name-td", "Test Milestone").should("not.exist");
+  });
+
+  it("sign out", () => {
+    cy.get("#nav-sign-out").click();
+    cy.get("#nav-manage").should("not.exist");
   });
 });
