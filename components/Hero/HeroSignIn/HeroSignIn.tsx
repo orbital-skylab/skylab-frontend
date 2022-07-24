@@ -67,14 +67,14 @@ const HeroSignIn: FC = () => {
                   </Box>
                   <TextInput
                     label="Email"
-                    id="sign-in-email"
+                    id="sign-in-email-input"
                     type="email"
                     name="email"
                     formik={formik}
                   />
                   <TextInput
                     label="Password"
-                    id="sign-in-password"
+                    id="sign-in-password-input"
                     type="password"
                     name="password"
                     formik={formik}
