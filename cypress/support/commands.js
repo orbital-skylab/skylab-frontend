@@ -1,4 +1,12 @@
 // <reference types="cypress" />
+
+// eslint-disable-next-line no-undef
+Cypress.Commands.overwrite("type", (originalFn, element, text, options) => {
+  const clearedText = `{selectall}{backspace}${text}`;
+
+  return originalFn(element, clearedText, options);
+});
+
 // ***********************************************
 // This example commands.ts shows you how to
 // create various custom commands and overwrite
