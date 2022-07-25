@@ -14,7 +14,7 @@ import useFetch, { isFetching } from "@/hooks/useFetch";
 import { GetCohortsResponse } from "@/types/cohorts";
 import { Add } from "@mui/icons-material";
 import AddCohortModal from "@/components/modals/AddCohortModal";
-import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
+import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
 
 const Cohorts: NextPage = () => {
   const [isAddCohortOpen, setIsAddCohortOpen] = useState(false);

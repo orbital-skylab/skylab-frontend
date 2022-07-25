@@ -1,5 +1,3 @@
-import { ROLES } from "@/types/roles";
-
 export enum PAGES {
   LANDING = "/",
   STAFF = "/staff",
@@ -13,39 +11,10 @@ export enum PAGES {
   MANAGE_USERS = "/manage/users",
   MANAGE_USERS_CSV = "/manage/users-csv",
   MANAGE_PROJECTS = "/manage/projects",
+  DASHBOARD = "/dashboard",
+  DASHBOARD_STUDENT = "/dashboard/student",
+  DASHBOARD_ADVISER = "/dashboard/adviser",
+  DASHBOARD_MENTOR = "/dashboard/mentor",
+  DASHBOARD_ADMINISTRATOR = "/dashboard/administrator",
+  SUBMISSIONS = "/submissions",
 }
-
-export enum NAVBAR_ACTIONS {
-  SIGN_OUT = "signOut",
-}
-
-/**
- * If authorized role is not provided, then the option will be visible to all
- */
-export type NavbarOption = {
-  label: string;
-  route?: string;
-  action?: NAVBAR_ACTIONS;
-  authorizedRoles?: ROLES[];
-};
-
-export const NAVBAR_OPTIONS: NavbarOption[] = [
-  {
-    label: "Projects",
-    route: PAGES.PROJECTS,
-  },
-  { label: "Staff", route: PAGES.STAFF },
-  {
-    label: "Manage",
-    route: PAGES.MANAGE,
-    authorizedRoles: [ROLES.ADMINISTRATORS],
-  },
-  {
-    label: "Profile",
-    route: PAGES.USERS,
-  },
-  {
-    label: "Sign Out",
-    action: NAVBAR_ACTIONS.SIGN_OUT,
-  },
-];

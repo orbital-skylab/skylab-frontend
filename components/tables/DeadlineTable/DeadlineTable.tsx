@@ -20,7 +20,14 @@ type Props = {
   mutate: Mutate<GetDeadlinesResponse>;
 };
 
-const ColumnHeadings = ["Deadline Name", "Type", "Due By", "Actions"];
+const ColumnHeadings = [
+  "Deadline ID",
+  "Deadline Name",
+  "Type",
+  "Evaluating Milestone",
+  "Due By",
+  "Actions",
+];
 
 const DeadlineTable: FC<Props> = ({ deadlines = [], mutate }) => {
   return (
@@ -38,6 +45,7 @@ const DeadlineTable: FC<Props> = ({ deadlines = [], mutate }) => {
             <DeadlineRow
               key={deadline.id}
               deadline={deadline}
+              deadlines={deadlines}
               mutate={mutate}
             />
           ))}

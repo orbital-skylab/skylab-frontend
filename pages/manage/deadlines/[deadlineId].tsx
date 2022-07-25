@@ -3,7 +3,7 @@ import { useState } from "react";
 import GoBackButton from "@/components/buttons/GoBackButton";
 import Body from "@/components/layout/Body";
 import DeadlineDescriptionCard from "@/components/questions/DeadlineDescriptionCard";
-import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
+import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
 import EditQuestionSectionsList from "@/components/questions/EditQuestionSectionsList";
 import QuestionSectionsList from "@/components/questions/QuestionSectionsList";
 // Hooks

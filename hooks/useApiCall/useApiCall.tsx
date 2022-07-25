@@ -24,7 +24,7 @@ const useApiCall = ({
   onError,
 }: {
   method?: HTTP_METHOD;
-  endpoint: string;
+  endpoint?: string;
   body?: { [key: string]: any };
   requiresAuthorization?: boolean;
   onSuccess?: (data: any) => void;
@@ -40,15 +40,17 @@ const useApiCall = ({
     requiresAuthorization,
   });
 
+  function setEndpoint(endpoint: string) {
+    apiServiceBuilder.setEndpoint(endpoint);
+  }
+
   /* Calls the actual API call with the specified api service. */
   async function call(body?: { [key: string]: any }) {
     setStatus(CALL_STATUS.CALLING);
-
     try {
       if (body) {
         apiServiceBuilder.setBody(body);
       }
-
       const apiService = apiServiceBuilder.build();
       const res = await apiService();
       if (!res.ok) {
@@ -80,7 +82,7 @@ const useApiCall = ({
     }
   }
 
-  return { status, call };
+  return { status, setEndpoint, call };
 };
 
 export default useApiCall;

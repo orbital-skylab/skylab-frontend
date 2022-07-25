@@ -1,4 +1,4 @@
-import { AlertType, ALERT_INITIAL } from "@/components/SnackbarAlert";
+import { AlertType, ALERT_INITIAL } from "@/components/layout/SnackbarAlert";
 import { useState } from "react";
 
 const useAlert = () => {

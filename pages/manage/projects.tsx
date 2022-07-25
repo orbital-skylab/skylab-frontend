@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 // Components
-import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
+import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
 import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import Body from "@/components/layout/Body";
@@ -238,7 +238,14 @@ const ProjectsList = () => {
             noDataCondition={projects === undefined || projects.length === 0}
             fallback={<NoneFound message="No such projects found" />}
           >
-            <ProjectTable projects={projects} mutate={mutate} />
+            <ProjectTable
+              projects={projects}
+              mutate={mutate}
+              showAdviserColumn
+              showMentorColumn
+              showEditAction
+              showDeleteAction
+            />
             <div ref={bottomOfPageRef} />
             <Box
               sx={{

@@ -62,7 +62,7 @@ const DeleteDeadlineModal: FC<Props> = ({
         open={open}
         handleClose={handleCloseModal}
         title={`Delete Deadline`}
-        subheader={`You are deleting the deadline ${deadline.name}. This action is irreversible, are you sure?`}
+        subheader={`You are deleting the deadline ${deadline.name}.\n\nThis action is irreversible, are you sure?`}
         sx={{ width: "400px" }}
       >
         <Stack direction="row" justifyContent="space-between">

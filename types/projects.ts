@@ -31,6 +31,7 @@ export type Project = {
   achievement: LEVELS_OF_ACHIEVEMENT;
   cohortYear: Cohort["academicYear"];
   hasDropped: boolean;
+  groupId?: number; // TODO: Convert to relationships
 };
 
 export type LeanProject = Pick<Project, "id" | "name">;

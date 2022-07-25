@@ -1,8 +1,11 @@
+// Components
 import { LANDING_SIGN_IN_ID } from "@/components/Hero/HeroSignIn";
-import { PAGES } from "@/helpers/navigation";
 import { Button } from "@mui/material";
 import Link from "next/link";
+// Hooks
 import { useRouter } from "next/router";
+// Helpers
+import { PAGES } from "@/helpers/navigation";
 
 const SignInButton = () => {
   const router = useRouter();

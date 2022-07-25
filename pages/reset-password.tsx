@@ -11,7 +11,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import CustomHead from "@/components/CustomHead";
+import CustomHead from "@/components/layout/CustomHead";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
 import { Formik, FormikHelpers } from "formik";

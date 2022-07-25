@@ -112,7 +112,7 @@ function Dropdown<FormValuesType>({
           ))}
         </Select>
         {!!errors[name] && !!touched[name] ? (
-          <FormHelperText>{errors[name]}</FormHelperText>
+          <FormHelperText error>{errors[name]}</FormHelperText>
         ) : null}
       </FormControl>
     </>
