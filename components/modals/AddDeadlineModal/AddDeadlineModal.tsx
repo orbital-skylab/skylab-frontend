@@ -22,13 +22,14 @@ import {
   GetDeadlinesResponse,
   CreateDeadlineResponse,
 } from "@/types/api";
-import { DEADLINE_TYPE } from "@/types/deadlines";
+import { Deadline, DEADLINE_TYPE } from "@/types/deadlines";
 import { Mutate } from "@/hooks/useFetch";
 
 interface AddDeadlineFormValuesType {
   name: string;
   dueBy: string;
   type: DEADLINE_TYPE;
+  evaluatingMilestoneId?: number | "";
 }
 
 type Props = {
@@ -36,9 +37,16 @@ type Props = {
   setOpen: Dispatch<SetStateAction<boolean>>;
   cohortYear: number;
   mutate: Mutate<GetDeadlinesResponse>;
+  deadlines: Deadline[];
 };
 
-const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
+const AddDeadlineModal: FC<Props> = ({
+  open,
+  setOpen,
+  cohortYear,
+  mutate,
+  deadlines,
+}) => {
   const { setSuccess, setError } = useSnackbarAlert();
 
   const addDeadline = useApiCall({
@@ -57,6 +65,7 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
     name: "",
     dueBy: isoDateToDateTimeLocalInput(getTodayAtTimeIso(23, 59)),
     type: DEADLINE_TYPE.MILESTONE,
+    evaluatingMilestoneId: "",
   };
 
   const handleSubmit = async (
@@ -89,7 +98,11 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
 
   return (
     <>
-      <Modal open={open} handleClose={handleCloseModal} title={`Add Deadline`}>
+      <Modal
+        open={open}
+        handleClose={handleCloseModal}
+        title={`Add Deadline for Cohort ${cohortYear}`}
+      >
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmit}
@@ -119,6 +132,27 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
                     return { label: val, value: val };
                   })}
                 />
+                {formik.values.type === DEADLINE_TYPE.EVALUATION && (
+                  <Dropdown
+                    label="Evaluating Milestone"
+                    name="evaluatingMilestoneId"
+                    formik={formik}
+                    options={
+                      deadlines
+                        ? deadlines
+                            .filter(
+                              ({ type }) => type === DEADLINE_TYPE.MILESTONE
+                            )
+                            .map((deadline) => {
+                              return {
+                                label: `${deadline.id}: ${deadline.name}`,
+                                value: deadline.id,
+                              };
+                            })
+                        : []
+                    }
+                  />
+                )}
               </Stack>
               <Stack
                 direction="row"
@@ -150,4 +184,8 @@ const addDeadlineValidationSchema = Yup.object().shape({
   name: Yup.string().required(ERRORS.REQUIRED),
   dueBy: Yup.string().required(ERRORS.REQUIRED),
   type: Yup.string().required(ERRORS.REQUIRED),
+  evaluatingMilestoneId: Yup.string().when("type", {
+    is: DEADLINE_TYPE.EVALUATION,
+    then: Yup.string().required(ERRORS.REQUIRED),
+  }),
 });

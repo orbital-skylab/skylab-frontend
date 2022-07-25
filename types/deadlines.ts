@@ -17,7 +17,6 @@ export type Deadline = {
   desc?: string;
   dueBy: string;
   type: DEADLINE_TYPE;
-  evaluatingId?: number; // Only applicable for type Evaluation where it evaluates a Milestone
   createdAt: string;
   updatedAt: string;
   evaluating?: Deadline;

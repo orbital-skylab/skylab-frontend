@@ -14,9 +14,13 @@ import { GetDeadlinesResponse } from "@/types/api";
 // Constants
 import { BASE_TRANSITION } from "@/styles/constants";
 
-type Props = { deadline: Deadline; mutate: Mutate<GetDeadlinesResponse> };
+type Props = {
+  deadline: Deadline;
+  deadlines: Deadline[];
+  mutate: Mutate<GetDeadlinesResponse>;
+};
 
-const DeadlineRow: FC<Props> = ({ deadline, mutate }) => {
+const DeadlineRow: FC<Props> = ({ deadline, deadlines, mutate }) => {
   const [isEditDeadlineOpen, setIsEditDeadlineOpen] = useState(false);
   const [isDeleteDeadlineOpen, setIsDeleteDeadlineOpen] = useState(false);
 
@@ -38,13 +42,18 @@ const DeadlineRow: FC<Props> = ({ deadline, mutate }) => {
       />
       <EditDeadlineModal
         deadline={deadline}
+        deadlines={deadlines}
         open={isEditDeadlineOpen}
         setOpen={setIsEditDeadlineOpen}
         mutate={mutate}
       />
       <TableRow>
+        <TableCell>{deadline.id}</TableCell>
         <TableCell>{deadline.name}</TableCell>
         <TableCell>{deadline.type}</TableCell>
+        <TableCell>
+          {deadline.evaluating ? deadline.evaluating.name : "-"}
+        </TableCell>
         <TableCell>{isoDateToLocaleDateWithTime(deadline.dueBy)}</TableCell>
         <TableCell>
           <Stack direction="row" spacing="0.5rem">

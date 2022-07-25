@@ -139,7 +139,7 @@ export type CreateProjectResponse = {
  * https://github.com/orbital-skylab/skylab-backend/wiki/Deadlines-Endpoints
  */
 export type GetDeadlinesResponse = {
-  deadlines: Deadline[];
+  deadlines: (Deadline & { evaluating: Deadline })[];
 };
 
 export type GetDeadlineDetailsResponse = {

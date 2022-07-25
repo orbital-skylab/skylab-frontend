@@ -68,6 +68,7 @@ const Deadlines: NextPage = () => {
         setOpen={setIsAddDeadlineOpen}
         cohortYear={selectedCohortYear as Cohort["academicYear"]}
         mutate={mutate}
+        deadlines={response ? response.deadlines : []}
       />
       <Body
         isError={isError(fetchDeadlinesStatus)}
