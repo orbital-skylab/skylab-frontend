@@ -2,6 +2,8 @@ import { FC } from "react";
 // Components
 import { Box } from "@mui/material";
 import NavbarButtonDesktop from "./NavbarButtonDesktop";
+// Hooks
+import { useRouter } from "next/router";
 // Helpers
 import { NAVBAR_OPTIONS } from "../Navbar.helpers";
 // Types
@@ -16,14 +18,11 @@ type Props = {
     route?: string;
     action?: string;
   }) => () => void;
-  isCurrentPage: (path: string | undefined) => boolean;
 };
 
-const NavbarButtonsDesktop: FC<Props> = ({
-  user,
-  generateOnClick,
-  isCurrentPage,
-}) => {
+const NavbarButtonsDesktop: FC<Props> = ({ user, generateOnClick }) => {
+  const router = useRouter();
+
   return (
     <Box
       sx={{
@@ -37,7 +36,7 @@ const NavbarButtonsDesktop: FC<Props> = ({
           option={option}
           user={user}
           generateOnClick={generateOnClick}
-          isCurrentPage={isCurrentPage}
+          isCurrentPage={option.currentPageRegExp.test(router.pathname)}
         />
       ))}
     </Box>

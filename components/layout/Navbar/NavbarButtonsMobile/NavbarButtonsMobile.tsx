@@ -3,6 +3,8 @@ import React, { FC, useState } from "react";
 import NavbarButtonMobile from "./NavbarButtonMobile";
 import { Menu as MenuIcon } from "@mui/icons-material";
 import { Box, IconButton, Menu } from "@mui/material";
+// Hooks
+import { useRouter } from "next/router";
 // Helpers
 import { NAVBAR_OPTIONS } from "../Navbar.helpers";
 // Types
@@ -17,14 +19,10 @@ type Props = {
     route?: string;
     action?: string;
   }) => () => void;
-  isCurrentPage: (path: string | undefined) => boolean;
 };
 
-const NavbarButtonsMobile: FC<Props> = ({
-  user,
-  generateOnClick,
-  isCurrentPage,
-}) => {
+const NavbarButtonsMobile: FC<Props> = ({ user, generateOnClick }) => {
+  const router = useRouter();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -75,7 +73,7 @@ const NavbarButtonsMobile: FC<Props> = ({
             key={option.label}
             option={option}
             generateOnClick={generateOnClick}
-            isCurrentPage={isCurrentPage}
+            isCurrentPage={option.currentPageRegExp.test(router.pathname)}
             user={user}
             handleCloseNavMenu={handleCloseNavMenu}
           />

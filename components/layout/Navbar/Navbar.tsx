@@ -20,10 +20,7 @@ import Link from "next/link";
 import { PAGES } from "@/helpers/navigation";
 // Constants
 import { BASE_TRANSITION, NAVBAR_HEIGHT_REM } from "@/styles/constants";
-import {
-  generateIsCurrentPage,
-  generateOnClickGenerator,
-} from "./Navbar.helpers";
+import { generateOnClickGenerator } from "./Navbar.helpers";
 
 const Navbar: FC = () => {
   const router = useRouter();
@@ -37,12 +34,10 @@ const Navbar: FC = () => {
           <NavbarButtonsMobile
             user={user}
             generateOnClick={generateOnClickGenerator(user, router, signOut)}
-            isCurrentPage={generateIsCurrentPage(router)}
           />
           <NavbarButtonsDesktop
             user={user}
             generateOnClick={generateOnClickGenerator(user, router, signOut)}
-            isCurrentPage={generateIsCurrentPage(router)}
           />
         </>
       );

@@ -17,7 +17,7 @@ type Props = {
     route?: string;
     action?: string;
   }) => () => void;
-  isCurrentPage: (path: string | undefined) => boolean;
+  isCurrentPage: boolean;
   handleCloseNavMenu: () => void;
 };
 
@@ -42,9 +42,9 @@ const NavbarButtonMobile: FC<Props> = ({
         generateOnClick(option)();
         handleCloseNavMenu();
       }}
-      selected={isCurrentPage(option.route)}
+      selected={isCurrentPage}
       sx={{
-        color: isCurrentPage(option.route) ? "gray" : "inherit",
+        color: isCurrentPage ? "gray" : "inherit",
       }}
     >
       <Typography textAlign="center">{option.label}</Typography>

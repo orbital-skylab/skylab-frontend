@@ -17,7 +17,7 @@ type Props = {
     route?: string;
     action?: string;
   }) => () => void;
-  isCurrentPage: (path: string | undefined) => boolean;
+  isCurrentPage: boolean;
 };
 
 const NavbarButtonDesktop: FC<Props> = ({
@@ -41,10 +41,8 @@ const NavbarButtonDesktop: FC<Props> = ({
       sx={{
         my: 2,
         display: "block",
-        color: isCurrentPage(option.route) ? "gray" : "inherit",
-        background: isCurrentPage(option.route)
-          ? "rgba(13, 13, 13, 0.08)"
-          : "inherit",
+        color: isCurrentPage ? "gray" : "inherit",
+        background: isCurrentPage ? "rgba(13, 13, 13, 0.08)" : "inherit",
       }}
     >
       {option.label}

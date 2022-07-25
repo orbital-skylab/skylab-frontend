@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 // Components
 import Body from "@/components/layout/Body";
-import { Tab, Tabs, tabsClasses, Typography } from "@mui/material";
+import { Box, Stack, Tab, Tabs, tabsClasses, Typography } from "@mui/material";
 import { TabContext, TabPanel } from "@mui/lab";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import DeadlineDeliverableTable from "@/components/tables/DeadlineDeliverableTable";
@@ -80,25 +80,27 @@ const StudentDashboard: NextPage = () => {
               noDataCondition={!deadlinesResponse?.deadlines.length}
               fallback={<NoneFound message="No upcoming or past deadlines" />}
             >
-              <DeadlineDeliverableTable
-                deadlineDeliverables={deadlinesResponse?.deadlines.filter(
-                  (deadlineDeliverable) =>
-                    isFuture(deadlineDeliverable.deadline.dueBy)
+              <Stack gap="1rem">
+                <DeadlineDeliverableTable
+                  deadlineDeliverables={deadlinesResponse?.deadlines.filter(
+                    (deadlineDeliverable) =>
+                      isFuture(deadlineDeliverable.deadline.dueBy)
+                  )}
+                />
+                {hasPastDeadlines && (
+                  <Box>
+                    <Typography variant="h6" fontWeight={600}>
+                      Past Deadlines
+                    </Typography>
+                    <DeadlineDeliverableTable
+                      deadlineDeliverables={deadlinesResponse?.deadlines.filter(
+                        (deadlineDeliverable) =>
+                          !isFuture(deadlineDeliverable.deadline.dueBy)
+                      )}
+                    />
+                  </Box>
                 )}
-              />
-              {hasPastDeadlines && (
-                <>
-                  <Typography variant="h6" fontWeight={600}>
-                    Past Deadlines
-                  </Typography>
-                  <DeadlineDeliverableTable
-                    deadlineDeliverables={deadlinesResponse?.deadlines.filter(
-                      (deadlineDeliverable) =>
-                        !isFuture(deadlineDeliverable.deadline.dueBy)
-                    )}
-                  />
-                </>
-              )}
+              </Stack>
             </NoDataWrapper>
           </LoadingWrapper>
         </TabPanel>

@@ -15,4 +15,5 @@ export type NavbarOption = {
   route?: string;
   action?: NAVBAR_ACTIONS;
   authorizedRoles?: ROLES[];
+  currentPageRegExp: RegExp;
 };

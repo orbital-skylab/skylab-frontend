@@ -17,7 +17,11 @@ import { ERRORS } from "@/helpers/errors";
 import useApiCall from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Types
-import { HTTP_METHOD, GetDeadlinesResponse } from "@/types/api";
+import {
+  HTTP_METHOD,
+  GetDeadlinesResponse,
+  EditDeadlineResponse,
+} from "@/types/api";
 import { Deadline, DEADLINE_TYPE } from "@/types/deadlines";
 import { Mutate } from "@/hooks/useFetch";
 interface EditDeadlineFormValuesType {
@@ -46,7 +50,7 @@ const EditDeadlineModal: FC<Props> = ({
   const editDeadline = useApiCall({
     method: HTTP_METHOD.PUT,
     endpoint: `/deadlines/${deadline.id}`,
-    onSuccess: ({ deadline: newDeadline }: { deadline: Deadline }) => {
+    onSuccess: ({ deadline: newDeadline }: EditDeadlineResponse) => {
       mutate((data) => {
         const oldDeadlineIdx = data.deadlines.findIndex(
           (deadline) => deadline.id === newDeadline.id

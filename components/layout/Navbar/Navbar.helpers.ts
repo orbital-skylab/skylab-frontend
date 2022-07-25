@@ -20,51 +20,37 @@ export const NAVBAR_OPTIONS: NavbarOption[] = [
       ROLES.MENTORS,
       ROLES.ADMINISTRATORS,
     ],
+    currentPageRegExp: /dashboard/,
   },
   {
     label: "Projects",
     route: PAGES.PROJECTS,
+    currentPageRegExp: /projects/,
   },
-  { label: "Staff", route: PAGES.STAFF },
+  { label: "Staff", route: PAGES.STAFF, currentPageRegExp: /staff/ },
   {
     label: "Manage",
     route: PAGES.MANAGE,
     authorizedRoles: [ROLES.ADMINISTRATORS],
+    currentPageRegExp: /manage/,
   },
   {
     label: "Team Profile",
     action: NAVBAR_ACTIONS.ROUTE_TO_TEAM_PROFILE,
     authorizedRoles: [ROLES.STUDENTS],
+    currentPageRegExp: /projects\/[0-9]*/,
   },
   {
     label: "Profile",
     action: NAVBAR_ACTIONS.ROUTE_TO_PROFILE,
+    currentPageRegExp: /users\/[0-9]*/,
   },
   {
     label: "Sign Out",
     action: NAVBAR_ACTIONS.SIGN_OUT,
+    currentPageRegExp: /b$/, // Never matches anything
   },
 ];
-
-/**
- * Receives router object to generate function to check if the current page is under a provided path
- * @param {NextRouter} router from `useRouter`
- * @returns {(path: string | undefined) => boolean}
- */
-export const generateIsCurrentPage = (router: NextRouter) => {
-  const isCurrentPage = (path: string | undefined) => {
-    if (path === undefined) {
-      return false;
-    } else if (path.split("/").length < 2) {
-      return false;
-    }
-    return (
-      router.asPath.split("/")[1].toLowerCase() ===
-      path.split("/")[1].toLowerCase()
-    );
-  };
-  return isCurrentPage;
-};
 
 /**
  * Receives objects and functions from hooks to create a function that generates the onClick handler for Navbar options

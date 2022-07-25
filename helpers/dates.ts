@@ -78,5 +78,9 @@ export const getTodayAtTimeIso = (hours: number, minutes = 0) => {
  * Returns whether the provided date is in the future.
  */
 export const isFuture = (date: string) => {
+  if (!date) {
+    return false;
+  }
+
   return new Date(date) > new Date();
 };
