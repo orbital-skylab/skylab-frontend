@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import { parseQueryParams, isFetching, isError } from "./useFetch.helpers";
-import "jest";
+import { describe, expect } from "@jest/globals";
 import { FETCH_STATUS } from "./useFetch.types";
 
 describe("#parseQueryParams", () => {

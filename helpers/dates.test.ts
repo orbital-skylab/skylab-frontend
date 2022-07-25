@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import "jest";
+import { describe, expect } from "@jest/globals";
 import { isoDateToDateTimeLocalInput } from "./dates";
 
 describe("#isoDateToDateTimeLocalInput", () => {

@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import { userHasRole } from "./roles";
-import "jest";
+import { describe, expect } from "@jest/globals";
 import { ROLES } from "@/types/roles";
 import { User } from "@/types/users";
 import { DeepPartial } from "./types";
