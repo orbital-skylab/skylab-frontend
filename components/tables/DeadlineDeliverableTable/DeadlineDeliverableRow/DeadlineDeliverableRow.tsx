@@ -56,6 +56,10 @@ const DeadlineDeliverableRow: FC<Props> = ({
     },
   });
 
+  const handleClickStart = () => {
+    createSubmission.call();
+  };
+
   const generateDeadlineCell = (deadlineDeliverable: DeadlineDeliverable) => {
     switch (deadlineDeliverable.deadline.type) {
       case DEADLINE_TYPE.MILESTONE:
@@ -163,7 +167,7 @@ const DeadlineDeliverableRow: FC<Props> = ({
         return (
           <LoadingButton
             loading={isCalling(createSubmission.status)}
-            onClick={createSubmission.call}
+            onClick={handleClickStart}
             disabled={
               deadlineDeliverable.toProject &&
               (!deadlineDeliverable.toProjectSubmission ||

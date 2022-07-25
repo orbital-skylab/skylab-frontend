@@ -47,12 +47,10 @@ const useApiCall = ({
   /* Calls the actual API call with the specified api service. */
   async function call(body?: { [key: string]: any }) {
     setStatus(CALL_STATUS.CALLING);
-
     try {
       if (body) {
         apiServiceBuilder.setBody(body);
       }
-
       const apiService = apiServiceBuilder.build();
       const res = await apiService();
       if (!res.ok) {
