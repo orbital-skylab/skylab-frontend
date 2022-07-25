@@ -1,4 +1,4 @@
-import { DeadlineDeliverable } from "@/types/deadlines";
+import { DeadlineDeliverable, VIEWER_ROLE } from "@/types/deadlines";
 import { STATUS, Submission } from "@/types/submissions";
 import { User } from "@/types/users";
 
@@ -28,6 +28,23 @@ export const generateSubmissionStatus = ({
     return STATUS.SUBMITTED;
   } else {
     return STATUS.SUBMITTED_LATE;
+  }
+};
+
+export const getFromProjectOrUserId = (
+  user: User | undefined,
+  viewerRole: VIEWER_ROLE
+) => {
+  if (!user || viewerRole === undefined) {
+    return {};
+  }
+
+  switch (viewerRole) {
+    case VIEWER_ROLE.PROJECTS:
+      return { fromProjectId: user.student?.projectId };
+
+    case VIEWER_ROLE.ADVISERS:
+      return { fromUserId: user.adviser?.id };
   }
 };
 

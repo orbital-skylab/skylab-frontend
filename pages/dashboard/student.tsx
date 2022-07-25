@@ -20,6 +20,7 @@ import {
   GetStudentDeadlinesResponse,
   GetStudentPeerEvaluationAndFeedbackResponse,
 } from "@/types/api";
+import { VIEWER_ROLE } from "@/types/deadlines";
 
 enum TAB {
   DEADLINES = "Upcoming Deadlines",
@@ -80,13 +81,19 @@ const StudentDashboard: NextPage = () => {
               noDataCondition={!deadlinesResponse?.deadlines.length}
               fallback={<NoneFound message="No upcoming or past deadlines" />}
             >
-              <Stack gap="1rem">
-                <DeadlineDeliverableTable
-                  deadlineDeliverables={deadlinesResponse?.deadlines.filter(
-                    (deadlineDeliverable) =>
-                      isFuture(deadlineDeliverable.deadline.dueBy)
-                  )}
-                />
+              <Stack gap="2rem">
+                <Box>
+                  <Typography variant="h6" fontWeight={600}>
+                    Upcoming Deadlines
+                  </Typography>
+                  <DeadlineDeliverableTable
+                    deadlineDeliverables={deadlinesResponse?.deadlines.filter(
+                      (deadlineDeliverable) =>
+                        isFuture(deadlineDeliverable.deadline.dueBy)
+                    )}
+                    viewerRole={VIEWER_ROLE.PROJECTS}
+                  />
+                </Box>
                 {hasPastDeadlines && (
                   <Box>
                     <Typography variant="h6" fontWeight={600}>
@@ -97,6 +104,7 @@ const StudentDashboard: NextPage = () => {
                         (deadlineDeliverable) =>
                           !isFuture(deadlineDeliverable.deadline.dueBy)
                       )}
+                      viewerRole={VIEWER_ROLE.PROJECTS}
                     />
                   </Box>
                 )}

@@ -11,10 +11,11 @@ import {
 import DeadlineDeliverableRow from "./DeadlineDeliverableRow";
 
 // Types
-import { DeadlineDeliverable } from "@/types/deadlines";
+import { DeadlineDeliverable, VIEWER_ROLE } from "@/types/deadlines";
 
 type Props = {
   deadlineDeliverables: DeadlineDeliverable[] | undefined;
+  viewerRole: VIEWER_ROLE;
 };
 
 const columnHeadings = ["Deadline", "Due By", "Status", "Action"];
@@ -23,7 +24,10 @@ const columnHeadings = ["Deadline", "Due By", "Status", "Action"];
  * Renders a table to view YOUR OWN deadline deliverables.
  * Examples: Milestone 1 Submission, Milestone 1 Evaluation for Team X, Feedback for Team Y, etc.
  */
-const DeadlineDeliverableTable: FC<Props> = ({ deadlineDeliverables = [] }) => {
+const DeadlineDeliverableTable: FC<Props> = ({
+  deadlineDeliverables = [],
+  viewerRole,
+}) => {
   return (
     <TableContainer>
       <Table>
@@ -39,6 +43,7 @@ const DeadlineDeliverableTable: FC<Props> = ({ deadlineDeliverables = [] }) => {
             <DeadlineDeliverableRow
               key={`${deadlineDeliverable.deadline.id}-${deadlineDeliverable.toProject?.id}-${deadlineDeliverable.toUser?.id}`}
               deadlineDeliverable={deadlineDeliverable}
+              viewerRole={viewerRole}
             />
           ))}
         </TableBody>

@@ -54,6 +54,11 @@ const AddRelationModal: FC<Props> = ({ open, setOpen, mutate, projects }) => {
     values: AddRelationFormValuesType,
     actions: FormikHelpers<AddRelationFormValuesType>
   ) => {
+    if (values.toProjectId === values.fromProjectId) {
+      setError("Cannot create a relation between the same project");
+      return;
+    }
+
     const processedValues = {
       relation: values,
     };

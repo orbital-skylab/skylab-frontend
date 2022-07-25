@@ -84,3 +84,8 @@ export type DeadlineDeliverable = {
   // Only exists if a draft OR submission has been created
   submission?: Submission;
 };
+
+export enum VIEWER_ROLE {
+  PROJECTS,
+  ADVISERS,
+}

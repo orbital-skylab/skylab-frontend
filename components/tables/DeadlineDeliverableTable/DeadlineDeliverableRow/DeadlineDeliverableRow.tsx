@@ -6,7 +6,6 @@ import {
   Button,
   TableCell,
   TableRow,
-  Link as MUILink,
   Typography,
   Stack,
 } from "@mui/material";
@@ -15,6 +14,7 @@ import { LoadingButton } from "@mui/lab";
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
 import {
   generateSubmissionStatus,
+  getFromProjectOrUserId,
   getToProjectOrUserId,
 } from "@/helpers/submissions";
 import { PAGES } from "@/helpers/navigation";
@@ -23,13 +23,23 @@ import useAuth from "@/contexts/useAuth";
 import { useRouter } from "next/router";
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
 // Types
-import { DeadlineDeliverable, DEADLINE_TYPE } from "@/types/deadlines";
+import {
+  DeadlineDeliverable,
+  DEADLINE_TYPE,
+  VIEWER_ROLE,
+} from "@/types/deadlines";
 import { STATUS } from "@/types/submissions";
 import { CreateSubmissionResponse, HTTP_METHOD } from "@/types/api";
 
-type Props = { deadlineDeliverable: DeadlineDeliverable };
+type Props = {
+  deadlineDeliverable: DeadlineDeliverable;
+  viewerRole: VIEWER_ROLE;
+};
 
-const DeadlineDeliverableRow: FC<Props> = ({ deadlineDeliverable }) => {
+const DeadlineDeliverableRow: FC<Props> = ({
+  deadlineDeliverable,
+  viewerRole,
+}) => {
   const { user } = useAuth();
   const router = useRouter();
 
@@ -38,8 +48,7 @@ const DeadlineDeliverableRow: FC<Props> = ({ deadlineDeliverable }) => {
     endpoint: "/submissions",
     body: {
       deadlineId: deadlineDeliverable.deadline.id,
-      answers: [],
-      fromProjectId: user?.student?.projectId,
+      ...getFromProjectOrUserId(user, viewerRole),
       ...getToProjectOrUserId(deadlineDeliverable),
     },
     onSuccess: (newSubmission: CreateSubmissionResponse) => {
@@ -68,19 +77,30 @@ const DeadlineDeliverableRow: FC<Props> = ({ deadlineDeliverable }) => {
           return (
             <Stack direction="row" spacing="0.5rem">
               <Typography>{`${deadlineDeliverable.deadline.name} for`}</Typography>
-              <MUILink
+              <Button
+                variant="outlined"
+                size="small"
+                disabled={
+                  !deadlineDeliverable.toProjectSubmission ||
+                  !deadlineDeliverable.toProjectSubmission.id
+                }
                 href={`${PAGES.SUBMISSIONS}/${deadlineDeliverable.toProjectSubmission?.id}`}
               >
-                <Button variant="outlined" size="small">
-                  {deadlineDeliverable.toProject.name}
-                </Button>
-              </MUILink>
+                {deadlineDeliverable.toProject.name}
+              </Button>
             </Stack>
           );
         } else if (deadlineDeliverable.toUser) {
           return (
             <Stack direction="row" spacing="0.5rem">
-              <Typography>{`${deadlineDeliverable.deadline.name} for ${deadlineDeliverable.toUser.name}`}</Typography>
+              <Typography>{`${deadlineDeliverable.deadline.name} for`}</Typography>
+              <Button
+                variant="outlined"
+                size="small"
+                href={`${PAGES.USERS}/${deadlineDeliverable.toUser.id}`}
+              >
+                {deadlineDeliverable.toUser.name}
+              </Button>
             </Stack>
           );
         }
@@ -144,6 +164,11 @@ const DeadlineDeliverableRow: FC<Props> = ({ deadlineDeliverable }) => {
           <LoadingButton
             loading={isCalling(createSubmission.status)}
             onClick={createSubmission.call}
+            disabled={
+              deadlineDeliverable.toProject &&
+              (!deadlineDeliverable.toProjectSubmission ||
+                !deadlineDeliverable.toProjectSubmission.id)
+            }
           >
             Start
           </LoadingButton>
