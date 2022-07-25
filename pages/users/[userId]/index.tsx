@@ -61,6 +61,7 @@ const Profile: NextPage = () => {
           <GoBackButton />
           <Stack direction="column" alignItems="center">
             <Avatar
+              id="profile-picture-div"
               variant="circular"
               src={user?.profilePicUrl}
               alt={`${user?.name}`}
@@ -84,6 +85,7 @@ const Profile: NextPage = () => {
               {isCurrentUser ? (
                 <NextLink href={`${PAGES.USERS}/${user?.id}/edit`} passHref>
                   <Button
+                    id="edit-profile-button"
                     size="small"
                     variant="contained"
                     sx={{
@@ -107,12 +109,17 @@ const Profile: NextPage = () => {
                 }}
               >
                 {user?.name ? (
-                  <Typography fontWeight={600} textAlign="center">
+                  <Typography
+                    id="profile-name-span"
+                    fontWeight={600}
+                    textAlign="center"
+                  >
                     {user.name}
                   </Typography>
                 ) : null}
                 {user?.selfIntro ? (
                   <Typography
+                    id="profile-self-intro-span"
                     variant="body2"
                     marginY="0.5rem"
                     textAlign="center"
@@ -132,12 +139,14 @@ const Profile: NextPage = () => {
                     />
                     {user.githubUrl && (
                       <SpreadAttribute
+                        id="profile-github-link"
                         attribute="GitHub"
                         value={{ href: user.githubUrl, label: user.githubUrl }}
                       />
                     )}
                     {user.linkedinUrl && (
                       <SpreadAttribute
+                        id="profile-linkedin-link"
                         attribute="LinkedIn"
                         value={{
                           href: user.linkedinUrl,
@@ -147,6 +156,7 @@ const Profile: NextPage = () => {
                     )}
                     {user.personalSiteUrl && (
                       <SpreadAttribute
+                        id="profile-personal-site-link"
                         attribute="Website"
                         value={{
                           href: user.personalSiteUrl,

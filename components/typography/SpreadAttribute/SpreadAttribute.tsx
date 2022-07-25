@@ -11,13 +11,14 @@ type Props = {
     | string[]
     | number[]
     | { href: string; label: string }[];
+  id?: string;
 };
 
 /**
  * Renders an attribute and its value with the space in between spread out (justify-content: space-between)
  * The value accepts string(s) and href with label(s). When a href is provided, the value is rendered as as Link
  */
-const SpreadAttribute: FC<Props> = ({ attribute, value }) => {
+const SpreadAttribute: FC<Props> = ({ attribute, value, id }) => {
   if (!attribute || !value) {
     return null;
   }
@@ -37,6 +38,7 @@ const SpreadAttribute: FC<Props> = ({ attribute, value }) => {
         typeof value === "string" || typeof value === "number" ? (
           /* Single string value */
           <Typography
+            id={id}
             variant="body1"
             whiteSpace="nowrap"
             textOverflow="ellipsis"
@@ -47,6 +49,7 @@ const SpreadAttribute: FC<Props> = ({ attribute, value }) => {
         ) : (
           /* Single link value */
           <Link
+            id={id}
             href={value.href}
             variant="body1"
             underline="hover"

@@ -75,28 +75,38 @@ const EditProfile: NextPage = () => {
                   return (
                     <form onSubmit={formik.handleSubmit}>
                       <Stack direction="column" spacing="1rem">
-                        <TextInput name="name" label="Name" formik={formik} />
                         <TextInput
+                          id="edit-name-input"
+                          name="name"
+                          label="Name"
+                          formik={formik}
+                        />
+                        <TextInput
+                          id="edit-profile-picture-input"
                           name="profilePicUrl"
                           label="Profile Picture URL"
                           formik={formik}
                         />
                         <TextInput
+                          id="edit-github-input"
                           name="githubUrl"
                           label="GitHub URL"
                           formik={formik}
                         />
                         <TextInput
+                          id="edit-linkedin-input"
                           name="linkedinUrl"
                           label="LinkedIn URL"
                           formik={formik}
                         />
                         <TextInput
+                          id="edit-personal-site-input"
                           name="personalSiteUrl"
                           label="Personal Site URL"
                           formik={formik}
                         />
                         <TextInput
+                          id="edit-self-intro-input"
                           name="selfIntro"
                           label="Self Introduction"
                           multiline
@@ -105,6 +115,7 @@ const EditProfile: NextPage = () => {
                         />
                         <Stack direction="row" justifyContent="end">
                           <LoadingButton
+                            id="save-profile-button"
                             type="submit"
                             variant="contained"
                             disabled={
