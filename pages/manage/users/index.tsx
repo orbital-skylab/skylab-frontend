@@ -69,7 +69,10 @@ const Users: NextPage = () => {
   /** For fetching users based on filters */
   const memoUsersQueryParams = useMemo(() => {
     return {
-      cohortYear: selectedCohortYear,
+      cohortYear:
+        selectedRole !== ROLES_WITH_ALL.ADMINISTRATORS
+          ? selectedCohortYear
+          : "",
       role: selectedRole !== ROLES_WITH_ALL.ALL ? toSingular(selectedRole) : "",
       search: querySearch,
       limit: LIMIT,
