@@ -13,6 +13,7 @@ import { NavbarOption, NAVBAR_ACTIONS } from "./Navbar.types";
 export const NAVBAR_OPTIONS: NavbarOption[] = [
   {
     label: "Dashboard",
+    id: "nav-dashboard",
     action: NAVBAR_ACTIONS.ROUTE_TO_DASHBOARD,
     authorizedRoles: [
       ROLES.STUDENTS,
@@ -24,29 +25,39 @@ export const NAVBAR_OPTIONS: NavbarOption[] = [
   },
   {
     label: "Projects",
+    id: "nav-projects",
     route: PAGES.PROJECTS,
     currentPageRegExp: /projects/,
   },
-  { label: "Staff", route: PAGES.STAFF, currentPageRegExp: /staff/ },
+  {
+    label: "Staff",
+    id: "nav-staff",
+    route: PAGES.STAFF,
+    currentPageRegExp: /staff/,
+  },
   {
     label: "Manage",
+    id: "nav-manage",
     route: PAGES.MANAGE,
     authorizedRoles: [ROLES.ADMINISTRATORS],
     currentPageRegExp: /manage/,
   },
   {
     label: "Team Profile",
+    id: "nav-team-profile",
     action: NAVBAR_ACTIONS.ROUTE_TO_TEAM_PROFILE,
     authorizedRoles: [ROLES.STUDENTS],
     currentPageRegExp: /projects\/[0-9]*/,
   },
   {
     label: "Profile",
+    id: "nav-profile",
     action: NAVBAR_ACTIONS.ROUTE_TO_PROFILE,
     currentPageRegExp: /users\/[0-9]*/,
   },
   {
     label: "Sign Out",
+    id: "nav-sign-out",
     action: NAVBAR_ACTIONS.SIGN_OUT,
     currentPageRegExp: /b$/, // Never matches anything
   },
