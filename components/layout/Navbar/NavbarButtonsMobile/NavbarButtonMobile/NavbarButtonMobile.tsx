@@ -1,8 +1,11 @@
-import { NavbarOption } from "@/helpers/navigation";
-import { userHasRole } from "@/helpers/roles";
-import { User } from "@/types/users";
-import { MenuItem, Typography } from "@mui/material";
 import { FC } from "react";
+// Components
+import { MenuItem, Typography } from "@mui/material";
+// Helpers
+import { userHasRole } from "@/helpers/roles";
+// Types
+import { User } from "@/types/users";
+import { NavbarOption } from "../../Navbar.types";
 
 type Props = {
   user?: User;
@@ -14,7 +17,7 @@ type Props = {
     route?: string;
     action?: string;
   }) => () => void;
-  isCurrentPage: (path: string | undefined) => boolean;
+  isCurrentPage: boolean;
   handleCloseNavMenu: () => void;
 };
 
@@ -40,9 +43,9 @@ const NavbarButtonMobile: FC<Props> = ({
         generateOnClick(option)();
         handleCloseNavMenu();
       }}
-      selected={isCurrentPage(option.route)}
+      selected={isCurrentPage}
       sx={{
-        color: isCurrentPage(option.route) ? "gray" : "inherit",
+        color: isCurrentPage ? "gray" : "inherit",
       }}
     >
       <Typography textAlign="center">{option.label}</Typography>

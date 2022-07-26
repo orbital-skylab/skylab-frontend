@@ -1,7 +1,6 @@
 import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from "react";
 // Components
 import { MenuItem, TextField } from "@mui/material";
-import SnackbarAlert from "@/components/SnackbarAlert";
 import Modal from "../Modal";
 import { Button, Stack, Typography } from "@mui/material";
 import StudentDetailsForm from "@/components/forms/StudentDetailsForm";
@@ -12,69 +11,49 @@ import UserDetailsForm from "@/components/forms/UserDetailsForm";
 // Helpers
 import { Formik, FormikHelpers } from "formik";
 import {
-  generateEmptyInitialValues,
+  generateAddUserOrRoleEmptyInitialValues,
   processAddUserOrRoleFormValues,
   toSingular,
 } from "@/helpers/roles";
 import { generateValidationSchema } from "./AddUserModal.helpers";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
+import useCohort from "@/contexts/useCohort";
+import { useRouter } from "next/router";
 // Types
 import { HTTP_METHOD } from "@/types/api";
-import { Mutate } from "@/hooks/useFetch";
-import { User } from "@/types/users";
-import { CreateUserResponse } from "@/types/api";
 import { AddUserFormValuesType, ROLES } from "@/types/roles";
 import { LeanProject } from "@/types/projects";
-import useCohort from "@/hooks/useCohort";
-import { useRouter } from "next/router";
 
 type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  mutate: Mutate<User[]>;
-  hasMore: boolean;
   leanProjects: LeanProject[] | undefined;
   isFetchingLeanProjects: boolean;
 };
 
+const refreshSeconds = 3;
+
 const AddUserModal: FC<Props> = ({
   open,
   setOpen,
-  // TODO: Fix Jira Ticket 117
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  mutate,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  hasMore,
   leanProjects,
   isFetchingLeanProjects,
 }) => {
   const router = useRouter();
   const { cohorts, currentCohortYear } = useCohort();
-  const {
-    snackbar,
-    handleClose: handleCloseSnackbar,
-    setSuccess,
-    setError,
-  } = useSnackbarAlert();
+  const { setSuccess, setError } = useSnackbarAlert();
   const [selectedRole, setSelectedRole] = useState<ROLES>(ROLES.STUDENTS);
 
   const addUser = useApiCall({
     method: HTTP_METHOD.POST,
     endpoint: `/${selectedRole.toLowerCase()}`,
     requiresAuthorization: true,
-    // TODO: Fix Jira Ticket 117
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onSuccess: (newUser: CreateUserResponse) => {
-      setTimeout(() => {
-        router.reload();
-      }, 3000);
-    },
   });
 
   const initialValues: AddUserFormValuesType =
-    generateEmptyInitialValues(currentCohortYear);
+    generateAddUserOrRoleEmptyInitialValues(currentCohortYear);
 
   const handleSubmit = async (
     values: AddUserFormValuesType,
@@ -92,8 +71,11 @@ const AddUserModal: FC<Props> = ({
       setSuccess(
         `You have successfully created a new ${toSingular(selectedRole)}: ${
           values.name
-        }. Refreshing in 3 seconds...`
+        }. Refreshing in ${refreshSeconds} seconds...`
       );
+      setTimeout(() => {
+        router.reload();
+      }, refreshSeconds * 1000);
       handleCloseModal();
       actions.resetForm();
     } catch (error) {
@@ -111,8 +93,7 @@ const AddUserModal: FC<Props> = ({
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
-      <Modal open={open} handleClose={handleCloseModal} title={`Add User`}>
+      <Modal open={open} handleClose={handleCloseModal} title={`Adding User`}>
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmit}

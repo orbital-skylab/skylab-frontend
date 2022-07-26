@@ -1,12 +1,16 @@
-import { NavbarOption } from "@/helpers/navigation";
-import { User } from "@/types/users";
-import { Box, IconButton, Menu } from "@mui/material";
-import { Menu as MenuIcon } from "@mui/icons-material";
 import React, { FC, useState } from "react";
+// Components
 import NavbarButtonMobile from "./NavbarButtonMobile";
+import { Menu as MenuIcon } from "@mui/icons-material";
+import { Box, IconButton, Menu } from "@mui/material";
+// Hooks
+import { useRouter } from "next/router";
+// Helpers
+import { NAVBAR_OPTIONS } from "../Navbar.helpers";
+// Types
+import { User } from "@/types/users";
 
 type Props = {
-  options: NavbarOption[];
   user?: User;
   generateOnClick: ({
     route,
@@ -15,15 +19,10 @@ type Props = {
     route?: string;
     action?: string;
   }) => () => void;
-  isCurrentPage: (path: string | undefined) => boolean;
 };
 
-const NavbarButtonsMobile: FC<Props> = ({
-  options,
-  user,
-  generateOnClick,
-  isCurrentPage,
-}) => {
+const NavbarButtonsMobile: FC<Props> = ({ user, generateOnClick }) => {
+  const router = useRouter();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -69,12 +68,12 @@ const NavbarButtonsMobile: FC<Props> = ({
           display: { xs: "block", md: "none" },
         }}
       >
-        {options.map((option) => (
+        {NAVBAR_OPTIONS.map((option) => (
           <NavbarButtonMobile
             key={option.label}
             option={option}
             generateOnClick={generateOnClick}
-            isCurrentPage={isCurrentPage}
+            isCurrentPage={option.currentPageRegExp.test(router.pathname)}
             user={user}
             handleCloseNavMenu={handleCloseNavMenu}
           />

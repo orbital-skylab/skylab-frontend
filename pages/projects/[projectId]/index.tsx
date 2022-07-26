@@ -11,18 +11,19 @@ import {
   Box,
 } from "@mui/material";
 import NextLink from "next/link";
+import GoBackButton from "@/components/buttons/GoBackButton";
 // Hooks
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import { useRouter } from "next/router";
+import useAuth from "@/contexts/useAuth";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
+import { checkIfProjectsAdviser, userHasRole } from "@/helpers/roles";
+import { noImageAvailableSrc } from "@/helpers/errors";
 // Types
 import type { NextPage } from "next";
 import { GetProjectResponse } from "@/types/api";
-import useAuth from "@/hooks/useAuth";
-import { userHasRole } from "@/helpers/roles";
 import { ROLES } from "@/types/roles";
-import GoBackButton from "@/components/buttons/GoBackButton";
 
 const ProjectDetails: NextPage = () => {
   const router = useRouter();
@@ -35,13 +36,10 @@ const ProjectDetails: NextPage = () => {
       enabled: !!projectId,
     });
 
-  const isProjectsAdviser =
-    user &&
-    user.adviser &&
-    projectResponse &&
-    projectResponse.project &&
-    projectResponse.project.adviser &&
-    user.adviser.id === projectResponse.project.adviser.adviserId;
+  const isProjectsAdviser = checkIfProjectsAdviser(
+    projectResponse?.project,
+    user
+  );
 
   const showEditButton =
     isProjectsAdviser || (user && userHasRole(user, ROLES.ADMINISTRATORS));
@@ -66,7 +64,7 @@ const ProjectDetails: NextPage = () => {
         <Stack direction="column" alignItems="center">
           <Box
             component="img"
-            src={"https://nusskylab-dev.comp.nus.edu.sg/posters/2021/2680.jpg"}
+            src={project?.posterUrl ?? noImageAvailableSrc}
             alt={`${project?.name} Project`}
             sx={{
               objectFit: "cover",
@@ -110,7 +108,7 @@ const ProjectDetails: NextPage = () => {
                 textAlign="center"
                 mb="1.5rem"
               >
-                {`${project?.name}`}
+                {`${project?.teamName}`}
               </Typography>
               {project && (
                 <Stack spacing="0.5rem">
@@ -151,13 +149,33 @@ const ProjectDetails: NextPage = () => {
                       }}
                     />
                   )}
-                  <SpreadAttribute
-                    attribute="Proposal PDF"
-                    value={{
-                      href: project.proposalPdf,
-                      label: project.proposalPdf,
-                    }}
-                  />
+                  {project.proposalPdf && (
+                    <SpreadAttribute
+                      attribute="Proposal PDF"
+                      value={{
+                        href: project.proposalPdf,
+                        label: project.proposalPdf,
+                      }}
+                    />
+                  )}
+                  {project.posterUrl && (
+                    <SpreadAttribute
+                      attribute="Poster"
+                      value={{
+                        href: project.posterUrl,
+                        label: project.posterUrl,
+                      }}
+                    />
+                  )}
+                  {project.videoUrl && (
+                    <SpreadAttribute
+                      attribute="Video"
+                      value={{
+                        href: project.videoUrl,
+                        label: project.videoUrl,
+                      }}
+                    />
+                  )}
                 </Stack>
               )}
             </CardContent>

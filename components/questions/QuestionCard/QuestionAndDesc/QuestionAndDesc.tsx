@@ -20,7 +20,11 @@ const QuestionAndDesc: FC<Props> = ({ question, questionType }) => {
         {question.isAnonymous && <AnonymousChip />}
       </Stack>
       {question.desc && (
-        <Typography className="question-description-span" variant="body2">
+        <Typography
+          className="question-description-span"
+          variant="body2"
+          sx={{ whiteSpace: "pre-line" }}
+        >
           {question.desc}
         </Typography>
       )}

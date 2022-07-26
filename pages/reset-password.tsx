@@ -3,7 +3,6 @@ import Link from "next/link";
 // Components
 import Body from "@/components/layout/Body";
 import TextInput from "@/components/formikFormControllers/TextInput";
-import SnackbarAlert from "@/components/SnackbarAlert";
 import {
   Box,
   Button,
@@ -12,15 +11,15 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import CustomHead from "@/components/CustomHead";
+import CustomHead from "@/components/layout/CustomHead";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
 import { Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { ERRORS } from "@/helpers/errors";
 // Hooks
-import useAuth from "@/hooks/useAuth";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert";
+import useAuth from "@/contexts/useAuth";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 
 interface SignUpFormValuesType {
   email: string;
@@ -28,7 +27,7 @@ interface SignUpFormValuesType {
 
 const ResetPassword: NextPage = () => {
   const { resetPassword } = useAuth();
-  const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
+  const { setSuccess, setError } = useSnackbarAlert();
 
   const initialValues: SignUpFormValuesType = {
     email: "",
@@ -61,7 +60,6 @@ const ResetPassword: NextPage = () => {
         title="Reset Password"
         description="Forgot your password? Reset your password using your email here!"
       />
-      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <Body sx={{ display: "grid", placeItems: "center" }}>
         <Container maxWidth="xs">
           <Stack gap="1rem" justifyContent="center">

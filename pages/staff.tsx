@@ -24,10 +24,10 @@ import StaffCard from "@/components/cards/StaffCard";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import NoneFound from "@/components/emptyStates/NoneFound";
-import CustomHead from "@/components/CustomHead";
+import CustomHead from "@/components/layout/CustomHead";
 // Hooks
 import useFetch, { isFetching, isError } from "@/hooks/useFetch";
-import useCohort from "@/hooks/useCohort";
+import useCohort from "@/contexts/useCohort";
 // Types
 import { STAFF_TYPES, STAFF_VALUES } from "@/types/staff";
 import { Cohort } from "@/types/cohorts";

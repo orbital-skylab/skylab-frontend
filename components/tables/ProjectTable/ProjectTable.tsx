@@ -1,7 +1,5 @@
-import SnackbarAlert from "@/components/SnackbarAlert";
-import { Mutate } from "@/hooks/useFetch";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert";
-import { Project } from "@/types/projects";
+import { FC } from "react";
+// Components
 import {
   Table,
   TableBody,
@@ -10,15 +8,22 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { FC } from "react";
 import ProjectRow from "./ProjectRow";
+// Hooks
+import { Mutate } from "@/hooks/useFetch";
+// Types
+import { Project } from "@/types/projects";
 
 type Props = {
   projects: Project[];
-  mutate: Mutate<Project[]>;
+  mutate?: Mutate<Project[]>;
+  showAdviserColumn?: boolean;
+  showMentorColumn?: boolean;
+  showEditAction?: boolean;
+  showDeleteAction?: boolean;
 };
 
-const ColumnHeadings = [
+const columnHeadings = [
   "Project ID",
   "Project Name",
   "Level of Achievement",
@@ -28,17 +33,34 @@ const ColumnHeadings = [
   "Actions",
 ];
 
-const ProjectTable: FC<Props> = ({ projects, mutate }) => {
-  const { snackbar, handleClose, setSuccess, setError } = useSnackbarAlert();
+const ProjectTable: FC<Props> = ({
+  projects,
+  mutate,
+  showAdviserColumn,
+  showMentorColumn,
+  showEditAction,
+  showDeleteAction,
+}) => {
+  const filteredColumnHeadings = columnHeadings.filter((heading) => {
+    switch (heading) {
+      case "Adviser":
+        return showAdviserColumn;
+
+      case "Mentor":
+        return showMentorColumn;
+
+      default:
+        return true;
+    }
+  });
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <TableContainer>
         <Table>
           <TableHead>
             <TableRow>
-              {ColumnHeadings.map((heading) => (
+              {filteredColumnHeadings.map((heading) => (
                 <TableCell key={heading}>{heading}</TableCell>
               ))}
             </TableRow>
@@ -49,8 +71,10 @@ const ProjectTable: FC<Props> = ({ projects, mutate }) => {
                 key={project.id}
                 project={project}
                 mutate={mutate}
-                setSuccess={setSuccess}
-                setError={setError}
+                showAdviserColumn={Boolean(showAdviserColumn)}
+                showMentorColumn={Boolean(showMentorColumn)}
+                showEditAction={Boolean(showEditAction)}
+                showDeleteAction={Boolean(showDeleteAction)}
               />
             ))}
           </TableBody>

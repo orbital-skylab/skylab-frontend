@@ -1,46 +1,28 @@
-import { FC, useState, MouseEvent } from "react";
+import { FC, useState } from "react";
 import Link from "next/link";
 // Components
-import {
-  Button,
-  Menu,
-  MenuItem,
-  Stack,
-  TableCell,
-  TableRow,
-  Tooltip,
-} from "@mui/material";
+import { Button, Stack, TableCell, TableRow, Tooltip } from "@mui/material";
 import EditDeadlineModal from "@/components/modals/EditDeadlineModal";
-import SnackbarAlert from "@/components/SnackbarAlert";
 import DeleteDeadlineModal from "@/components/modals/DeleteDeadlineModal";
-import { KeyboardArrowDown } from "@mui/icons-material";
 // Helpers
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
 import { PAGES } from "@/helpers/navigation";
-// Hooks
-import useSnackbarAlert from "@/hooks/useSnackbarAlert";
 // Types
 import { Deadline } from "@/types/deadlines";
 import { Mutate } from "@/hooks/useFetch";
 import { GetDeadlinesResponse } from "@/types/api";
+// Constants
 import { BASE_TRANSITION } from "@/styles/constants";
 
-type Props = { deadline: Deadline; mutate: Mutate<GetDeadlinesResponse> };
+type Props = {
+  deadline: Deadline;
+  deadlines: Deadline[];
+  mutate: Mutate<GetDeadlinesResponse>;
+};
 
-const DeadlineRow: FC<Props> = ({ deadline, mutate }) => {
-  const { snackbar, setSuccess, setError, handleClose } = useSnackbarAlert();
-  const [dropdownAnchorElement, setDropdownAnchorElement] =
-    useState<HTMLElement | null>(null);
+const DeadlineRow: FC<Props> = ({ deadline, deadlines, mutate }) => {
   const [isEditDeadlineOpen, setIsEditDeadlineOpen] = useState(false);
   const [isDeleteDeadlineOpen, setIsDeleteDeadlineOpen] = useState(false);
-
-  const handleOpenDropdown = (e: MouseEvent<HTMLButtonElement>) => {
-    setDropdownAnchorElement(e.currentTarget);
-  };
-
-  const handleCloseDropdown = () => {
-    setDropdownAnchorElement(null);
-  };
 
   const handleOpenEditModal = () => {
     setIsEditDeadlineOpen(true);
@@ -57,57 +39,36 @@ const DeadlineRow: FC<Props> = ({ deadline, mutate }) => {
         open={isDeleteDeadlineOpen}
         setOpen={setIsDeleteDeadlineOpen}
         mutate={mutate}
-        setSuccess={setSuccess}
-        setError={setError}
       />
       <EditDeadlineModal
         deadline={deadline}
+        deadlines={deadlines}
         open={isEditDeadlineOpen}
         setOpen={setIsEditDeadlineOpen}
         mutate={mutate}
-        setSuccess={setSuccess}
-        setError={setError}
       />
-      <SnackbarAlert snackbar={snackbar} handleClose={handleClose} />
       <TableRow>
+        <TableCell>{deadline.id}</TableCell>
         <TableCell className="deadline-name-td">{deadline.name}</TableCell>
         <TableCell>{deadline.type}</TableCell>
+        <TableCell>
+          {deadline.evaluating ? deadline.evaluating.name : "-"}
+        </TableCell>
         <TableCell>{isoDateToLocaleDateWithTime(deadline.dueBy)}</TableCell>
-        <TableCell className="deadline-actions-td">
-          <Stack direction="row" spacing="0.5rem"></Stack>
-          <Button
-            className="deadline-options-button"
-            variant="outlined"
-            size="small"
-            onClick={handleOpenDropdown}
-            endIcon={<KeyboardArrowDown />}
-          >
-            Options
-          </Button>
-          <Menu
-            anchorEl={dropdownAnchorElement}
-            open={Boolean(dropdownAnchorElement)}
-            onClose={handleCloseDropdown}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-          >
+        <TableCell>
+          <Stack direction="row" spacing="0.5rem">
             <Link href={`${PAGES.MANAGE_DEADLINES}/${deadline.id}`} passHref>
               <Tooltip
                 title="View and edit deadline questions"
                 placement="left"
               >
-                <MenuItem id="view-questions-button">View Questions</MenuItem>
+                <Button id="view-questions-button">Questions</Button>
               </Tooltip>
             </Link>
-            <MenuItem onClick={handleOpenEditModal}>Edit</MenuItem>
-            <MenuItem
-              id="delete-deadline-button"
+            <Button id="edit-deadline-button" onClick={handleOpenEditModal}>
+              Edit
+            </Button>
+            <Button
               onClick={handleOpenDeleteModal}
               sx={{
                 transition: BASE_TRANSITION,
@@ -115,8 +76,8 @@ const DeadlineRow: FC<Props> = ({ deadline, mutate }) => {
               }}
             >
               Delete
-            </MenuItem>
-          </Menu>
+            </Button>
+          </Stack>
         </TableCell>
       </TableRow>
     </>

@@ -1,11 +1,15 @@
-import { NavbarOption } from "@/helpers/navigation";
-import { User } from "@/types/users";
-import { Box } from "@mui/material";
 import { FC } from "react";
+// Components
+import { Box } from "@mui/material";
 import NavbarButtonDesktop from "./NavbarButtonDesktop";
+// Hooks
+import { useRouter } from "next/router";
+// Helpers
+import { NAVBAR_OPTIONS } from "../Navbar.helpers";
+// Types
+import { User } from "@/types/users";
 
 type Props = {
-  options: NavbarOption[];
   user?: User;
   generateOnClick: ({
     route,
@@ -14,15 +18,11 @@ type Props = {
     route?: string;
     action?: string;
   }) => () => void;
-  isCurrentPage: (path: string | undefined) => boolean;
 };
 
-const NavbarButtonsDesktop: FC<Props> = ({
-  options,
-  user,
-  generateOnClick,
-  isCurrentPage,
-}) => {
+const NavbarButtonsDesktop: FC<Props> = ({ user, generateOnClick }) => {
+  const router = useRouter();
+
   return (
     <Box
       sx={{
@@ -30,14 +30,14 @@ const NavbarButtonsDesktop: FC<Props> = ({
         gap: "0.5rem",
       }}
     >
-      {options.map((option) => (
+      {NAVBAR_OPTIONS.map((option) => (
         <NavbarButtonDesktop
           id={option.id}
           key={option.label}
           option={option}
           user={user}
           generateOnClick={generateOnClick}
-          isCurrentPage={isCurrentPage}
+          isCurrentPage={option.currentPageRegExp.test(router.pathname)}
         />
       ))}
     </Box>

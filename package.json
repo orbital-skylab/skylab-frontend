@@ -1,6 +1,11 @@
 {
   "name": "skylab-frontend",
   "version": "0.1.0",
+  "engines": {
+    "node": ">=14.15.0",
+    "npm": ">=6.14.8",
+    "yarn": "please-use-npm"
+  },
   "private": true,
   "scripts": {
     "dev": "next dev",

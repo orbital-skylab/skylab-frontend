@@ -1,14 +1,17 @@
 import { Adviser } from "./advisers";
-import { Deadline, Section } from "./deadlines";
+import { Deadline, DeadlineDeliverable, Section } from "./deadlines";
+import { EvaluationGroup } from "./groups";
 import { Mentor } from "./mentors";
 import { LeanProject, Project } from "./projects";
+import { EvaluationRelation } from "./relations";
 import {
   AdministratorRole,
   AdviserRole,
   MentorRole,
   StudentRole,
 } from "./roles";
-import { User, UserMetadata } from "./users";
+import { PossibleSubmission, Submission } from "./submissions";
+import { LeanUser, User, UserMetadata } from "./users";
 
 export enum HTTP_METHOD {
   GET = "GET",
@@ -34,8 +37,9 @@ export type GetUsersResponse = {
   users: User[];
 };
 
-// TODO: Fix Jira Ticket 117
-export type CreateUserResponse = unknown;
+export type GetLeanUsersResponse = {
+  users: LeanUser[];
+};
 
 /**
  * Combined Roles Endpoints:
@@ -131,7 +135,7 @@ export type CreateProjectResponse = {
 };
 
 /**
- * Deadlines Endpoints;
+ * Deadlines Endpoints:
  * https://github.com/orbital-skylab/skylab-backend/wiki/Deadlines-Endpoints
  */
 export type GetDeadlinesResponse = {
@@ -145,6 +149,96 @@ export type GetDeadlineDetailsResponse = {
 
 export type CreateDeadlineResponse = {
   deadline: Deadline;
+};
+
+export type EditDeadlineResponse = {
+  deadline: Deadline;
+};
+
+/**
+ * Submissions Endpoints:
+ * https://github.com/orbital-skylab/skylab-backend/wiki/Submissions-Endpoints
+ */
+export type CreateSubmissionResponse = Submission;
+
+export type GetSubmissionResponse = { submission: Submission };
+
+/**
+ * Dashbard Endpoints:
+ * https://github.com/orbital-skylab/skylab-backend/wiki/Dashboard-Endpoints
+ * - These endpoints are ONLY used on the dashboard.
+ * - There may be other endpoints used in the dashboard and elsewhere and are hence not dashboard-specific.
+ */
+/** Student Dashboard Endpoints */
+export type GetStudentDeadlinesResponse = {
+  deadlines: DeadlineDeliverable[];
+};
+
+export type GetStudentPeerMilestonesResponse = {
+  deadlines: {
+    deadline: Deadline;
+    submissions: PossibleSubmission[];
+  }[];
+};
+
+export type GetStudentPeerEvaluationAndFeedbackResponse = {
+  deadlines: {
+    deadline: Deadline;
+    submissions: PossibleSubmission[];
+  }[];
+};
+
+/** Adviser Dashboard Endpoints */
+export type GetAdviserDeadlinesResponse = {
+  deadlines: DeadlineDeliverable[];
+};
+
+export type GetAdviserTeamSubmissionsResponse = {
+  deadlines: {
+    deadline: Deadline;
+    submissions: PossibleSubmission[];
+  }[];
+};
+
+/** Mentor Dashboard Endpoints */
+export type GetMentorTeamSubmissionsResponse = {
+  deadlines: {
+    deadline: Deadline;
+    submissions: PossibleSubmission[];
+  }[];
+};
+
+/**
+ * Groups Endpoints:
+ */
+export type CreateGroupResponse = {
+  group: EvaluationGroup;
+};
+
+export type EditGroupResponse = {
+  group: EvaluationGroup;
+};
+
+/**
+ * Evaluation Relations Endpoints:
+ * https://github.com/orbital-skylab/skylab-backend/wiki/Evaluation-Relationships-Endpoints
+ */
+export type CreateRelationResponse = {
+  relation: EvaluationRelation;
+};
+
+export type GetRelationsResponse = {
+  relations: EvaluationRelation[];
+};
+
+export type EditRelationResponse = {
+  relation: EvaluationRelation;
+};
+
+export type DeleteProjectRelationsResponse = {
+  relations: {
+    count: number;
+  };
 };
 
 /**

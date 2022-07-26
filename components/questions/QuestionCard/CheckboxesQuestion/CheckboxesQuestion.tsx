@@ -16,9 +16,15 @@ type Props = {
   question: LeanQuestion | Question;
   answer: Option;
   setAnswer: (newAnswer: string) => void;
+  isReadonly: boolean;
 };
 
-const CheckboxesQuestion: FC<Props> = ({ question, answer, setAnswer }) => {
+const CheckboxesQuestion: FC<Props> = ({
+  question,
+  answer,
+  setAnswer,
+  isReadonly,
+}) => {
   const isChecked = (option: string) => {
     try {
       const answerObject = JSON.parse(answer);
@@ -63,7 +69,12 @@ const CheckboxesQuestion: FC<Props> = ({ question, answer, setAnswer }) => {
                   className="checkbox-option"
                   key={idx}
                   label={option ? option : `<Empty Option ${idx + 1}>`}
-                  control={<Checkbox checked={isChecked(option)} />}
+                  control={
+                    <Checkbox
+                      checked={isChecked(option)}
+                      readOnly={isReadonly}
+                    />
+                  }
                   onClick={generateToggle(option)}
                 />
               ))}

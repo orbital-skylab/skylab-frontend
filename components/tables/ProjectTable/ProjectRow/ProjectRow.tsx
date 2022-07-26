@@ -1,17 +1,7 @@
-import { FC, MouseEvent, useState } from "react";
+import { FC, useState } from "react";
 // Components
 import DeleteProjectModal from "@/components/modals/DeleteProjectModal";
-import { KeyboardArrowDown } from "@mui/icons-material";
-import {
-  Button,
-  Chip,
-  Menu,
-  MenuItem,
-  Stack,
-  TableCell,
-  TableRow,
-  Tooltip,
-} from "@mui/material";
+import { Button, Chip, Stack, TableCell, TableRow } from "@mui/material";
 import Link from "next/link";
 import UsersName from "@/components/typography/UsersName";
 // Helpers
@@ -23,24 +13,22 @@ import { BASE_TRANSITION } from "@/styles/constants";
 
 type Props = {
   project: Project;
-  mutate: Mutate<Project[]>;
-  setSuccess: (message: string) => void;
-  setError: (error: unknown) => void;
+  mutate: Mutate<Project[]> | undefined;
+  showAdviserColumn: boolean;
+  showMentorColumn: boolean;
+  showEditAction: boolean;
+  showDeleteAction: boolean;
 };
 
-const ProjectRow: FC<Props> = ({ project, mutate, setSuccess, setError }) => {
-  const [dropdownAnchorElement, setDropdownAnchorElement] =
-    useState<HTMLElement | null>(null);
-  const isDropdownOpen = Boolean(dropdownAnchorElement);
+const ProjectRow: FC<Props> = ({
+  project,
+  mutate,
+  showAdviserColumn,
+  showMentorColumn,
+  showEditAction,
+  showDeleteAction,
+}) => {
   const [isDeleteProjectOpen, setIsDeleteProjectOpen] = useState(false);
-
-  const handleOpenDropdown = (e: MouseEvent<HTMLButtonElement>) => {
-    setDropdownAnchorElement(e.currentTarget);
-  };
-
-  const handleCloseDropdown = () => {
-    setDropdownAnchorElement(null);
-  };
 
   const handleOpenDeleteModal = () => {
     setIsDeleteProjectOpen(true);
@@ -92,14 +80,14 @@ const ProjectRow: FC<Props> = ({ project, mutate, setSuccess, setError }) => {
 
   return (
     <>
-      <DeleteProjectModal
-        open={isDeleteProjectOpen}
-        setOpen={setIsDeleteProjectOpen}
-        project={project}
-        mutate={mutate}
-        setSuccess={setSuccess}
-        setError={setError}
-      />
+      {showDeleteAction && mutate && (
+        <DeleteProjectModal
+          open={isDeleteProjectOpen}
+          setOpen={setIsDeleteProjectOpen}
+          project={project}
+          mutate={mutate}
+        />
+      )}
       <TableRow>
         <TableCell>{project.id}</TableCell>
         <TableCell>{project.name}</TableCell>
@@ -113,58 +101,51 @@ const ProjectRow: FC<Props> = ({ project, mutate, setSuccess, setError }) => {
             ? project.students.map((student) => (
                 <UsersName key={student.id} user={student} />
               ))
-            : null}
+            : "-"}
         </TableCell>
+        {showAdviserColumn && (
+          <TableCell>
+            {project.adviser && project.adviser.id ? (
+              <UsersName user={project.adviser} />
+            ) : (
+              "-"
+            )}
+          </TableCell>
+        )}
+        {showMentorColumn && (
+          <TableCell>
+            {project.mentor && project.mentor.id ? (
+              <UsersName user={project.mentor} />
+            ) : (
+              "-"
+            )}
+          </TableCell>
+        )}
         <TableCell>
-          {project.adviser && project.adviser.id ? (
-            <UsersName user={project.adviser} />
-          ) : null}
-        </TableCell>
-        <TableCell>
-          {project.mentor && project.mentor.id ? (
-            <UsersName user={project.mentor} />
-          ) : null}
-        </TableCell>
-        <TableCell>
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={handleOpenDropdown}
-            endIcon={<KeyboardArrowDown />}
-          >
-            Options
-          </Button>
-          <Menu
-            anchorEl={dropdownAnchorElement}
-            open={isDropdownOpen}
-            onClose={handleCloseDropdown}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-          >
+          <Stack direction="row" spacing="0.5rem">
             <Link href={`${PAGES.PROJECTS}/${project.id}`} passHref>
-              <Tooltip title="View and edit project details" placement="left">
-                <MenuItem>View Details</MenuItem>
-              </Tooltip>
+              <Button>View</Button>
             </Link>
-            <MenuItem
-              onClick={handleOpenDeleteModal}
-              sx={{
-                transition: BASE_TRANSITION,
-                "&:hover": {
-                  backgroundColor: "error.main",
-                  color: "white",
-                },
-              }}
-            >
-              Delete
-            </MenuItem>
-          </Menu>
+            {showEditAction && (
+              <Link href={`${PAGES.PROJECTS}/${project.id}/edit`} passHref>
+                <Button>Edit</Button>
+              </Link>
+            )}
+            {showDeleteAction && (
+              <Button
+                onClick={handleOpenDeleteModal}
+                sx={{
+                  transition: BASE_TRANSITION,
+                  "&:hover": {
+                    backgroundColor: "error.main",
+                    color: "white",
+                  },
+                }}
+              >
+                Delete
+              </Button>
+            )}
+          </Stack>
         </TableCell>
       </TableRow>
     </>

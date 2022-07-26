@@ -1,3 +1,4 @@
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
 import { Mutate } from "@/hooks/useFetch";
 import { HTTP_METHOD } from "@/types/api";
@@ -11,18 +12,11 @@ type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   mutate: Mutate<Project[]>;
-  setSuccess: (message: string) => void;
-  setError: (error: unknown) => void;
 };
 
-const DeleteProjectModal: FC<Props> = ({
-  project,
-  open,
-  setOpen,
-  mutate,
-  setSuccess,
-  setError,
-}) => {
+const DeleteProjectModal: FC<Props> = ({ project, open, setOpen, mutate }) => {
+  const { setSuccess, setError } = useSnackbarAlert();
+
   const deleteProject = useApiCall({
     method: HTTP_METHOD.DELETE,
     endpoint: `/projects/${project.id}`,
@@ -59,7 +53,7 @@ const DeleteProjectModal: FC<Props> = ({
         open={open}
         handleClose={handleCloseModal}
         title={`Delete Project`}
-        subheader={`You are deleting project ${project.name}. This action is irreversible, are you sure?`}
+        subheader={`You are deleting project ${project.name}.\n\nThis action is irreversible, are you sure?`}
         sx={{ width: "400px" }}
       >
         <Stack direction="row" justifyContent="space-between">

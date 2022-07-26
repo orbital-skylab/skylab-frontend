@@ -63,7 +63,9 @@ const DeadlineDescriptionCard: FC<Props> = ({
             onChange={handleDeadlineDescriptionChange}
           />
         ) : (
-          <Typography variant="body2">{deadlineDescription}</Typography>
+          <Typography variant="body2" sx={{ whiteSpace: "pre-line" }}>
+            {deadlineDescription}
+          </Typography>
         )}
       </CardContent>
     </Card>

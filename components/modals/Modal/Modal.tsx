@@ -17,6 +17,9 @@ type Props = {
   sx?: Record<string, string>;
 };
 
+/**
+ * Wrapper component to manage all the modal logic while using the MUI Modal component under the hood
+ */
 const Modal: FC<Props> = ({
   open,
   handleClose,
@@ -52,7 +55,7 @@ const Modal: FC<Props> = ({
             <CardHeader
               title={title}
               subheader={subheader}
-              sx={{ paddingBottom: 0 }}
+              sx={{ paddingBottom: 0, whiteSpace: "pre-line" }}
             />
           ) : null}
           <CardContent>{children}</CardContent>

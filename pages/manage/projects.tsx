@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 // Components
-import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
+import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
 import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import Body from "@/components/layout/Body";
@@ -20,8 +20,10 @@ import {
   Box,
   Button,
   debounce,
+  FormControlLabel,
   MenuItem,
   Stack,
+  Switch,
   Tab,
   Tabs,
   tabsClasses,
@@ -30,7 +32,7 @@ import {
 } from "@mui/material";
 import { Add } from "@mui/icons-material";
 // Hooks
-import useCohort from "@/hooks/useCohort";
+import useCohort from "@/contexts/useCohort";
 import { isFetching } from "@/hooks/useFetch";
 import useInfiniteFetch, {
   createBottomOfPageRef,
@@ -44,10 +46,9 @@ import { ROLES } from "@/types/roles";
 const LIMIT = 20;
 
 const ProjectsList = () => {
-  const [selectedLevelOfAchievement, setSelectedLevelOfAchievement] =
-    useState<LEVELS_OF_ACHIEVEMENT_WITH_ALL>(
-      LEVELS_OF_ACHIEVEMENT_WITH_ALL.ALL
-    );
+  const [selectedLevelOfAchievement, setSelectedLevelOfAchievement] = useState(
+    LEVELS_OF_ACHIEVEMENT_WITH_ALL.ALL
+  );
   const [page, setPage] = useState(0);
   const [searchTextInput, setSearchTextInput] = useState(""); // The input value
   const [querySearch, setQuerySearch] = useState(""); // The debounced input value for searching
@@ -57,8 +58,9 @@ const ProjectsList = () => {
     isLoading: isLoadingCohorts,
   } = useCohort();
   const [selectedCohortYear, setSelectedCohortYear] = useState<
-    Cohort["academicYear"] | string
+    Cohort["academicYear"] | ""
   >("");
+  const [viewHasDropped, setViewHasDropped] = useState(false);
   const [isAddProjectOpen, setIsAddProjectOpen] = useState(false);
 
   /** For fetching projects based on filters */
@@ -71,8 +73,14 @@ const ProjectsList = () => {
           : selectedLevelOfAchievement,
       search: querySearch,
       limit: LIMIT,
+      dropped: viewHasDropped,
     };
-  }, [selectedCohortYear, selectedLevelOfAchievement, querySearch]);
+  }, [
+    selectedCohortYear,
+    selectedLevelOfAchievement,
+    querySearch,
+    viewHasDropped,
+  ]);
 
   const {
     data: projects,
@@ -119,6 +127,11 @@ const ProjectsList = () => {
     setIsAddProjectOpen(true);
   };
 
+  const handleToggleViewDropped = () => {
+    setViewHasDropped(!viewHasDropped);
+    setPage(0);
+  };
+
   /** To fetch more projects when the bottom of the page is reached */
   const observer = useRef<IntersectionObserver | null>(null);
   const bottomOfPageRef = createBottomOfPageRef(
@@ -139,7 +152,6 @@ const ProjectsList = () => {
       <AddProjectModal
         open={isAddProjectOpen}
         setOpen={setIsAddProjectOpen}
-        cohortYear={selectedCohortYear as Cohort["academicYear"]}
         mutate={mutate}
       />
       <Body
@@ -188,24 +200,33 @@ const ProjectsList = () => {
             </Stack>
           </Stack>
 
-          <Tabs
-            value={selectedLevelOfAchievement}
-            onChange={handleTabChange}
-            textColor="secondary"
-            indicatorColor="secondary"
-            aria-label="project-level-tabs"
-            variant="scrollable"
-            scrollButtons="auto"
-            allowScrollButtonsMobile
-            sx={{
-              [`& .${tabsClasses.scrollButtons}`]: { color: "primary" },
-              marginY: { xs: 2, md: 0 },
-            }}
-          >
-            {Object.values(LEVELS_OF_ACHIEVEMENT_WITH_ALL).map((level) => {
-              return <Tab key={level} value={level} label={level} />;
-            })}
-          </Tabs>
+          <Stack direction="row" justifyContent="space-between">
+            <Tabs
+              value={selectedLevelOfAchievement}
+              onChange={handleTabChange}
+              textColor="secondary"
+              indicatorColor="secondary"
+              aria-label="project-level-tabs"
+              variant="scrollable"
+              scrollButtons="auto"
+              allowScrollButtonsMobile
+              sx={{
+                [`& .${tabsClasses.scrollButtons}`]: { color: "primary" },
+                marginY: { xs: 2, md: 0 },
+              }}
+            >
+              {Object.values(LEVELS_OF_ACHIEVEMENT_WITH_ALL).map((level) => {
+                return <Tab key={level} value={level} label={level} />;
+              })}
+            </Tabs>
+            <FormControlLabel
+              value={viewHasDropped}
+              onClick={handleToggleViewDropped}
+              control={<Switch color="secondary" size="small" />}
+              label="View Dropped Projects"
+              labelPlacement="start"
+            />
+          </Stack>
         </Stack>
         <LoadingWrapper
           isLoading={
@@ -217,7 +238,14 @@ const ProjectsList = () => {
             noDataCondition={projects === undefined || projects.length === 0}
             fallback={<NoneFound message="No such projects found" />}
           >
-            <ProjectTable projects={projects} mutate={mutate} />
+            <ProjectTable
+              projects={projects}
+              mutate={mutate}
+              showAdviserColumn
+              showMentorColumn
+              showEditAction
+              showDeleteAction
+            />
             <div ref={bottomOfPageRef} />
             <Box
               sx={{

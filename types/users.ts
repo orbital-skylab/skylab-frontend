@@ -7,6 +7,11 @@ import {
 
 export type User = UserMetadata & RoleMetadata;
 
+export type LeanUser = Pick<
+  User,
+  "id" | "name" | "student" | "adviser" | "mentor" | "administrator"
+>;
+
 export type UserMetadata = {
   id: number;
   name: string;
@@ -16,7 +21,6 @@ export type UserMetadata = {
   linkedinUrl?: string;
   personalSiteUrl?: string;
   selfIntro?: string;
-  submitterId?: string;
 };
 
 export type RoleMetadata = {

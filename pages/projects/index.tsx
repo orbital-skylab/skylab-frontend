@@ -21,11 +21,11 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import CustomHead from "@/components/CustomHead";
+import CustomHead from "@/components/layout/CustomHead";
 // Hooks
 import useInfiniteFetch from "@/hooks/useInfiniteFetch";
 import { isError, isFetching } from "@/hooks/useFetch";
-import useCohort from "@/hooks/useCohort";
+import useCohort from "@/contexts/useCohort";
 // Helpers
 import { createBottomOfPageRef } from "@/hooks/useInfiniteFetch";
 // Types
@@ -66,6 +66,7 @@ const Projects: NextPage = () => {
       achievement: selectedLevel,
       search: querySearch,
       limit: LIMIT,
+      dropped: false,
     };
   }, [selectedCohortYear, selectedLevel, querySearch]);
   const {

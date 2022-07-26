@@ -2,7 +2,6 @@ import { Dispatch, FC, SetStateAction } from "react";
 // Components
 import Dropdown from "@/components/formikFormControllers/Dropdown";
 import TextInput from "@/components/formikFormControllers/TextInput";
-import SnackbarAlert from "@/components/SnackbarAlert";
 import Modal from "../Modal";
 import { Button, Stack } from "@mui/material";
 // Helpers
@@ -16,20 +15,21 @@ import * as Yup from "yup";
 import { ERRORS } from "@/helpers/errors";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
-import useSnackbarAlert from "@/hooks/useSnackbarAlert/useSnackbarAlert";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Types
 import {
   HTTP_METHOD,
   GetDeadlinesResponse,
   CreateDeadlineResponse,
 } from "@/types/api";
-import { DEADLINE_TYPE } from "@/types/deadlines";
+import { Deadline, DEADLINE_TYPE } from "@/types/deadlines";
 import { Mutate } from "@/hooks/useFetch";
 
 interface AddDeadlineFormValuesType {
   name: string;
   dueBy: string;
   type: DEADLINE_TYPE;
+  evaluatingMilestoneId?: number | "";
 }
 
 type Props = {
@@ -37,15 +37,17 @@ type Props = {
   setOpen: Dispatch<SetStateAction<boolean>>;
   cohortYear: number;
   mutate: Mutate<GetDeadlinesResponse>;
+  deadlines: Deadline[];
 };
 
-const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
-  const {
-    snackbar,
-    handleClose: handleCloseSnackbar,
-    setSuccess,
-    setError,
-  } = useSnackbarAlert();
+const AddDeadlineModal: FC<Props> = ({
+  open,
+  setOpen,
+  cohortYear,
+  mutate,
+  deadlines,
+}) => {
+  const { setSuccess, setError } = useSnackbarAlert();
 
   const addDeadline = useApiCall({
     method: HTTP_METHOD.POST,
@@ -63,6 +65,7 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
     name: "",
     dueBy: isoDateToDateTimeLocalInput(getTodayAtTimeIso(23, 59)),
     type: DEADLINE_TYPE.MILESTONE,
+    evaluatingMilestoneId: "",
   };
 
   const handleSubmit = async (
@@ -95,8 +98,11 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
 
   return (
     <>
-      <SnackbarAlert snackbar={snackbar} handleClose={handleCloseSnackbar} />
-      <Modal open={open} handleClose={handleCloseModal} title={`Add Deadline`}>
+      <Modal
+        open={open}
+        handleClose={handleCloseModal}
+        title={`Add Deadline for Cohort ${cohortYear}`}
+      >
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmit}
@@ -127,6 +133,27 @@ const AddDeadlineModal: FC<Props> = ({ open, setOpen, cohortYear, mutate }) => {
                     return { label: val, value: val };
                   })}
                 />
+                {formik.values.type === DEADLINE_TYPE.EVALUATION && (
+                  <Dropdown
+                    label="Evaluating Milestone"
+                    name="evaluatingMilestoneId"
+                    formik={formik}
+                    options={
+                      deadlines
+                        ? deadlines
+                            .filter(
+                              ({ type }) => type === DEADLINE_TYPE.MILESTONE
+                            )
+                            .map((deadline) => {
+                              return {
+                                label: `${deadline.id}: ${deadline.name}`,
+                                value: deadline.id,
+                              };
+                            })
+                        : []
+                    }
+                  />
+                )}
               </Stack>
               <Stack
                 direction="row"
@@ -159,4 +186,8 @@ const addDeadlineValidationSchema = Yup.object().shape({
   name: Yup.string().required(ERRORS.REQUIRED),
   dueBy: Yup.string().required(ERRORS.REQUIRED),
   type: Yup.string().required(ERRORS.REQUIRED),
+  evaluatingMilestoneId: Yup.string().when("type", {
+    is: DEADLINE_TYPE.EVALUATION,
+    then: Yup.string().required(ERRORS.REQUIRED),
+  }),
 });

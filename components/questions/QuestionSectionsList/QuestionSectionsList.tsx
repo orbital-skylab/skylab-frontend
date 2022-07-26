@@ -15,6 +15,7 @@ type Props = {
   answersActions: UseAnswersActions;
   submitAnswers: (options?: { isDraft: boolean }) => void;
   isSubmitting: boolean;
+  isReadonly?: boolean;
 };
 
 const QuestionSectionsList: FC<Props> = ({
@@ -24,6 +25,7 @@ const QuestionSectionsList: FC<Props> = ({
   answersActions,
   submitAnswers,
   isSubmitting,
+  isReadonly = false,
 }) => {
   const { generateSetAnswer } = answersActions;
 
@@ -87,6 +89,7 @@ const QuestionSectionsList: FC<Props> = ({
                   <Typography
                     className="section-description-span"
                     variant="body1"
+                    sx={{ whiteSpace: "pre-line" }}
                   >
                     {desc}
                   </Typography>
@@ -99,6 +102,7 @@ const QuestionSectionsList: FC<Props> = ({
                 generateSetAnswer={generateSetAnswer}
                 accessAnswersWithQuestionIndex={accessAnswersWithQuestionIndex}
                 indexOffset={indexOffset}
+                isReadonly={Boolean(isReadonly)}
               />
             </CardContent>
           </Card>
@@ -110,7 +114,7 @@ const QuestionSectionsList: FC<Props> = ({
         </Button>
         <LoadingButton
           variant="contained"
-          onClick={() => submitAnswers()}
+          onClick={() => submitAnswers({ isDraft: false })}
           loading={isSubmitting}
           disabled={isSubmitting}
         >

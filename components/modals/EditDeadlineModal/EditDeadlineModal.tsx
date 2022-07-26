@@ -4,6 +4,7 @@ import Dropdown from "@/components/formikFormControllers/Dropdown";
 import TextInput from "@/components/formikFormControllers/TextInput";
 import Modal from "../Modal";
 import { Button, Stack } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 // Helpers
 import {
   dateTimeLocalInputToIsoDate,
@@ -14,39 +15,42 @@ import * as Yup from "yup";
 import { ERRORS } from "@/helpers/errors";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Types
-import { HTTP_METHOD, GetDeadlinesResponse } from "@/types/api";
+import {
+  HTTP_METHOD,
+  GetDeadlinesResponse,
+  EditDeadlineResponse,
+} from "@/types/api";
 import { Deadline, DEADLINE_TYPE } from "@/types/deadlines";
 import { Mutate } from "@/hooks/useFetch";
-import { LoadingButton } from "@mui/lab";
-
 interface EditDeadlineFormValuesType {
   name: string;
   dueBy: string;
   type: DEADLINE_TYPE;
+  evaluatingMilestoneId?: number | "";
 }
 
 type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   deadline: Deadline;
+  deadlines: Deadline[];
   mutate: Mutate<GetDeadlinesResponse>;
-  setSuccess: (message: string) => void;
-  setError: (error: unknown) => void;
 };
 
 const EditDeadlineModal: FC<Props> = ({
   open,
   setOpen,
   deadline,
+  deadlines,
   mutate,
-  setSuccess,
-  setError,
 }) => {
+  const { setSuccess, setError } = useSnackbarAlert();
   const editDeadline = useApiCall({
     method: HTTP_METHOD.PUT,
     endpoint: `/deadlines/${deadline.id}`,
-    onSuccess: ({ deadline: newDeadline }: { deadline: Deadline }) => {
+    onSuccess: ({ deadline: newDeadline }: EditDeadlineResponse) => {
       mutate((data) => {
         const oldDeadlineIdx = data.deadlines.findIndex(
           (deadline) => deadline.id === newDeadline.id
@@ -126,6 +130,27 @@ const EditDeadlineModal: FC<Props> = ({
                     return { label: val, value: val };
                   })}
                 />
+                {formik.values.type === DEADLINE_TYPE.EVALUATION && (
+                  <Dropdown
+                    label="Evaluating Milestone"
+                    name="evaluatingMilestoneId"
+                    formik={formik}
+                    options={
+                      deadlines
+                        ? deadlines
+                            .filter(
+                              ({ type }) => type === DEADLINE_TYPE.MILESTONE
+                            )
+                            .map((deadline) => {
+                              return {
+                                label: `${deadline.id}: ${deadline.name}`,
+                                value: deadline.id,
+                              };
+                            })
+                        : []
+                    }
+                  />
+                )}
               </Stack>
               <Stack
                 direction="row"
@@ -158,4 +183,8 @@ const editDeadlineValidationSchema = Yup.object().shape({
   name: Yup.string().required(ERRORS.REQUIRED),
   dueBy: Yup.string().required(ERRORS.REQUIRED),
   type: Yup.string().required(ERRORS.REQUIRED),
+  evaluatingMilestoneId: Yup.string().when("type", {
+    is: DEADLINE_TYPE.EVALUATION,
+    then: Yup.string().required(ERRORS.REQUIRED),
+  }),
 });

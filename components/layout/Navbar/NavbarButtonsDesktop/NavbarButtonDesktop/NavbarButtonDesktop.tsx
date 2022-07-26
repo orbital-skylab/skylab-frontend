@@ -1,8 +1,11 @@
-import { NavbarOption } from "@/helpers/navigation";
-import { userHasRole } from "@/helpers/roles";
-import { User } from "@/types/users";
-import { Button } from "@mui/material";
 import { FC } from "react";
+// Components
+import { Button } from "@mui/material";
+// Types
+import { User } from "@/types/users";
+import { NavbarOption } from "../../Navbar.types";
+// Helpers
+import { userHasRole } from "@/helpers/roles";
 
 type Props = {
   id: string;
@@ -15,7 +18,7 @@ type Props = {
     route?: string;
     action?: string;
   }) => () => void;
-  isCurrentPage: (path: string | undefined) => boolean;
+  isCurrentPage: boolean;
 };
 
 const NavbarButtonDesktop: FC<Props> = ({
@@ -41,10 +44,8 @@ const NavbarButtonDesktop: FC<Props> = ({
       sx={{
         my: 2,
         display: "block",
-        color: isCurrentPage(option.route) ? "gray" : "inherit",
-        background: isCurrentPage(option.route)
-          ? "rgba(13, 13, 13, 0.08)"
-          : "inherit",
+        color: isCurrentPage ? "gray" : "inherit",
+        background: isCurrentPage ? "rgba(13, 13, 13, 0.08)" : "inherit",
       }}
     >
       {option.label}

@@ -24,7 +24,7 @@ const StudentDetailsForm: FC<Props> = ({
 }) => {
   return (
     <>
-      {cohorts && cohorts.length ? (
+      {cohorts && cohorts.length && (
         <Dropdown
           label="Cohort"
           name="cohortYear"
@@ -35,7 +35,7 @@ const StudentDetailsForm: FC<Props> = ({
           size="small"
           formik={formik}
         />
-      ) : null}
+      )}
       <TextInput
         name="nusnetId"
         label="NUSNET ID"

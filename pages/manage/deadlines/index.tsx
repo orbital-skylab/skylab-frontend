@@ -8,14 +8,14 @@ import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import DeadlineTable from "@/components/tables/DeadlineTable";
-import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
+import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
 // Hooks
 import useFetch, { isFetching, isError } from "@/hooks/useFetch";
 // Types
 import { Cohort } from "@/types/cohorts";
 import { Add } from "@mui/icons-material";
 import AddDeadlineModal from "@/components/modals/AddDeadlineModal";
-import useCohort from "@/hooks/useCohort";
+import useCohort from "@/contexts/useCohort";
 import { ROLES } from "@/types/roles";
 import { GetDeadlinesResponse } from "@/types/api";
 
@@ -68,6 +68,7 @@ const Deadlines: NextPage = () => {
         setOpen={setIsAddDeadlineOpen}
         cohortYear={selectedCohortYear as Cohort["academicYear"]}
         mutate={mutate}
+        deadlines={response ? response.deadlines : []}
       />
       <Body
         isError={isError(fetchDeadlinesStatus)}

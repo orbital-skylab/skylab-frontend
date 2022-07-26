@@ -7,16 +7,16 @@ import { AddUserFormValuesType } from "@/types/roles";
  * To validate that a type is not undefined
  */
 export function isNotUndefined<T>(value: T | undefined): value is T {
-  return !!value;
+  return value !== undefined;
 }
 
 /**
- * To validate that values are of type AdduserFormValuesType
+ * To validate that values are of type AddUserFormValuesType
  */
 export function isAddUserFormValuesType(
   values: any
 ): values is AddUserFormValuesType {
-  return values.email && values.name;
+  return values.email !== undefined && values.name !== undefined;
 }
 
 /** To validate that values are an array */

@@ -9,9 +9,15 @@ type Props = {
   question: LeanQuestion | Question;
   answer: Option;
   setAnswer: (newAnswer: string) => void;
+  isReadonly: boolean;
 };
 
-const DropdownQuestion: FC<Props> = ({ question, answer, setAnswer }) => {
+const DropdownQuestion: FC<Props> = ({
+  question,
+  answer,
+  setAnswer,
+  isReadonly,
+}) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAnswer(e.target.value);
   };
@@ -28,6 +34,7 @@ const DropdownQuestion: FC<Props> = ({ question, answer, setAnswer }) => {
         value={answer}
         onChange={handleChange}
         select
+        inputProps={{ readOnly: isReadonly }}
       >
         {question.options &&
           question.options.map((option, idx) => (
@@ -36,6 +43,7 @@ const DropdownQuestion: FC<Props> = ({ question, answer, setAnswer }) => {
             </MenuItem>
           ))}
       </TextField>
+      )
     </Stack>
   );
 };

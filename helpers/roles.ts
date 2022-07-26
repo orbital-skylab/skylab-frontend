@@ -8,14 +8,17 @@ import { User } from "@/types/users";
 import { dateTimeLocalInputToIsoDate } from "@/helpers/dates";
 import { isAddUserFormValuesType } from "./types";
 import { stripEmptyStrings } from "./forms";
+import { Project } from "@/types/projects";
 
 /**
  * Changes a role string to be singular
  * @param {ROLES} role The specified role
  * @returns {string}
  */
-export const toSingular = (role: ROLES | ROLES_WITH_ALL | null) => {
+export const toSingular = (role: ROLES | ROLES_WITH_ALL | null | undefined) => {
   if (!role) {
+    return "";
+  } else if (role === ROLES_WITH_ALL.ALL) {
     return "";
   }
 
@@ -29,7 +32,7 @@ export const toSingular = (role: ROLES | ROLES_WITH_ALL | null) => {
  * @returns {boolean}
  */
 export const userHasRole = (
-  user: User,
+  user: User | undefined,
   selectedRole: ROLES | ROLES[]
 ): boolean => {
   if (!user) {
@@ -66,7 +69,11 @@ export const userHasRole = (
 /**
  * Gets an array of roles that a user has
  */
-export const getUserRoles = (user: User) => {
+export const getUserRoles = (user: User | undefined) => {
+  if (!user) {
+    return [];
+  }
+
   return Object.values(ROLES).filter((role) => userHasRole(user, role));
 };
 
@@ -77,8 +84,11 @@ export const getUserRoles = (user: User) => {
  * @param selectedRole The role to retrieve
  * @returns {number} The roleId
  */
-export const getRoleId = (user: User, selectedRole: ROLES | null) => {
-  if (!selectedRole) {
+export const getRoleId = (
+  user: User | null | undefined,
+  selectedRole: ROLES | null
+) => {
+  if (!selectedRole || !user) {
     return -1;
   }
 
@@ -99,15 +109,16 @@ export const getRoleId = (user: User, selectedRole: ROLES | null) => {
  * 1. `/components/modals/AddUserModal`
  * 2. `/components/modals/AddRoleModal`
  */
-export const generateEmptyInitialValues = (
-  currentCohortYear: number | undefined
+export const generateAddUserOrRoleEmptyInitialValues = (
+  currentCohortYear: number | undefined,
+  user?: User
 ): AddUserFormValuesType => {
   return {
     name: "",
     email: "",
     cohortYear: currentCohortYear,
-    nusnetId: "",
-    matricNo: "",
+    nusnetId: user?.student?.nusnetId ?? user?.adviser?.nusnetId ?? "",
+    matricNo: user?.student?.matricNo ?? user?.adviser?.matricNo ?? "",
     projectId: "",
     projectIds: [],
     startDate: "",
@@ -120,6 +131,7 @@ export const generateEmptyInitialValues = (
  * 1. `/components/modals/AddUserModal`
  * 2. `/components/modals/AddRoleModal`
  * 3. `/components/modals/ViewRole/EditRoleModal`
+ * // TODO: Write unit tests
  * @param param0.values The values of the submitted form
  * @returns
  */
@@ -201,4 +213,21 @@ export const processAddUserOrRoleFormValues = ({
     default:
       return {};
   }
+};
+
+/**
+ * Check if a user is a project's adviser
+ * @returns {boolean}
+ */
+export const checkIfProjectsAdviser = (
+  project: Project | undefined,
+  user: User | undefined
+) => {
+  return (
+    user &&
+    user.adviser &&
+    project &&
+    project.adviser &&
+    user.adviser.id === project.adviser.adviserId
+  );
 };

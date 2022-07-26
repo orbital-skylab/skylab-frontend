@@ -7,7 +7,6 @@ import {
   useRef,
   useState,
 } from "react";
-import Link from "next/link";
 import type { NextPage } from "next";
 // Components
 import Body from "@/components/layout/Body";
@@ -29,10 +28,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
+import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
+import AddRolesModal from "@/components/modals/AddRolesModal";
 // Helpers
-import { PAGES } from "@/helpers/navigation";
+import { toSingular } from "@/helpers/roles";
 // Hooks
-import useCohort from "@/hooks/useCohort";
+import useCohort from "@/contexts/useCohort";
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import useInfiniteFetch, {
   createBottomOfPageRef,
@@ -41,13 +43,9 @@ import useInfiniteFetch, {
 import { Cohort } from "@/types/cohorts";
 import { ROLES, ROLES_WITH_ALL } from "@/types/roles";
 import { User } from "@/types/users";
-import { toSingular } from "@/helpers/roles";
-import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import { GetLeanProjectsResponse, GetUsersResponse } from "@/types/api";
-import AutoBreadcrumbs from "@/components/AutoBreadcrumbs";
 
 const LIMIT = 20;
-const ALL = "All";
 
 const Users: NextPage = () => {
   const [selectedRole, setSelectedRole] = useState<ROLES_WITH_ALL>(
@@ -62,14 +60,16 @@ const Users: NextPage = () => {
     isLoading: isLoadingCohorts,
   } = useCohort();
   const [selectedCohortYear, setSelectedCohortYear] = useState<
-    Cohort["academicYear"] | "" | typeof ALL
+    Cohort["academicYear"] | ""
   >("");
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
+  const [addRolesModalSelectedRole, setAddRolesModalSelectedRole] =
+    useState<ROLES | null>(null);
 
   /** For fetching users based on filters */
   const memoUsersQueryParams = useMemo(() => {
     return {
-      cohortYear: selectedCohortYear !== ALL ? selectedCohortYear : "",
+      cohortYear: selectedCohortYear,
       role: selectedRole !== ROLES_WITH_ALL.ALL ? toSingular(selectedRole) : "",
       search: querySearch,
       limit: LIMIT,
@@ -93,6 +93,7 @@ const Users: NextPage = () => {
   const memoLeanProjectsQueryParams = useMemo(() => {
     return {
       cohortYear: selectedCohortYear,
+      dropped: false,
     };
   }, [selectedCohortYear]);
   const { data: leanProjectsResponse, status: fetchLeanProjectsStatus } =
@@ -100,7 +101,7 @@ const Users: NextPage = () => {
       endpoint: `/projects/lean`,
       queryParams: memoLeanProjectsQueryParams,
       requiresAuthorization: true,
-      enabled: typeof selectedCohortYear === "number",
+      enabled: Boolean(selectedCohortYear),
     });
 
   /** Input Change Handlers */
@@ -124,16 +125,20 @@ const Users: NextPage = () => {
   };
 
   const handleCohortYearChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value === ALL) {
-      setSelectedCohortYear(e.target.value);
-    } else {
-      setSelectedCohortYear(Number(e.target.value) as Cohort["academicYear"]);
-    }
+    setSelectedCohortYear(Number(e.target.value) as Cohort["academicYear"]);
     setPage(0);
   };
 
   const handleOpenAddUserModal = () => {
     setIsAddUserOpen(true);
+  };
+
+  const handleOpenAddRolesModalGenerator = (selectedRole: ROLES) => () => {
+    setAddRolesModalSelectedRole(selectedRole);
+  };
+
+  const handleCloseAddRolesModal = () => {
+    setAddRolesModalSelectedRole(null);
   };
 
   /** To fetch more projects when the bottom of the page is reached */
@@ -156,10 +161,12 @@ const Users: NextPage = () => {
       <AddUserModal
         open={isAddUserOpen}
         setOpen={setIsAddUserOpen}
-        mutate={mutate}
-        hasMore={hasMore}
         leanProjects={leanProjectsResponse?.projects ?? []}
         isFetchingLeanProjects={isFetching(fetchLeanProjectsStatus)}
+      />
+      <AddRolesModal
+        selectedRole={addRolesModalSelectedRole}
+        handleCloseModal={handleCloseAddRolesModal}
       />
       <Body
         isLoading={isLoadingCohorts}
@@ -169,10 +176,11 @@ const Users: NextPage = () => {
         <Stack direction="column" mb="0.5rem">
           <Stack
             direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            width="100%"
-            mb={{ md: "0.5rem" }}
+            justifyContent="start"
+            sx={{
+              gap: "0.5rem",
+              marginBottom: { md: "0.5rem" },
+            }}
           >
             <TextField
               label="Search"
@@ -180,22 +188,26 @@ const Users: NextPage = () => {
               onChange={handleSearchInputChange}
               size="small"
             />
-
-            <Stack direction="row" spacing="1rem">
-              <Link passHref href={PAGES.MANAGE_USERS_BATCH_ADD}>
-                <Button size="small" variant="outlined">
-                  <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
-                  Batch Add
-                </Button>
-              </Link>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={handleOpenAddUserModal}
+            >
+              <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
+              User
+            </Button>
+            {Object.values(ROLES).map((role) => (
               <Button
+                key={role}
                 variant="outlined"
                 size="small"
-                onClick={handleOpenAddUserModal}
+                onClick={handleOpenAddRolesModalGenerator(role)}
               >
                 <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
-                User
+                {role}
               </Button>
+            ))}
+            <Stack direction="row" spacing="1rem" marginLeft="auto">
               <TextField
                 label="Cohort"
                 value={selectedCohortYear}
@@ -203,7 +215,6 @@ const Users: NextPage = () => {
                 select
                 size="small"
               >
-                <MenuItem value={ALL}>{ALL}</MenuItem>
                 {cohorts &&
                   cohorts.map(({ academicYear }) => (
                     <MenuItem key={academicYear} value={academicYear}>
