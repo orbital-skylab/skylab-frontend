@@ -51,7 +51,7 @@ const AddRolesModal: FC<Props> = ({ selectedRole, handleCloseModal }) => {
       enabled: Boolean(selectedCohortYear) && Boolean(selectedRole),
     });
 
-  const addStudents = useApiCall({
+  const addRoles = useApiCall({
     method: HTTP_METHOD.POST,
     endpoint: "TODO:",
     requiresAuthorization: true,
@@ -66,7 +66,7 @@ const AddRolesModal: FC<Props> = ({ selectedRole, handleCloseModal }) => {
     const processedValues = { ...values };
 
     try {
-      await addStudents.call(processedValues);
+      await addRoles.call(processedValues);
       setTimeout(() => {
         router.reload();
       }, refreshSeconds * 1000);
@@ -100,20 +100,22 @@ const AddRolesModal: FC<Props> = ({ selectedRole, handleCloseModal }) => {
         <Formik initialValues={initialValues} onSubmit={handleSubmit}>
           {(formik) => (
             <Stack direction="column" spacing="1rem">
-              <TextField
-                label="Cohort"
-                value={selectedCohortYear}
-                onChange={handleCohortYearChange}
-                select
-                size="small"
-              >
-                {cohorts &&
-                  cohorts.map(({ academicYear }) => (
-                    <MenuItem key={academicYear} value={academicYear}>
-                      {academicYear}
-                    </MenuItem>
-                  ))}
-              </TextField>
+              {selectedRole !== ROLES.ADMINISTRATORS && (
+                <TextField
+                  label="Cohort"
+                  value={selectedCohortYear}
+                  onChange={handleCohortYearChange}
+                  select
+                  size="small"
+                >
+                  {cohorts &&
+                    cohorts.map(({ academicYear }) => (
+                      <MenuItem key={academicYear} value={academicYear}>
+                        {academicYear}
+                      </MenuItem>
+                    ))}
+                </TextField>
+              )}
               <MultiDropdown
                 name="userIds"
                 label="Users"
