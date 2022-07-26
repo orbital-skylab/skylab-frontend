@@ -25,7 +25,7 @@ export const NAVBAR_OPTIONS: NavbarOption[] = [
   {
     label: "Projects",
     route: PAGES.PROJECTS,
-    currentPageRegExp: /projects/,
+    currentPageRegExp: /^\/projects$/,
   },
   { label: "Staff", route: PAGES.STAFF, currentPageRegExp: /staff/ },
   {

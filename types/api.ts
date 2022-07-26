@@ -159,7 +159,7 @@ export type EditDeadlineResponse = {
  * Submissions Endpoints:
  * https://github.com/orbital-skylab/skylab-backend/wiki/Submissions-Endpoints
  */
-export type CreateSubmissionResponse = Submission;
+export type CreateSubmissionResponse = { submission: Submission };
 
 export type GetSubmissionResponse = { submission: Submission };
 

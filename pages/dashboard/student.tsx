@@ -127,16 +127,15 @@ const StudentDashboard: NextPage = () => {
                   <>
                     {evaluationAndFeedbackResponse.deadlines.map(
                       ({ deadline, submissions }) => (
-                        <>
+                        <Box key={deadline.id}>
                           <Typography variant="h6" fontWeight={600}>
                             {deadline.name}
                           </Typography>
                           <SubmissionTable
-                            key={deadline.id}
                             deadline={deadline}
                             submissions={submissions}
                           />
-                        </>
+                        </Box>
                       )
                     )}
                   </>

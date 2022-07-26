@@ -27,7 +27,7 @@ const Submission: NextPage = () => {
 
   const { data: submissionResponse, status: fetchSubmissionStatus } =
     useFetch<GetSubmissionResponse>({
-      endpoint: `/api/submissions/${submissionId}`,
+      endpoint: `/submissions/${submissionId}`,
       requiresAuthorization: true,
       enabled: submissionId !== undefined,
       onFetch: (data) => actions.setAnswersFromArray(data.submission.answers),
@@ -93,10 +93,10 @@ const Submission: NextPage = () => {
             </Typography>
           )}
           <Typography variant="h6" fontWeight={600}>
-            {submissionResponse?.submission.deadline.name}
+            {submissionResponse?.submission.deadline?.name}
           </Typography>
           <Typography sx={{ whiteSpace: "pre-line" }}>
-            {submissionResponse?.submission.deadline.desc}
+            {submissionResponse?.submission.deadline?.desc}
           </Typography>
           <QuestionSectionsList
             questionSections={submissionResponse?.submission.sections ?? []}
@@ -105,6 +105,7 @@ const Submission: NextPage = () => {
             submitAnswers={handleSubmit}
             isSubmitting={isCalling(submitAnswers.status)}
             isReadonly={!isEditMode}
+            isDraft={submissionResponse?.submission.isDraft}
           />
         </NoDataWrapper>
       </Body>

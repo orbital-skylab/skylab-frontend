@@ -30,6 +30,7 @@ import {
 } from "@/types/deadlines";
 import { STATUS } from "@/types/submissions";
 import { CreateSubmissionResponse, HTTP_METHOD } from "@/types/api";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 
 type Props = {
   deadlineDeliverable: DeadlineDeliverable;
@@ -41,23 +42,31 @@ const DeadlineDeliverableRow: FC<Props> = ({
   viewerRole,
 }) => {
   const { user } = useAuth();
+  const { setSuccess, setError } = useSnackbarAlert();
   const router = useRouter();
 
   const createSubmission = useApiCall({
     method: HTTP_METHOD.POST,
     endpoint: "/submissions",
     body: {
-      deadlineId: deadlineDeliverable.deadline.id,
-      ...getFromProjectOrUserId(user, viewerRole),
-      ...getToProjectOrUserId(deadlineDeliverable),
+      submission: {
+        deadlineId: deadlineDeliverable.deadline.id,
+        ...getFromProjectOrUserId(user, viewerRole),
+        ...getToProjectOrUserId(deadlineDeliverable),
+      },
     },
     onSuccess: (newSubmission: CreateSubmissionResponse) => {
-      router.push(`${PAGES.SUBMISSIONS}/${newSubmission.id}`);
+      router.push(`${PAGES.SUBMISSIONS}/${newSubmission.submission.id}`);
     },
   });
 
-  const handleClickStart = () => {
-    createSubmission.call();
+  const handleClickStart = async () => {
+    try {
+      await createSubmission.call();
+      setSuccess("Navigating to your submission...");
+    } catch (error) {
+      setError("An error was encountered while creating your submission");
+    }
   };
 
   const generateDeadlineCell = (deadlineDeliverable: DeadlineDeliverable) => {
@@ -79,14 +88,15 @@ const DeadlineDeliverableRow: FC<Props> = ({
 
         if (deadlineDeliverable.toProject) {
           return (
-            <Stack direction="row" spacing="0.5rem">
-              <Typography>{`${deadlineDeliverable.deadline.name} for`}</Typography>
+            <Stack direction="row" spacing="0.5rem" alignItems="center">
+              <Typography fontSize="0.875rem">{`${deadlineDeliverable.deadline.name} for`}</Typography>
               <Button
                 variant="outlined"
                 size="small"
                 disabled={
                   !deadlineDeliverable.toProjectSubmission ||
-                  !deadlineDeliverable.toProjectSubmission.id
+                  !deadlineDeliverable.toProjectSubmission.id ||
+                  deadlineDeliverable.toProjectSubmission.isDraft
                 }
                 href={`${PAGES.SUBMISSIONS}/${deadlineDeliverable.toProjectSubmission?.id}`}
               >
@@ -96,7 +106,7 @@ const DeadlineDeliverableRow: FC<Props> = ({
           );
         } else if (deadlineDeliverable.toUser) {
           return (
-            <Stack direction="row" spacing="0.5rem">
+            <Stack direction="row" spacing="0.5rem" alignItems="center">
               <Typography>{`${deadlineDeliverable.deadline.name} for`}</Typography>
               <Button
                 variant="outlined"

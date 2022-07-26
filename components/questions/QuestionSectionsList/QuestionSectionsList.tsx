@@ -4,7 +4,7 @@ import { generateIndexOffset } from "@/hooks/useAnswers/useAnswers.helpers";
 import { LeanSection, Section } from "@/types/deadlines";
 import { Answer } from "@/types/submissions";
 import { LoadingButton } from "@mui/lab";
-import { Button, Card, CardContent, Stack, Typography } from "@mui/material";
+import { Card, CardContent, Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import QuestionsList from "./QuestionsList";
 
@@ -16,6 +16,7 @@ type Props = {
   submitAnswers: (options?: { isDraft: boolean }) => void;
   isSubmitting: boolean;
   isReadonly?: boolean;
+  isDraft?: boolean;
 };
 
 const QuestionSectionsList: FC<Props> = ({
@@ -26,6 +27,7 @@ const QuestionSectionsList: FC<Props> = ({
   submitAnswers,
   isSubmitting,
   isReadonly = false,
+  isDraft = true,
 }) => {
   const { generateSetAnswer } = answersActions;
 
@@ -99,16 +101,22 @@ const QuestionSectionsList: FC<Props> = ({
         );
       })}
       <Stack direction="row" justifyContent="end" gap="1rem">
-        <Button onClick={() => submitAnswers({ isDraft: true })}>
-          Save Draft
-        </Button>
+        {isDraft && (
+          <LoadingButton
+            onClick={() => submitAnswers({ isDraft: true })}
+            loading={isSubmitting}
+            disabled={isSubmitting}
+          >
+            Save Draft
+          </LoadingButton>
+        )}
         <LoadingButton
           variant="contained"
           onClick={() => submitAnswers({ isDraft: false })}
           loading={isSubmitting}
           disabled={isSubmitting}
         >
-          Submit
+          {isDraft ? "Submit" : "Update Submission"}
         </LoadingButton>
       </Stack>
     </Stack>
