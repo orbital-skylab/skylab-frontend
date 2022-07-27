@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FC, useEffect, useState } from "react";
 // Components
 import Modal from "../Modal";
 import MultiDropdown from "@/components/formikFormControllers/MultiDropdown";
@@ -37,23 +37,17 @@ const AddRolesModal: FC<Props> = ({ selectedRole, handleCloseModal }) => {
     currentCohortYear ?? ""
   );
 
-  const memoUsersQueryParams = useMemo(
-    () => ({
-      cohortYear: selectedCohortYear,
-      excludeRole: toSingular(selectedRole),
-    }),
-    [selectedCohortYear, selectedRole]
-  );
   const { data: leanUsersWithoutStudentsResponse } =
     useFetch<GetLeanUsersResponse>({
-      endpoint: `/users/lean`,
-      queryParams: memoUsersQueryParams,
+      endpoint: `/users/lean?cohortYear=${selectedCohortYear}&excludeRole=${toSingular(
+        selectedRole
+      )}`,
       enabled: Boolean(selectedCohortYear) && Boolean(selectedRole),
     });
 
   const addRoles = useApiCall({
-    method: HTTP_METHOD.POST,
-    endpoint: "TODO:",
+    method: HTTP_METHOD.PUT,
+    endpoint: `/users/${selectedRole}`,
     requiresAuthorization: true,
   });
 
@@ -62,8 +56,10 @@ const AddRolesModal: FC<Props> = ({ selectedRole, handleCloseModal }) => {
   };
 
   const handleSubmit = async (values: AddRolesFormValuesType) => {
-    // TODO: Process values
-    const processedValues = { ...values };
+    const processedValues = {
+      cohortYear: selectedCohortYear,
+      ...values,
+    };
 
     try {
       await addRoles.call(processedValues);
