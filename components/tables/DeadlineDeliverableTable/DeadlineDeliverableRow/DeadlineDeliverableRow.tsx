@@ -79,7 +79,11 @@ const DeadlineDeliverableRow: FC<Props> = ({
 
         if (deadlineDeliverable.toProject) {
           return (
-            <Stack direction="row" spacing="0.5rem">
+            <Stack
+              className="deadline-deliverable-row"
+              direction="row"
+              spacing="0.5rem"
+            >
               <Typography>{`${deadlineDeliverable.deadline.name} for`}</Typography>
               <Button
                 variant="outlined"

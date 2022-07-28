@@ -16,6 +16,7 @@ import useFetch, { isFetching } from "@/hooks/useFetch";
 import useAuth from "@/contexts/useAuth";
 // Helpers
 import { isFuture } from "@/helpers/dates";
+import { transformTabNameIntoId } from "./Dashboard.helpers";
 // Type
 import type { NextPage } from "next";
 import { ROLES } from "@/types/roles";
@@ -92,7 +93,12 @@ const AdviserDashboard: NextPage = () => {
           }}
         >
           {Object.values(TAB).map((tab) => (
-            <Tab key={tab} value={tab} label={tab} />
+            <Tab
+              key={tab}
+              id={transformTabNameIntoId(tab)}
+              value={tab}
+              label={tab}
+            />
           ))}
         </Tabs>
 
