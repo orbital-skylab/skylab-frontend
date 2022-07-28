@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 // Components
-import DeleteProjectModal from "@/components/modals/DeleteProjectModal";
+import DeleteTeamModal from "@/components/modals/DeleteTeamModal";
 import { Button, Chip, Stack, TableCell, TableRow } from "@mui/material";
 import Link from "next/link";
 import UsersName from "@/components/typography/UsersName";
@@ -8,40 +8,40 @@ import UsersName from "@/components/typography/UsersName";
 import { PAGES } from "@/helpers/navigation";
 // Types
 import { Mutate } from "@/hooks/useFetch";
-import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
+import { LEVELS_OF_ACHIEVEMENT, Team } from "@/types/teams";
 import { BASE_TRANSITION } from "@/styles/constants";
 
 type Props = {
-  project: Project;
-  mutate: Mutate<Project[]> | undefined;
+  team: Team;
+  mutate: Mutate<Team[]> | undefined;
   showAdviserColumn: boolean;
   showMentorColumn: boolean;
   showEditAction: boolean;
   showDeleteAction: boolean;
 };
 
-const ProjectRow: FC<Props> = ({
-  project,
+const TeamRow: FC<Props> = ({
+  team,
   mutate,
   showAdviserColumn,
   showMentorColumn,
   showEditAction,
   showDeleteAction,
 }) => {
-  const [isDeleteProjectOpen, setIsDeleteProjectOpen] = useState(false);
+  const [isDeleteTeamOpen, setIsDeleteTeamOpen] = useState(false);
 
   const handleOpenDeleteModal = () => {
-    setIsDeleteProjectOpen(true);
+    setIsDeleteTeamOpen(true);
   };
 
   const renderTag = () => {
-    if (!project?.achievement) return;
+    if (!team?.achievement) return;
 
-    switch (project.achievement) {
+    switch (team.achievement) {
       case LEVELS_OF_ACHIEVEMENT.VOSTOK:
         return (
           <Chip
-            key={`project ${project.id}`}
+            key={`Team ${team.id}`}
             label={LEVELS_OF_ACHIEVEMENT.VOSTOK}
             color="primary"
             size="small"
@@ -50,7 +50,7 @@ const ProjectRow: FC<Props> = ({
       case LEVELS_OF_ACHIEVEMENT.GEMINI:
         return (
           <Chip
-            key={`project ${project.id}`}
+            key={`Team ${team.id}`}
             label={LEVELS_OF_ACHIEVEMENT.GEMINI}
             color="secondary"
             size="small"
@@ -59,7 +59,7 @@ const ProjectRow: FC<Props> = ({
       case LEVELS_OF_ACHIEVEMENT.APOLLO:
         return (
           <Chip
-            key={`project ${project.id}`}
+            key={`Team ${team.id}`}
             label={LEVELS_OF_ACHIEVEMENT.APOLLO}
             color="info"
             size="small"
@@ -69,7 +69,7 @@ const ProjectRow: FC<Props> = ({
       case LEVELS_OF_ACHIEVEMENT.ARTEMIS:
         return (
           <Chip
-            key={`project ${project.id}`}
+            key={`Team ${team.id}`}
             label={LEVELS_OF_ACHIEVEMENT.ARTEMIS}
             color="success"
             size="small"
@@ -81,32 +81,32 @@ const ProjectRow: FC<Props> = ({
   return (
     <>
       {showDeleteAction && mutate && (
-        <DeleteProjectModal
-          open={isDeleteProjectOpen}
-          setOpen={setIsDeleteProjectOpen}
-          project={project}
+        <DeleteTeamModal
+          open={isDeleteTeamOpen}
+          setOpen={setIsDeleteTeamOpen}
+          team={team}
           mutate={mutate}
         />
       )}
       <TableRow>
-        <TableCell>{project.id}</TableCell>
-        <TableCell>{project.name}</TableCell>
+        <TableCell>{team.id}</TableCell>
+        <TableCell>{team.name}</TableCell>
         <TableCell>
           <Stack direction="row" spacing="0.25rem">
             {renderTag()}
           </Stack>
         </TableCell>
         <TableCell>
-          {project.students
-            ? project.students.map((student) => (
+          {team.students
+            ? team.students.map((student) => (
                 <UsersName key={student.id} user={student} />
               ))
             : "-"}
         </TableCell>
         {showAdviserColumn && (
           <TableCell>
-            {project.adviser && project.adviser.id ? (
-              <UsersName user={project.adviser} />
+            {team.adviser && team.adviser.id ? (
+              <UsersName user={team.adviser} />
             ) : (
               "-"
             )}
@@ -114,8 +114,8 @@ const ProjectRow: FC<Props> = ({
         )}
         {showMentorColumn && (
           <TableCell>
-            {project.mentor && project.mentor.id ? (
-              <UsersName user={project.mentor} />
+            {team.mentor && team.mentor.id ? (
+              <UsersName user={team.mentor} />
             ) : (
               "-"
             )}
@@ -123,11 +123,11 @@ const ProjectRow: FC<Props> = ({
         )}
         <TableCell align="right">
           <Stack direction="row" spacing="0.5rem" justifyContent="end">
-            <Link href={`${PAGES.PROJECTS}/${project.id}`} passHref>
+            <Link href={`${PAGES.TEAMS}/${team.id}`} passHref>
               <Button>View</Button>
             </Link>
             {showEditAction && (
-              <Link href={`${PAGES.PROJECTS}/${project.id}/edit`} passHref>
+              <Link href={`${PAGES.TEAMS}/${team.id}/edit`} passHref>
                 <Button>Edit</Button>
               </Link>
             )}
@@ -152,4 +152,4 @@ const ProjectRow: FC<Props> = ({
   );
 };
 
-export default ProjectRow;
+export default TeamRow;

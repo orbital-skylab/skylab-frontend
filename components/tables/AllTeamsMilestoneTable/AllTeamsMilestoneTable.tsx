@@ -31,7 +31,7 @@ const columnHeadings: { heading: string; align: "left" | "right" }[] = [
 
 const AllTeamsMilestoneTable: FC<Props> = ({ deadline, submissions }) => {
   const getKey = (deadline: Deadline, submission: PossibleSubmission) => {
-    return `${deadline.id}-${submission.id}-${submission.fromProject?.id}-${submission.fromProject?.id}`;
+    return `${deadline.id}-${submission.id}-${submission.fromTeam?.id}-${submission.fromTeam?.id}`;
   };
 
   return (

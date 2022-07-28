@@ -8,34 +8,34 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import ProjectSubmissionModal from "../../modals/ProjectSubmissionModal";
+import TeamProjectSubmissionModal from "../../modals/TeamProjectSubmissionModal";
 import Link from "next/link";
 import UsersName from "@/components/typography/UsersName/UsersName";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
 import { noImageAvailableSrc } from "@/helpers/errors";
 // Types
-import { Project } from "@/types/projects";
+import { Team } from "@/types/teams";
 // Constants
 import { A4_ASPECT_RATIO, BASE_TRANSITION } from "@/styles/constants";
 
 type Props = {
-  project: Project;
+  team: Team;
 };
 
-const ProjectCard: FC<Props> = ({ project }) => {
-  const [isProjectModalOpen, setProjectModalOpen] = useState(false);
+const TeamProjectCard: FC<Props> = ({ team }) => {
+  const [isTeamModalOpen, setTeamModalOpen] = useState(false);
 
-  const handleOpenProjectModal = () => {
-    setProjectModalOpen(true);
+  const handleOpenTeamModal = () => {
+    setTeamModalOpen(true);
   };
 
   return (
     <>
-      <ProjectSubmissionModal
-        open={isProjectModalOpen}
-        setOpen={setProjectModalOpen}
-        project={project}
+      <TeamProjectSubmissionModal
+        open={isTeamModalOpen}
+        setOpen={setTeamModalOpen}
+        team={team}
       />
       <Card
         sx={{
@@ -59,7 +59,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
           }}
           fontWeight={600}
         >
-          {project.id}
+          {team.id}
         </Typography>
         <CardContent
           sx={{
@@ -67,7 +67,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
           }}
         >
           <Stack sx={{ height: "100%", gap: "0.5rem" }}>
-            <Link passHref href={`${PAGES.PROJECTS}/${project.id}`}>
+            <Link passHref href={`${PAGES.TEAMS}/${team.id}`}>
               <Typography
                 align="center"
                 fontWeight={600}
@@ -84,7 +84,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
                   },
                 }}
               >
-                {`${project.name}`}
+                {`${team.name}`}
               </Typography>
             </Link>
             <Box
@@ -99,8 +99,8 @@ const ProjectCard: FC<Props> = ({ project }) => {
             >
               <Box
                 component="img"
-                src={project.posterUrl ?? noImageAvailableSrc}
-                alt={`${project.name} Poster`}
+                src={team.posterUrl ?? noImageAvailableSrc}
+                alt={`${team.name} Poster`}
                 sx={{
                   width: "100%",
                   objectFit: "cover",
@@ -109,24 +109,24 @@ const ProjectCard: FC<Props> = ({ project }) => {
             </Box>
 
             <Stack spacing="0.5rem">
-              {project.students && project.students.length ? (
+              {team.students && team.students.length ? (
                 <Box>
                   <Typography fontWeight={600}>Orbitees</Typography>
-                  {project.students.map((student) => (
+                  {team.students.map((student) => (
                     <UsersName key={student.id} user={student} />
                   ))}
                 </Box>
               ) : null}
-              {project.adviser ? (
+              {team.adviser ? (
                 <Box>
                   <Typography fontWeight={600}>Adviser</Typography>
-                  <UsersName user={project.adviser} />
+                  <UsersName user={team.adviser} />
                 </Box>
               ) : null}
-              {project.mentor ? (
+              {team.mentor ? (
                 <Box>
                   <Typography fontWeight={600}>Mentor</Typography>
-                  <UsersName user={project.mentor} />
+                  <UsersName user={team.mentor} />
                 </Box>
               ) : null}
             </Stack>
@@ -135,7 +135,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
               gap="0.5rem"
               sx={{ marginTop: "auto" }}
             >
-              <Link passHref href={`${PAGES.PROJECTS}/${project.id}`}>
+              <Link passHref href={`${PAGES.TEAMS}/${team.id}`}>
                 <Button
                   variant="outlined"
                   size="small"
@@ -144,7 +144,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
                     textTransform: "none",
                     alignSelf: "center",
                   }}
-                  onClick={() => setProjectModalOpen(true)}
+                  onClick={() => setTeamModalOpen(true)}
                 >
                   Details
                 </Button>
@@ -157,7 +157,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
                   textTransform: "none",
                   alignSelf: "center",
                 }}
-                onClick={handleOpenProjectModal}
+                onClick={handleOpenTeamModal}
               >
                 Poster and Video
               </Button>
@@ -169,4 +169,4 @@ const ProjectCard: FC<Props> = ({ project }) => {
   );
 };
 
-export default ProjectCard;
+export default TeamProjectCard;

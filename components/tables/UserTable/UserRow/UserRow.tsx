@@ -20,21 +20,21 @@ import useAuth from "@/contexts/useAuth";
 import { User } from "@/types/users";
 import { ROLES } from "@/types/roles";
 import { Mutate } from "@/hooks/useFetch";
-import { LeanProject } from "@/types/projects";
+import { LeanTeam } from "@/types/teams";
 import { BASE_TRANSITION } from "@/styles/constants";
 
 type Props = {
   user: User;
   mutate: Mutate<User[]>;
-  leanProjects: LeanProject[] | undefined;
-  isFetchingLeanProjects: boolean;
+  leanTeams: LeanTeam[] | undefined;
+  isFetchingLeanTeams: boolean;
 };
 
 const UserRow: FC<Props> = ({
   user,
   mutate,
-  leanProjects,
-  isFetchingLeanProjects,
+  leanTeams,
+  isFetchingLeanTeams,
 }) => {
   const { previewSiteAs } = useAuth();
   const [isDeleteUserOpen, setIsDeleteUserOpen] = useState(false);
@@ -118,16 +118,16 @@ const UserRow: FC<Props> = ({
         setOpen={setIsAddRoleOpen}
         user={user}
         mutate={mutate}
-        leanProjects={leanProjects}
-        isFetchingLeanProjects={isFetchingLeanProjects}
+        leanTeams={leanTeams}
+        isFetchingLeanTeams={isFetchingLeanTeams}
       />
       <ViewRoleModal
         selectedRole={selectedRole}
         setSelectedRole={setSelectedRole}
         user={user}
         mutate={mutate}
-        leanProjects={leanProjects}
-        isFetchingLeanProjects={isFetchingLeanProjects}
+        leanTeams={leanTeams}
+        isFetchingLeanTeams={isFetchingLeanTeams}
       />
       <DeleteUserModal
         open={isDeleteUserOpen}

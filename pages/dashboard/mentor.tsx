@@ -7,7 +7,7 @@ import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import SubmissionTable from "@/components/tables/SubmissionTable";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import NoneFound from "@/components/emptyStates/NoneFound";
-import ProjectTable from "@/components/tables/ProjectTable";
+import TeamTable from "@/components/tables/TeamTable";
 // Hooks
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import useAuth from "@/contexts/useAuth";
@@ -16,7 +16,7 @@ import type { NextPage } from "next";
 import { ROLES } from "@/types/roles";
 import {
   GetMentorTeamSubmissionsResponse,
-  GetProjectsResponse,
+  GetTeamsResponse,
 } from "@/types/api";
 
 enum TAB {
@@ -34,9 +34,9 @@ const MentorDashboard: NextPage = () => {
       enabled: Boolean(user && user.mentor && user.mentor.id),
     });
 
-  const { data: projectsResponse, status: fetchProjectsStatus } =
-    useFetch<GetProjectsResponse>({
-      endpoint: `/projects/mentor/${user?.mentor?.id}`,
+  const { data: teamsResponse, status: fetchTeamsStatus } =
+    useFetch<GetTeamsResponse>({
+      endpoint: `/teams/mentor/${user?.mentor?.id}`,
       enabled: Boolean(user && user.mentor && user.mentor.id),
     });
 
@@ -53,7 +53,7 @@ const MentorDashboard: NextPage = () => {
           onChange={handleTabChange}
           textColor="secondary"
           indicatorColor="secondary"
-          aria-label="project-level-tabs"
+          aria-label="team-level-tabs"
           variant="scrollable"
           scrollButtons="auto"
           allowScrollButtonsMobile
@@ -97,14 +97,14 @@ const MentorDashboard: NextPage = () => {
         </TabPanel>
 
         <TabPanel value={TAB.VIEW_TEAMS}>
-          <LoadingWrapper isLoading={isFetching(fetchProjectsStatus)}>
+          <LoadingWrapper isLoading={isFetching(fetchTeamsStatus)}>
             <NoDataWrapper
-              noDataCondition={!projectsResponse?.projects.length}
+              noDataCondition={!teamsResponse?.teams.length}
               fallback={<NoneFound message="No teams found" />}
             >
-              {projectsResponse && projectsResponse.projects && (
-                <ProjectTable
-                  projects={projectsResponse.projects}
+              {teamsResponse && teamsResponse.teams && (
+                <TeamTable
+                  teams={teamsResponse.teams}
                   showMentorColumn
                   showEditAction
                 />

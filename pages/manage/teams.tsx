@@ -12,8 +12,8 @@ import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
 import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import Body from "@/components/layout/Body";
-import AddProjectModal from "@/components/modals/AddProjectModal";
-import ProjectTable from "@/components/tables/ProjectTable";
+import AddTeamModal from "@/components/modals/AddTeamModal";
+import TeamTable from "@/components/tables/TeamTable";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import {
@@ -38,14 +38,14 @@ import useInfiniteFetch, {
   createBottomOfPageRef,
 } from "@/hooks/useInfiniteFetch";
 // Types
-import { GetProjectsResponse } from "@/types/api";
+import { GetTeamsResponse } from "@/types/api";
 import { Cohort } from "@/types/cohorts";
-import { LEVELS_OF_ACHIEVEMENT_WITH_ALL, Project } from "@/types/projects";
+import { LEVELS_OF_ACHIEVEMENT_WITH_ALL, Team } from "@/types/teams";
 import { ROLES } from "@/types/roles";
 
 const LIMIT = 50;
 
-const ProjectsList = () => {
+const TeamsList = () => {
   const [selectedLevelOfAchievement, setSelectedLevelOfAchievement] = useState(
     LEVELS_OF_ACHIEVEMENT_WITH_ALL.ALL
   );
@@ -61,10 +61,10 @@ const ProjectsList = () => {
     Cohort["academicYear"] | ""
   >("");
   const [viewHasDropped, setViewHasDropped] = useState(false);
-  const [isAddProjectOpen, setIsAddProjectOpen] = useState(false);
+  const [isAddTeamOpen, setIsAddTeamOpen] = useState(false);
 
-  /** For fetching projects based on filters */
-  const memoProjectsQueryParams = useMemo(() => {
+  /** For fetching teams based on filters */
+  const memoTeamsQueryParams = useMemo(() => {
     return {
       cohortYear: selectedCohortYear,
       achievement:
@@ -83,15 +83,15 @@ const ProjectsList = () => {
   ]);
 
   const {
-    data: projects,
-    status: fetchProjectsStatus,
+    data: teams,
+    status: fetchTeamsStatus,
     hasMore,
     mutate,
-  } = useInfiniteFetch<GetProjectsResponse, Project>({
-    endpoint: `/projects`,
-    queryParams: memoProjectsQueryParams,
+  } = useInfiniteFetch<GetTeamsResponse, Team>({
+    endpoint: `/teams`,
+    queryParams: memoTeamsQueryParams,
     page,
-    responseToData: (response) => response.projects,
+    responseToData: (response) => response.teams,
     enabled: !!selectedCohortYear,
   });
 
@@ -123,8 +123,8 @@ const ProjectsList = () => {
     setPage(0);
   };
 
-  const handleOpenAddProjectModal = () => {
-    setIsAddProjectOpen(true);
+  const handleOpenAddTeamModal = () => {
+    setIsAddTeamOpen(true);
   };
 
   const handleToggleViewDropped = () => {
@@ -132,10 +132,10 @@ const ProjectsList = () => {
     setPage(0);
   };
 
-  /** To fetch more projects when the bottom of the page is reached */
+  /** To fetch more teams when the bottom of the page is reached */
   const observer = useRef<IntersectionObserver | null>(null);
   const bottomOfPageRef = createBottomOfPageRef(
-    isFetching(fetchProjectsStatus),
+    isFetching(fetchTeamsStatus),
     hasMore,
     setPage,
     observer
@@ -149,9 +149,9 @@ const ProjectsList = () => {
 
   return (
     <>
-      <AddProjectModal
-        open={isAddProjectOpen}
-        setOpen={setIsAddProjectOpen}
+      <AddTeamModal
+        open={isAddTeamOpen}
+        setOpen={setIsAddTeamOpen}
         mutate={mutate}
       />
       <Body
@@ -177,10 +177,10 @@ const ProjectsList = () => {
               <Button
                 variant="outlined"
                 size="small"
-                onClick={handleOpenAddProjectModal}
+                onClick={handleOpenAddTeamModal}
               >
                 <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
-                Project
+                Team
               </Button>
               <TextField
                 name="cohort"
@@ -206,7 +206,7 @@ const ProjectsList = () => {
               onChange={handleTabChange}
               textColor="secondary"
               indicatorColor="secondary"
-              aria-label="project-level-tabs"
+              aria-label="team-level-tabs"
               variant="scrollable"
               scrollButtons="auto"
               allowScrollButtonsMobile
@@ -223,23 +223,23 @@ const ProjectsList = () => {
               value={viewHasDropped}
               onClick={handleToggleViewDropped}
               control={<Switch color="secondary" size="small" />}
-              label="View Dropped Projects"
+              label="View Dropped Teams"
               labelPlacement="start"
             />
           </Stack>
         </Stack>
         <LoadingWrapper
           isLoading={
-            (projects === undefined || projects.length === 0) &&
-            isFetching(fetchProjectsStatus)
+            (teams === undefined || teams.length === 0) &&
+            isFetching(fetchTeamsStatus)
           }
         >
           <NoDataWrapper
-            noDataCondition={projects === undefined || projects.length === 0}
-            fallback={<NoneFound message="No such projects found" />}
+            noDataCondition={teams === undefined || teams.length === 0}
+            fallback={<NoneFound message="No such teams found" />}
           >
-            <ProjectTable
-              projects={projects}
+            <TeamTable
+              teams={teams}
               mutate={mutate}
               showAdviserColumn
               showMentorColumn
@@ -254,10 +254,10 @@ const ProjectsList = () => {
                 height: "100px",
               }}
             >
-              {isFetching(fetchProjectsStatus) ? (
+              {isFetching(fetchTeamsStatus) ? (
                 <LoadingSpinner size={50} />
               ) : !hasMore ? (
-                <Typography>No more projects found</Typography>
+                <Typography>No more teams found</Typography>
               ) : null}
             </Box>
           </NoDataWrapper>
@@ -267,4 +267,4 @@ const ProjectsList = () => {
   );
 };
 
-export default ProjectsList;
+export default TeamsList;

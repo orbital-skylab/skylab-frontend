@@ -38,7 +38,7 @@ export const NAVBAR_OPTIONS: NavbarOption[] = [
     label: "Team Profile",
     action: NAVBAR_ACTIONS.ROUTE_TO_TEAM_PROFILE,
     authorizedRoles: [ROLES.STUDENTS],
-    currentPageRegExp: /projects\/[0-9]*/,
+    currentPageRegExp: /teams\/[0-9]*/,
   },
   {
     label: "Profile",
@@ -92,7 +92,7 @@ export const generateOnClickGenerator = (
 
       case NAVBAR_ACTIONS.ROUTE_TO_TEAM_PROFILE:
         return () => {
-          router.push(`${PAGES.PROJECTS}/${user?.student?.projectId}`);
+          router.push(`${PAGES.TEAMS}/${user?.student?.teamId}`);
         };
 
       /**

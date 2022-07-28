@@ -26,7 +26,7 @@ import { CreateRoleResponse, HTTP_METHOD } from "@/types/api";
 import { Mutate } from "@/hooks/useFetch";
 import { AddOrEditRoleFormValuesType, ROLES } from "@/types/roles";
 import { Cohort } from "@/types/cohorts";
-import { LeanProject } from "@/types/projects";
+import { LeanTeam } from "@/types/teams";
 import { User } from "@/types/users";
 
 type Props = {
@@ -34,8 +34,8 @@ type Props = {
   setOpen: Dispatch<SetStateAction<boolean>>;
   user: User;
   mutate: Mutate<User[]>;
-  leanProjects: LeanProject[] | undefined;
-  isFetchingLeanProjects: boolean;
+  leanTeams: LeanTeam[] | undefined;
+  isFetchingLeanTeams: boolean;
 };
 
 const AddRoleModal: FC<Props> = ({
@@ -43,8 +43,8 @@ const AddRoleModal: FC<Props> = ({
   setOpen,
   user,
   mutate,
-  leanProjects,
-  isFetchingLeanProjects,
+  leanTeams,
+  isFetchingLeanTeams,
 }) => {
   const { cohorts, currentCohortYear } = useCohort();
   const { setSuccess, setError } = useSnackbarAlert();
@@ -155,24 +155,24 @@ const AddRoleModal: FC<Props> = ({
                   <StudentDetailsForm
                     formik={formik}
                     cohorts={cohorts as Cohort[]}
-                    leanProjects={leanProjects}
-                    isFetchingLeanProjects={isFetchingLeanProjects}
+                    leanTeams={leanTeams}
+                    isFetchingLeanTeams={isFetchingLeanTeams}
                   />
                 )}
                 {selectedRole === ROLES.ADVISERS && (
                   <AdviserDetailsForm
                     formik={formik}
                     cohorts={cohorts as Cohort[]}
-                    leanProjects={leanProjects}
-                    isFetchingLeanProjects={isFetchingLeanProjects}
+                    leanTeams={leanTeams}
+                    isFetchingLeanTeams={isFetchingLeanTeams}
                   />
                 )}
                 {selectedRole === ROLES.MENTORS && (
                   <MentorDetailsForm
                     formik={formik}
                     cohorts={cohorts as Cohort[]}
-                    leanProjects={leanProjects}
-                    isFetchingLeanProjects={isFetchingLeanProjects}
+                    leanTeams={leanTeams}
+                    isFetchingLeanTeams={isFetchingLeanTeams}
                   />
                 )}
                 {selectedRole === ROLES.ADMINISTRATORS && (

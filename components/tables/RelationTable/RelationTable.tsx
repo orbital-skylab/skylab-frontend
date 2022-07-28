@@ -13,12 +13,12 @@ import RelationRow from "./RelationRow";
 import { Mutate } from "@/hooks/useFetch";
 import { GetRelationsResponse } from "@/types/api";
 import { EvaluationRelation } from "@/types/relations";
-import { Project } from "@/types/projects";
+import { Team } from "@/types/teams";
 
 type Props = {
   relations: EvaluationRelation[];
   mutate: Mutate<GetRelationsResponse>;
-  projects: Project[];
+  teams: Team[];
   showAdviserColumn?: boolean;
 };
 
@@ -33,7 +33,7 @@ const columnHeadings: { heading: string; align: "left" | "right" }[] = [
 const RelationTable: FC<Props> = ({
   relations,
   mutate,
-  projects,
+  teams,
   showAdviserColumn,
 }) => {
   const filteredColumnHeadings = columnHeadings.filter(({ heading }) => {
@@ -65,7 +65,7 @@ const RelationTable: FC<Props> = ({
                 key={relation.id}
                 relation={relation}
                 mutate={mutate}
-                projects={projects}
+                teams={teams}
                 showAdviserColumn={Boolean(showAdviserColumn)}
               />
             ))}

@@ -14,7 +14,7 @@ const StudentDetails: FC<Props> = ({ studentRole }) => {
         attribute="Matriculation Number"
         value={studentRole.matricNo}
       />
-      <Attribute attribute="Project ID" value={studentRole.projectId} />
+      <Attribute attribute="Team ID" value={studentRole.teamId} />
     </>
   );
 };

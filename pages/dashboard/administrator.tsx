@@ -33,7 +33,7 @@ import { ROLES } from "@/types/roles";
 import {
   GetAdministratorAllTeamMilestoneSubmissionsResponse,
   GetDeadlinesResponse,
-  GetProjectsResponse,
+  GetTeamsResponse,
   GetRelationsResponse,
 } from "@/types/api";
 import { Deadline, DEADLINE_TYPE } from "@/types/deadlines";
@@ -119,8 +119,8 @@ const AdministratorDashboard: NextPage = () => {
     enabled: Boolean(currentCohortYear) && Boolean(selectedMilestoneDeadline),
   });
 
-  const { data: projectsResponse } = useFetch<GetProjectsResponse>({
-    endpoint: `/projects/lean?cohortYear=${currentCohortYear}`,
+  const { data: teamsResponse } = useFetch<GetTeamsResponse>({
+    endpoint: `/teams/lean?cohortYear=${currentCohortYear}`,
     enabled: Boolean(currentCohortYear),
     requiresAuthorization: true,
   });
@@ -134,7 +134,7 @@ const AdministratorDashboard: NextPage = () => {
     requiresAuthorization: true,
   });
 
-  /** To fetch more projects when the bottom of the page is reached */
+  /** To fetch more teams when the bottom of the page is reached */
   const observer = useRef<IntersectionObserver | null>(null);
   const bottomOfPageRef = createBottomOfPageRef(
     isFetching(fetchAllTeamsMilestonesStatus),
@@ -180,7 +180,7 @@ const AdministratorDashboard: NextPage = () => {
           onChange={handleTabChange}
           textColor="secondary"
           indicatorColor="secondary"
-          aria-label="project-level-tabs"
+          aria-label="team-level-tabs"
           variant="scrollable"
           scrollButtons="auto"
           allowScrollButtonsMobile
@@ -250,7 +250,7 @@ const AdministratorDashboard: NextPage = () => {
           <LoadingWrapper isLoading={isFetching(fetchRelationsStatus)}>
             <Stack>
               <ActionButtons
-                projects={projectsResponse?.projects ?? []}
+                teams={teamsResponse?.teams ?? []}
                 mutate={mutateRelations}
               />
               <NoDataWrapper
@@ -263,7 +263,7 @@ const AdministratorDashboard: NextPage = () => {
                   <RelationTable
                     relations={relationsResponse.relations}
                     mutate={mutateRelations}
-                    projects={projectsResponse?.projects ?? []}
+                    teams={teamsResponse?.teams ?? []}
                     showAdviserColumn
                   />
                 )}

@@ -1,8 +1,7 @@
 import { Adviser } from "./advisers";
 import { Deadline, DeadlineDeliverable, Section } from "./deadlines";
-import { EvaluationGroup } from "./groups";
 import { Mentor } from "./mentors";
-import { LeanProject, Project } from "./projects";
+import { LeanTeam, Team } from "./teams";
 import { EvaluationRelation } from "./relations";
 import {
   AdministratorRole,
@@ -123,23 +122,23 @@ export type EditAdministratorResponse = {
 };
 
 /**
- * Projects Endpoints:
- * https://github.com/orbital-skylab/skylab-backend/wiki/Projects-Endpoints
+ * Teams Endpoints:
+ * https://github.com/orbital-skylab/skylab-backend/wiki/Teams-Endpoints
  */
-export type GetProjectResponse = {
-  project: Project;
+export type GetTeamResponse = {
+  team: Team;
 };
 
-export type GetProjectsResponse = {
-  projects: Project[];
+export type GetTeamsResponse = {
+  teams: Team[];
 };
 
-export type GetLeanProjectsResponse = {
-  projects: LeanProject[];
+export type GetLeanTeamsResponse = {
+  teams: LeanTeam[];
 };
 
-export type CreateProjectResponse = {
-  project: Project;
+export type CreateTeamResponse = {
+  team: Team;
 };
 
 /**
@@ -235,17 +234,6 @@ export type GetAdministratorAllTeamMilestoneSubmissionsResponse = {
 };
 
 /**
- * Groups Endpoints:
- */
-export type CreateGroupResponse = {
-  group: EvaluationGroup;
-};
-
-export type EditGroupResponse = {
-  group: EvaluationGroup;
-};
-
-/**
  * Evaluation Relations Endpoints:
  * https://github.com/orbital-skylab/skylab-backend/wiki/Evaluation-Relationships-Endpoints
  */
@@ -261,7 +249,7 @@ export type EditRelationResponse = {
   relation: EvaluationRelation;
 };
 
-export type DeleteProjectRelationsResponse = {
+export type DeleteTeamRelationsResponse = {
   relations: {
     count: number;
   };

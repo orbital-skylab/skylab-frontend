@@ -18,11 +18,11 @@ import {
 } from "@/types/api";
 import { EvaluationRelation } from "@/types/relations";
 import Dropdown from "@/components/formikFormControllers/Dropdown";
-import { Project } from "@/types/projects";
+import { Team } from "@/types/teams";
 
 interface EditRelationFormValuesType {
-  fromProjectId: number;
-  toProjectId: number;
+  fromTeamId: number;
+  toTeamId: number;
 }
 
 type Props = {
@@ -30,7 +30,7 @@ type Props = {
   setOpen: Dispatch<SetStateAction<boolean>>;
   relation: EvaluationRelation;
   mutate: Mutate<GetRelationsResponse>;
-  projects: Project[];
+  teams: Team[];
 };
 
 const EditRelationModal: FC<Props> = ({
@@ -38,7 +38,7 @@ const EditRelationModal: FC<Props> = ({
   setOpen,
   relation,
   mutate,
-  projects,
+  teams,
 }) => {
   const { setSuccess, setError } = useSnackbarAlert();
 
@@ -59,16 +59,16 @@ const EditRelationModal: FC<Props> = ({
   });
 
   const initialValues: EditRelationFormValuesType = {
-    fromProjectId: relation.fromProjectId,
-    toProjectId: relation.toProjectId,
+    fromTeamId: relation.fromTeamId,
+    toTeamId: relation.toTeamId,
   };
 
   const handleSubmit = async (
     values: EditRelationFormValuesType,
     actions: FormikHelpers<EditRelationFormValuesType>
   ) => {
-    if (values.toProjectId === values.fromProjectId) {
-      setError("Cannot create a relation between the same project");
+    if (values.toTeamId === values.fromTeamId) {
+      setError("Cannot create a relation between the same team");
       return;
     }
 
@@ -102,34 +102,34 @@ const EditRelationModal: FC<Props> = ({
             <>
               <Stack direction="column" spacing="1rem">
                 <Dropdown
-                  name="fromProjectId"
+                  name="fromTeamId"
                   label="Evaluator"
                   formik={formik}
                   size="small"
                   isCombobox
                   options={
-                    projects && projects.length
-                      ? projects.map((project) => {
+                    teams && teams.length
+                      ? teams.map((team) => {
                           return {
-                            label: `${project.id}: ${project.name}`,
-                            value: project.id,
+                            label: `${team.id}: ${team.name}`,
+                            value: team.id,
                           };
                         })
                       : []
                   }
                 />
                 <Dropdown
-                  name="toProjectId"
+                  name="toTeamId"
                   label="Evaluatee"
                   formik={formik}
                   size="small"
                   isCombobox
                   options={
-                    projects && projects.length
-                      ? projects.map((project) => {
+                    teams && teams.length
+                      ? teams.map((team) => {
                           return {
-                            label: `${project.id}: ${project.name}`,
-                            value: project.id,
+                            label: `${team.id}: ${team.name}`,
+                            value: team.id,
                           };
                         })
                       : []
@@ -163,6 +163,6 @@ const EditRelationModal: FC<Props> = ({
 export default EditRelationModal;
 
 const editRelationValidationSchema = Yup.object().shape({
-  fromProjectId: Yup.number().required(ERRORS.REQUIRED),
-  toProjectId: Yup.number().required(ERRORS.REQUIRED),
+  fromTeamId: Yup.number().required(ERRORS.REQUIRED),
+  toTeamId: Yup.number().required(ERRORS.REQUIRED),
 });

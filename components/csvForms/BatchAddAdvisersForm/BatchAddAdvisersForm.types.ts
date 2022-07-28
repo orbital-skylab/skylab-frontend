@@ -24,6 +24,6 @@ export type BatchAddAdvisersRequestType = {
   count: number;
   advisers: {
     user: Omit<UserMetadata, "id">;
-    adviser: Omit<AdviserMetadata, "projectIds">;
+    adviser: Omit<AdviserMetadata, "teamIds">;
   }[];
 };

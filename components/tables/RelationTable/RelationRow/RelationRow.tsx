@@ -11,19 +11,19 @@ import { Mutate } from "@/hooks/useFetch";
 import { BASE_TRANSITION } from "@/styles/constants";
 import { GetRelationsResponse } from "@/types/api";
 import { EvaluationRelation } from "@/types/relations";
-import { Project } from "@/types/projects";
+import { Team } from "@/types/teams";
 
 type Props = {
   relation: EvaluationRelation;
   mutate: Mutate<GetRelationsResponse>;
-  projects: Project[];
+  teams: Team[];
   showAdviserColumn: boolean;
 };
 
 const RelationRow: FC<Props> = ({
   relation,
   mutate,
-  projects,
+  teams,
   showAdviserColumn,
 }) => {
   const [isEditRelationOpen, setIsEditRelationOpen] = useState(false);
@@ -44,7 +44,7 @@ const RelationRow: FC<Props> = ({
         setOpen={setIsEditRelationOpen}
         relation={relation}
         mutate={mutate}
-        projects={projects}
+        teams={teams}
       />
       <DeleteRelationModal
         open={isDeleteRelationOpen}
@@ -55,13 +55,13 @@ const RelationRow: FC<Props> = ({
       <TableRow>
         <TableCell>{relation.id}</TableCell>
         <TableCell>
-          <HoverLink href={`${PAGES.PROJECTS}/${relation.fromProjectId}`}>
-            {relation.fromProject?.name}
+          <HoverLink href={`${PAGES.TEAMS}/${relation.fromTeamId}`}>
+            {relation.fromTeam?.name}
           </HoverLink>
         </TableCell>
         <TableCell>
-          <HoverLink href={`${PAGES.PROJECTS}/${relation.toProjectId}`}>
-            {relation.toProject?.name}
+          <HoverLink href={`${PAGES.TEAMS}/${relation.toTeamId}`}>
+            {relation.toTeam?.name}
           </HoverLink>
         </TableCell>
         {showAdviserColumn && (

@@ -13,21 +13,21 @@ import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 import { useRouter } from "next/router";
 // Types
 import { HTTP_METHOD } from "@/types/api";
-import { Project } from "@/types/projects";
+import { Team } from "@/types/teams";
 
 const refreshSeconds = 3;
 
 interface AddRelationGroupFormValuesType {
-  projectIds: [];
+  teamIds: [];
 }
 
 type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  projects: Project[];
+  teams: Team[];
 };
 
-const AddRelationsViaGroupModal: FC<Props> = ({ open, setOpen, projects }) => {
+const AddRelationsViaGroupModal: FC<Props> = ({ open, setOpen, teams }) => {
   const { setSuccess, setError } = useSnackbarAlert();
   const router = useRouter();
 
@@ -37,7 +37,7 @@ const AddRelationsViaGroupModal: FC<Props> = ({ open, setOpen, projects }) => {
   });
 
   const initialValues: AddRelationGroupFormValuesType = {
-    projectIds: [],
+    teamIds: [],
   };
 
   const handleSubmit = async (
@@ -71,7 +71,7 @@ const AddRelationsViaGroupModal: FC<Props> = ({ open, setOpen, projects }) => {
         open={open}
         handleClose={handleCloseModal}
         title={`Add Group`}
-        subheader="Adding 'groups' is a shortcut to add multiple relations at once. For example, creating a group with three projects A, B, and C would result in 6 relations being created: A -> B, A -> C, B -> A, B -> C, C -> A, C -> B."
+        subheader="Adding 'groups' is a shortcut to add multiple relations at once. For example, creating a group with three teams A, B, and C would result in 6 relations being created: A -> B, A -> C, B -> A, B -> C, C -> A, C -> B."
       >
         <Formik
           initialValues={initialValues}
@@ -82,17 +82,17 @@ const AddRelationsViaGroupModal: FC<Props> = ({ open, setOpen, projects }) => {
             <>
               <Stack direction="column" spacing="1rem">
                 <MultiDropdown
-                  name="projectIds"
-                  label="Projects"
+                  name="teamIds"
+                  label="Teams"
                   formik={formik}
                   size="small"
                   isCombobox
                   options={
-                    projects && projects.length
-                      ? projects.map((project) => {
+                    teams && teams.length
+                      ? teams.map((team) => {
                           return {
-                            label: `${project.id}: ${project.name}`,
-                            value: project.id,
+                            label: `${team.id}: ${team.name}`,
+                            value: team.id,
                           };
                         })
                       : []
@@ -126,5 +126,5 @@ const AddRelationsViaGroupModal: FC<Props> = ({ open, setOpen, projects }) => {
 export default AddRelationsViaGroupModal;
 
 const addRelationGroupValidationSchema = Yup.object().shape({
-  projectIds: Yup.array().min(1, ERRORS.REQUIRED).required(ERRORS.REQUIRED),
+  teamIds: Yup.array().min(1, ERRORS.REQUIRED).required(ERRORS.REQUIRED),
 });

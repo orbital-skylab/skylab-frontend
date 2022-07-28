@@ -18,45 +18,39 @@ import { useRouter } from "next/router";
 import useAuth from "@/contexts/useAuth";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
-import { checkIfProjectsAdviser, userHasRole } from "@/helpers/roles";
+import { checkIfTeamsAdviser, userHasRole } from "@/helpers/roles";
 import { noImageAvailableSrc } from "@/helpers/errors";
 // Types
 import type { NextPage } from "next";
-import { GetProjectResponse } from "@/types/api";
+import { GetTeamResponse } from "@/types/api";
 import { ROLES } from "@/types/roles";
 
-const ProjectDetails: NextPage = () => {
+const TeamDetails: NextPage = () => {
   const router = useRouter();
   const { user } = useAuth();
-  const { projectId } = router.query;
+  const { teamId } = router.query;
 
-  const { data: projectResponse, status: getProjectStatus } =
-    useFetch<GetProjectResponse>({
-      endpoint: `/projects/${projectId}`,
-      enabled: !!projectId,
+  const { data: teamResponse, status: getTeamStatus } =
+    useFetch<GetTeamResponse>({
+      endpoint: `/teams/${teamId}`,
+      enabled: Boolean(teamId),
     });
 
-  const isProjectsAdviser = checkIfProjectsAdviser(
-    projectResponse?.project,
-    user
-  );
+  const isTeamsAdviser = checkIfTeamsAdviser(teamResponse?.team, user);
 
   const showEditButton =
-    isProjectsAdviser || (user && userHasRole(user, ROLES.ADMINISTRATORS));
+    isTeamsAdviser || (user && userHasRole(user, ROLES.ADMINISTRATORS));
 
-  const project = projectResponse ? projectResponse.project : undefined;
+  const team = teamResponse ? teamResponse.team : undefined;
 
   return (
-    <Body
-      isLoading={isFetching(getProjectStatus)}
-      loadingText="Loading project..."
-    >
+    <Body isLoading={isFetching(getTeamStatus)} loadingText="Loading team...">
       <NoDataWrapper
-        noDataCondition={!projectResponse || !projectResponse.project}
+        noDataCondition={!teamResponse || !teamResponse.team}
         fallback={
           <NoneFound
             showReturnHome
-            message="There is no such project with that project ID"
+            message="There is no such team with that team ID"
           />
         }
       >
@@ -64,8 +58,8 @@ const ProjectDetails: NextPage = () => {
         <Stack direction="column" alignItems="center">
           <Box
             component="img"
-            src={project?.posterUrl ?? noImageAvailableSrc}
-            alt={`${project?.name} Project`}
+            src={team?.posterUrl ?? noImageAvailableSrc}
+            alt={`${team?.name} Team`}
             sx={{
               objectFit: "cover",
               height: "50vw",
@@ -84,7 +78,7 @@ const ProjectDetails: NextPage = () => {
             raised
           >
             {showEditButton ? (
-              <NextLink href={`${PAGES.PROJECTS}/${project?.id}/edit`} passHref>
+              <NextLink href={`${PAGES.TEAMS}/${team?.id}/edit`} passHref>
                 <Button
                   size="small"
                   variant="contained"
@@ -108,20 +102,20 @@ const ProjectDetails: NextPage = () => {
                 textAlign="center"
                 mb="1.5rem"
               >
-                {`${project?.teamName}`}
+                {`${team?.name}`}
               </Typography>
-              {project && (
+              {team && (
                 <Stack spacing="0.5rem">
-                  <SpreadAttribute attribute="Project ID" value={project?.id} />
+                  <SpreadAttribute attribute="Team ID" value={team?.id} />
                   <SpreadAttribute
                     attribute="Level of Achievement"
-                    value={project?.achievement}
+                    value={team?.achievement}
                   />
                   <SpreadAttribute
                     attribute="Students"
                     value={
-                      project?.students
-                        ? project?.students.map((student) => {
+                      team?.students
+                        ? team?.students.map((student) => {
                             return {
                               href: `${PAGES.USERS}/${student.id}`,
                               label: student.name,
@@ -130,49 +124,49 @@ const ProjectDetails: NextPage = () => {
                         : []
                     }
                   />
-                  {project?.adviser && (
+                  {team?.adviser && (
                     <SpreadAttribute
                       attribute="Adviser"
                       value={{
-                        href: `${PAGES.USERS}/${project.adviser.id}`,
-                        label: project.adviser.name,
+                        href: `${PAGES.USERS}/${team.adviser.id}`,
+                        label: team.adviser.name,
                       }}
                     />
                   )}
 
-                  {project?.mentor && (
+                  {team?.mentor && (
                     <SpreadAttribute
                       attribute="Mentor"
                       value={{
-                        href: `${PAGES.USERS}/${project.mentor.id}`,
-                        label: project.mentor.name,
+                        href: `${PAGES.USERS}/${team.mentor.id}`,
+                        label: team.mentor.name,
                       }}
                     />
                   )}
-                  {project.proposalPdf && (
+                  {team.proposalPdf && (
                     <SpreadAttribute
                       attribute="Proposal PDF"
                       value={{
-                        href: project.proposalPdf,
-                        label: project.proposalPdf,
+                        href: team.proposalPdf,
+                        label: team.proposalPdf,
                       }}
                     />
                   )}
-                  {project.posterUrl && (
+                  {team.posterUrl && (
                     <SpreadAttribute
                       attribute="Poster"
                       value={{
-                        href: project.posterUrl,
-                        label: project.posterUrl,
+                        href: team.posterUrl,
+                        label: team.posterUrl,
                       }}
                     />
                   )}
-                  {project.videoUrl && (
+                  {team.videoUrl && (
                     <SpreadAttribute
                       attribute="Video"
                       value={{
-                        href: project.videoUrl,
-                        label: project.videoUrl,
+                        href: team.videoUrl,
+                        label: team.videoUrl,
                       }}
                     />
                   )}
@@ -185,4 +179,4 @@ const ProjectDetails: NextPage = () => {
     </Body>
   );
 };
-export default ProjectDetails;
+export default TeamDetails;

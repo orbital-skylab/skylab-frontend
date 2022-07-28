@@ -55,7 +55,7 @@ const Dashboard: NextPage = () => {
     <>
       <CustomHead
         title="Manage Platform"
-        description="Only authorized administrators can view this page. Here, you can manage the deadlines, cohorts, users and projects of NUS Orbital!"
+        description="Only authorized administrators can view this page. Here, you can manage the deadlines, cohorts, users and teams of NUS Orbital!"
       />
       <Body
         authorizedRoles={[

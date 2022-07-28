@@ -41,7 +41,7 @@ export type AddUserFormValuesType = Omit<UserMetadata, "id"> &
  * 2. `components/modals/ViewRoleModal/EditRole`
  */
 export type AddOrEditRoleFormValuesType = Partial<
-  Omit<StudentMetadata, "projectId"> & { projectId: number | "" }
+  Omit<StudentMetadata, "teamId"> & { teamId: number | "" }
 > &
   Partial<AdviserMetadata> &
   Partial<MentorMetadata> &

@@ -8,15 +8,15 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import ProjectRow from "./ProjectRow";
+import TeamRow from "./TeamRow";
 // Hooks
 import { Mutate } from "@/hooks/useFetch";
 // Types
-import { Project } from "@/types/projects";
+import { Team } from "@/types/teams";
 
 type Props = {
-  projects: Project[];
-  mutate?: Mutate<Project[]>;
+  teams: Team[];
+  mutate?: Mutate<Team[]>;
   showAdviserColumn?: boolean;
   showMentorColumn?: boolean;
   showEditAction?: boolean;
@@ -24,8 +24,8 @@ type Props = {
 };
 
 const columnHeadings: { heading: string; align: "left" | "right" }[] = [
-  { heading: "Project ID", align: "left" },
-  { heading: "Project Name", align: "left" },
+  { heading: "Team ID", align: "left" },
+  { heading: "Team Name", align: "left" },
   { heading: "Level of Achievement", align: "left" },
   { heading: "Students", align: "left" },
   { heading: "Adviser", align: "left" },
@@ -33,8 +33,8 @@ const columnHeadings: { heading: string; align: "left" | "right" }[] = [
   { heading: "Actions", align: "right" },
 ];
 
-const ProjectTable: FC<Props> = ({
-  projects,
+const TeamTable: FC<Props> = ({
+  teams,
   mutate,
   showAdviserColumn,
   showMentorColumn,
@@ -68,10 +68,10 @@ const ProjectTable: FC<Props> = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {projects.map((project) => (
-              <ProjectRow
-                key={project.id}
-                project={project}
+            {teams.map((team) => (
+              <TeamRow
+                key={team.id}
+                team={team}
                 mutate={mutate}
                 showAdviserColumn={Boolean(showAdviserColumn)}
                 showMentorColumn={Boolean(showMentorColumn)}
@@ -86,4 +86,4 @@ const ProjectTable: FC<Props> = ({
   );
 };
 
-export default ProjectTable;
+export default TeamTable;

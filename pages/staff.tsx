@@ -152,7 +152,7 @@ const Staff: NextPage = () => {
             onChange={handleTabChange}
             textColor="secondary"
             indicatorColor="secondary"
-            aria-label="project-level-tabs"
+            aria-label="team-level-tabs"
             variant="scrollable"
             scrollButtons="auto"
             allowScrollButtonsMobile

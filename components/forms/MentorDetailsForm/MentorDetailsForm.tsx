@@ -3,7 +3,7 @@ import MultiDropdown from "@/components/formikFormControllers/MultiDropdown";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import { Cohort } from "@/types/cohorts";
-import { LeanProject } from "@/types/projects";
+import { LeanTeam } from "@/types/teams";
 import { Typography } from "@mui/material";
 import { FormikProps } from "formik";
 import { FC } from "react";
@@ -12,15 +12,15 @@ type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formik: FormikProps<any>;
   cohorts?: Cohort[];
-  leanProjects: LeanProject[] | undefined;
-  isFetchingLeanProjects: boolean;
+  leanTeams: LeanTeam[] | undefined;
+  isFetchingLeanTeams: boolean;
 };
 
 const MentorDetailsForm: FC<Props> = ({
   formik,
   cohorts,
-  leanProjects,
-  isFetchingLeanProjects,
+  leanTeams,
+  isFetchingLeanTeams,
 }) => {
   return (
     <>
@@ -36,22 +36,22 @@ const MentorDetailsForm: FC<Props> = ({
           formik={formik}
         />
       ) : null}
-      <LoadingWrapper isLoading={isFetchingLeanProjects}>
+      <LoadingWrapper isLoading={isFetchingLeanTeams}>
         <NoDataWrapper
-          noDataCondition={Boolean(leanProjects && !leanProjects.length)}
-          fallback={<Typography>No projects found in this cohort</Typography>}
+          noDataCondition={Boolean(leanTeams && !leanTeams.length)}
+          fallback={<Typography>No teams found in this cohort</Typography>}
         >
           <MultiDropdown
-            name="projectIds"
-            label="Project IDs"
+            name="teamIds"
+            label="Team IDs"
             isCombobox
             formik={formik}
             options={
-              leanProjects
-                ? leanProjects.map((leanProject) => {
+              leanTeams
+                ? leanTeams.map((leanTeam) => {
                     return {
-                      label: `${leanProject.id}: ${leanProject.name}`,
-                      value: leanProject.id,
+                      label: `${leanTeam.id}: ${leanTeam.name}`,
+                      value: leanTeam.id,
                     };
                   })
                 : []

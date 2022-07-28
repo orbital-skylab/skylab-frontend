@@ -2,41 +2,41 @@ import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
 import { Mutate } from "@/hooks/useFetch";
 import { HTTP_METHOD } from "@/types/api";
-import { Project } from "@/types/projects";
+import { Team } from "@/types/teams";
 import { Stack, Button } from "@mui/material";
 import { Dispatch, FC, SetStateAction } from "react";
 import Modal from "../Modal";
 
 type Props = {
-  project: Project;
+  team: Team;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  mutate: Mutate<Project[]>;
+  mutate: Mutate<Team[]>;
 };
 
-const DeleteProjectModal: FC<Props> = ({ project, open, setOpen, mutate }) => {
+const DeleteTeamModal: FC<Props> = ({ team, open, setOpen, mutate }) => {
   const { setSuccess, setError } = useSnackbarAlert();
 
-  const deleteProject = useApiCall({
+  const deleteTeam = useApiCall({
     method: HTTP_METHOD.DELETE,
-    endpoint: `/projects/${project.id}`,
+    endpoint: `/teams/${team.id}`,
     onSuccess: () => {
-      mutate((projects) => {
-        const deletedProjectId = project.id;
-        const deletedProjectIdx = projects.findIndex(
-          (project) => project.id === deletedProjectId
+      mutate((teams) => {
+        const deletedTeamId = team.id;
+        const deletedTeamIdx = teams.findIndex(
+          (team) => team.id === deletedTeamId
         );
-        const newProjects = [...projects];
-        newProjects.splice(deletedProjectIdx, 1);
-        return newProjects;
+        const newTeams = [...teams];
+        newTeams.splice(deletedTeamIdx, 1);
+        return newTeams;
       });
     },
   });
 
   const handleDelete = async () => {
     try {
-      await deleteProject.call();
-      setSuccess(`You have successfully deleted the project ${project.name}!`);
+      await deleteTeam.call();
+      setSuccess(`You have successfully deleted the team ${team.name}!`);
       handleCloseModal();
     } catch (error) {
       setError(error);
@@ -52,8 +52,8 @@ const DeleteProjectModal: FC<Props> = ({ project, open, setOpen, mutate }) => {
       <Modal
         open={open}
         handleClose={handleCloseModal}
-        title={`Delete Project`}
-        subheader={`You are deleting project ${project.name}.\n\nThis action is irreversible, are you sure?`}
+        title={`Delete Team`}
+        subheader={`You are deleting team ${team.name}.\n\nThis action is irreversible, are you sure?`}
         sx={{ width: "400px" }}
       >
         <Stack direction="row" justifyContent="space-between">
@@ -65,7 +65,7 @@ const DeleteProjectModal: FC<Props> = ({ project, open, setOpen, mutate }) => {
             variant="contained"
             color="error"
             onClick={handleDelete}
-            disabled={isCalling(deleteProject.status)}
+            disabled={isCalling(deleteTeam.status)}
           >
             Delete
           </Button>
@@ -75,4 +75,4 @@ const DeleteProjectModal: FC<Props> = ({ project, open, setOpen, mutate }) => {
   );
 };
 
-export default DeleteProjectModal;
+export default DeleteTeamModal;

@@ -19,6 +19,6 @@ export type BatchAddMentorsRequestType = {
   count: number;
   mentors: {
     user: Omit<UserMetadata, "id">;
-    mentor: Omit<MentorMetadata, "projectIds">;
+    mentor: Omit<MentorMetadata, "teamIds">;
   }[];
 };

@@ -34,17 +34,17 @@ const SubmissionRow: FC<Props> = ({
 
   const generateFromCell = (submission: PossibleSubmission) => {
     if (
-      (submission.fromProject && submission.fromUser) ||
-      (!submission.fromProject && !submission.fromUser)
+      (submission.fromTeam && submission.fromUser) ||
+      (!submission.fromTeam && !submission.fromUser)
     ) {
-      alert("The submission should be from EITHER a project OR a user");
+      alert("The submission should be from EITHER a team OR a user");
       return "Error";
     }
 
-    if (submission.fromProject) {
+    if (submission.fromTeam) {
       return (
-        <HoverLink href={`${PAGES.PROJECTS}/${submission.fromProject.id}`}>
-          {submission.fromProject.name}
+        <HoverLink href={`${PAGES.TEAMS}/${submission.fromTeam.id}`}>
+          {submission.fromTeam.name}
         </HoverLink>
       );
     } else if (submission.fromUser) {
@@ -57,18 +57,16 @@ const SubmissionRow: FC<Props> = ({
   };
 
   const generateToCell = (submission: PossibleSubmission) => {
-    if (submission.toProject && submission.toUser) {
-      alert(
-        "There should not be a submission addressed to a project and a user"
-      );
+    if (submission.toTeam && submission.toUser) {
+      alert("There should not be a submission addressed to a team and a user");
       return "Error";
-    } else if (submission.toProject) {
-      if (submission.toProject.id === user?.student?.projectId) {
+    } else if (submission.toTeam) {
+      if (submission.toTeam.id === user?.student?.teamId) {
         return "<Should not be visible>"; // Column should not be showing
       }
       return (
-        <HoverLink href={`${PAGES.PROJECTS}/${submission.toProject.id}`}>
-          {submission.toProject.name}
+        <HoverLink href={`${PAGES.TEAMS}/${submission.toTeam.id}`}>
+          {submission.toTeam.name}
         </HoverLink>
       );
     } else if (submission.toUser) {

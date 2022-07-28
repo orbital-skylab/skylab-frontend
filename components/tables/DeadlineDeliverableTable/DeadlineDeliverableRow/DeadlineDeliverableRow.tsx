@@ -14,8 +14,8 @@ import { LoadingButton } from "@mui/lab";
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
 import {
   generateSubmissionStatus,
-  getFromProjectOrUserId,
-  getToProjectOrUserId,
+  getFromTeamOrUserId,
+  getToTeamOrUserId,
 } from "@/helpers/submissions";
 import { PAGES } from "@/helpers/navigation";
 // Hooks
@@ -51,8 +51,8 @@ const DeadlineDeliverableRow: FC<Props> = ({
     body: {
       submission: {
         deadlineId: deadlineDeliverable.deadline.id,
-        ...getFromProjectOrUserId(user, viewerRole),
-        ...getToProjectOrUserId(deadlineDeliverable),
+        ...getFromTeamOrUserId(user, viewerRole),
+        ...getToTeamOrUserId(deadlineDeliverable),
       },
     },
     onSuccess: (newSubmission: CreateSubmissionResponse) => {
@@ -77,16 +77,16 @@ const DeadlineDeliverableRow: FC<Props> = ({
       case DEADLINE_TYPE.EVALUATION:
       case DEADLINE_TYPE.FEEDBACK: {
         if (
-          (deadlineDeliverable.toProject && deadlineDeliverable.toUser) ||
-          (!deadlineDeliverable.toProject && !deadlineDeliverable.toUser)
+          (deadlineDeliverable.toTeam && deadlineDeliverable.toUser) ||
+          (!deadlineDeliverable.toTeam && !deadlineDeliverable.toUser)
         ) {
           alert(
-            "An evaluation and feedback must be addressed to either a project or a user"
+            "An evaluation and feedback must be addressed to either a team or a user"
           );
           return "Error";
         }
 
-        if (deadlineDeliverable.toProject) {
+        if (deadlineDeliverable.toTeam) {
           return (
             <Stack direction="row" spacing="0.5rem" alignItems="center">
               <Typography fontSize="0.875rem">{`${deadlineDeliverable.deadline.name} for`}</Typography>
@@ -94,13 +94,13 @@ const DeadlineDeliverableRow: FC<Props> = ({
                 variant="outlined"
                 size="small"
                 disabled={
-                  !deadlineDeliverable.toProjectSubmission ||
-                  !deadlineDeliverable.toProjectSubmission.id ||
-                  deadlineDeliverable.toProjectSubmission.isDraft
+                  !deadlineDeliverable.toTeamSubmission ||
+                  !deadlineDeliverable.toTeamSubmission.id ||
+                  deadlineDeliverable.toTeamSubmission.isDraft
                 }
-                href={`${PAGES.SUBMISSIONS}/${deadlineDeliverable.toProjectSubmission?.id}`}
+                href={`${PAGES.SUBMISSIONS}/${deadlineDeliverable.toTeamSubmission?.id}`}
               >
-                {deadlineDeliverable.toProject.name}
+                {deadlineDeliverable.toTeam.name}
               </Button>
             </Stack>
           );
@@ -179,9 +179,9 @@ const DeadlineDeliverableRow: FC<Props> = ({
             loading={isCalling(createSubmission.status)}
             onClick={handleClickStart}
             disabled={
-              !deadlineDeliverable.toProjectSubmission ||
-              !deadlineDeliverable.toProjectSubmission.id ||
-              deadlineDeliverable.toProjectSubmission.isDraft
+              !deadlineDeliverable.toTeamSubmission ||
+              !deadlineDeliverable.toTeamSubmission.id ||
+              deadlineDeliverable.toTeamSubmission.isDraft
             }
           >
             Start

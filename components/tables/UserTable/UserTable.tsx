@@ -13,14 +13,14 @@ import UserRow from "./UserRow";
 // Types
 import { User } from "@/types/users";
 import { Mutate } from "@/hooks/useFetch";
-import { LeanProject } from "@/types/projects";
+import { LeanTeam } from "@/types/teams";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Props = {
   users: User[];
   mutate: Mutate<User[]>;
-  leanProjects: LeanProject[] | undefined;
-  isFetchingLeanProjects: boolean;
+  leanTeams: LeanTeam[] | undefined;
+  isFetchingLeanTeams: boolean;
 };
 
 const columnHeadings: { heading: string; align: "left" | "right" }[] = [
@@ -34,8 +34,8 @@ const columnHeadings: { heading: string; align: "left" | "right" }[] = [
 const UserTable: FC<Props> = ({
   users,
   mutate,
-  leanProjects,
-  isFetchingLeanProjects,
+  leanTeams,
+  isFetchingLeanTeams,
 }) => {
   return (
     <TableContainer>
@@ -55,8 +55,8 @@ const UserTable: FC<Props> = ({
               key={user.id}
               user={user}
               mutate={mutate}
-              leanProjects={leanProjects}
-              isFetchingLeanProjects={isFetchingLeanProjects}
+              leanTeams={leanTeams}
+              isFetchingLeanTeams={isFetchingLeanTeams}
             />
           ))}
         </TableBody>

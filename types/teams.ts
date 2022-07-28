@@ -18,10 +18,10 @@ export enum LEVELS_OF_ACHIEVEMENT_WITH_ALL {
   VOSTOK = "Vostok",
 }
 
-export type Project = {
+export type Team = {
   id: number;
   name: string;
-  teamName: string;
+  projectName: string;
   proposalPdf: string;
   videoUrl: string;
   posterUrl: string;
@@ -31,7 +31,6 @@ export type Project = {
   achievement: LEVELS_OF_ACHIEVEMENT;
   cohortYear: Cohort["academicYear"];
   hasDropped: boolean;
-  groupId?: number; // TODO: Convert to relationships
 };
 
-export type LeanProject = Pick<Project, "id" | "name">;
+export type LeanTeam = Pick<Team, "id" | "name">;

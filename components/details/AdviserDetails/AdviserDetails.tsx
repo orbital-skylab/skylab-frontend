@@ -14,7 +14,7 @@ const AdviserDetails: FC<Props> = ({ adviserRole }) => {
         attribute="Matriculation Number"
         value={adviserRole.matricNo}
       />
-      <Attribute attribute="Projects" value={adviserRole.projectIds} />
+      <Attribute attribute="Teams IDs" value={adviserRole.teamIds} />
     </>
   );
 };

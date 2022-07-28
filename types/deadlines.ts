@@ -1,5 +1,5 @@
 import { Cohort } from "./cohorts";
-import { Project } from "./projects";
+import { Team } from "./teams";
 import { Submission } from "./submissions";
 import { User } from "./users";
 
@@ -77,8 +77,8 @@ export type Option = string;
 export type DeadlineDeliverable = {
   deadline: Deadline;
   // Only applicable for deadline type 'Evaluation' and 'Feedback'
-  toProject?: Project;
-  toProjectSubmission?: Submission; // Exists only when toProject has a submission for the specified deadline
+  toTeam?: Team;
+  toTeamSubmission?: Submission; // Exists only when toTeam has a submission for the specified deadline
   // Only applicable for student role and deadline type 'Feedback' => addressed to the adviser
   toUser?: User;
   // Only exists if a draft OR submission has been created
@@ -86,6 +86,6 @@ export type DeadlineDeliverable = {
 };
 
 export enum VIEWER_ROLE {
-  PROJECTS,
+  TEAMS,
   ADVISERS,
 }

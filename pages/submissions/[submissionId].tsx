@@ -13,7 +13,7 @@ import useApiCall, { isCalling } from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 import useAuth from "@/contexts/useAuth";
 // Helpers
-import { isSubmissionsFromProjectOrUser } from "@/helpers/submissions";
+import { isSubmissionsFromTeamOrUser } from "@/helpers/submissions";
 // Types
 import type { NextPage } from "next";
 import { GetSubmissionResponse, HTTP_METHOD } from "@/types/api";
@@ -33,7 +33,7 @@ const Submission: NextPage = () => {
       onFetch: (data) => actions.setAnswersFromArray(data.submission.answers),
     });
 
-  const isEditMode = isSubmissionsFromProjectOrUser(
+  const isEditMode = isSubmissionsFromTeamOrUser(
     submissionResponse?.submission,
     user
   );
@@ -72,9 +72,9 @@ const Submission: NextPage = () => {
           }
         >
           <GoBackButton />
-          {submissionResponse?.submission.fromProject?.id && (
+          {submissionResponse?.submission.fromTeam?.id && (
             <Typography variant="caption">
-              {`${submissionResponse?.submission.fromProject}`}
+              {`${submissionResponse?.submission.fromTeam}`}
             </Typography>
           )}
           {submissionResponse?.submission.fromUser?.id && (
@@ -82,9 +82,9 @@ const Submission: NextPage = () => {
               {`${submissionResponse?.submission.fromUser}`}
             </Typography>
           )}
-          {submissionResponse?.submission.toProject?.id && (
+          {submissionResponse?.submission.toTeam?.id && (
             <Typography variant="caption">
-              {`${submissionResponse?.submission.toProject}`}
+              {`${submissionResponse?.submission.toTeam}`}
             </Typography>
           )}
           {submissionResponse?.submission.toUser?.id && (

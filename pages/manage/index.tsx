@@ -33,14 +33,14 @@ const pages = [
   {
     title: "Add Users with CSV files",
     description:
-      "Add students with projects, advisers, or mentors using CSV files.",
+      "Add students with teams, advisers, or mentors using CSV files.",
     href: PAGES.MANAGE_USERS_CSV,
   },
   {
-    title: "Projects",
+    title: "Teams",
     description:
-      "Create, edit, delete, and view all projects. Change the project name, LOA, students, adviser or mentor.",
-    href: PAGES.MANAGE_PROJECTS,
+      "Create, edit, delete, and view all team. Change the team name, project name, LOA, students, adviser or mentor.",
+    href: PAGES.MANAGE_TEAMS,
   },
 ];
 
@@ -49,7 +49,7 @@ const Manage: NextPage = () => {
     <>
       <CustomHead
         title="Manage Platform"
-        description="Only authorized administrators can view this page. Here, you can manage the deadlines, cohorts, users and projects of NUS Orbital!"
+        description="Only authorized administrators can view this page. Here, you can manage the deadlines, cohorts, users and teams of NUS Orbital!"
       />
       <Body authorizedRoles={[ROLES.ADMINISTRATORS]}>
         <Grid

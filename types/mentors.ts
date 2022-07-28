@@ -1,10 +1,10 @@
 import { Cohort } from "./cohorts";
-import { Project } from "./projects";
+import { Team } from "./teams";
 import { UserMetadata } from "./users";
 
 export type MentorMetadata = {
   cohortYear: Cohort["academicYear"];
-  projectIds: Project["id"][];
+  teamIds: Team["id"][];
 };
 
 export type Mentor = UserMetadata & MentorMetadata & { mentorId: number };

@@ -19,23 +19,21 @@ import { checkValidity } from "@/helpers/batchForms";
 import useAlert from "@/hooks/useAlert";
 // Types
 import {
-  ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS,
-  AddProjectsAndStudentsData,
-} from "./BatchAddProjectsAndStudentsForm.types";
+  ADD_TEAMS_AND_STUDENTS_CSV_HEADERS,
+  AddTeamsAndStudentsData,
+} from "./BatchAddTeamsAndStudentsForm.types";
 
 type Props = {
-  setAddProjectsAndStudentsData: Dispatch<
-    SetStateAction<AddProjectsAndStudentsData>
-  >;
-  handleAddProjectsAndStudents: () => void;
-  handleClearProjectsAndStudents: () => void;
+  setAddTeamsAndStudentsData: Dispatch<SetStateAction<AddTeamsAndStudentsData>>;
+  handleAddTeamsAndStudents: () => void;
+  handleClearTeamsAndStudents: () => void;
   isSubmitting: boolean;
 };
 
 const BatchAddStudentsForm: FC<Props> = ({
-  setAddProjectsAndStudentsData,
-  handleAddProjectsAndStudents,
-  handleClearProjectsAndStudents,
+  setAddTeamsAndStudentsData,
+  handleAddTeamsAndStudents,
+  handleClearTeamsAndStudents,
   isSubmitting,
 }) => {
   const [fileDetails, setFileDetails] = useState<File | null>(null);
@@ -46,9 +44,7 @@ const BatchAddStudentsForm: FC<Props> = ({
     setError: setUnsuccessfulParseStatus,
   } = useAlert();
 
-  const handleUploadProjectsAndStudents = (
-    e: ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleUploadTeamsAndStudents = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length) {
       setFileDetails(e.target.files[0]);
       Papa.parse(e.target.files[0], {
@@ -57,7 +53,7 @@ const BatchAddStudentsForm: FC<Props> = ({
         complete: function (results) {
           const { isValid, errorMessage } = checkValidity(
             results.data,
-            Object.values(ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS)
+            Object.values(ADD_TEAMS_AND_STUDENTS_CSV_HEADERS)
           );
 
           if (!isValid) {
@@ -66,13 +62,11 @@ const BatchAddStudentsForm: FC<Props> = ({
             );
           } else {
             setSuccessfulParseStatus(
-              `${results.data.length} project${
+              `${results.data.length} team${
                 results.data.length !== 1 ? "s" : ""
               } successfully detected. Ready to add them?`
             );
-            setAddProjectsAndStudentsData(
-              results.data as AddProjectsAndStudentsData
-            );
+            setAddTeamsAndStudentsData(results.data as AddTeamsAndStudentsData);
           }
         },
       });
@@ -92,7 +86,7 @@ const BatchAddStudentsForm: FC<Props> = ({
         <CardContent sx={{ display: "grid", placeItems: "center" }}>
           <LoadingWrapper
             isLoading={isSubmitting}
-            loadingText="Adding projects and students..."
+            loadingText="Adding teams and students..."
           >
             {!!parseStatus.message && fileDetails ? (
               <Stack
@@ -122,7 +116,7 @@ const BatchAddStudentsForm: FC<Props> = ({
                 <Stack direction="column" spacing="0.5rem">
                   {parseStatus.severity === "success" ? (
                     <Button
-                      onClick={handleAddProjectsAndStudents}
+                      onClick={handleAddTeamsAndStudents}
                       variant="contained"
                     >
                       Add
@@ -131,7 +125,7 @@ const BatchAddStudentsForm: FC<Props> = ({
                   <Button
                     onClick={() => {
                       resetParseStatus();
-                      handleClearProjectsAndStudents();
+                      handleClearTeamsAndStudents();
                     }}
                     variant="outlined"
                   >
@@ -165,7 +159,7 @@ const BatchAddStudentsForm: FC<Props> = ({
                       ".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel",
                   }}
                   value={null}
-                  onChange={handleUploadProjectsAndStudents}
+                  onChange={handleUploadTeamsAndStudents}
                   sx={{ display: "none" }}
                 />
               </Box>

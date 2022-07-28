@@ -91,11 +91,11 @@ const ActionRow: FC<Props> = ({
       }
 
       const data = res.submissions.map((submission) => ({
-        "Project Id": submission.fromProject?.id ?? "",
-        "Project Name": submission.fromProject?.name ?? "",
-        "Level of Achievement": submission.fromProject?.achievement ?? "",
-        "Adviser Name": submission.fromProject?.adviser?.name ?? "",
-        "Mentor Name": submission.fromProject?.mentor?.name ?? "",
+        "Team Id": submission.fromTeam?.id ?? "",
+        "Team Name": submission.fromTeam?.name ?? "",
+        "Level of Achievement": submission.fromTeam?.achievement ?? "",
+        "Adviser Name": submission.fromTeam?.adviser?.name ?? "",
+        "Mentor Name": submission.fromTeam?.mentor?.name ?? "",
         "Submission ID": submission.id ?? "",
         "Submission Updated At": submission.updatedAt ?? "",
         "Submission Status": generateSubmissionStatus({

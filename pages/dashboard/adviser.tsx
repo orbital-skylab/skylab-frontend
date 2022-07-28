@@ -8,7 +8,7 @@ import DeadlineDeliverableTable from "@/components/tables/DeadlineDeliverableTab
 import SubmissionTable from "@/components/tables/SubmissionTable";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import NoneFound from "@/components/emptyStates/NoneFound";
-import ProjectTable from "@/components/tables/ProjectTable";
+import TeamTable from "@/components/tables/TeamTable";
 import RelationTable from "@/components/tables/RelationTable";
 import ActionButtons from "@/components/tables/RelationTable/ActionButtons";
 // Hooks
@@ -22,7 +22,7 @@ import { ROLES } from "@/types/roles";
 import {
   GetAdviserDeadlinesResponse,
   GetAdviserTeamSubmissionsResponse,
-  GetProjectsResponse,
+  GetTeamsResponse,
   GetRelationsResponse,
 } from "@/types/api";
 import { VIEWER_ROLE } from "@/types/deadlines";
@@ -50,9 +50,9 @@ const AdviserDashboard: NextPage = () => {
       enabled: Boolean(user && user.adviser && user.adviser.id),
     });
 
-  const { data: projectsResponse, status: fetchProjectsStatus } =
-    useFetch<GetProjectsResponse>({
-      endpoint: `/projects/adviser/${user?.adviser?.id}`,
+  const { data: teamsResponse, status: fetchTeamsStatus } =
+    useFetch<GetTeamsResponse>({
+      endpoint: `/teams/adviser/${user?.adviser?.id}`,
       enabled: Boolean(user && user.adviser && user.adviser.id),
     });
 
@@ -82,7 +82,7 @@ const AdviserDashboard: NextPage = () => {
           onChange={handleTabChange}
           textColor="secondary"
           indicatorColor="secondary"
-          aria-label="project-level-tabs"
+          aria-label="team-level-tabs"
           variant="scrollable"
           scrollButtons="auto"
           allowScrollButtonsMobile
@@ -165,14 +165,14 @@ const AdviserDashboard: NextPage = () => {
         </TabPanel>
 
         <TabPanel value={TAB.MANAGE_TEAMS}>
-          <LoadingWrapper isLoading={isFetching(fetchProjectsStatus)}>
+          <LoadingWrapper isLoading={isFetching(fetchTeamsStatus)}>
             <NoDataWrapper
-              noDataCondition={!projectsResponse?.projects.length}
+              noDataCondition={!teamsResponse?.teams.length}
               fallback={<NoneFound message="No teams found" />}
             >
-              {projectsResponse && projectsResponse.projects && (
-                <ProjectTable
-                  projects={projectsResponse.projects}
+              {teamsResponse && teamsResponse.teams && (
+                <TeamTable
+                  teams={teamsResponse.teams}
                   showMentorColumn
                   showEditAction
                 />
@@ -185,7 +185,7 @@ const AdviserDashboard: NextPage = () => {
           <LoadingWrapper isLoading={isFetching(fetchRelationsStatus)}>
             <Stack>
               <ActionButtons
-                projects={projectsResponse?.projects ?? []}
+                teams={teamsResponse?.teams ?? []}
                 mutate={mutateRelations}
               />
               <NoDataWrapper
@@ -198,7 +198,7 @@ const AdviserDashboard: NextPage = () => {
                   <RelationTable
                     relations={relationsResponse.relations}
                     mutate={mutateRelations}
-                    projects={projectsResponse?.projects ?? []}
+                    teams={teamsResponse?.teams ?? []}
                   />
                 )}
               </NoDataWrapper>

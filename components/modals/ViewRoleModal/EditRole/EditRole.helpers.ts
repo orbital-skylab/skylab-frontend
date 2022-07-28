@@ -19,19 +19,19 @@ export const generateInitialValues = ({
       return {
         nusnetId: user.student?.nusnetId ?? "",
         matricNo: user.student?.matricNo ?? "",
-        projectId: user.student?.projectId ?? "",
+        teamId: user.student?.teamId ?? "",
       };
 
     case ROLES.ADVISERS:
       return {
         nusnetId: user.adviser?.nusnetId ?? "",
         matricNo: user.adviser?.matricNo ?? "",
-        projectIds: user.adviser?.projectIds ?? [],
+        teamIds: user.adviser?.teamIds ?? [],
       };
 
     case ROLES.MENTORS:
       return {
-        projectIds: user.adviser?.projectIds ?? [],
+        teamIds: user.adviser?.teamIds ?? [],
       };
 
     case ROLES.ADMINISTRATORS:

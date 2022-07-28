@@ -1,12 +1,12 @@
-import { LEVELS_OF_ACHIEVEMENT } from "@/types/projects";
+import { LEVELS_OF_ACHIEVEMENT } from "@/types/teams";
 import { StudentMetadata } from "@/types/students";
 import { UserMetadata } from "@/types/users";
 
 /**
  * The headers used to generate the CSV Template file for students
  */
-export enum ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS {
-  PROJECT_NAME = "Project Name",
+export enum ADD_TEAMS_AND_STUDENTS_CSV_HEADERS {
+  TEAM_NAME = "Team Name",
   LOA = "Level of Achievement",
   COHORT_YEAR = "Cohort Year",
   PROPOSAL_PDF = "Proposal PDF",
@@ -21,16 +21,16 @@ export enum ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS {
 }
 
 /**
- * The data type that the projects and students CSV data will be parsed into
+ * The data type that the teams and students CSV data will be parsed into
  */
-export type AddProjectsAndStudentsData = Record<
-  ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS,
+export type AddTeamsAndStudentsData = Record<
+  ADD_TEAMS_AND_STUDENTS_CSV_HEADERS,
   string | number
 >[];
 
-export type BatchAddProjectsAndStudentsRequestType = {
+export type BatchAddTeamsAndStudentsRequestType = {
   count: number;
-  projects: {
+  teams: {
     name: string;
     achievement: LEVELS_OF_ACHIEVEMENT;
     cohortYear: number;

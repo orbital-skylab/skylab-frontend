@@ -32,7 +32,7 @@ const columnHeadings: { heading: string; align: "left" | "right" }[] = [
  */
 const SubmissionTable: FC<Props> = ({ deadline, submissions }) => {
   const getKey = (deadline: Deadline, submission: PossibleSubmission) => {
-    return `${deadline.id}-${submission.id}-${submission.fromProject?.id}-${submission.fromUser?.id}-${submission.toProject?.id}-${submission.toUser?.id}`;
+    return `${deadline.id}-${submission.id}-${submission.fromTeam?.id}-${submission.fromUser?.id}-${submission.toTeam?.id}-${submission.toUser?.id}`;
   };
 
   const shouldIncludeToColumn =

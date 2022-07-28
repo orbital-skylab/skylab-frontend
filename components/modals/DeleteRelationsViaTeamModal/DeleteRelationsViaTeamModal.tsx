@@ -12,7 +12,7 @@ import * as Yup from "yup";
 // Types
 import { HTTP_METHOD } from "@/types/api";
 import { Formik } from "formik";
-import { Project } from "@/types/projects";
+import { Team } from "@/types/teams";
 import { ERRORS } from "@/helpers/errors";
 
 const refreshSeconds = 3;
@@ -20,18 +20,14 @@ const refreshSeconds = 3;
 type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  projects: Project[];
+  teams: Team[];
 };
 
 interface DeleteRelationsViaTeamFormValuesType {
-  projectId: number | "";
+  teamId: number | "";
 }
 
-const DeleteRelationsViaTeamModal: FC<Props> = ({
-  open,
-  setOpen,
-  projects,
-}) => {
+const DeleteRelationsViaTeamModal: FC<Props> = ({ open, setOpen, teams }) => {
   const { setSuccess, setError } = useSnackbarAlert();
   const router = useRouter();
 
@@ -40,14 +36,12 @@ const DeleteRelationsViaTeamModal: FC<Props> = ({
   });
 
   const initialValues: DeleteRelationsViaTeamFormValuesType = {
-    projectId: "",
+    teamId: "",
   };
 
   const handleSubmit = async (values: DeleteRelationsViaTeamFormValuesType) => {
     try {
-      deleteRelationsViaTeam.setEndpoint(
-        `/relations/project/${values.projectId}`
-      );
+      deleteRelationsViaTeam.setEndpoint(`/relations/team/${values.teamId}`);
       await deleteRelationsViaTeam.call();
       setSuccess(
         `You have successfully deleted the relations! Refreshing in ${refreshSeconds} seconds...`
@@ -83,17 +77,17 @@ const DeleteRelationsViaTeamModal: FC<Props> = ({
             <>
               <Stack direction="column" spacing="1rem">
                 <Dropdown
-                  name="projectId"
-                  label="Project"
+                  name="teamId"
+                  label="Team"
                   formik={formik}
                   size="small"
                   isCombobox
                   options={
-                    projects && projects.length
-                      ? projects.map((project) => {
+                    teams && teams.length
+                      ? teams.map((team) => {
                           return {
-                            label: `${project.id}: ${project.name}`,
-                            value: project.id,
+                            label: `${team.id}: ${team.name}`,
+                            value: team.id,
                           };
                         })
                       : []
@@ -129,5 +123,5 @@ const DeleteRelationsViaTeamModal: FC<Props> = ({
 export default DeleteRelationsViaTeamModal;
 
 const deleteRelationsViaTeamValidationSchema = Yup.object().shape({
-  projectId: Yup.number().required(ERRORS.REQUIRED),
+  teamId: Yup.number().required(ERRORS.REQUIRED),
 });

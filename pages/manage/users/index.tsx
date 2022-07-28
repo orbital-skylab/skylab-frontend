@@ -43,7 +43,7 @@ import useInfiniteFetch, {
 import { Cohort } from "@/types/cohorts";
 import { ROLES, ROLES_WITH_ALL } from "@/types/roles";
 import { User } from "@/types/users";
-import { GetLeanProjectsResponse, GetUsersResponse } from "@/types/api";
+import { GetLeanTeamsResponse, GetUsersResponse } from "@/types/api";
 
 const LIMIT = 20;
 
@@ -92,17 +92,17 @@ const Users: NextPage = () => {
     enabled: !!selectedCohortYear,
   });
 
-  /** For fetching project ID and names to create new users/roles */
-  const memoLeanProjectsQueryParams = useMemo(() => {
+  /** For fetching team ID and names to create new users/roles */
+  const memoLeanTeamsQueryParams = useMemo(() => {
     return {
       cohortYear: selectedCohortYear,
       dropped: false,
     };
   }, [selectedCohortYear]);
-  const { data: leanProjectsResponse, status: fetchLeanProjectsStatus } =
-    useFetch<GetLeanProjectsResponse>({
-      endpoint: `/projects/lean`,
-      queryParams: memoLeanProjectsQueryParams,
+  const { data: leanTeamsResponse, status: fetchLeanTeamsStatus } =
+    useFetch<GetLeanTeamsResponse>({
+      endpoint: `/teams/lean`,
+      queryParams: memoLeanTeamsQueryParams,
       requiresAuthorization: true,
       enabled: Boolean(selectedCohortYear),
     });
@@ -144,7 +144,7 @@ const Users: NextPage = () => {
     setAddRolesModalSelectedRole(null);
   };
 
-  /** To fetch more projects when the bottom of the page is reached */
+  /** To fetch more teams when the bottom of the page is reached */
   const observer = useRef<IntersectionObserver | null>(null);
   const bottomOfPageRef = createBottomOfPageRef(
     isFetching(fetchUsersStatus),
@@ -164,8 +164,8 @@ const Users: NextPage = () => {
       <AddUserModal
         open={isAddUserOpen}
         setOpen={setIsAddUserOpen}
-        leanProjects={leanProjectsResponse?.projects ?? []}
-        isFetchingLeanProjects={isFetching(fetchLeanProjectsStatus)}
+        leanTeams={leanTeamsResponse?.teams ?? []}
+        isFetchingLeanTeams={isFetching(fetchLeanTeamsStatus)}
       />
       <AddRolesModal
         selectedRole={addRolesModalSelectedRole}
@@ -233,7 +233,7 @@ const Users: NextPage = () => {
             onChange={handleTabChange}
             textColor="secondary"
             indicatorColor="secondary"
-            aria-label="project-level-tabs"
+            aria-label="team-level-tabs"
             variant="scrollable"
             scrollButtons="auto"
             allowScrollButtonsMobile
@@ -261,8 +261,8 @@ const Users: NextPage = () => {
             <UserTable
               users={users}
               mutate={mutate}
-              leanProjects={leanProjectsResponse?.projects ?? []}
-              isFetchingLeanProjects={isFetching(fetchLeanProjectsStatus)}
+              leanTeams={leanTeamsResponse?.teams ?? []}
+              isFetchingLeanTeams={isFetching(fetchLeanTeamsStatus)}
             />
             <div ref={bottomOfPageRef} />
             <Box

@@ -48,7 +48,7 @@ const DeadlineDeliverableTable: FC<Props> = ({
         <TableBody>
           {deadlineDeliverables.map((deadlineDeliverable) => (
             <DeadlineDeliverableRow
-              key={`${deadlineDeliverable.deadline.id}-${deadlineDeliverable.toProject?.id}-${deadlineDeliverable.toUser?.id}`}
+              key={`${deadlineDeliverable.deadline.id}-${deadlineDeliverable.toTeam?.id}-${deadlineDeliverable.toUser?.id}`}
               deadlineDeliverable={deadlineDeliverable}
               viewerRole={viewerRole}
             />

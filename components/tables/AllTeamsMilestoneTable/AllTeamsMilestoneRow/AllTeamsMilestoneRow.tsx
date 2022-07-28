@@ -26,14 +26,14 @@ const AllTeamsMilestoneRow: FC<Props> = ({ deadline, submission }) => {
   });
 
   const generateFromCell = (submission: PossibleSubmission) => {
-    if (submission.fromProject) {
+    if (submission.fromTeam) {
       return (
-        <HoverLink href={`${PAGES.PROJECTS}/${submission.fromProject.id}`}>
-          {submission.fromProject.name}
+        <HoverLink href={`${PAGES.TEAMS}/${submission.fromTeam.id}`}>
+          {submission.fromTeam.name}
         </HoverLink>
       );
     } else {
-      alert("The milestone submission MUST be submitted from a project");
+      alert("The milestone submission MUST be submitted from a team");
       return "Error";
     }
   };
@@ -92,26 +92,24 @@ const AllTeamsMilestoneRow: FC<Props> = ({ deadline, submission }) => {
     <>
       <TableRow>
         <TableCell>{generateFromCell(submission)}</TableCell>
-        <TableCell>{submission.fromProject?.achievement}</TableCell>
+        <TableCell>{submission.fromTeam?.achievement}</TableCell>
         <TableCell>
-          {submission.fromProject?.students
-            ? submission.fromProject?.students.map((student) => (
+          {submission.fromTeam?.students
+            ? submission.fromTeam?.students.map((student) => (
                 <UsersName key={student.id} user={student} />
               ))
             : "-"}
         </TableCell>
         <TableCell>
-          {submission.fromProject?.adviser &&
-          submission.fromProject?.adviser.id ? (
-            <UsersName user={submission.fromProject?.adviser} />
+          {submission.fromTeam?.adviser && submission.fromTeam?.adviser.id ? (
+            <UsersName user={submission.fromTeam?.adviser} />
           ) : (
             "-"
           )}
         </TableCell>
         <TableCell>
-          {submission.fromProject?.mentor &&
-          submission.fromProject?.mentor.id ? (
-            <UsersName user={submission.fromProject?.mentor} />
+          {submission.fromTeam?.mentor && submission.fromTeam?.mentor.id ? (
+            <UsersName user={submission.fromTeam?.mentor} />
           ) : (
             "-"
           )}

@@ -1,10 +1,10 @@
 import { Cohort } from "./cohorts";
-import { Project } from "./projects";
+import { Team } from "./teams";
 import { UserMetadata } from "./users";
 
 export type StudentMetadata = {
   cohortYear: Cohort["academicYear"];
-  projectId: Project["id"];
+  teamId: Team["id"];
   nusnetId: string;
   matricNo: string;
 };

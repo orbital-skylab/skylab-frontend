@@ -9,7 +9,7 @@ const MentorDetails: FC<Props> = ({ mentorRole }) => {
     <>
       <Attribute attribute="Mentor ID" value={mentorRole.id} />
       <Attribute attribute="Cohort Year" value={mentorRole.cohortYear} />
-      <Attribute attribute="Projects" value={mentorRole.projectIds} />
+      <Attribute attribute="Teams IDs" value={mentorRole.teamIds} />
     </>
   );
 };

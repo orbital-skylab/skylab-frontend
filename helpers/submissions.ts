@@ -31,7 +31,7 @@ export const generateSubmissionStatus = ({
   }
 };
 
-export const getFromProjectOrUserId = (
+export const getFromTeamOrUserId = (
   user: User | undefined,
   viewerRole: VIEWER_ROLE
 ) => {
@@ -40,8 +40,8 @@ export const getFromProjectOrUserId = (
   }
 
   switch (viewerRole) {
-    case VIEWER_ROLE.PROJECTS:
-      return { fromProjectId: user.student?.projectId };
+    case VIEWER_ROLE.TEAMS:
+      return { fromTeamId: user.student?.teamId };
 
     case VIEWER_ROLE.ADVISERS:
       return { fromUserId: user.adviser?.id };
@@ -49,19 +49,17 @@ export const getFromProjectOrUserId = (
 };
 
 /**
- * Retrieve the toUserId or toProjectId, whichever the submission is addressed to
- * If the submission is not addressed to a user or project, return an empty object
+ * Retrieve the toUserId or toTeamId, whichever the submission is addressed to
+ * If the submission is not addressed to a user or team, return an empty object
  */
-export const getToProjectOrUserId = (
-  deadlineDeliverable: DeadlineDeliverable
-) => {
-  if (deadlineDeliverable.toProject && deadlineDeliverable.toUser) {
+export const getToTeamOrUserId = (deadlineDeliverable: DeadlineDeliverable) => {
+  if (deadlineDeliverable.toTeam && deadlineDeliverable.toUser) {
     alert(
-      "There should not be a deadline deliverable addressed to a project and a user"
+      "There should not be a deadline deliverable addressed to a team and a user"
     );
     return {};
-  } else if (deadlineDeliverable.toProject) {
-    return { toProjectId: deadlineDeliverable.toProject.id };
+  } else if (deadlineDeliverable.toTeam) {
+    return { toTeamId: deadlineDeliverable.toTeam.id };
   } else if (deadlineDeliverable.toUser) {
     return { toUserId: deadlineDeliverable.toUser.id };
   } else {
@@ -69,7 +67,7 @@ export const getToProjectOrUserId = (
   }
 };
 
-export const isSubmissionsFromProjectOrUser = (
+export const isSubmissionsFromTeamOrUser = (
   submission: Submission | undefined,
   user: User | undefined
 ) => {
@@ -77,9 +75,9 @@ export const isSubmissionsFromProjectOrUser = (
     return false;
   }
 
-  // Submitter is a project
-  if (submission.fromProject) {
-    return user.student?.projectId === submission.fromProject.id;
+  // Submitter is a team
+  if (submission.fromTeam) {
+    return user.student?.teamId === submission.fromTeam.id;
   }
   // Submitter is a user
   if (submission.fromUser) {

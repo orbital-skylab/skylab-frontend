@@ -8,7 +8,7 @@ import { User } from "@/types/users";
 import { dateTimeLocalInputToIsoDate } from "@/helpers/dates";
 import { isAddUserFormValuesType } from "./types";
 import { stripEmptyStrings } from "./forms";
-import { Project } from "@/types/projects";
+import { Team } from "@/types/teams";
 
 /**
  * Changes a role string to be singular
@@ -119,8 +119,8 @@ export const generateAddUserOrRoleEmptyInitialValues = (
     cohortYear: currentCohortYear,
     nusnetId: user?.student?.nusnetId ?? user?.adviser?.nusnetId ?? "",
     matricNo: user?.student?.matricNo ?? user?.adviser?.matricNo ?? "",
-    projectId: "",
-    projectIds: [],
+    teamId: "",
+    teamIds: [],
     startDate: "",
     endDate: "",
   };
@@ -169,7 +169,7 @@ export const processAddUserOrRoleFormValues = ({
           ...stripEmptyStrings({
             matricNo: values.matricNo,
             nusnetId: values.nusnetId,
-            projectId: values.projectId,
+            teamId: values.teamId,
           }),
           ...cohortYear,
         },
@@ -183,8 +183,8 @@ export const processAddUserOrRoleFormValues = ({
             matricNo: values.matricNo,
             nusnetId: values.nusnetId,
           }),
-          ...(values.projectIds && values.projectIds.length
-            ? { projectIds: values.projectIds }
+          ...(values.teamIds && values.teamIds.length
+            ? { teamIds: values.teamIds }
             : undefined),
           ...cohortYear,
         },
@@ -194,8 +194,8 @@ export const processAddUserOrRoleFormValues = ({
       return {
         ...user,
         mentor: {
-          ...(values.projectIds && values.projectIds.length
-            ? { projectIds: values.projectIds }
+          ...(values.teamIds && values.teamIds.length
+            ? { teamIds: values.teamIds }
             : undefined),
           ...cohortYear,
         },
@@ -216,18 +216,18 @@ export const processAddUserOrRoleFormValues = ({
 };
 
 /**
- * Check if a user is a project's adviser
+ * Check if a user is a team's adviser
  * @returns {boolean}
  */
-export const checkIfProjectsAdviser = (
-  project: Project | undefined,
+export const checkIfTeamsAdviser = (
+  team: Team | undefined,
   user: User | undefined
 ) => {
   return (
     user &&
     user.adviser &&
-    project &&
-    project.adviser &&
-    user.adviser.id === project.adviser.adviserId
+    team &&
+    team.adviser &&
+    user.adviser.id === team.adviser.adviserId
   );
 };

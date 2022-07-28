@@ -8,14 +8,14 @@ import DeleteRelationsViaTeamModal from "@/components/modals/DeleteRelationsViaT
 // Types
 import { Mutate } from "@/hooks/useFetch";
 import { GetRelationsResponse } from "@/types/api";
-import { Project } from "@/types/projects";
+import { Team } from "@/types/teams";
 
 type Props = {
-  projects: Project[];
+  teams: Team[];
   mutate: Mutate<GetRelationsResponse>;
 };
 
-const ActionButtons: FC<Props> = ({ projects, mutate }) => {
+const ActionButtons: FC<Props> = ({ teams, mutate }) => {
   const [isAddRelationOpen, setIsAddRelationOpen] = useState(false);
   const [isAddRelationGroupOpen, setIsAddRelationGroupOpen] = useState(false);
   const [isDeleteRelationsViaTeamOpen, setIsDeleteRelationsViaTeamOpen] =
@@ -39,17 +39,17 @@ const ActionButtons: FC<Props> = ({ projects, mutate }) => {
         open={isAddRelationOpen}
         setOpen={setIsAddRelationOpen}
         mutate={mutate}
-        projects={projects}
+        teams={teams}
       />
       <AddRelationsViaGroupModal
         open={isAddRelationGroupOpen}
         setOpen={setIsAddRelationGroupOpen}
-        projects={projects}
+        teams={teams}
       />
       <DeleteRelationsViaTeamModal
         open={isDeleteRelationsViaTeamOpen}
         setOpen={setIsDeleteRelationsViaTeamOpen}
-        projects={projects}
+        teams={teams}
       />
       <Stack direction="row" sx={{ gap: "0.5rem" }}>
         <Tooltip title="Quickly add relations by creating 'groups'">

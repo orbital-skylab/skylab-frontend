@@ -24,13 +24,13 @@ import { useRouter } from "next/router";
 // Types
 import { HTTP_METHOD } from "@/types/api";
 import { AddUserFormValuesType, ROLES } from "@/types/roles";
-import { LeanProject } from "@/types/projects";
+import { LeanTeam } from "@/types/teams";
 
 type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  leanProjects: LeanProject[] | undefined;
-  isFetchingLeanProjects: boolean;
+  leanTeams: LeanTeam[] | undefined;
+  isFetchingLeanTeams: boolean;
 };
 
 const refreshSeconds = 3;
@@ -38,8 +38,8 @@ const refreshSeconds = 3;
 const AddUserModal: FC<Props> = ({
   open,
   setOpen,
-  leanProjects,
-  isFetchingLeanProjects,
+  leanTeams,
+  isFetchingLeanTeams,
 }) => {
   const router = useRouter();
   const { cohorts, currentCohortYear } = useCohort();
@@ -125,24 +125,24 @@ const AddUserModal: FC<Props> = ({
                   <StudentDetailsForm
                     formik={formik}
                     cohorts={cohorts}
-                    leanProjects={leanProjects}
-                    isFetchingLeanProjects={isFetchingLeanProjects}
+                    leanTeams={leanTeams}
+                    isFetchingLeanTeams={isFetchingLeanTeams}
                   />
                 )}
                 {selectedRole === ROLES.ADVISERS && (
                   <AdviserDetailsForm
                     formik={formik}
                     cohorts={cohorts}
-                    leanProjects={leanProjects}
-                    isFetchingLeanProjects={isFetchingLeanProjects}
+                    leanTeams={leanTeams}
+                    isFetchingLeanTeams={isFetchingLeanTeams}
                   />
                 )}
                 {selectedRole === ROLES.MENTORS && (
                   <MentorDetailsForm
                     formik={formik}
                     cohorts={cohorts}
-                    leanProjects={leanProjects}
-                    isFetchingLeanProjects={isFetchingLeanProjects}
+                    leanTeams={leanTeams}
+                    isFetchingLeanTeams={isFetchingLeanTeams}
                   />
                 )}
                 {selectedRole === ROLES.ADMINISTRATORS && (

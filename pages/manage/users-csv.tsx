@@ -3,11 +3,11 @@ import { useState } from "react";
 import Body from "@/components/layout/Body";
 import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
 import HeadingWithCsvTemplate from "@/components/csvForms/HeadingWithCsvTemplate/HeadingWithCsvTemplate";
-import BatchAddProjectsAndStudentsForm, {
-  AddProjectsAndStudentsData,
-  ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS,
+import BatchAddTeamsAndStudentsForm, {
+  AddTeamsAndStudentsData,
+  ADD_TEAMS_AND_STUDENTS_CSV_HEADERS,
   processBatchStudentData,
-} from "@/components/csvForms/BatchAddProjectsAndStudentsForm";
+} from "@/components/csvForms/BatchAddTeamsAndStudentsForm";
 import BatchAddAdvisersForm, {
   AddAdvisersData,
   ADD_ADVISERS_CSV_HEADERS,
@@ -30,30 +30,28 @@ import { ROLES } from "@/types/roles";
 const CsvAdd: NextPage = () => {
   const { setSuccess, setError } = useSnackbarAlert();
 
-  /** Add Projects and Students Functions */
-  const [addProjectsAndStudentsData, setAddProjectsAndStudentsData] =
-    useState<AddProjectsAndStudentsData>([]);
-  const batchAddProjectsAndStudents = useApiCall({
+  /** Add Teams and Students Functions */
+  const [addTeamsAndStudentsData, setAddTeamsAndStudentsData] =
+    useState<AddTeamsAndStudentsData>([]);
+  const batchAddTeamsAndStudents = useApiCall({
     method: HTTP_METHOD.POST,
     endpoint: `/students/batch`,
     requiresAuthorization: true,
   });
 
-  const handleAddProjectsAndStudents = async () => {
+  const handleAddTeamsAndStudents = async () => {
     try {
-      const processedValues = processBatchStudentData(
-        addProjectsAndStudentsData
-      );
-      await batchAddProjectsAndStudents.call(processedValues);
-      setSuccess("Successfully added the projects and students!");
-      handleClearProjectsAndStudents();
+      const processedValues = processBatchStudentData(addTeamsAndStudentsData);
+      await batchAddTeamsAndStudents.call(processedValues);
+      setSuccess("Successfully added the teams and students!");
+      handleClearTeamsAndStudents();
     } catch (error) {
       setError(error);
     }
   };
 
-  const handleClearProjectsAndStudents = () => {
-    setAddProjectsAndStudentsData([]);
+  const handleClearTeamsAndStudents = () => {
+    setAddTeamsAndStudentsData([]);
   };
 
   /** Add Advisers Functions */
@@ -109,17 +107,17 @@ const CsvAdd: NextPage = () => {
         <Stack direction="column" spacing="2rem">
           <Box>
             <HeadingWithCsvTemplate
-              title="Add Projects and Students"
-              tooltipText="This creates new projects and new users with a student role attached to them"
+              title="Add Teams and Students"
+              tooltipText="This creates new teams and new users with a student role attached to them"
               csvTemplateHeaders={[
-                Object.values(ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS),
+                Object.values(ADD_TEAMS_AND_STUDENTS_CSV_HEADERS),
               ]}
             />
-            <BatchAddProjectsAndStudentsForm
-              setAddProjectsAndStudentsData={setAddProjectsAndStudentsData}
-              handleAddProjectsAndStudents={handleAddProjectsAndStudents}
-              handleClearProjectsAndStudents={handleClearProjectsAndStudents}
-              isSubmitting={isCalling(batchAddProjectsAndStudents.status)}
+            <BatchAddTeamsAndStudentsForm
+              setAddTeamsAndStudentsData={setAddTeamsAndStudentsData}
+              handleAddTeamsAndStudents={handleAddTeamsAndStudents}
+              handleClearTeamsAndStudents={handleClearTeamsAndStudents}
+              isSubmitting={isCalling(batchAddTeamsAndStudents.status)}
             />
           </Box>
           <Box>

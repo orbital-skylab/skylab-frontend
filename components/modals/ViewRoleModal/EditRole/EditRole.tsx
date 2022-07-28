@@ -26,7 +26,7 @@ import { Mutate } from "@/hooks/useFetch";
 import { EditRoleResponse, HTTP_METHOD } from "@/types/api";
 import { AddOrEditRoleFormValuesType, ROLES } from "@/types/roles";
 import { User } from "@/types/users";
-import { LeanProject } from "@/types/projects";
+import { LeanTeam } from "@/types/teams";
 
 type Props = {
   user: User;
@@ -34,8 +34,8 @@ type Props = {
   handleCloseModal: () => void;
   setViewMode: () => void;
   mutate: Mutate<User[]>;
-  leanProjects: LeanProject[] | undefined;
-  isFetchingLeanProjects: boolean;
+  leanTeams: LeanTeam[] | undefined;
+  isFetchingLeanTeams: boolean;
 };
 
 const EditRole: FC<Props> = ({
@@ -44,8 +44,8 @@ const EditRole: FC<Props> = ({
   handleCloseModal,
   setViewMode,
   mutate,
-  leanProjects,
-  isFetchingLeanProjects,
+  leanTeams,
+  isFetchingLeanTeams,
 }) => {
   const { setSuccess, setError } = useSnackbarAlert();
   const editRole = useApiCall({
@@ -102,24 +102,24 @@ const EditRole: FC<Props> = ({
         return (
           <StudentDetailsForm
             formik={formik}
-            leanProjects={leanProjects}
-            isFetchingLeanProjects={isFetchingLeanProjects}
+            leanTeams={leanTeams}
+            isFetchingLeanTeams={isFetchingLeanTeams}
           />
         );
       case ROLES.ADVISERS:
         return (
           <AdviserDetailsForm
             formik={formik}
-            leanProjects={leanProjects}
-            isFetchingLeanProjects={isFetchingLeanProjects}
+            leanTeams={leanTeams}
+            isFetchingLeanTeams={isFetchingLeanTeams}
           />
         );
       case ROLES.MENTORS:
         return (
           <MentorDetailsForm
             formik={formik}
-            leanProjects={leanProjects}
-            isFetchingLeanProjects={isFetchingLeanProjects}
+            leanTeams={leanTeams}
+            isFetchingLeanTeams={isFetchingLeanTeams}
           />
         );
       case ROLES.ADMINISTRATORS:

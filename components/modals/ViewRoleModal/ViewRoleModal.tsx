@@ -11,7 +11,7 @@ import { toSingular } from "@/helpers/roles";
 import { Mutate } from "@/hooks/useFetch";
 import { User } from "@/types/users";
 import { ROLES } from "@/types/roles";
-import { LeanProject } from "@/types/projects";
+import { LeanTeam } from "@/types/teams";
 
 enum MODE {
   VIEW,
@@ -24,8 +24,8 @@ type Props = {
   setSelectedRole: Dispatch<SetStateAction<ROLES | null>>;
   user: User;
   mutate: Mutate<User[]>;
-  leanProjects: LeanProject[] | undefined;
-  isFetchingLeanProjects: boolean;
+  leanTeams: LeanTeam[] | undefined;
+  isFetchingLeanTeams: boolean;
 };
 
 const ViewRoleModal: FC<Props> = ({
@@ -33,8 +33,8 @@ const ViewRoleModal: FC<Props> = ({
   setSelectedRole,
   user,
   mutate,
-  leanProjects,
-  isFetchingLeanProjects,
+  leanTeams,
+  isFetchingLeanTeams,
 }) => {
   const [mode, setMode] = useState<MODE>(MODE.VIEW);
 
@@ -76,8 +76,8 @@ const ViewRoleModal: FC<Props> = ({
             handleCloseModal={handleCloseModal}
             setViewMode={setViewMode}
             mutate={mutate}
-            leanProjects={leanProjects}
-            isFetchingLeanProjects={isFetchingLeanProjects}
+            leanTeams={leanTeams}
+            isFetchingLeanTeams={isFetchingLeanTeams}
           />
         );
 

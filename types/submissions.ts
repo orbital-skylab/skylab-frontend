@@ -1,5 +1,5 @@
 import { Deadline, Option, Section } from "./deadlines";
-import { Project } from "./projects";
+import { Team } from "./teams";
 import { User } from "./users";
 
 export type Answer = {
@@ -13,9 +13,9 @@ export type Submission = {
   sections: Section[];
   isDraft: boolean;
   answers: Answer[];
-  fromProject?: Project;
+  fromTeam?: Team;
   fromUser?: User;
-  toProject?: Project;
+  toTeam?: Team;
   toUser?: User;
   updatedAt: string;
 };
@@ -29,9 +29,9 @@ export type PossibleSubmission = {
   // If the submission does not exist, these two fields do not exist
   id?: number;
   updatedAt?: string;
-  fromProject?: Project;
+  fromTeam?: Team;
   fromUser?: User;
-  toProject?: Project;
+  toTeam?: Team;
   toUser?: User;
 };
 

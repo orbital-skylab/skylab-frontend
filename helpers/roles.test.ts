@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import {
   userHasRole,
-  checkIfProjectsAdviser,
+  checkIfTeamsAdviser,
   toSingular,
   getUserRoles,
   getRoleId,
@@ -11,7 +11,7 @@ import "jest";
 import { ROLES, ROLES_WITH_ALL } from "@/types/roles";
 import { User } from "@/types/users";
 import { DeepPartial } from "./types";
-import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
+import { LEVELS_OF_ACHIEVEMENT, Team } from "@/types/teams";
 
 /** Helper function to generate a user with a role */
 const generateUser = (role: ROLES | undefined): User => {
@@ -50,13 +50,13 @@ const addRoleToUser = (role: ROLES, user: User): User => {
   }
 };
 
-/** Helper function to generate a project with specific attributes */
-const generateProject = (
+/** Helper function to generate a team with specific attributes */
+const generateTeam = (
   attributes?: Record<string, unknown>
-): DeepPartial<Project> => {
+): DeepPartial<Team> => {
   return {
     id: 1,
-    name: "Test Project",
+    name: "Test Team",
     proposalPdf: "http://www.africau.edu/images/default/sample.pdf",
     students: [generateUser(ROLES.STUDENTS)],
     adviser: generateUser(ROLES.ADVISERS),
@@ -219,8 +219,8 @@ describe("#generateAddUserOrRoleEmptyInitialValues", () => {
       cohortYear: 2022,
       nusnetId: "",
       matricNo: "",
-      projectId: "",
-      projectIds: [],
+      teamId: "",
+      teamIds: [],
       startDate: "",
       endDate: "",
     };
@@ -234,8 +234,8 @@ describe("#generateAddUserOrRoleEmptyInitialValues", () => {
       cohortYear: 2022,
       nusnetId: "",
       matricNo: "",
-      projectId: "",
-      projectIds: [],
+      teamId: "",
+      teamIds: [],
       startDate: "",
       endDate: "",
     };
@@ -254,8 +254,8 @@ describe("#generateAddUserOrRoleEmptyInitialValues", () => {
       cohortYear: 2022,
       nusnetId: "e2",
       matricNo: "a2",
-      projectId: "",
-      projectIds: [],
+      teamId: "",
+      teamIds: [],
       startDate: "",
       endDate: "",
     };
@@ -274,8 +274,8 @@ describe("#generateAddUserOrRoleEmptyInitialValues", () => {
       cohortYear: 2022,
       nusnetId: "e3",
       matricNo: "a3",
-      projectId: "",
-      projectIds: [],
+      teamId: "",
+      teamIds: [],
       startDate: "",
       endDate: "",
     };
@@ -294,8 +294,8 @@ describe("#generateAddUserOrRoleEmptyInitialValues", () => {
       cohortYear: 2022,
       nusnetId: "e3",
       matricNo: "a3",
-      projectId: "",
-      projectIds: [],
+      teamId: "",
+      teamIds: [],
       startDate: "",
       endDate: "",
     };
@@ -308,34 +308,30 @@ describe("#generateAddUserOrRoleEmptyInitialValues", () => {
   });
 });
 
-describe("#checkIfProjectsAdviser", () => {
-  it("can confirm that an adviser is a project's adviser", () => {
-    const project = generateProject({ adviser: { adviserId: 3 } });
+describe("#checkIfTeamsAdviser", () => {
+  it("can confirm that an adviser is a team's adviser", () => {
+    const team = generateTeam({ adviser: { adviserId: 3 } });
     const user = generateUser(ROLES.ADVISERS);
-    expect(
-      checkIfProjectsAdviser(project as Project, user as User)
-    ).toBeTruthy();
+    expect(checkIfTeamsAdviser(team as Team, user as User)).toBeTruthy();
   });
 
-  it("can confirm that an adviser is NOT a project's adviser", () => {
-    const project = generateProject({ adviser: { adviserId: 2 } });
+  it("can confirm that an adviser is NOT a team's adviser", () => {
+    const team = generateTeam({ adviser: { adviserId: 2 } });
     const user = generateUser(ROLES.ADVISERS);
-    expect(
-      checkIfProjectsAdviser(project as Project, user as User)
-    ).toBeFalsy();
+    expect(checkIfTeamsAdviser(team as Team, user as User)).toBeFalsy();
   });
 
-  it("can confirm that an adviser is NOT an undefined project's adviser", () => {
+  it("can confirm that an adviser is NOT an undefined team's adviser", () => {
     const user = generateUser(ROLES.ADVISERS);
-    expect(checkIfProjectsAdviser(undefined, user as User)).toBeFalsy();
+    expect(checkIfTeamsAdviser(undefined, user as User)).toBeFalsy();
   });
 
-  it("can confirm that an undefined user is NOT a project's adviser", () => {
-    const project = generateProject({ adviser: { adviserId: 2 } });
-    expect(checkIfProjectsAdviser(project as Project, undefined)).toBeFalsy();
+  it("can confirm that an undefined user is NOT a team's adviser", () => {
+    const team = generateTeam({ adviser: { adviserId: 2 } });
+    expect(checkIfTeamsAdviser(team as Team, undefined)).toBeFalsy();
   });
 
-  it("can confirm that an undefined user is NOT an undefined project's adviser", () => {
-    expect(checkIfProjectsAdviser(undefined, undefined)).toBeFalsy();
+  it("can confirm that an undefined user is NOT an undefined team's adviser", () => {
+    expect(checkIfTeamsAdviser(undefined, undefined)).toBeFalsy();
   });
 });

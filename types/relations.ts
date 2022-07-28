@@ -1,11 +1,11 @@
 import { Adviser } from "./advisers";
-import { Project } from "./projects";
+import { Team } from "./teams";
 
 export type EvaluationRelation = {
   id: number;
-  fromProjectId: number;
-  toProjectId: number;
-  fromProject?: Project;
-  toProject?: Project;
+  fromTeamId: number;
+  toTeamId: number;
+  fromTeam?: Team;
+  toTeam?: Team;
   adviser: Adviser;
 };

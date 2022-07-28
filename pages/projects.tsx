@@ -32,18 +32,18 @@ import { createBottomOfPageRef } from "@/hooks/useInfiniteFetch";
 import { Cohort } from "@/types/cohorts";
 // Components
 import Body from "@/components/layout/Body";
-import ProjectCard from "@/components/cards/ProjectCard";
+import TeamProjectCard from "@/components/cards/TeamProjectCard";
 import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 // Constants
-import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
-import { GetProjectsResponse } from "@/types/api";
+import { LEVELS_OF_ACHIEVEMENT, Team } from "@/types/teams";
+import { GetTeamsResponse } from "@/types/api";
 
 const LIMIT = 16;
 
-const Projects: NextPage = () => {
+const Teams: NextPage = () => {
   const [selectedLevel, setSelectedLevel] = useState<LEVELS_OF_ACHIEVEMENT>(
     LEVELS_OF_ACHIEVEMENT.ARTEMIS
   );
@@ -59,7 +59,7 @@ const Projects: NextPage = () => {
     Cohort["academicYear"] | string
   >("");
 
-  /** For fetching projects based on filters */
+  /** For fetching teams based on filters */
   const memoQueryParams = useMemo(() => {
     return {
       cohortYear: selectedCohortYear,
@@ -70,14 +70,14 @@ const Projects: NextPage = () => {
     };
   }, [selectedCohortYear, selectedLevel, querySearch]);
   const {
-    data: projects,
-    status: fetchProjectsStatus,
+    data: teams,
+    status: fetchTeamsStatus,
     hasMore,
-  } = useInfiniteFetch<GetProjectsResponse, Project>({
-    endpoint: `/projects`,
+  } = useInfiniteFetch<GetTeamsResponse, Team>({
+    endpoint: `/teams`,
     queryParams: memoQueryParams,
     page,
-    responseToData: (response) => response.projects,
+    responseToData: (response) => response.teams,
     enabled: !!selectedCohortYear,
   });
 
@@ -109,10 +109,10 @@ const Projects: NextPage = () => {
     setPage(0);
   };
 
-  /** To fetch more projects when the bottom of the page is reached */
+  /** To fetch more teams when the bottom of the page is reached */
   const observer = useRef<IntersectionObserver | null>(null);
   const bottomOfPageRef = createBottomOfPageRef(
-    isFetching(fetchProjectsStatus),
+    isFetching(fetchTeamsStatus),
     hasMore,
     setPage,
     observer
@@ -127,10 +127,10 @@ const Projects: NextPage = () => {
   return (
     <>
       <CustomHead
-        title="Project Gallery"
-        description="View the posters and videos of NUS Orbital projects from current and past cohorts!"
+        title="Team Gallery"
+        description="View the posters and videos of NUS Orbital teams from current and past cohorts!"
       />
-      <Body isError={isError(fetchProjectsStatus)} isLoading={isLoadingCohorts}>
+      <Body isError={isError(fetchTeamsStatus)} isLoading={isLoadingCohorts}>
         <Stack direction="column" my="0.5rem">
           <Stack
             direction="row"
@@ -166,7 +166,7 @@ const Projects: NextPage = () => {
             onChange={handleTabChange}
             textColor="secondary"
             indicatorColor="secondary"
-            aria-label="project-level-tabs"
+            aria-label="team-level-tabs"
             variant="scrollable"
             scrollButtons="auto"
             allowScrollButtonsMobile
@@ -182,20 +182,20 @@ const Projects: NextPage = () => {
         </Stack>
         <LoadingWrapper
           isLoading={
-            (projects === undefined || projects.length === 0) &&
-            isFetching(fetchProjectsStatus)
+            (teams === undefined || teams.length === 0) &&
+            isFetching(fetchTeamsStatus)
           }
         >
           <NoDataWrapper
-            noDataCondition={projects === undefined || projects.length === 0}
-            fallback={<NoneFound message="No such projects found" />}
+            noDataCondition={teams === undefined || teams.length === 0}
+            fallback={<NoneFound message="No such teams found" />}
           >
             <Grid container spacing={{ xs: 2, md: 4 }}>
-              {projects
-                ? projects.map((project) => {
+              {teams
+                ? teams.map((team) => {
                     return (
-                      <Grid item key={project.id} xs={12 / 2} md={12 / 4}>
-                        <ProjectCard project={project} />
+                      <Grid item key={team.id} xs={12 / 2} md={12 / 4}>
+                        <TeamProjectCard team={team} />
                       </Grid>
                     );
                   })
@@ -209,10 +209,10 @@ const Projects: NextPage = () => {
                 height: "100px",
               }}
             >
-              {isFetching(fetchProjectsStatus) ? (
+              {isFetching(fetchTeamsStatus) ? (
                 <LoadingSpinner size={50} />
               ) : !hasMore ? (
-                <Typography>No more projects found</Typography>
+                <Typography>No more teams found</Typography>
               ) : null}
             </Box>
           </NoDataWrapper>
@@ -221,4 +221,4 @@ const Projects: NextPage = () => {
     </>
   );
 };
-export default Projects;
+export default Teams;

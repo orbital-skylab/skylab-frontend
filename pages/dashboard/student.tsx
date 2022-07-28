@@ -72,7 +72,7 @@ const StudentDashboard: NextPage = () => {
           onChange={handleTabChange}
           textColor="secondary"
           indicatorColor="secondary"
-          aria-label="project-level-tabs"
+          aria-label="team-level-tabs"
           variant="scrollable"
           scrollButtons="auto"
           allowScrollButtonsMobile
@@ -101,7 +101,7 @@ const StudentDashboard: NextPage = () => {
                       (deadlineDeliverable) =>
                         isFuture(deadlineDeliverable.deadline.dueBy)
                     )}
-                    viewerRole={VIEWER_ROLE.PROJECTS}
+                    viewerRole={VIEWER_ROLE.TEAMS}
                   />
                 </Box>
                 {hasPastDeadlines && (
@@ -114,7 +114,7 @@ const StudentDashboard: NextPage = () => {
                         (deadlineDeliverable) =>
                           !isFuture(deadlineDeliverable.deadline.dueBy)
                       )}
-                      viewerRole={VIEWER_ROLE.PROJECTS}
+                      viewerRole={VIEWER_ROLE.TEAMS}
                     />
                   </Box>
                 )}

@@ -24,13 +24,13 @@ import useFetch, { Mutate } from "@/hooks/useFetch";
 // Types
 import {
   HTTP_METHOD,
-  CreateProjectResponse,
+  CreateTeamResponse,
   GetLeanUsersResponse,
 } from "@/types/api";
-import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
+import { LEVELS_OF_ACHIEVEMENT, Team } from "@/types/teams";
 import { Cohort } from "@/types/cohorts";
 
-interface AddProjectFormValuesType {
+interface AddTeamFormValuesType {
   name: string;
   teamName: string;
   achievement: LEVELS_OF_ACHIEVEMENT;
@@ -42,10 +42,10 @@ interface AddProjectFormValuesType {
 type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  mutate: Mutate<Project[]>;
+  mutate: Mutate<Team[]>;
 };
 
-const AddProjectModal: FC<Props> = ({ open, setOpen, mutate }) => {
+const AddTeamModal: FC<Props> = ({ open, setOpen, mutate }) => {
   const { setSuccess, setError } = useSnackbarAlert();
   const { cohorts, currentCohortYear } = useCohort();
   const [selectedCohortYear, setSelectedCohortYear] = useState(
@@ -54,17 +54,17 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate }) => {
 
   const addDeadline = useApiCall({
     method: HTTP_METHOD.POST,
-    endpoint: `/projects`,
-    onSuccess: ({ project }: CreateProjectResponse) => {
-      mutate((projects) => {
-        const newProjects = [...projects];
-        newProjects.push(project);
-        return newProjects;
+    endpoint: `/teams`,
+    onSuccess: ({ team }: CreateTeamResponse) => {
+      mutate((teams) => {
+        const newTeams = [...teams];
+        newTeams.push(team);
+        return newTeams;
       });
     },
   });
 
-  const initialValues: AddProjectFormValuesType = {
+  const initialValues: AddTeamFormValuesType = {
     name: "",
     teamName: "",
     achievement: LEVELS_OF_ACHIEVEMENT.VOSTOK,
@@ -88,16 +88,16 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate }) => {
   });
 
   const handleSubmit = async (
-    values: AddProjectFormValuesType,
-    actions: FormikHelpers<AddProjectFormValuesType>
+    values: AddTeamFormValuesType,
+    actions: FormikHelpers<AddTeamFormValuesType>
   ) => {
     const processedValues = {
-      project: { ...values, cohortYear: selectedCohortYear },
+      team: { ...values, cohortYear: selectedCohortYear },
     };
 
     try {
       await addDeadline.call(processedValues);
-      setSuccess(`You have successfully created a new project ${values.name}!`);
+      setSuccess(`You have successfully created a new team ${values.name}!`);
       handleCloseModal();
       actions.resetForm();
     } catch (error) {
@@ -121,11 +121,11 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate }) => {
 
   return (
     <>
-      <Modal open={open} handleClose={handleCloseModal} title={`Add Project`}>
+      <Modal open={open} handleClose={handleCloseModal} title={`Add Team`}>
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmit}
-          validationSchema={addProjectValidationSchema}
+          validationSchema={addTeamValidationSchema}
         >
           {(formik) => (
             <>
@@ -147,7 +147,7 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate }) => {
                 </TextField>
                 <TextInput
                   name="name"
-                  label="Project Name"
+                  label="Team Name"
                   size="small"
                   formik={formik}
                 />
@@ -242,9 +242,9 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate }) => {
     </>
   );
 };
-export default AddProjectModal;
+export default AddTeamModal;
 
-const addProjectValidationSchema = Yup.object().shape({
+const addTeamValidationSchema = Yup.object().shape({
   name: Yup.string().required(ERRORS.REQUIRED),
   teamName: Yup.string().required(ERRORS.REQUIRED),
   achievement: Yup.string().required(ERRORS.REQUIRED),

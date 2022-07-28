@@ -1,5 +1,5 @@
 import { noImageAvailableSrc } from "@/helpers/errors";
-import { Project } from "@/types/projects";
+import { Team } from "@/types/teams";
 import { Box, Button, Typography } from "@mui/material";
 import { Dispatch, FC, SetStateAction } from "react";
 import Modal from "../Modal";
@@ -7,17 +7,17 @@ import Modal from "../Modal";
 type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  project: Project;
+  team: Team;
 };
 
-const ProjectSubmissionModal: FC<Props> = ({ open, setOpen, project }) => {
+const TeamProjectSubmissionModal: FC<Props> = ({ open, setOpen, team }) => {
   const handleClose = () => setOpen(false);
 
   return (
     <Modal
       open={open}
       handleClose={handleClose}
-      title={`Project ${project.id}: ${project.teamName}`}
+      title={`Team ${team.id}: ${team.name}`}
       sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
     >
       <Typography variant="h6" align="center" fontWeight={600} mb="0.5rem">
@@ -30,9 +30,9 @@ const ProjectSubmissionModal: FC<Props> = ({ open, setOpen, project }) => {
         }}
       >
         <Box
-          src={project.posterUrl ?? noImageAvailableSrc}
+          src={team.posterUrl ?? noImageAvailableSrc}
           component="img"
-          alt={`${project.teamName} Poster`}
+          alt={`${team.projectName} Poster`}
         />
       </Box>
 
@@ -52,7 +52,7 @@ const ProjectSubmissionModal: FC<Props> = ({ open, setOpen, project }) => {
           placeItems: "center",
         }}
       >
-        <iframe src={project.videoUrl} />
+        <iframe src={team.videoUrl} />
       </Box>
       <Button
         sx={{ mb: "-0.5rem", mt: "0.5rem" }}
@@ -64,4 +64,4 @@ const ProjectSubmissionModal: FC<Props> = ({ open, setOpen, project }) => {
     </Modal>
   );
 };
-export default ProjectSubmissionModal;
+export default TeamProjectSubmissionModal;

@@ -61,7 +61,7 @@ const DeleteRelationModal: FC<Props> = ({
         open={open}
         handleClose={handleCloseModal}
         title={`Delete Relation`}
-        subheader={`You are deleting relation ${relation.id}. Note that only the relation will be deleted but the projects will not be deleted.\n\nThis action is irreversible, are you sure?`}
+        subheader={`You are deleting relation ${relation.id}. Note that only the relation will be deleted but the teams will not be deleted.\n\nThis action is irreversible, are you sure?`}
         sx={{ width: "400px" }}
       >
         <Stack direction="row" justifyContent="space-between" marginTop="2rem">

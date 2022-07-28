@@ -26,17 +26,17 @@ import useAuth from "@/contexts/useAuth";
 // Helpers
 import { Formik } from "formik";
 import { areAllEmptyValues, stripEmptyStrings } from "@/helpers/forms";
-import { checkIfProjectsAdviser, userHasRole } from "@/helpers/roles";
+import { checkIfTeamsAdviser, userHasRole } from "@/helpers/roles";
 // Types
-import { GetProjectResponse, GetUsersResponse, HTTP_METHOD } from "@/types/api";
-import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
+import { GetTeamResponse, GetUsersResponse, HTTP_METHOD } from "@/types/api";
+import { LEVELS_OF_ACHIEVEMENT, Team } from "@/types/teams";
 import { ROLES } from "@/types/roles";
 import Switch from "@/components/formikFormControllers/Switch";
 
-type EditProjectFormValues = Pick<
-  Project,
+type EditTeamFormValues = Pick<
+  Team,
   | "name"
-  | "teamName"
+  | "projectName"
   | "achievement"
   | "proposalPdf"
   | "posterUrl"
@@ -44,58 +44,58 @@ type EditProjectFormValues = Pick<
   | "hasDropped"
 > & { students: number[]; adviser: number | ""; mentor: number | "" };
 
-const EditProject: NextPage = () => {
+const EditTeam: NextPage = () => {
   const router = useRouter();
   const { user, isLoading } = useAuth();
-  const { projectId } = router.query;
+  const { teamId } = router.query;
   const { setSuccess, setError } = useSnackbarAlert();
 
-  const { data: projectResponse, status: getProjectStatus } =
-    useFetch<GetProjectResponse>({
-      endpoint: `/projects/${projectId}`,
-      enabled: !!projectId,
+  const { data: teamResponse, status: getTeamStatus } =
+    useFetch<GetTeamResponse>({
+      endpoint: `/teams/${teamId}`,
+      enabled: !!teamId,
     });
-  const project = projectResponse ? projectResponse.project : undefined;
+  const team = teamResponse ? teamResponse.team : undefined;
 
-  const initialValues: EditProjectFormValues = {
-    name: project?.name ?? "",
-    teamName: project?.name ?? "",
-    achievement: project?.achievement ?? LEVELS_OF_ACHIEVEMENT.VOSTOK,
-    students: project?.students
-      ? project?.students.map(({ studentId }) => studentId)
+  const initialValues: EditTeamFormValues = {
+    name: team?.name ?? "",
+    projectName: team?.name ?? "",
+    achievement: team?.achievement ?? LEVELS_OF_ACHIEVEMENT.VOSTOK,
+    students: team?.students
+      ? team?.students.map(({ studentId }) => studentId)
       : [],
-    adviser: project?.adviser?.adviserId ?? "",
-    mentor: project?.mentor?.mentorId ?? "",
-    hasDropped: project?.hasDropped ?? false,
-    proposalPdf: project?.proposalPdf ?? "",
-    posterUrl: project?.posterUrl ?? "",
-    videoUrl: project?.videoUrl ?? "",
+    adviser: team?.adviser?.adviserId ?? "",
+    mentor: team?.mentor?.mentorId ?? "",
+    hasDropped: team?.hasDropped ?? false,
+    proposalPdf: team?.proposalPdf ?? "",
+    posterUrl: team?.posterUrl ?? "",
+    videoUrl: team?.videoUrl ?? "",
   };
 
   /** Fetching student, adviser and mentor IDs and names for the dropdown select */
   const { data: studentsResponse } = useFetch<GetUsersResponse>({
-    endpoint: `/users/lean?cohortYear=${project?.cohortYear}&role=Student`,
-    enabled: Boolean(!!project && project.cohortYear),
+    endpoint: `/users/lean?cohortYear=${team?.cohortYear}&role=Student`,
+    enabled: Boolean(!!team && team.cohortYear),
   });
   const { data: advisersResponse } = useFetch<GetUsersResponse>({
-    endpoint: `/users/lean?cohortYear=${project?.cohortYear}&role=Adviser`,
-    enabled: Boolean(!!project && project.cohortYear),
+    endpoint: `/users/lean?cohortYear=${team?.cohortYear}&role=Adviser`,
+    enabled: Boolean(!!team && team.cohortYear),
   });
   const { data: mentorsResponse } = useFetch<GetUsersResponse>({
-    endpoint: `/users/lean?cohortYear=${project?.cohortYear}&role=Mentor`,
-    enabled: Boolean(!!project && project.cohortYear),
+    endpoint: `/users/lean?cohortYear=${team?.cohortYear}&role=Mentor`,
+    enabled: Boolean(!!team && team.cohortYear),
   });
 
-  const EditProject = useApiCall({
+  const EditTeam = useApiCall({
     method: HTTP_METHOD.PUT,
-    endpoint: `/projects/${projectId}`,
+    endpoint: `/teams/${teamId}`,
   });
 
-  const handleSubmit = async (values: EditProjectFormValues) => {
+  const handleSubmit = async (values: EditTeamFormValues) => {
     const processedValues = stripEmptyStrings(values);
     try {
-      await EditProject.call(processedValues);
-      setSuccess("You have successfully edited the project details");
+      await EditTeam.call(processedValues);
+      setSuccess("You have successfully edited the team details");
     } catch (error) {
       setError(error);
     }
@@ -104,28 +104,28 @@ const EditProject: NextPage = () => {
   return (
     <>
       <Body
-        isLoading={isFetching(getProjectStatus) || isLoading}
+        isLoading={isFetching(getTeamStatus) || isLoading}
         authorizedRoles={[ROLES.ADMINISTRATORS]}
       >
         <NoDataWrapper
-          noDataCondition={project === undefined}
+          noDataCondition={team === undefined}
           fallback={
             <NoneFound
               showReturnHome
-              message="There is no such project with that project ID"
+              message="There is no such team with that team ID"
             />
           }
         >
           <UnauthorizedWrapper
             isUnauthorized={
               !userHasRole(user, ROLES.ADMINISTRATORS) &&
-              !checkIfProjectsAdviser(projectResponse?.project, user)
+              !checkIfTeamsAdviser(teamResponse?.team, user)
             }
           >
             <GoBackButton />
             <Container maxWidth="sm" sx={{ padding: 0 }}>
               <Typography variant="h5" fontWeight={600} mb="1rem">
-                {`Edit ${project?.name}'s Project`}
+                {`Edit ${team?.name}'s Team`}
               </Typography>
               <Card>
                 <CardContent>
@@ -141,12 +141,12 @@ const EditProject: NextPage = () => {
                           )}
                           <TextInput
                             name="name"
-                            label="Project Name"
+                            label="Team Name"
                             formik={formik}
                           />
                           <TextInput
-                            name="teamName"
-                            label="Team Name"
+                            name="projectName"
+                            label="Project Name"
                             formik={formik}
                           />
                           <Dropdown
@@ -266,4 +266,4 @@ const EditProject: NextPage = () => {
     </>
   );
 };
-export default EditProject;
+export default EditTeam;
