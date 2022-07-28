@@ -38,6 +38,9 @@ const ProjectCard: FC<Props> = ({ project }) => {
         project={project}
       />
       <Card
+        className={`${project.achievement.toLowerCase()} ${
+          project.cohortYear
+        } project-card`}
         sx={{
           height: "100%",
           transition: BASE_TRANSITION,
@@ -69,6 +72,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
           <Stack sx={{ height: "100%", gap: "0.5rem" }}>
             <Link passHref href={`${PAGES.PROJECTS}/${project.id}`}>
               <Typography
+                className="project-name-span"
                 align="center"
                 fontWeight={600}
                 sx={{
