@@ -50,12 +50,12 @@ function Dropdown<FormValuesType>({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           value={values[name] as any}
           onChange={(_, selectedOption) => {
+            setFieldTouched(name as string);
             if (selectedOption) {
               setFieldValue(name as string, selectedOption.value);
             } else if (selectedOption === null || selectedOption === "") {
               setFieldValue(name as string, "");
             }
-            setFieldTouched(name as string);
           }}
           inputValue={inputValue}
           onInputChange={(_, newInputValue) => {

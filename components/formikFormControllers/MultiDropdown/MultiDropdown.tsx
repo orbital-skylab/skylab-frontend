@@ -56,11 +56,11 @@ function MultiDropdown<FormValuesType>({
           onChange={(_, newValues) => {
             // The newly selected value will be a DropdownOption object but the existing values will be the value primitives
             // Thus the DropdownOption objects need to be extracted into the primitves
+            setFieldTouched(name as string, true);
             const extractedValues = newValues.map((value) =>
               typeof value === "object" ? value.value : value
             );
             setFieldValue(name as string, extractedValues);
-            setFieldTouched(name as string, true);
           }}
           inputValue={inputValue}
           onInputChange={(_, newInputValue) => {
