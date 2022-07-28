@@ -2,7 +2,7 @@ import { FC, useState } from "react";
 // Components
 import HoverLink from "@/components/typography/HoverLink";
 import DeleteRelationModal from "@/components/modals/DeleteRelationModal";
-import { Button, Stack, TableCell, TableRow } from "@mui/material";
+import { Button, TableCell, TableRow } from "@mui/material";
 import EditRelationModal from "@/components/modals/EditRelationModal";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
@@ -64,13 +64,13 @@ const RelationRow: FC<Props> = ({
             {relation.toProject?.name}
           </HoverLink>
         </TableCell>
-        {showAdviserColumn && relation.adviser && (
+        {showAdviserColumn && (
           <TableCell>
-            <Stack direction="row" spacing="0.25rem">
+            {relation.adviser && (
               <HoverLink href={`${PAGES.USERS}/${relation.adviser.adviserId}`}>
                 {relation.adviser.name}
               </HoverLink>
-            </Stack>
+            )}
           </TableCell>
         )}
         <TableCell>

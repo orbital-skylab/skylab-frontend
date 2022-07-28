@@ -42,11 +42,3 @@ export interface HookReturnType<T> extends State<T> {
   mutate: Mutate<T>;
   refetch: () => void;
 }
-
-/**
- * The type of query params.
- */
-export type QueryParams = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
-};

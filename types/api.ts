@@ -26,6 +26,14 @@ export enum CONTENT_TYPE {
 }
 
 /**
+ * The type of query params.
+ */
+export type QueryParams = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+};
+
+/**
  * Users Endpoints:
  * https://github.com/orbital-skylab/skylab-backend/wiki/Users-Endpoints
  */
@@ -206,6 +214,14 @@ export type GetMentorTeamSubmissionsResponse = {
     deadline: Deadline;
     submissions: PossibleSubmission[];
   }[];
+};
+
+/** Administrator Dashboard Endpoints */
+export type GetAdministratorAllTeamMilestoneSubmissionsResponse = {
+  submissions: PossibleSubmission[];
+  unsubmitted: number;
+  submittedOnTime: number;
+  submittedLate: number;
 };
 
 /**

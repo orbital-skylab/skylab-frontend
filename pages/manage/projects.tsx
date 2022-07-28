@@ -43,7 +43,7 @@ import { Cohort } from "@/types/cohorts";
 import { LEVELS_OF_ACHIEVEMENT_WITH_ALL, Project } from "@/types/projects";
 import { ROLES } from "@/types/roles";
 
-const LIMIT = 20;
+const LIMIT = 50;
 
 const ProjectsList = () => {
   const [selectedLevelOfAchievement, setSelectedLevelOfAchievement] = useState(

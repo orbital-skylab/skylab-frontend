@@ -4,7 +4,6 @@ import {
   State,
   Action,
   Mutator,
-  QueryParams,
 } from "./useFetch.types";
 
 export const createReducer =
@@ -37,36 +36,6 @@ export const createReducer =
       }
     }
   };
-
-export function parseQueryParams(queryParams: QueryParams | undefined): string {
-  if (queryParams === undefined) {
-    return "";
-  }
-
-  const queryParamsCopy = { ...queryParams };
-
-  let parsedQueryParams = "?";
-  let numberOfInvalidParams = 0;
-
-  for (const [query, param] of Object.entries(queryParamsCopy)) {
-    if (Array.isArray(param)) {
-      for (const val of param) {
-        parsedQueryParams += `${query}=${val}&`;
-      }
-    } else if (param !== undefined && param !== null && param !== "") {
-      parsedQueryParams += `${query}=${param}&`;
-    } else {
-      numberOfInvalidParams++;
-    }
-  }
-
-  if (numberOfInvalidParams === Object.keys(queryParams).length) {
-    return "";
-  }
-
-  // To remove the last '&'
-  return parsedQueryParams.slice(0, parsedQueryParams.length - 1);
-}
 
 export function isFetching(...statuses: FETCH_STATUS[]) {
   return statuses.reduce(

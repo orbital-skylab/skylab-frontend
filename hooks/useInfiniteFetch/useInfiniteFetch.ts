@@ -1,12 +1,7 @@
 import { ApiServiceBuilder } from "@/helpers/api";
-import { HTTP_METHOD } from "@/types/api";
+import { HTTP_METHOD, QueryParams } from "@/types/api";
 import { useEffect, useState } from "react";
-import {
-  FETCH_STATUS,
-  Mutate,
-  parseQueryParams,
-  QueryParams,
-} from "@/hooks/useFetch";
+import { FETCH_STATUS, Mutate } from "@/hooks/useFetch";
 
 /**
  * U is the shape of the API response, T is the shape of a single element
@@ -28,7 +23,8 @@ export default function useInfiniteFetch<U, T>({
 }) {
   const [status, setStatus] = useState<FETCH_STATUS>(FETCH_STATUS.IDLE);
   const [error, setError] = useState("");
-  const [data, setData] = useState<T[]>([]);
+  const [data, setData] = useState<T[]>([]); // Uses the `responseToData` function to extract out the data to be paginated infinitely
+  const [originalData, setOriginalData] = useState<U[]>([]); // An array of the original (unextracted) data that is fetched from the API
   const [hasMore, setHasMore] = useState(false);
 
   useEffect(() => {
@@ -42,24 +38,29 @@ export default function useInfiniteFetch<U, T>({
 
       try {
         /* Building API service. */
-        const endpointWithQueryParams =
-          endpoint + parseQueryParams({ ...queryParams, page });
-
         const apiServiceBuilder = new ApiServiceBuilder({
           method: HTTP_METHOD.GET,
-          endpoint: endpointWithQueryParams,
+          endpoint,
+          queryParams: { ...queryParams, page },
           requiresAuthorization,
         });
         const apiService = apiServiceBuilder.build();
 
         const response = await (await apiService()).json();
         const data = responseToData(response);
-        if (data && data.length !== undefined) {
-          if (page === 0) {
+        if (page === 0) {
+          if (data && data.length !== undefined) {
             setData(data);
-          } else {
+          }
+          setOriginalData(response);
+        } else {
+          if (data && data.length !== undefined) {
             setData((prevData) => [...prevData, ...data]);
           }
+          setOriginalData((prevOriginalData) => [
+            ...prevOriginalData,
+            ...response,
+          ]);
         }
         setHasMore(data.length > 0);
         setStatus(FETCH_STATUS.FETCHED);
@@ -81,5 +82,5 @@ export default function useInfiniteFetch<U, T>({
     setData(mutatedData);
   };
 
-  return { status, error, data, hasMore, mutate };
+  return { status, error, data, originalData, hasMore, mutate };
 }
