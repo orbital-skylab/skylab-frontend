@@ -2,7 +2,7 @@ import { FC, useState } from "react";
 // Components
 import HoverLink from "@/components/typography/HoverLink";
 import DeleteRelationModal from "@/components/modals/DeleteRelationModal";
-import { Button, TableCell, TableRow } from "@mui/material";
+import { Button, Stack, TableCell, TableRow } from "@mui/material";
 import EditRelationModal from "@/components/modals/EditRelationModal";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
@@ -73,20 +73,22 @@ const RelationRow: FC<Props> = ({
             )}
           </TableCell>
         )}
-        <TableCell>
-          <Button onClick={handleOpenEditModal}>Edit</Button>
-          <Button
-            onClick={handleOpenDeleteModal}
-            sx={{
-              transition: BASE_TRANSITION,
-              "&:hover": {
-                backgroundColor: "error.main",
-                color: "white",
-              },
-            }}
-          >
-            Delete
-          </Button>
+        <TableCell align="right">
+          <Stack direction="row" justifyContent="end" spacing="0.5rem">
+            <Button onClick={handleOpenEditModal}>Edit</Button>
+            <Button
+              onClick={handleOpenDeleteModal}
+              sx={{
+                transition: BASE_TRANSITION,
+                "&:hover": {
+                  backgroundColor: "error.main",
+                  color: "white",
+                },
+              }}
+            >
+              Delete
+            </Button>
+          </Stack>
         </TableCell>
       </TableRow>
     </>

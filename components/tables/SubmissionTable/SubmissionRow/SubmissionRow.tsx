@@ -145,7 +145,9 @@ const SubmissionRow: FC<Props> = ({
         <TableCell>
           {generateStatusCell(status, submission.updatedAt)}
         </TableCell>
-        <TableCell>{generateActionCell(status, submission.id)}</TableCell>
+        <TableCell align="right">
+          {generateActionCell(status, submission.id)}
+        </TableCell>
       </TableRow>
     </>
   );

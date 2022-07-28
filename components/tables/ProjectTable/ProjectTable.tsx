@@ -23,14 +23,14 @@ type Props = {
   showDeleteAction?: boolean;
 };
 
-const columnHeadings = [
-  "Project ID",
-  "Project Name",
-  "Level of Achievement",
-  "Students",
-  "Adviser",
-  "Mentor",
-  "Actions",
+const columnHeadings: { heading: string; align: "left" | "right" }[] = [
+  { heading: "Project ID", align: "left" },
+  { heading: "Project Name", align: "left" },
+  { heading: "Level of Achievement", align: "left" },
+  { heading: "Students", align: "left" },
+  { heading: "Adviser", align: "left" },
+  { heading: "Mentor", align: "left" },
+  { heading: "Actions", align: "right" },
 ];
 
 const ProjectTable: FC<Props> = ({
@@ -41,7 +41,7 @@ const ProjectTable: FC<Props> = ({
   showEditAction,
   showDeleteAction,
 }) => {
-  const filteredColumnHeadings = columnHeadings.filter((heading) => {
+  const filteredColumnHeadings = columnHeadings.filter(({ heading }) => {
     switch (heading) {
       case "Adviser":
         return showAdviserColumn;
@@ -60,8 +60,10 @@ const ProjectTable: FC<Props> = ({
         <Table>
           <TableHead>
             <TableRow>
-              {filteredColumnHeadings.map((heading) => (
-                <TableCell key={heading}>{heading}</TableCell>
+              {filteredColumnHeadings.map(({ heading, align }) => (
+                <TableCell key={heading} align={align}>
+                  {heading}
+                </TableCell>
               ))}
             </TableRow>
           </TableHead>

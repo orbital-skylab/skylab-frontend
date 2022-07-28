@@ -19,14 +19,14 @@ type Props = {
   submissions: PossibleSubmission[];
 };
 
-const columnHeadings = [
-  "Submitted By",
-  "Level of Achievement",
-  "Students",
-  "Adviser",
-  "Mentor",
-  "Status",
-  "Action",
+const columnHeadings: { heading: string; align: "left" | "right" }[] = [
+  { heading: "Submitted By", align: "left" },
+  { heading: "Level of Achievement", align: "left" },
+  { heading: "Students", align: "left" },
+  { heading: "Adviser", align: "left" },
+  { heading: "Mentor", align: "left" },
+  { heading: "Status", align: "left" },
+  { heading: "Actions", align: "right" },
 ];
 
 const AllTeamsMilestoneTable: FC<Props> = ({ deadline, submissions }) => {
@@ -39,8 +39,10 @@ const AllTeamsMilestoneTable: FC<Props> = ({ deadline, submissions }) => {
       <Table>
         <TableHead>
           <TableRow>
-            {columnHeadings.map((heading) => (
-              <TableCell key={heading}>{heading}</TableCell>
+            {columnHeadings.map(({ heading, align }) => (
+              <TableCell key={heading} align={align}>
+                {heading}
+              </TableCell>
             ))}
           </TableRow>
         </TableHead>

@@ -121,8 +121,8 @@ const ProjectRow: FC<Props> = ({
             )}
           </TableCell>
         )}
-        <TableCell>
-          <Stack direction="row" spacing="0.5rem">
+        <TableCell align="right">
+          <Stack direction="row" spacing="0.5rem" justifyContent="end">
             <Link href={`${PAGES.PROJECTS}/${project.id}`} passHref>
               <Button>View</Button>
             </Link>

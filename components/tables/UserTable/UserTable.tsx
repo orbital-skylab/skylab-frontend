@@ -23,12 +23,12 @@ type Props = {
   isFetchingLeanProjects: boolean;
 };
 
-const ColumnHeadings = [
-  "User ID",
-  "User Name",
-  "User Email",
-  "Roles",
-  "Actions",
+const columnHeadings: { heading: string; align: "left" | "right" }[] = [
+  { heading: "User ID", align: "left" },
+  { heading: "Name", align: "left" },
+  { heading: "Email", align: "left" },
+  { heading: "Roles", align: "left" },
+  { heading: "Actions", align: "right" },
 ];
 
 const UserTable: FC<Props> = ({
@@ -42,8 +42,10 @@ const UserTable: FC<Props> = ({
       <Table>
         <TableHead>
           <TableRow>
-            {ColumnHeadings.map((heading) => (
-              <TableCell key={heading}>{heading}</TableCell>
+            {columnHeadings.map(({ heading, align }) => (
+              <TableCell key={heading} align={align}>
+                {heading}
+              </TableCell>
             ))}
           </TableRow>
         </TableHead>

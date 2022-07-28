@@ -227,7 +227,9 @@ const DeadlineDeliverableRow: FC<Props> = ({
             deadlineDeliverable.submission?.updatedAt
           )}
         </TableCell>
-        <TableCell>{generateActionCell(status, deadlineDeliverable)}</TableCell>
+        <TableCell align="right">
+          {generateActionCell(status, deadlineDeliverable)}
+        </TableCell>
       </TableRow>
     </>
   );

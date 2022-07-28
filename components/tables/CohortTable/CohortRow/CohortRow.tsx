@@ -41,8 +41,8 @@ const CohortRow: FC<Props> = ({ cohort, mutate }) => {
         <TableCell>{cohort.academicYear}</TableCell>
         <TableCell>{isoDateToLocaleDateWithTime(cohort.startDate)}</TableCell>
         <TableCell>{isoDateToLocaleDateWithTime(cohort.endDate)}</TableCell>
-        <TableCell>
-          <Stack direction="row" spacing="0.5rem">
+        <TableCell align="right">
+          <Stack direction="row" spacing="0.5rem" justifyContent="end">
             <Button size="small" onClick={handleOpenEditModal}>
               Edit
             </Button>

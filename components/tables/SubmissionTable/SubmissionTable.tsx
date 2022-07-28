@@ -19,7 +19,12 @@ type Props = {
   submissions: PossibleSubmission[];
 };
 
-const columnHeadings = ["Submitted By", "To", "Status", "Action"];
+const columnHeadings: { heading: string; align: "left" | "right" }[] = [
+  { heading: "Submitted By", align: "left" },
+  { heading: "To", align: "left" },
+  { heading: "Status", align: "left" },
+  { heading: "Action", align: "right" },
+];
 
 /**
  * Renders a table to view OTHER's submissions.
@@ -34,7 +39,7 @@ const SubmissionTable: FC<Props> = ({ deadline, submissions }) => {
     deadline.type === DEADLINE_TYPE.EVALUATION ||
     deadline.type === DEADLINE_TYPE.FEEDBACK;
 
-  const filteredColumnHeadings = columnHeadings.filter((heading) => {
+  const filteredColumnHeadings = columnHeadings.filter(({ heading }) => {
     switch (heading) {
       case "To":
         return shouldIncludeToColumn;
@@ -49,8 +54,10 @@ const SubmissionTable: FC<Props> = ({ deadline, submissions }) => {
       <Table>
         <TableHead>
           <TableRow>
-            {filteredColumnHeadings.map((heading) => (
-              <TableCell key={heading}>{heading}</TableCell>
+            {filteredColumnHeadings.map(({ heading, align }) => (
+              <TableCell key={heading} align={align}>
+                {heading}
+              </TableCell>
             ))}
           </TableRow>
         </TableHead>
