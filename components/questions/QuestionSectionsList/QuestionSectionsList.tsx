@@ -1,22 +1,26 @@
+import { FC } from "react";
+// Components
+import QuestionsList from "./QuestionsList";
+import { Card, CardContent, Stack, Typography } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+// Helpers
 import { isSection } from "@/helpers/types";
-import { UseAnswersActions } from "@/hooks/useAnswers";
 import { generateIndexOffset } from "@/hooks/useAnswers/useAnswers.helpers";
+// Types
+import { UseAnswersActions } from "@/hooks/useAnswers";
 import { LeanSection, Section } from "@/types/deadlines";
 import { Answer } from "@/types/submissions";
-import { LoadingButton } from "@mui/lab";
-import { Card, CardContent, Stack, Typography } from "@mui/material";
-import { FC } from "react";
-import QuestionsList from "./QuestionsList";
 
 type Props = {
   questionSections: (Section | LeanSection)[];
   answers: Map<Answer["questionId"], Answer["answer"]>;
   accessAnswersWithQuestionIndex?: boolean;
-  answersActions: UseAnswersActions;
-  submitAnswers: (options?: { isDraft: boolean }) => void;
-  isSubmitting: boolean;
+  answersActions?: UseAnswersActions;
+  submitAnswers?: (options?: { isDraft: boolean }) => void;
+  isSubmitting?: boolean;
   isReadonly?: boolean;
   isDraft?: boolean;
+  includeAnonymousQuestions?: boolean;
 };
 
 const QuestionSectionsList: FC<Props> = ({
@@ -28,9 +32,8 @@ const QuestionSectionsList: FC<Props> = ({
   isSubmitting,
   isReadonly = false,
   isDraft = true,
+  includeAnonymousQuestions = false,
 }) => {
-  const { generateSetAnswer } = answersActions;
-
   const getSectionNumber = (section: Section | LeanSection, idx: number) => {
     if (isSection(section)) {
       return section.sectionNumber;
@@ -89,9 +92,12 @@ const QuestionSectionsList: FC<Props> = ({
               </Stack>
 
               <QuestionsList
-                questions={questions}
+                questions={questions.filter(
+                  (question) =>
+                    !question.isAnonymous || includeAnonymousQuestions
+                )}
                 answers={answers}
-                generateSetAnswer={generateSetAnswer}
+                generateSetAnswer={answersActions?.generateSetAnswer}
                 accessAnswersWithQuestionIndex={accessAnswersWithQuestionIndex}
                 indexOffset={indexOffset}
                 isReadonly={Boolean(isReadonly)}
@@ -100,25 +106,35 @@ const QuestionSectionsList: FC<Props> = ({
           </Card>
         );
       })}
-      <Stack direction="row" justifyContent="end" gap="1rem">
-        {isDraft && (
+      {!isReadonly && (
+        <Stack direction="row" justifyContent="end" gap="1rem">
+          {isDraft && (
+            <LoadingButton
+              onClick={
+                submitAnswers
+                  ? () => submitAnswers({ isDraft: true })
+                  : undefined
+              }
+              loading={isSubmitting}
+              disabled={isSubmitting}
+            >
+              Save Draft
+            </LoadingButton>
+          )}
           <LoadingButton
-            onClick={() => submitAnswers({ isDraft: true })}
+            variant="contained"
+            onClick={
+              submitAnswers
+                ? () => submitAnswers({ isDraft: false })
+                : undefined
+            }
             loading={isSubmitting}
             disabled={isSubmitting}
           >
-            Save Draft
+            {isDraft ? "Submit" : "Update Submission"}
           </LoadingButton>
-        )}
-        <LoadingButton
-          variant="contained"
-          onClick={() => submitAnswers({ isDraft: false })}
-          loading={isSubmitting}
-          disabled={isSubmitting}
-        >
-          {isDraft ? "Submit" : "Update Submission"}
-        </LoadingButton>
-      </Stack>
+        </Stack>
+      )}
     </Stack>
   );
 };

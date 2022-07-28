@@ -164,6 +164,7 @@ const DeadlineQuestions: NextPage = () => {
               }
             }}
             isSubmitting={false}
+            includeAnonymousQuestions
           />
         )}
       </Body>

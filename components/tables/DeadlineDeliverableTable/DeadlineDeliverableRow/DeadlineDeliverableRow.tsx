@@ -22,6 +22,7 @@ import { PAGES } from "@/helpers/navigation";
 import useAuth from "@/contexts/useAuth";
 import { useRouter } from "next/router";
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Types
 import {
   DeadlineDeliverable,
@@ -30,7 +31,6 @@ import {
 } from "@/types/deadlines";
 import { STATUS } from "@/types/submissions";
 import { CreateSubmissionResponse, HTTP_METHOD } from "@/types/api";
-import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 
 type Props = {
   deadlineDeliverable: DeadlineDeliverable;
@@ -179,9 +179,9 @@ const DeadlineDeliverableRow: FC<Props> = ({
             loading={isCalling(createSubmission.status)}
             onClick={handleClickStart}
             disabled={
-              deadlineDeliverable.toProject &&
-              (!deadlineDeliverable.toProjectSubmission ||
-                !deadlineDeliverable.toProjectSubmission.id)
+              !deadlineDeliverable.toProjectSubmission ||
+              !deadlineDeliverable.toProjectSubmission.id ||
+              deadlineDeliverable.toProjectSubmission.isDraft
             }
           >
             Start

@@ -10,7 +10,7 @@ import {
   MentorRole,
   StudentRole,
 } from "./roles";
-import { PossibleSubmission, Submission } from "./submissions";
+import { Answer, PossibleSubmission, Submission } from "./submissions";
 import { LeanUser, User, UserMetadata } from "./users";
 
 export enum HTTP_METHOD {
@@ -170,6 +170,16 @@ export type EditDeadlineResponse = {
 export type CreateSubmissionResponse = { submission: Submission };
 
 export type GetSubmissionResponse = { submission: Submission };
+
+export type GetSubmissionsAnonymousQuestions = {
+  deadlines: {
+    deadline: Deadline;
+    submissions: {
+      sections: Section[];
+      answers: Answer[];
+    }[];
+  }[];
+};
 
 /**
  * Dashbard Endpoints:

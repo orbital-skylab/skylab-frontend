@@ -1,13 +1,22 @@
 import React, { useState } from "react";
 // Components
 import Body from "@/components/layout/Body";
-import { Box, Stack, Tab, Tabs, tabsClasses, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Stack,
+  Tab,
+  Tabs,
+  tabsClasses,
+  Typography,
+} from "@mui/material";
 import { TabContext, TabPanel } from "@mui/lab";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import DeadlineDeliverableTable from "@/components/tables/DeadlineDeliverableTable";
 import SubmissionTable from "@/components/tables/SubmissionTable";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import NoneFound from "@/components/emptyStates/NoneFound";
+import Link from "next/link";
 // Hooks
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import useAuth from "@/contexts/useAuth";
@@ -21,6 +30,7 @@ import {
   GetStudentPeerEvaluationAndFeedbackResponse,
 } from "@/types/api";
 import { VIEWER_ROLE } from "@/types/deadlines";
+import { PAGES } from "@/helpers/navigation";
 
 enum TAB {
   DEADLINES = "Upcoming Deadlines",
@@ -128,13 +138,29 @@ const StudentDashboard: NextPage = () => {
                     {evaluationAndFeedbackResponse.deadlines.map(
                       ({ deadline, submissions }) => (
                         <Box key={deadline.id}>
-                          <Typography variant="h6" fontWeight={600}>
-                            {deadline.name}
-                          </Typography>
+                          <Stack
+                            direction="row"
+                            justifyContent="space-between"
+                            alignItems="center"
+                          >
+                            <Typography variant="h6" fontWeight={600}>
+                              {deadline.name}
+                            </Typography>
+                            <Link
+                              href={`${PAGES.ANONYMOUS_SUBMISSIONS}/${user?.id}`}
+                              passHref
+                            >
+                              <Button variant="outlined" size="small">
+                                View Anonymous Answers
+                              </Button>
+                            </Link>
+                          </Stack>
                           <NoDataWrapper
                             noDataCondition={!submissions.length}
                             fallback={
-                              <Typography>No submissions found</Typography>
+                              <Typography>
+                                No received evaluations found
+                              </Typography>
                             }
                           >
                             <SubmissionTable
