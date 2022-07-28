@@ -124,21 +124,28 @@ const StudentDashboard: NextPage = () => {
             >
               {evaluationAndFeedbackResponse &&
                 evaluationAndFeedbackResponse.deadlines && (
-                  <>
+                  <Stack spacing="2rem">
                     {evaluationAndFeedbackResponse.deadlines.map(
                       ({ deadline, submissions }) => (
                         <Box key={deadline.id}>
                           <Typography variant="h6" fontWeight={600}>
                             {deadline.name}
                           </Typography>
-                          <SubmissionTable
-                            deadline={deadline}
-                            submissions={submissions}
-                          />
+                          <NoDataWrapper
+                            noDataCondition={!submissions.length}
+                            fallback={
+                              <Typography>No submissions found</Typography>
+                            }
+                          >
+                            <SubmissionTable
+                              deadline={deadline}
+                              submissions={submissions}
+                            />
+                          </NoDataWrapper>
                         </Box>
                       )
                     )}
-                  </>
+                  </Stack>
                 )}
             </NoDataWrapper>
           </LoadingWrapper>
