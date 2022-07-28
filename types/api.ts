@@ -1,6 +1,5 @@
 import { Adviser } from "./advisers";
 import { Deadline, DeadlineDeliverable, Section } from "./deadlines";
-import { EvaluationGroup } from "./groups";
 import { Mentor } from "./mentors";
 import { LeanProject, Project } from "./projects";
 import { EvaluationRelation } from "./relations";
@@ -232,17 +231,6 @@ export type GetAdministratorAllTeamMilestoneSubmissionsResponse = {
   unsubmitted: number;
   submittedOnTime: number;
   submittedLate: number;
-};
-
-/**
- * Groups Endpoints:
- */
-export type CreateGroupResponse = {
-  group: EvaluationGroup;
-};
-
-export type EditGroupResponse = {
-  group: EvaluationGroup;
 };
 
 /**
