@@ -40,26 +40,28 @@ context("Actions", () => {
   });
 
   it("check switching of level of achievement", () => {
-    cy.get(".artemis.2022").should("have.length", 26);
+    cy.get(".artemis").should("have.length", 26);
 
     cy.get("#apollo-tab").click();
-    cy.get(".apollo.2022.project-card").should("have.length", 16);
+    cy.get(".apollo").should("have.length", 16);
 
     cy.get("#gemini-tab").click();
-    cy.get(".gemini.2022.project-card").should("have.length", 16);
+    cy.get(".gemini").should("have.length", 16);
 
     cy.get("#vostok-tab").click();
-    cy.get(".vostok.2022.project-card").should("have.length", 16);
+    cy.get(".vostok").should("have.length", 16);
   });
 
   it("check switching of cohort year", () => {
+    cy.get(".2022").should("have.length", 16);
+
     cy.get("#project-cohort-select").click();
     cy.get("#cohort-2021-option").click();
-    cy.get(".project-card").should("have.length", 0);
+    cy.get(".2021.project-card").should("have.length", 0);
 
     cy.get("#project-cohort-select").click();
     cy.get("#cohort-2022-option").click();
-    cy.get(".project-card").should("have.length", 16);
+    cy.get(".2022.project-card").should("have.length", 16);
   });
 
   it("check search (simple)", () => {
