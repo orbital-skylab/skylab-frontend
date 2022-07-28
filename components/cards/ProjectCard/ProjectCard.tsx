@@ -72,6 +72,10 @@ const ProjectCard: FC<Props> = ({ project }) => {
                 align="center"
                 fontWeight={600}
                 sx={{
+                  paddingX: "1.5rem",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
                   cursor: "pointer",
                   transition: BASE_TRANSITION,
                   "&:hover": {
