@@ -44,8 +44,14 @@ const CsvAdd: NextPage = () => {
       const processedValues = processBatchStudentData(
         addProjectsAndStudentsData
       );
-      await batchAddProjectsAndStudents.call(processedValues);
-      setSuccess("Successfully added the projects and students!");
+      const { message } = await batchAddProjectsAndStudents.call(
+        processedValues
+      );
+      if (message?.length > 0) {
+        setError(`The following rows were not successfully added:\n${message}`);
+      } else {
+        setSuccess("Successfully added the projects and students!");
+      }
       handleClearProjectsAndStudents();
     } catch (error) {
       setError(error);
@@ -67,8 +73,12 @@ const CsvAdd: NextPage = () => {
   const handleAddAdvisers = async () => {
     try {
       const processedValues = processBatchAddAdvisersData(addAdvisersData);
-      await batchAddAdvisers.call(processedValues);
-      setSuccess("Successfully added the advisers!");
+      const { message } = await batchAddAdvisers.call(processedValues);
+      if (message?.length > 0) {
+        setError(`The following rows were not successfully added:\n${message}`);
+      } else {
+        setSuccess("Successfully added the projects and students!");
+      }
       handleClearAddAdvisers();
     } catch (error) {
       setError(error);
@@ -90,9 +100,12 @@ const CsvAdd: NextPage = () => {
   const handleAddMentors = async () => {
     try {
       const processedValues = processBatchAddMentorsData(addMentorsData);
-      await batchAddMentors.call(processedValues);
-      setSuccess("Successfully added the mentors!");
-      handleClearAddMentors();
+      const { message } = await batchAddMentors.call(processedValues);
+      if (message?.length > 0) {
+        setError(`The following rows were not successfully added:\n${message}`);
+      } else {
+        setSuccess("Successfully added the projects and students!");
+      }
     } catch (error) {
       setError(error);
     }
