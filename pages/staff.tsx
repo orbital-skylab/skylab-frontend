@@ -1,7 +1,6 @@
 import {
   ChangeEvent,
   SyntheticEvent,
-  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -9,7 +8,6 @@ import {
 import type { NextPage } from "next";
 // Libraries
 import {
-  debounce,
   Grid,
   MenuItem,
   Stack,
@@ -38,8 +36,6 @@ import {
 } from "@/types/api";
 
 const Staff: NextPage = () => {
-  const [querySearch, setQuerySearch] = useState("");
-  const [searchTextInput, setSearchTextInput] = useState("");
   const [selectedType, setSelectedType] = useState<STAFF_TYPES>(
     STAFF_VALUES[0]
   );
@@ -56,9 +52,8 @@ const Staff: NextPage = () => {
   const memoQueryParams = useMemo(() => {
     return {
       cohortYear: selectedCohortYear,
-      search: querySearch,
     };
-  }, [selectedCohortYear, querySearch]);
+  }, [selectedCohortYear]);
   const { data: staff, status: fetchStaffStatus } = useFetch<GetStaffsResponse>(
     {
       endpoint: `/${selectedType.toLowerCase()}`,
@@ -88,19 +83,6 @@ const Staff: NextPage = () => {
     setSelectedType(newType);
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedSetQuerySearch = useCallback(
-    debounce((val) => {
-      setQuerySearch(val);
-    }),
-    []
-  );
-
-  const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchTextInput(e.target.value);
-    debouncedSetQuerySearch(e.target.value);
-  };
-
   const handleCohortYearChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSelectedCohortYear(Number(e.target.value) as Cohort["academicYear"]);
   };
@@ -121,16 +103,10 @@ const Staff: NextPage = () => {
         <Stack direction="column" mt="0.5rem" mb="1rem">
           <Stack
             direction="row"
-            justifyContent="space-between"
+            justifyContent="end"
             alignItems="center"
             width="100%"
           >
-            <TextField
-              label="Search"
-              value={searchTextInput}
-              onChange={handleSearchInputChange}
-              size="small"
-            />
             <TextField
               name="cohort"
               label="Cohort"

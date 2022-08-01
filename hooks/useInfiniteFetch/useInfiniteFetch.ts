@@ -46,20 +46,20 @@ export default function useInfiniteFetch<U, T>({
         });
         const apiService = apiServiceBuilder.build();
 
-        const response = await (await apiService()).json();
-        const data = responseToData(response);
+        const response: U = await (await apiService()).json();
+        const data: T[] = responseToData(response);
         if (page === 0) {
           if (data && data.length !== undefined) {
             setData(data);
           }
-          setOriginalData(response);
+          setOriginalData([response]);
         } else {
           if (data && data.length !== undefined) {
             setData((prevData) => [...prevData, ...data]);
           }
           setOriginalData((prevOriginalData) => [
             ...prevOriginalData,
-            ...response,
+            response,
           ]);
         }
         setHasMore(data.length > 0);

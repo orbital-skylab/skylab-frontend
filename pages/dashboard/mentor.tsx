@@ -105,7 +105,7 @@ const MentorDashboard: NextPage = () => {
               {projectsResponse && projectsResponse.projects && (
                 <ProjectTable
                   projects={projectsResponse.projects}
-                  showMentorColumn
+                  showAdviserColumn
                   showEditAction
                 />
               )}
