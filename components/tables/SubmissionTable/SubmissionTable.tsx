@@ -17,6 +17,7 @@ import { PossibleSubmission } from "@/types/submissions";
 type Props = {
   deadline: Deadline;
   submissions: PossibleSubmission[];
+  shouldIncludeToColumn?: boolean;
 };
 
 const columnHeadings: { heading: string; align: "left" | "right" }[] = [
@@ -30,19 +31,23 @@ const columnHeadings: { heading: string; align: "left" | "right" }[] = [
  * Renders a table to view OTHER's submissions.
  * Examples: Peer teams' Milestone submissions, Peer teams' evaluations, Adviser evaluations, Peer teams' feedback, Student's feedbacks, etc.
  */
-const SubmissionTable: FC<Props> = ({ deadline, submissions }) => {
+const SubmissionTable: FC<Props> = ({
+  deadline,
+  submissions,
+  shouldIncludeToColumn = false,
+}) => {
   const getKey = (deadline: Deadline, submission: PossibleSubmission) => {
     return `${deadline.id}-${submission.id}-${submission.fromProject?.id}-${submission.fromUser?.id}-${submission.toProject?.id}-${submission.toUser?.id}`;
   };
 
-  const shouldIncludeToColumn =
-    deadline.type === DEADLINE_TYPE.EVALUATION ||
-    deadline.type === DEADLINE_TYPE.FEEDBACK;
-
   const filteredColumnHeadings = columnHeadings.filter(({ heading }) => {
     switch (heading) {
       case "To":
-        return shouldIncludeToColumn;
+        return (
+          shouldIncludeToColumn &&
+          (deadline.type === DEADLINE_TYPE.EVALUATION ||
+            deadline.type === DEADLINE_TYPE.FEEDBACK)
+        );
 
       default:
         return true;
