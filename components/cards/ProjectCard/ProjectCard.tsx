@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 // Components
 import {
   Box,
@@ -8,7 +8,6 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import ProjectSubmissionModal from "../../modals/ProjectSubmissionModal";
 import Link from "next/link";
 import UsersName from "@/components/typography/UsersName/UsersName";
 // Helpers
@@ -24,19 +23,8 @@ type Props = {
 };
 
 const ProjectCard: FC<Props> = ({ project }) => {
-  const [isProjectModalOpen, setProjectModalOpen] = useState(false);
-
-  const handleOpenProjectModal = () => {
-    setProjectModalOpen(true);
-  };
-
   return (
     <>
-      <ProjectSubmissionModal
-        open={isProjectModalOpen}
-        setOpen={setProjectModalOpen}
-        project={project}
-      />
       <Card
         sx={{
           height: "100%",
@@ -144,7 +132,6 @@ const ProjectCard: FC<Props> = ({ project }) => {
                     textTransform: "none",
                     alignSelf: "center",
                   }}
-                  onClick={() => setProjectModalOpen(true)}
                 >
                   Details
                 </Button>
@@ -157,9 +144,27 @@ const ProjectCard: FC<Props> = ({ project }) => {
                   textTransform: "none",
                   alignSelf: "center",
                 }}
-                onClick={handleOpenProjectModal}
+                href={project.posterUrl}
+                target="_blank"
+                rel="noreferrer"
+                disabled={!project.posterUrl}
               >
-                Poster and Video
+                Poster
+              </Button>
+              <Button
+                size="small"
+                variant="contained"
+                sx={{
+                  width: "100%",
+                  textTransform: "none",
+                  alignSelf: "center",
+                }}
+                href={project.videoUrl}
+                target="_blank"
+                rel="noreferrer"
+                disabled={!project.videoUrl}
+              >
+                Video
               </Button>
             </Stack>
           </Stack>
