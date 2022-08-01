@@ -50,7 +50,6 @@ export enum QUESTION_TYPE {
 export type Question = {
   id: number;
   sectionId: number;
-  deadlineId: number;
   questionNumber: number;
   question: string;
   desc?: string;

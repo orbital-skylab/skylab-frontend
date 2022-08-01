@@ -62,7 +62,7 @@ const QuestionSectionsList: FC<Props> = ({
               borderColor: "primary.main",
               position: "relative",
               overflow: "visible",
-              marginTop: "2rem",
+              marginTop: "40px",
             }}
           >
             <Typography
@@ -131,7 +131,7 @@ const QuestionSectionsList: FC<Props> = ({
             loading={isSubmitting}
             disabled={isSubmitting}
           >
-            {isDraft ? "Submit" : "Update Submission"}
+            {isDraft ? "Submit" : "Update"}
           </LoadingButton>
         </Stack>
       )}
