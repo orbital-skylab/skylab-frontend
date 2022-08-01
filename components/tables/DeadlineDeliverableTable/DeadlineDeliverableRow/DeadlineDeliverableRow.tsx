@@ -56,7 +56,7 @@ const DeadlineDeliverableRow: FC<Props> = ({
       },
     },
     onSuccess: (newSubmission: CreateSubmissionResponse) => {
-      router.push(`${PAGES.SUBMISSIONS}/${newSubmission.id}`);
+      router.push(`${PAGES.SUBMISSIONS}/${newSubmission.submission.id}`);
     },
   });
 
