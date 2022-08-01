@@ -140,7 +140,7 @@ const findRowsWithInvalidEmail = (parsedData: unknown[]) => {
 
 const findRowsWithInvalidNusnetId = (parsedData: unknown[]) => {
   const rowsWithInvalidNusnetId = [];
-  const nusnetIdPattern = /^(e)[0-9]{7}$/;
+  const nusnetIdPattern = /^(e|E)[0-9]{7}$/;
   console.log(parsedData);
   for (let i = 0; i < parsedData.length; i++) {
     const data = parsedData[i] as Record<string, unknown>;
