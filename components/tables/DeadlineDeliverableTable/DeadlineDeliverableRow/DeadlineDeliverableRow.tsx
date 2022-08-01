@@ -107,7 +107,7 @@ const DeadlineDeliverableRow: FC<Props> = ({
         } else if (deadlineDeliverable.toUser) {
           return (
             <Stack direction="row" spacing="0.5rem" alignItems="center">
-              <Typography>{`${deadlineDeliverable.deadline.name} for`}</Typography>
+              <Typography fontSize="0.875rem">{`${deadlineDeliverable.deadline.name} for`}</Typography>
               <Button
                 variant="outlined"
                 size="small"
@@ -198,7 +198,8 @@ const DeadlineDeliverableRow: FC<Props> = ({
           </Link>
         );
       }
-      case (STATUS.SUBMITTED, STATUS.SUBMITTED_LATE): {
+      case STATUS.SUBMITTED:
+      case STATUS.SUBMITTED_LATE: {
         return (
           <Link
             href={`${PAGES.SUBMISSIONS}/${deadlineDeliverable.submission?.id}`}

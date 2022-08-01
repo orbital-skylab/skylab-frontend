@@ -3,7 +3,7 @@ import Body from "@/components/layout/Body";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import GoBackButton from "@/components/buttons/GoBackButton";
-import { Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import QuestionSectionsList from "@/components/questions/QuestionSectionsList";
 // Hooks
 import useFetch, { isFetching } from "@/hooks/useFetch";
@@ -16,7 +16,13 @@ import useAuth from "@/contexts/useAuth";
 import { isSubmissionsFromProjectOrUser } from "@/helpers/submissions";
 // Types
 import type { NextPage } from "next";
-import { GetSubmissionResponse, HTTP_METHOD } from "@/types/api";
+import {
+  EditSubmissionResponse,
+  GetSubmissionResponse,
+  HTTP_METHOD,
+} from "@/types/api";
+import HoverLink from "@/components/typography/HoverLink";
+import { PAGES } from "@/helpers/navigation";
 
 const Submission: NextPage = () => {
   const router = useRouter();
@@ -25,13 +31,16 @@ const Submission: NextPage = () => {
   const { answers, actions, getAnswersAsArray } = useAnswers();
   const { setSuccess, setError } = useSnackbarAlert();
 
-  const { data: submissionResponse, status: fetchSubmissionStatus } =
-    useFetch<GetSubmissionResponse>({
-      endpoint: `/submissions/${submissionId}`,
-      requiresAuthorization: true,
-      enabled: submissionId !== undefined,
-      onFetch: (data) => actions.setAnswersFromArray(data.submission.answers),
-    });
+  const {
+    data: submissionResponse,
+    status: fetchSubmissionStatus,
+    mutate: mutateSubmission,
+  } = useFetch<GetSubmissionResponse>({
+    endpoint: `/submissions/${submissionId}`,
+    requiresAuthorization: true,
+    enabled: submissionId !== undefined,
+    onFetch: (data) => actions.setAnswersFromArray(data.submission.answers),
+  });
 
   const isEditMode = isSubmissionsFromProjectOrUser(
     submissionResponse?.submission,
@@ -42,6 +51,21 @@ const Submission: NextPage = () => {
     method: HTTP_METHOD.PUT,
     endpoint: `/submissions/${submissionId}`,
     requiresAuthorization: true,
+    onSuccess: (response: EditSubmissionResponse) => {
+      // If the submission was submitted (isDraft === true => isDraft === false)
+      if (
+        submissionResponse?.submission.isDraft &&
+        !response.submission.isDraft
+      ) {
+        mutateSubmission((oldSubmissionResponse) => {
+          const newSubmissionResponse = JSON.parse(
+            JSON.stringify(oldSubmissionResponse)
+          );
+          newSubmissionResponse.submission.isDraft = false;
+          return newSubmissionResponse;
+        });
+      }
+    },
   });
 
   const handleSubmit = async (options?: { isDraft: boolean }) => {
@@ -72,32 +96,43 @@ const Submission: NextPage = () => {
           }
         >
           <GoBackButton />
-          {submissionResponse?.submission.fromProject?.id && (
-            <Typography variant="caption">
-              {`${submissionResponse?.submission.fromProject}`}
-            </Typography>
-          )}
-          {submissionResponse?.submission.fromUser?.id && (
-            <Typography variant="caption">
-              {`${submissionResponse?.submission.fromUser}`}
-            </Typography>
-          )}
-          {submissionResponse?.submission.toProject?.id && (
-            <Typography variant="caption">
-              {`${submissionResponse?.submission.toProject}`}
-            </Typography>
-          )}
-          {submissionResponse?.submission.toUser?.id && (
-            <Typography variant="caption">
-              {`${submissionResponse?.submission.toUser}`}
-            </Typography>
-          )}
+          <Stack gap="0.5rem" marginBottom="1.5rem">
+            {submissionResponse?.submission.fromProject?.id && (
+              <HoverLink
+                href={`${PAGES.PROJECTS}/${submissionResponse?.submission.fromProject?.id}`}
+              >
+                {`From: ${submissionResponse?.submission.fromProject?.name}`}
+              </HoverLink>
+            )}
+            {submissionResponse?.submission.fromUser?.id && (
+              <HoverLink
+                href={`${PAGES.USERS}/${submissionResponse?.submission.fromUser?.id}`}
+              >
+                {`From: ${submissionResponse?.submission.fromUser.name}`}
+              </HoverLink>
+            )}
+            {submissionResponse?.submission.toProject?.id && (
+              <HoverLink
+                href={`${PAGES.PROJECTS}/${submissionResponse?.submission.toProject?.id}`}
+              >
+                {`To: ${submissionResponse?.submission.toProject.name}`}
+              </HoverLink>
+            )}
+            {submissionResponse?.submission.toUser?.id && (
+              <HoverLink
+                href={`${PAGES.USERS}/${submissionResponse?.submission.fromUser?.id}`}
+              >
+                {`To: ${submissionResponse?.submission.toUser.name}`}
+              </HoverLink>
+            )}
+          </Stack>
           <Typography variant="h6" fontWeight={600}>
             {submissionResponse?.submission.deadline?.name}
           </Typography>
           <Typography sx={{ whiteSpace: "pre-line" }}>
             {submissionResponse?.submission.deadline?.desc}
           </Typography>
+          <Box sx={{ height: "1.5rem" }} />
           <QuestionSectionsList
             questionSections={submissionResponse?.submission.sections ?? []}
             answers={answers}
