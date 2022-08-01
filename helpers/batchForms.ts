@@ -3,30 +3,72 @@ export const checkValidity = (
   expectedHeaders: string[]
 ): { isValid: boolean; errorMessage?: string } => {
   let rowsWithNull;
+  let rowsWithInvalidEmail;
+  let rowsWithInvalidNusnetId;
+  let rowsWithInvalidMatriculationNumber;
 
   if (!parsedData || !parsedData.length) {
     return {
       isValid: false,
       errorMessage: "No data was detected. Please upload another file.",
     };
-  } else if (!checkHeadersMatch(parsedData, expectedHeaders)) {
+  }
+
+  if (!checkHeadersMatch(parsedData, expectedHeaders)) {
     return {
       isValid: false,
       errorMessage:
         "The detected file does not follow the format of the provided CSV template. Please upload another file or try again.",
     };
-  } else if ((rowsWithNull = findRowsWithNull(parsedData)).length !== 0) {
+  }
+
+  if ((rowsWithNull = findRowsWithNull(parsedData)).length !== 0) {
     return {
       isValid: false,
       errorMessage: `The detected file contains rows with incomplete data (Rows: ${rowsWithNull.join(
         ", "
       )}) Please check the file and try again.`,
     };
-  } else {
+  }
+
+  if (
+    (rowsWithInvalidEmail = findRowsWithInvalidEmail(parsedData)).length !== 0
+  ) {
     return {
-      isValid: true,
+      isValid: false,
+      errorMessage: `The detected file contains rows with invalid email (Rows: ${rowsWithInvalidEmail.join(
+        ", "
+      )}) Please check the file and try again.`,
     };
   }
+
+  if (
+    (rowsWithInvalidNusnetId = findRowsWithInvalidNusnetId(parsedData))
+      .length !== 0
+  ) {
+    return {
+      isValid: false,
+      errorMessage: `The detected file contains rows with invalid NUSNET ID (Rows: ${rowsWithInvalidNusnetId.join(
+        ", "
+      )}) Please check the file and try again.`,
+    };
+  }
+
+  if (
+    (rowsWithInvalidMatriculationNumber =
+      findRowsWithInvalidMatriculationNumber(parsedData)).length !== 0
+  ) {
+    return {
+      isValid: false,
+      errorMessage: `The detected file contains rows with invalid matriculation number (Rows: ${rowsWithInvalidMatriculationNumber.join(
+        ", "
+      )}) Please check the file and try again.`,
+    };
+  }
+
+  return {
+    isValid: true,
+  };
 };
 
 /**
@@ -77,4 +119,58 @@ export const findRowsWithNull = (parsedData: unknown[]) => {
   }
 
   return rowsWithNull;
+};
+
+const findRowsWithInvalidEmail = (parsedData: unknown[]) => {
+  const rowsWithInvalidEmail = [];
+  const emailPattern =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  for (let i = 0; i < parsedData.length; i++) {
+    const data = parsedData[i] as Record<string, unknown>;
+    for (const [key, value] of Object.entries(data)) {
+      if (key.includes("Email") && !emailPattern.test(value as string)) {
+        rowsWithInvalidEmail.push(i + 1);
+        break;
+      }
+    }
+  }
+
+  return rowsWithInvalidEmail;
+};
+
+const findRowsWithInvalidNusnetId = (parsedData: unknown[]) => {
+  const rowsWithInvalidNusnetId = [];
+  const nusnetIdPattern = /^(e)[0-9]{7}$/;
+  console.log(parsedData);
+  for (let i = 0; i < parsedData.length; i++) {
+    const data = parsedData[i] as Record<string, unknown>;
+    for (const [key, value] of Object.entries(data)) {
+      if (key.includes("NUSNET ID") && !nusnetIdPattern.test(value as string)) {
+        rowsWithInvalidNusnetId.push(i + 1);
+        break;
+      }
+    }
+  }
+
+  return rowsWithInvalidNusnetId;
+};
+
+const findRowsWithInvalidMatriculationNumber = (parsedData: unknown[]) => {
+  const rowsWithInvalidMatriculationNumber = [];
+  const matriculationNumberPattern = /^(A)[0-9]{7}[A-Z]$/;
+  console.log(parsedData);
+  for (let i = 0; i < parsedData.length; i++) {
+    const data = parsedData[i] as Record<string, unknown>;
+    for (const [key, value] of Object.entries(data)) {
+      if (
+        key.includes("Matriculation Number") &&
+        !matriculationNumberPattern.test(value as string)
+      ) {
+        rowsWithInvalidMatriculationNumber.push(i + 1);
+        break;
+      }
+    }
+  }
+
+  return rowsWithInvalidMatriculationNumber;
 };
