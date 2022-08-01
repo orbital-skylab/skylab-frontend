@@ -22,6 +22,7 @@ import { PAGES } from "@/helpers/navigation";
 import useAuth from "@/contexts/useAuth";
 import { useRouter } from "next/router";
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Types
 import {
   DeadlineDeliverable,
@@ -41,23 +42,31 @@ const DeadlineDeliverableRow: FC<Props> = ({
   viewerRole,
 }) => {
   const { user } = useAuth();
+  const { setSuccess, setError } = useSnackbarAlert();
   const router = useRouter();
 
   const createSubmission = useApiCall({
     method: HTTP_METHOD.POST,
     endpoint: "/submissions",
     body: {
-      deadlineId: deadlineDeliverable.deadline.id,
-      ...getFromProjectOrUserId(user, viewerRole),
-      ...getToProjectOrUserId(deadlineDeliverable),
+      submission: {
+        deadlineId: deadlineDeliverable.deadline.id,
+        ...getFromProjectOrUserId(user, viewerRole),
+        ...getToProjectOrUserId(deadlineDeliverable),
+      },
     },
     onSuccess: (newSubmission: CreateSubmissionResponse) => {
       router.push(`${PAGES.SUBMISSIONS}/${newSubmission.id}`);
     },
   });
 
-  const handleClickStart = () => {
-    createSubmission.call();
+  const handleClickStart = async () => {
+    try {
+      await createSubmission.call();
+      setSuccess("Navigating to your submission...");
+    } catch (error) {
+      setError("An error was encountered while creating your submission");
+    }
   };
 
   const generateDeadlineCell = (deadlineDeliverable: DeadlineDeliverable) => {
@@ -83,14 +92,16 @@ const DeadlineDeliverableRow: FC<Props> = ({
               className="deadline-deliverable-row"
               direction="row"
               spacing="0.5rem"
+              alignItems="center"
             >
-              <Typography>{`${deadlineDeliverable.deadline.name} for`}</Typography>
+              <Typography fontSize="0.875rem">{`${deadlineDeliverable.deadline.name} for`}</Typography>
               <Button
                 variant="outlined"
                 size="small"
                 disabled={
                   !deadlineDeliverable.toProjectSubmission ||
-                  !deadlineDeliverable.toProjectSubmission.id
+                  !deadlineDeliverable.toProjectSubmission.id ||
+                  deadlineDeliverable.toProjectSubmission.isDraft
                 }
                 href={`${PAGES.SUBMISSIONS}/${deadlineDeliverable.toProjectSubmission?.id}`}
               >
@@ -100,8 +111,8 @@ const DeadlineDeliverableRow: FC<Props> = ({
           );
         } else if (deadlineDeliverable.toUser) {
           return (
-            <Stack direction="row" spacing="0.5rem">
-              <Typography>{`${deadlineDeliverable.deadline.name} for`}</Typography>
+            <Stack direction="row" spacing="0.5rem" alignItems="center">
+              <Typography fontSize="0.875rem">{`${deadlineDeliverable.deadline.name} for`}</Typography>
               <Button
                 variant="outlined"
                 size="small"
@@ -173,9 +184,9 @@ const DeadlineDeliverableRow: FC<Props> = ({
             loading={isCalling(createSubmission.status)}
             onClick={handleClickStart}
             disabled={
-              deadlineDeliverable.toProject &&
-              (!deadlineDeliverable.toProjectSubmission ||
-                !deadlineDeliverable.toProjectSubmission.id)
+              !deadlineDeliverable.toProjectSubmission ||
+              !deadlineDeliverable.toProjectSubmission.id ||
+              deadlineDeliverable.toProjectSubmission.isDraft
             }
           >
             Start
@@ -192,7 +203,8 @@ const DeadlineDeliverableRow: FC<Props> = ({
           </Link>
         );
       }
-      case (STATUS.SUBMITTED, STATUS.SUBMITTED_LATE): {
+      case STATUS.SUBMITTED:
+      case STATUS.SUBMITTED_LATE: {
         return (
           <Link
             href={`${PAGES.SUBMISSIONS}/${deadlineDeliverable.submission?.id}`}
@@ -221,7 +233,9 @@ const DeadlineDeliverableRow: FC<Props> = ({
             deadlineDeliverable.submission?.updatedAt
           )}
         </TableCell>
-        <TableCell>{generateActionCell(status, deadlineDeliverable)}</TableCell>
+        <TableCell align="right">
+          {generateActionCell(status, deadlineDeliverable)}
+        </TableCell>
       </TableRow>
     </>
   );

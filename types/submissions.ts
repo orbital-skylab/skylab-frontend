@@ -29,29 +29,10 @@ export type PossibleSubmission = {
   // If the submission does not exist, these two fields do not exist
   id?: number;
   updatedAt?: string;
-  // Only applicable for:
-  // 1. Student dashboard is fetching Milestones, Evaluations, and Feedbacks from peer teams
-  fromProject?: {
-    id: number;
-    name: string;
-  };
-  // Only applicable for:
-  // 1. Student dashboard is fetching Evaluations from adviser
-  fromUser?: {
-    id: number;
-    name: string;
-  };
-  // Only applicable for:
-  // 1. Student dashboard
-  toProject?: {
-    id: number;
-    name: string;
-  };
-  // Only applicable for:
-  toUser?: {
-    id: number;
-    name: string;
-  };
+  fromProject?: Project;
+  fromUser?: User;
+  toProject?: Project;
+  toUser?: User;
 };
 
 export enum STATUS {
@@ -59,4 +40,11 @@ export enum STATUS {
   SUBMITTED_LATE,
   SAVED_DRAFT,
   NOT_YET_STARTED,
+}
+
+export enum SUBMISSION_STATUS {
+  ALL = "All",
+  UNSUBMITTED = "Unsubmitted",
+  SUBMITTED = "Submitted",
+  SUBMITTED_LATE = "Submitted_Late",
 }

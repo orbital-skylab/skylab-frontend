@@ -29,10 +29,9 @@ export function isQuestion(value: any): value is Question {
   return (
     value &&
     value.id !== undefined &&
-    value.deadlineId !== undefined &&
+    value.sectionId !== undefined &&
     value.questionNumber !== undefined &&
     value.question &&
-    value.desc !== undefined &&
     value.type
   );
 }

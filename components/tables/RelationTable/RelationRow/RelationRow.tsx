@@ -64,29 +64,31 @@ const RelationRow: FC<Props> = ({
             {relation.toProject?.name}
           </HoverLink>
         </TableCell>
-        {showAdviserColumn && relation.adviser && (
+        {showAdviserColumn && (
           <TableCell>
-            <Stack direction="row" spacing="0.25rem">
+            {relation.adviser && (
               <HoverLink href={`${PAGES.USERS}/${relation.adviser.adviserId}`}>
                 {relation.adviser.name}
               </HoverLink>
-            </Stack>
+            )}
           </TableCell>
         )}
-        <TableCell>
-          <Button onClick={handleOpenEditModal}>Edit</Button>
-          <Button
-            onClick={handleOpenDeleteModal}
-            sx={{
-              transition: BASE_TRANSITION,
-              "&:hover": {
-                backgroundColor: "error.main",
-                color: "white",
-              },
-            }}
-          >
-            Delete
-          </Button>
+        <TableCell align="right">
+          <Stack direction="row" justifyContent="end" spacing="0.5rem">
+            <Button onClick={handleOpenEditModal}>Edit</Button>
+            <Button
+              onClick={handleOpenDeleteModal}
+              sx={{
+                transition: BASE_TRANSITION,
+                "&:hover": {
+                  backgroundColor: "error.main",
+                  color: "white",
+                },
+              }}
+            >
+              Delete
+            </Button>
+          </Stack>
         </TableCell>
       </TableRow>
     </>

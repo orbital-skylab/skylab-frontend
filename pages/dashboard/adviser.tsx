@@ -159,6 +159,7 @@ const AdviserDashboard: NextPage = () => {
                           <SubmissionTable
                             deadline={deadline}
                             submissions={submissions}
+                            shouldIncludeToColumn
                           />
                         </Box>
                       )

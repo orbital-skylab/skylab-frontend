@@ -22,12 +22,12 @@ type Props = {
   showAdviserColumn?: boolean;
 };
 
-const columnHeadings = [
-  "Relation ID",
-  "Evaluator",
-  "Evaluatee",
-  "Adviser",
-  "Actions",
+const columnHeadings: { heading: string; align: "left" | "right" }[] = [
+  { heading: "Relation ID", align: "left" },
+  { heading: "Evaluator", align: "left" },
+  { heading: "Evaluatee", align: "left" },
+  { heading: "Adviser", align: "left" },
+  { heading: "Actions", align: "right" },
 ];
 
 const RelationTable: FC<Props> = ({
@@ -36,7 +36,7 @@ const RelationTable: FC<Props> = ({
   projects,
   showAdviserColumn,
 }) => {
-  const filteredColumnHeadings = columnHeadings.filter((heading) => {
+  const filteredColumnHeadings = columnHeadings.filter(({ heading }) => {
     switch (heading) {
       case "Adviser":
         return Boolean(showAdviserColumn);
@@ -52,8 +52,10 @@ const RelationTable: FC<Props> = ({
         <Table>
           <TableHead>
             <TableRow>
-              {filteredColumnHeadings.map((heading) => (
-                <TableCell key={heading}>{heading}</TableCell>
+              {filteredColumnHeadings.map(({ heading, align }) => (
+                <TableCell key={heading} align={align}>
+                  {heading}
+                </TableCell>
               ))}
             </TableRow>
           </TableHead>

@@ -18,7 +18,12 @@ type Props = {
   viewerRole: VIEWER_ROLE;
 };
 
-const columnHeadings = ["Deadline", "Due By", "Status", "Action"];
+const columnHeadings: { heading: string; align: "left" | "right" }[] = [
+  { heading: "Deadline", align: "left" },
+  { heading: "Due By", align: "left" },
+  { heading: "Status", align: "left" },
+  { heading: "Actions", align: "right" },
+];
 
 /**
  * Renders a table to view YOUR OWN deadline deliverables.
@@ -33,8 +38,10 @@ const DeadlineDeliverableTable: FC<Props> = ({
       <Table>
         <TableHead>
           <TableRow>
-            {columnHeadings.map((heading) => (
-              <TableCell key={heading}>{heading}</TableCell>
+            {columnHeadings.map(({ heading, align }) => (
+              <TableCell key={heading} align={align}>
+                {heading}
+              </TableCell>
             ))}
           </TableRow>
         </TableHead>

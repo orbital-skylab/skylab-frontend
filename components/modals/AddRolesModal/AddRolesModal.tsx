@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FC, useEffect, useState } from "react";
 // Components
 import Modal from "../Modal";
 import MultiDropdown from "@/components/formikFormControllers/MultiDropdown";
@@ -37,23 +37,17 @@ const AddRolesModal: FC<Props> = ({ selectedRole, handleCloseModal }) => {
     currentCohortYear ?? ""
   );
 
-  const memoUsersQueryParams = useMemo(
-    () => ({
-      cohortYear: selectedCohortYear,
-      excludeRole: toSingular(selectedRole),
-    }),
-    [selectedCohortYear, selectedRole]
-  );
   const { data: leanUsersWithoutStudentsResponse } =
     useFetch<GetLeanUsersResponse>({
-      endpoint: `/users/lean`,
-      queryParams: memoUsersQueryParams,
+      endpoint: `/users/lean?cohortYear=${selectedCohortYear}&excludeRole=${toSingular(
+        selectedRole
+      )}`,
       enabled: Boolean(selectedCohortYear) && Boolean(selectedRole),
     });
 
-  const addStudents = useApiCall({
-    method: HTTP_METHOD.POST,
-    endpoint: "TODO:",
+  const addRoles = useApiCall({
+    method: HTTP_METHOD.PUT,
+    endpoint: `/users/${selectedRole}`,
     requiresAuthorization: true,
   });
 
@@ -62,11 +56,13 @@ const AddRolesModal: FC<Props> = ({ selectedRole, handleCloseModal }) => {
   };
 
   const handleSubmit = async (values: AddRolesFormValuesType) => {
-    // TODO: Process values
-    const processedValues = { ...values };
+    const processedValues = {
+      cohortYear: selectedCohortYear,
+      ...values,
+    };
 
     try {
-      await addStudents.call(processedValues);
+      await addRoles.call(processedValues);
       setTimeout(() => {
         router.reload();
       }, refreshSeconds * 1000);
@@ -100,20 +96,22 @@ const AddRolesModal: FC<Props> = ({ selectedRole, handleCloseModal }) => {
         <Formik initialValues={initialValues} onSubmit={handleSubmit}>
           {(formik) => (
             <Stack direction="column" spacing="1rem">
-              <TextField
-                label="Cohort"
-                value={selectedCohortYear}
-                onChange={handleCohortYearChange}
-                select
-                size="small"
-              >
-                {cohorts &&
-                  cohorts.map(({ academicYear }) => (
-                    <MenuItem key={academicYear} value={academicYear}>
-                      {academicYear}
-                    </MenuItem>
-                  ))}
-              </TextField>
+              {selectedRole !== ROLES.ADMINISTRATORS && (
+                <TextField
+                  label="Cohort"
+                  value={selectedCohortYear}
+                  onChange={handleCohortYearChange}
+                  select
+                  size="small"
+                >
+                  {cohorts &&
+                    cohorts.map(({ academicYear }) => (
+                      <MenuItem key={academicYear} value={academicYear}>
+                        {academicYear}
+                      </MenuItem>
+                    ))}
+                </TextField>
+              )}
               <MultiDropdown
                 name="userIds"
                 label="Users"

@@ -55,8 +55,8 @@ const DeadlineRow: FC<Props> = ({ deadline, deadlines, mutate }) => {
           {deadline.evaluating ? deadline.evaluating.name : "-"}
         </TableCell>
         <TableCell>{isoDateToLocaleDateWithTime(deadline.dueBy)}</TableCell>
-        <TableCell>
-          <Stack direction="row" spacing="0.5rem">
+        <TableCell align="right">
+          <Stack direction="row" spacing="0.5rem" justifyContent="end">
             <Link href={`${PAGES.MANAGE_DEADLINES}/${deadline.id}`} passHref>
               <Tooltip
                 title="View and edit deadline questions"

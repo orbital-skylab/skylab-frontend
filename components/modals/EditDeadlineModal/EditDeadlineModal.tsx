@@ -66,6 +66,7 @@ const EditDeadlineModal: FC<Props> = ({
     name: deadline.name,
     dueBy: isoDateToDateTimeLocalInput(deadline.dueBy),
     type: deadline.type,
+    evaluatingMilestoneId: deadline.evaluating?.id ?? "",
   };
 
   const handleSubmit = async (

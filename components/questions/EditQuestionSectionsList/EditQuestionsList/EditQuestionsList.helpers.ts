@@ -20,8 +20,7 @@ export const stripSections = (sections: Section[]): LeanSection[] => {
   const stripQuestions = (questions: Question[]): LeanQuestion[] => {
     return questions.map((question) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { id, sectionId, deadlineId, questionNumber, ...strippedQuestion } =
-        question;
+      const { id, sectionId, questionNumber, ...strippedQuestion } = question;
       return strippedQuestion;
     });
   };

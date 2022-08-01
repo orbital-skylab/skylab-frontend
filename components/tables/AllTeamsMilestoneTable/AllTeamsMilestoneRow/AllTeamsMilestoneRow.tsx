@@ -3,11 +3,10 @@ import Link from "next/link";
 // Components
 import { Box, Button, TableCell, TableRow } from "@mui/material";
 import HoverLink from "@/components/typography/HoverLink";
+import UsersName from "@/components/typography/UsersName";
 // Helpers
 import { generateSubmissionStatus } from "@/helpers/submissions";
 import { PAGES } from "@/helpers/navigation";
-// Hooks
-import useAuth from "@/contexts/useAuth";
 // Types
 import { PossibleSubmission, STATUS } from "@/types/submissions";
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
@@ -16,15 +15,9 @@ import { Deadline } from "@/types/deadlines";
 type Props = {
   deadline: Deadline;
   submission: PossibleSubmission;
-  shouldIncludeToColumn: boolean;
 };
 
-const SubmissionRow: FC<Props> = ({
-  deadline,
-  submission,
-  shouldIncludeToColumn,
-}) => {
-  const { user } = useAuth();
+const AllTeamsMilestoneRow: FC<Props> = ({ deadline, submission }) => {
   const status = generateSubmissionStatus({
     submissionId: submission.id,
     isDraft: false, // You cannot view other's drafts
@@ -33,55 +26,15 @@ const SubmissionRow: FC<Props> = ({
   });
 
   const generateFromCell = (submission: PossibleSubmission) => {
-    if (
-      (submission.fromProject && submission.fromUser) ||
-      (!submission.fromProject && !submission.fromUser)
-    ) {
-      alert("The submission should be from EITHER a project OR a user");
-      return "Error";
-    }
-
     if (submission.fromProject) {
       return (
         <HoverLink href={`${PAGES.PROJECTS}/${submission.fromProject.id}`}>
           {submission.fromProject.name}
         </HoverLink>
       );
-    } else if (submission.fromUser) {
-      return (
-        <HoverLink href={`${PAGES.USERS}/${submission.fromUser.id}`}>
-          {submission.fromUser.name}
-        </HoverLink>
-      );
-    }
-  };
-
-  const generateToCell = (submission: PossibleSubmission) => {
-    if (submission.toProject && submission.toUser) {
-      alert(
-        "There should not be a submission addressed to a project and a user"
-      );
-      return "Error";
-    } else if (submission.toProject) {
-      if (submission.toProject.id === user?.student?.projectId) {
-        return "<Should not be visible>"; // Column should not be showing
-      }
-      return (
-        <HoverLink href={`${PAGES.PROJECTS}/${submission.toProject.id}`}>
-          {submission.toProject.name}
-        </HoverLink>
-      );
-    } else if (submission.toUser) {
-      if (submission.toUser.id === user?.id) {
-        return "<Should not be visible>"; // Column should not be showing
-      }
-      return (
-        <HoverLink href={`${PAGES.USERS}/${submission.toUser.id}`}>
-          {submission.toUser.name}
-        </HoverLink>
-      );
     } else {
-      return "-";
+      alert("The milestone submission MUST be submitted from a project");
+      return "Error";
     }
   };
 
@@ -139,9 +92,30 @@ const SubmissionRow: FC<Props> = ({
     <>
       <TableRow>
         <TableCell>{generateFromCell(submission)}</TableCell>
-        {shouldIncludeToColumn && (
-          <TableCell>{generateToCell(submission)}</TableCell>
-        )}
+        <TableCell>{submission.fromProject?.achievement}</TableCell>
+        <TableCell>
+          {submission.fromProject?.students
+            ? submission.fromProject?.students.map((student) => (
+                <UsersName key={student.id} user={student} />
+              ))
+            : "-"}
+        </TableCell>
+        <TableCell>
+          {submission.fromProject?.adviser &&
+          submission.fromProject?.adviser.id ? (
+            <UsersName user={submission.fromProject?.adviser} />
+          ) : (
+            "-"
+          )}
+        </TableCell>
+        <TableCell>
+          {submission.fromProject?.mentor &&
+          submission.fromProject?.mentor.id ? (
+            <UsersName user={submission.fromProject?.mentor} />
+          ) : (
+            "-"
+          )}
+        </TableCell>
         <TableCell>
           {generateStatusCell(status, submission.updatedAt)}
         </TableCell>
@@ -152,4 +126,4 @@ const SubmissionRow: FC<Props> = ({
     </>
   );
 };
-export default SubmissionRow;
+export default AllTeamsMilestoneRow;

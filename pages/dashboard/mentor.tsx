@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 // Components
 import Body from "@/components/layout/Body";
-import { Tab, Tabs, tabsClasses, Typography } from "@mui/material";
+import { Box, Stack, Tab, Tabs, tabsClasses, Typography } from "@mui/material";
 import { TabContext, TabPanel } from "@mui/lab";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import SubmissionTable from "@/components/tables/SubmissionTable";
@@ -48,7 +48,7 @@ const MentorDashboard: NextPage = () => {
   };
 
   return (
-    <Body authorizedRoles={[ROLES.ADVISERS]}>
+    <Body authorizedRoles={[ROLES.MENTORS]}>
       <TabContext value={selectedTab}>
         <Tabs
           value={selectedTab}
@@ -80,24 +80,25 @@ const MentorDashboard: NextPage = () => {
               noDataCondition={!teamSubmissionsResponse?.deadlines.length}
               fallback={<NoneFound message="No team submissions available" />}
             >
-              {teamSubmissionsResponse && teamSubmissionsResponse.deadlines && (
-                <>
-                  {teamSubmissionsResponse.deadlines.map(
-                    ({ deadline, submissions }) => (
-                      <>
-                        <Typography variant="h6" fontWeight={600}>
-                          {deadline.name}
-                        </Typography>
-                        <SubmissionTable
-                          key={deadline.id}
-                          deadline={deadline}
-                          submissions={submissions}
-                        />
-                      </>
-                    )
-                  )}
-                </>
-              )}
+              <Stack gap="2rem">
+                {teamSubmissionsResponse && teamSubmissionsResponse.deadlines && (
+                  <>
+                    {teamSubmissionsResponse.deadlines.map(
+                      ({ deadline, submissions }) => (
+                        <Box key={deadline.id}>
+                          <Typography variant="h6" fontWeight={600}>
+                            {deadline.name}
+                          </Typography>
+                          <SubmissionTable
+                            deadline={deadline}
+                            submissions={submissions}
+                          />
+                        </Box>
+                      )
+                    )}
+                  </>
+                )}
+              </Stack>
             </NoDataWrapper>
           </LoadingWrapper>
         </TabPanel>

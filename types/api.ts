@@ -1,6 +1,5 @@
 import { Adviser } from "./advisers";
 import { Deadline, DeadlineDeliverable, Section } from "./deadlines";
-import { EvaluationGroup } from "./groups";
 import { Mentor } from "./mentors";
 import { LeanProject, Project } from "./projects";
 import { EvaluationRelation } from "./relations";
@@ -10,7 +9,7 @@ import {
   MentorRole,
   StudentRole,
 } from "./roles";
-import { PossibleSubmission, Submission } from "./submissions";
+import { Answer, PossibleSubmission, Submission } from "./submissions";
 import { LeanUser, User, UserMetadata } from "./users";
 
 export enum HTTP_METHOD {
@@ -24,6 +23,14 @@ export enum HTTP_METHOD {
 export enum CONTENT_TYPE {
   JSON = "application/json",
 }
+
+/**
+ * The type of query params.
+ */
+export type QueryParams = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+};
 
 /**
  * Users Endpoints:
@@ -159,9 +166,21 @@ export type EditDeadlineResponse = {
  * Submissions Endpoints:
  * https://github.com/orbital-skylab/skylab-backend/wiki/Submissions-Endpoints
  */
-export type CreateSubmissionResponse = Submission;
+export type CreateSubmissionResponse = { submission: Submission };
 
 export type GetSubmissionResponse = { submission: Submission };
+
+export type GetSubmissionsAnonymousQuestions = {
+  deadlines: {
+    deadline: Deadline;
+    submissions: {
+      sections: Section[];
+      answers: Answer[];
+    }[];
+  }[];
+};
+
+export type EditSubmissionResponse = { submission: Submission };
 
 /**
  * Dashbard Endpoints:
@@ -208,15 +227,12 @@ export type GetMentorTeamSubmissionsResponse = {
   }[];
 };
 
-/**
- * Groups Endpoints:
- */
-export type CreateGroupResponse = {
-  group: EvaluationGroup;
-};
-
-export type EditGroupResponse = {
-  group: EvaluationGroup;
+/** Administrator Dashboard Endpoints */
+export type GetAdministratorAllTeamMilestoneSubmissionsResponse = {
+  submissions: PossibleSubmission[];
+  unsubmitted: number;
+  submittedOnTime: number;
+  submittedLate: number;
 };
 
 /**

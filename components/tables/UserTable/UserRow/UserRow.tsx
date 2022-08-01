@@ -144,8 +144,8 @@ const UserRow: FC<Props> = ({
             {renderTags()}
           </Stack>
         </TableCell>
-        <TableCell>
-          <Stack direction="row" spacing="0.5rem">
+        <TableCell align="right">
+          <Stack direction="row" justifyContent="end" spacing="0.5rem">
             <Link href={`${PAGES.USERS}/${user.id}`} passHref>
               <Button>View</Button>
             </Link>

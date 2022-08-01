@@ -1,6 +1,6 @@
 import { ChangeEvent, FC, useState } from "react";
 // Components
-import { Link, Stack, TextField } from "@mui/material";
+import { Link, Stack, TextField, Typography } from "@mui/material";
 import QuestionAndDesc from "../QuestionAndDesc/QuestionAndDesc";
 // Types
 import { LeanQuestion, Option, Question } from "@/types/deadlines";
@@ -39,14 +39,17 @@ const UrlQuestion: FC<Props> = ({
           value={answer}
           onChange={handleChange}
           size="small"
+          type="url"
           placeholder="Your URL here"
           error={isInvalid}
           helperText={isInvalid && "Please enter a valid URL"}
         />
       ) : (
-        <Link href={answer} target="_blank" rel="noreferrer">
-          {answer}
-        </Link>
+        <Typography>
+          <Link href={answer} target="_blank" rel="noreferrer">
+            {answer}
+          </Link>
+        </Typography>
       )}
     </Stack>
   );

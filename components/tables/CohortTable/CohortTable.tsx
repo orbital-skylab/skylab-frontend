@@ -16,7 +16,12 @@ import { Cohort, GetCohortsResponse } from "@/types/cohorts";
 
 type Props = { cohorts: Cohort[]; mutate: Mutate<GetCohortsResponse> };
 
-const ColumnHeadings = ["Academic Year", "Start Date", "End Date", "Actions"];
+const columnHeadings: { heading: string; align: "left" | "right" }[] = [
+  { heading: "Academic Year", align: "left" },
+  { heading: "Start Date", align: "left" },
+  { heading: "End Date", align: "left" },
+  { heading: "Actions", align: "right" },
+];
 
 const CohortTable: FC<Props> = ({ cohorts, mutate }) => {
   return (
@@ -24,8 +29,8 @@ const CohortTable: FC<Props> = ({ cohorts, mutate }) => {
       <Table>
         <TableHead>
           <TableRow>
-            {ColumnHeadings.map((heading) => (
-              <TableCell key={heading} width="25%">
+            {columnHeadings.map(({ heading, align }) => (
+              <TableCell key={heading} align={align}>
                 {heading}
               </TableCell>
             ))}

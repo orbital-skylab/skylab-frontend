@@ -1,15 +1,14 @@
 import { useEffect, useReducer } from "react";
-import { createReducer, parseQueryParams } from "./useFetch.helpers";
+import { createReducer } from "./useFetch.helpers";
 import {
   FETCH_STATUS,
   ACTION_TYPE,
   State,
   Mutate,
   HookReturnType,
-  QueryParams,
 } from "./useFetch.types";
 import { ApiServiceBuilder } from "@/helpers/api";
-import { HTTP_METHOD } from "@/types/api";
+import { HTTP_METHOD, QueryParams } from "@/types/api";
 import { isErrorType } from "@/helpers/types";
 
 /**
@@ -46,11 +45,10 @@ const useFetch = <T>({
     dispatch({ type: ACTION_TYPE.SET_STATUS_FETCHING });
     try {
       /* Building API service. */
-      const endpointWithQueryParams = endpoint + parseQueryParams(queryParams);
-
       const apiServiceBuilder = new ApiServiceBuilder({
         method: HTTP_METHOD.GET,
-        endpoint: endpointWithQueryParams,
+        endpoint,
+        queryParams,
         requiresAuthorization,
       });
       const apiService = apiServiceBuilder.build();

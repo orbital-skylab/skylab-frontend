@@ -20,13 +20,13 @@ type Props = {
   mutate: Mutate<GetDeadlinesResponse>;
 };
 
-const ColumnHeadings = [
-  "Deadline ID",
-  "Deadline Name",
-  "Type",
-  "Evaluating Milestone",
-  "Due By",
-  "Actions",
+const columnHeadings: { heading: string; align: "left" | "right" }[] = [
+  { heading: "Deadline ID", align: "left" },
+  { heading: "Deadline Name", align: "left" },
+  { heading: "Type", align: "left" },
+  { heading: "Evaluating Milestone", align: "left" },
+  { heading: "Due By", align: "left" },
+  { heading: "Actions", align: "right" },
 ];
 
 const DeadlineTable: FC<Props> = ({ deadlines = [], mutate }) => {
@@ -35,8 +35,10 @@ const DeadlineTable: FC<Props> = ({ deadlines = [], mutate }) => {
       <Table>
         <TableHead>
           <TableRow>
-            {ColumnHeadings.map((heading) => (
-              <TableCell key={heading}>{heading}</TableCell>
+            {columnHeadings.map(({ heading, align }) => (
+              <TableCell key={heading} align={align}>
+                {heading}
+              </TableCell>
             ))}
           </TableRow>
         </TableHead>
