@@ -15,6 +15,7 @@ const EditQuestionWithNoOptions: FC<Props> = ({ question, setQuestion }) => {
   return (
     <Stack spacing="1rem" sx={{ width: "100%" }}>
       <TextField
+        className="question-input"
         label="Question"
         value={question.question}
         onChange={generateHandleTextFieldChange(
@@ -25,6 +26,7 @@ const EditQuestionWithNoOptions: FC<Props> = ({ question, setQuestion }) => {
         size="small"
       />
       <TextField
+        className="question-description-input"
         label="Description"
         value={question.desc}
         multiline

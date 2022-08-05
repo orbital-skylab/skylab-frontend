@@ -8,6 +8,7 @@ import { NavbarOption } from "../../Navbar.types";
 import { userHasRole } from "@/helpers/roles";
 
 type Props = {
+  id: string;
   user?: User;
   option: NavbarOption;
   generateOnClick: ({
@@ -21,6 +22,7 @@ type Props = {
 };
 
 const NavbarButtonDesktop: FC<Props> = ({
+  id,
   user,
   option,
   generateOnClick,
@@ -36,6 +38,7 @@ const NavbarButtonDesktop: FC<Props> = ({
 
   return (
     <Button
+      id={id}
       key={option.label}
       onClick={generateOnClick(option)}
       sx={{

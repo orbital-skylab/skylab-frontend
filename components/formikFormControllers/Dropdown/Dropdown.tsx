@@ -1,3 +1,4 @@
+import { ArrowDropDown } from "@mui/icons-material";
 import {
   Autocomplete,
   FormControl,
@@ -19,6 +20,7 @@ type Props<FormValuesType> = {
   size?: "medium" | "small";
   isCombobox?: boolean;
   isDisabled?: boolean;
+  className?: string;
 };
 
 function Dropdown<FormValuesType>({
@@ -29,6 +31,7 @@ function Dropdown<FormValuesType>({
   size = "medium",
   isCombobox,
   isDisabled = false,
+  className,
 }: Props<FormValuesType>) {
   /** For combobox */
   const [inputValue, setInputValue] = useState("");
@@ -47,6 +50,7 @@ function Dropdown<FormValuesType>({
     return (
       <FormControl>
         <Autocomplete
+          className={className}
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           value={values[name] as any}
           onChange={(_, selectedOption) => {
@@ -83,6 +87,14 @@ function Dropdown<FormValuesType>({
           renderInput={(params) => (
             <TextField {...params} label={label} value={values[name]} />
           )}
+          renderOption={(props, option) => {
+            return (
+              <li {...props} className={`${props.className} dropdown-option`}>
+                {option.label}
+              </li>
+            );
+          }}
+          popupIcon={<ArrowDropDown className="dropdown-button" />}
         />
         {!!errors[name] && !!touched[name] ? (
           <FormHelperText error>{errors[name]}</FormHelperText>
@@ -96,6 +108,7 @@ function Dropdown<FormValuesType>({
       <FormControl>
         <InputLabel>{label}</InputLabel>
         <Select
+          className={className}
           name={name as string}
           label={label}
           value={values[name]}

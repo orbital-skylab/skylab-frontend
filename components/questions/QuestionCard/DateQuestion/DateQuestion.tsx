@@ -23,9 +23,10 @@ const DateQuestion: FC<Props> = ({
   };
 
   return (
-    <Stack spacing="0.5rem" sx={{ width: "100%" }}>
+    <Stack className="date-question" spacing="0.5rem" sx={{ width: "100%" }}>
       <QuestionAndDesc question={question} questionType="Date" />
       <TextField
+        className="date-input"
         value={answer}
         onChange={handleChange}
         type="date"

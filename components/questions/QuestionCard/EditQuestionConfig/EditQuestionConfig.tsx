@@ -40,6 +40,7 @@ const EditQuestionConfig: FC<Props> = ({ question, setQuestion }) => {
   return (
     <Stack sx={{ width: "40%" }}>
       <TextField
+        className="question-type-select"
         label="Question Type"
         value={question.type}
         onChange={handleTypeChange}

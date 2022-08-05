@@ -31,10 +31,11 @@ const UrlQuestion: FC<Props> = ({
   const isInvalid = touched && !validateUrl(answer);
 
   return (
-    <Stack spacing="0.5rem" sx={{ width: "100%" }}>
+    <Stack className="url-question" spacing="0.5rem" sx={{ width: "100%" }}>
       <QuestionAndDesc question={question} questionType="URL" />
       {!isReadonly ? (
         <TextField
+          className="url-input"
           value={answer}
           onChange={handleChange}
           size="small"

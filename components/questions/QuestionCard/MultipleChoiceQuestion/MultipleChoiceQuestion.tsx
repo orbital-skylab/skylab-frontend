@@ -30,7 +30,7 @@ const MultipleChoiceQuestion: FC<Props> = ({
   };
 
   return (
-    <Stack spacing="0.5rem" sx={{ width: "100%" }}>
+    <Stack className="mcq-question" spacing="0.5rem" sx={{ width: "100%" }}>
       <QuestionAndDesc question={question} questionType="Multiple Choice" />
       <FormControl>
         <RadioGroup value={answer} onChange={handleChange}>
@@ -38,6 +38,7 @@ const MultipleChoiceQuestion: FC<Props> = ({
             <>
               {question.options.map((option, idx) => (
                 <FormControlLabel
+                  className="mcq-option"
                   key={idx}
                   value={option}
                   control={

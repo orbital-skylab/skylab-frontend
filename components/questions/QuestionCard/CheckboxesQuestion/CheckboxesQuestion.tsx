@@ -54,7 +54,11 @@ const CheckboxesQuestion: FC<Props> = ({
   };
 
   return (
-    <Stack spacing="0.5rem" sx={{ width: "100%" }}>
+    <Stack
+      className="checkbox-question"
+      spacing="0.5rem"
+      sx={{ width: "100%" }}
+    >
       <QuestionAndDesc question={question} questionType="Checkboxes" />
       <FormControl>
         <FormGroup>
@@ -62,6 +66,7 @@ const CheckboxesQuestion: FC<Props> = ({
             <>
               {question.options.map((option, idx) => (
                 <FormControlLabel
+                  className="checkbox-option"
                   key={idx}
                   label={option ? option : `<Empty Option ${idx + 1}>`}
                   control={

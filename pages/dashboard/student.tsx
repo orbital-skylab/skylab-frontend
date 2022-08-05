@@ -22,6 +22,7 @@ import useFetch, { isFetching } from "@/hooks/useFetch";
 import useAuth from "@/contexts/useAuth";
 // Helpers
 import { isFuture } from "@/helpers/dates";
+import { transformTabNameIntoId } from "@/helpers/dashboard";
 // Type
 import type { NextPage } from "next";
 import { ROLES } from "@/types/roles";
@@ -82,7 +83,12 @@ const StudentDashboard: NextPage = () => {
           }}
         >
           {Object.values(TAB).map((tab) => (
-            <Tab key={tab} value={tab} label={tab} />
+            <Tab
+              key={tab}
+              id={transformTabNameIntoId(tab)}
+              value={tab}
+              label={tab}
+            />
           ))}
         </Tabs>
         <TabPanel value={TAB.DEADLINES}>
@@ -92,7 +98,7 @@ const StudentDashboard: NextPage = () => {
               fallback={<NoneFound message="No upcoming or past deadlines" />}
             >
               <Stack gap="2rem">
-                <Box>
+                <Box id="upcoming-deadlines-div">
                   <Typography variant="h6" fontWeight={600}>
                     Upcoming Deadlines
                   </Typography>
@@ -105,7 +111,7 @@ const StudentDashboard: NextPage = () => {
                   />
                 </Box>
                 {hasPastDeadlines && (
-                  <Box>
+                  <Box id="past-deadlines-div">
                     <Typography variant="h6" fontWeight={600}>
                       Past Deadlines
                     </Typography>

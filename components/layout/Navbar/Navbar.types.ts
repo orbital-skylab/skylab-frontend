@@ -12,6 +12,7 @@ export enum NAVBAR_ACTIONS {
  */
 export type NavbarOption = {
   label: string;
+  id: string;
   route?: string;
   action?: NAVBAR_ACTIONS;
   authorizedRoles?: ROLES[];

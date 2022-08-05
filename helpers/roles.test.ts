@@ -7,7 +7,7 @@ import {
   getRoleId,
   generateAddUserOrRoleEmptyInitialValues,
 } from "./roles";
-import "jest";
+import { describe, expect } from "@jest/globals";
 import { ROLES, ROLES_WITH_ALL } from "@/types/roles";
 import { User } from "@/types/users";
 import { DeepPartial } from "./types";

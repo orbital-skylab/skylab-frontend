@@ -17,18 +17,22 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkIcon from "@mui/icons-material/Link";
 import PersonIcon from "@mui/icons-material/Person";
 // Types
-import { User } from "@/types/users";
+import { Adviser } from "@/types/advisers";
+import { Mentor } from "@/types/mentors";
 // Constants
 import { BASE_TRANSITION, SQUARE_ASPECT_RATIO } from "@/styles/constants";
 import { PAGES } from "@/helpers/navigation";
 
 type Props = {
-  staff: User;
+  staff: Adviser | Mentor;
 };
 
 const StaffCard: FC<Props> = ({ staff }) => {
   return (
     <Card
+      className={`staff-card ${staff.cohortYear} ${
+        (staff as Adviser).adviserId ? "adviser" : "mentor"
+      }`}
       raised
       sx={{
         transition: BASE_TRANSITION,
@@ -48,7 +52,7 @@ const StaffCard: FC<Props> = ({ staff }) => {
         }}
       />
       <CardContent>
-        <Typography align="center" fontWeight={600}>
+        <Typography id="staff-name-span" align="center" fontWeight={600}>
           {staff.name}
         </Typography>
       </CardContent>

@@ -168,6 +168,7 @@ const ProjectsList = () => {
             mb={{ md: "0.5rem" }}
           >
             <TextField
+              id="project-search-input"
               label="Search"
               value={searchTextInput}
               onChange={handleSearchInputChange}
@@ -175,6 +176,7 @@ const ProjectsList = () => {
             />
             <Stack direction="row" spacing="1rem">
               <Button
+                id="add-project-button"
                 variant="outlined"
                 size="small"
                 onClick={handleOpenAddProjectModal}
@@ -183,6 +185,7 @@ const ProjectsList = () => {
                 Project
               </Button>
               <TextField
+                id="project-cohort-select"
                 name="cohort"
                 label="Cohort"
                 value={selectedCohortYear}
@@ -192,7 +195,11 @@ const ProjectsList = () => {
               >
                 {cohorts &&
                   cohorts.map(({ academicYear }) => (
-                    <MenuItem key={academicYear} value={academicYear}>
+                    <MenuItem
+                      id={`${academicYear}-projects-option`}
+                      key={academicYear}
+                      value={academicYear}
+                    >
                       {academicYear}
                     </MenuItem>
                   ))}
@@ -216,10 +223,18 @@ const ProjectsList = () => {
               }}
             >
               {Object.values(LEVELS_OF_ACHIEVEMENT_WITH_ALL).map((level) => {
-                return <Tab key={level} value={level} label={level} />;
+                return (
+                  <Tab
+                    id={`${level}-projects-tab`}
+                    key={level}
+                    value={level}
+                    label={level}
+                  />
+                );
               })}
             </Tabs>
             <FormControlLabel
+              id="dropped-projects-toggle"
               value={viewHasDropped}
               onClick={handleToggleViewDropped}
               control={<Switch color="secondary" size="small" />}

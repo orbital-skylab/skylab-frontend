@@ -42,7 +42,11 @@ const Cohorts: NextPage = () => {
       <Body>
         <AutoBreadcrumbs sx={{ mb: "0" }} />
         <Stack direction="row" justifyContent="end" width="100%">
-          <Button variant="outlined" onClick={handleOpenAddCohortModal}>
+          <Button
+            id="add-cohort-button"
+            variant="outlined"
+            onClick={handleOpenAddCohortModal}
+          >
             <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
             Cohort
           </Button>

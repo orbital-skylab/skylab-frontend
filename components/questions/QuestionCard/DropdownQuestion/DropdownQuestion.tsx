@@ -23,9 +23,14 @@ const DropdownQuestion: FC<Props> = ({
   };
 
   return (
-    <Stack spacing="0.5rem" sx={{ width: "100%" }}>
+    <Stack
+      className="dropdown-question"
+      spacing="0.5rem"
+      sx={{ width: "100%" }}
+    >
       <QuestionAndDesc question={question} questionType="Dropdown" />
       <TextField
+        className="dropdown-select"
         value={answer}
         onChange={handleChange}
         select
@@ -33,7 +38,7 @@ const DropdownQuestion: FC<Props> = ({
       >
         {question.options &&
           question.options.map((option, idx) => (
-            <MenuItem value={option} key={idx}>
+            <MenuItem className="dropdown-option" value={option} key={idx}>
               {option ? option : `<Empty Option ${idx + 1}>`}
             </MenuItem>
           ))}

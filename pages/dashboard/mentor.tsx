@@ -11,6 +11,8 @@ import ProjectTable from "@/components/tables/ProjectTable";
 // Hooks
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import useAuth from "@/contexts/useAuth";
+// Helpers
+import { transformTabNameIntoId } from "@/helpers/dashboard";
 // Type
 import type { NextPage } from "next";
 import { ROLES } from "@/types/roles";
@@ -63,7 +65,12 @@ const MentorDashboard: NextPage = () => {
           }}
         >
           {Object.values(TAB).map((tab) => (
-            <Tab key={tab} value={tab} label={tab} />
+            <Tab
+              key={tab}
+              id={transformTabNameIntoId(tab)}
+              value={tab}
+              label={tab}
+            />
           ))}
         </Tabs>
 
