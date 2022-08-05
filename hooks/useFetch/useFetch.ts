@@ -21,7 +21,7 @@ import { isErrorType } from "@/helpers/types";
  */
 const useFetch = <T>({
   endpoint = "",
-  requiresAuthorization = false,
+  requiresAuthorization = true,
   queryParams,
   onFetch,
   enabled = true,
