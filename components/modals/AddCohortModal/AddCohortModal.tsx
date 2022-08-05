@@ -33,6 +33,7 @@ const AddCohortModal: FC<Props> = ({ open, setOpen, mutate }) => {
 
   const addCohort = useApiCall({
     method: HTTP_METHOD.POST,
+    // requiresAuthorization: true,
     endpoint: `/cohorts`,
     onSuccess: ({ cohort }: AddCohortResponse) => {
       mutate((data) => {
@@ -87,12 +88,14 @@ const AddCohortModal: FC<Props> = ({ open, setOpen, mutate }) => {
             <>
               <Stack direction="column" spacing="1rem">
                 <TextInput
+                  id="add-cohort-academic-year-input"
                   name="academicYear"
                   label="Academic Year"
                   size="small"
                   formik={formik}
                 />
                 <TextInput
+                  id="add-cohort-start-date-input"
                   name="startDate"
                   type="datetime-local"
                   label="Start Date"
@@ -100,6 +103,7 @@ const AddCohortModal: FC<Props> = ({ open, setOpen, mutate }) => {
                   formik={formik}
                 />
                 <TextInput
+                  id="add-cohort-end-date-input"
                   name="endDate"
                   type="datetime-local"
                   label="End Date"
@@ -116,6 +120,7 @@ const AddCohortModal: FC<Props> = ({ open, setOpen, mutate }) => {
                   Cancel
                 </Button>
                 <Button
+                  id="add-cohort-submit-button"
                   size="small"
                   variant="contained"
                   onClick={formik.submitForm}
