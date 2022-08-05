@@ -61,6 +61,7 @@ const DeleteProjectModal: FC<Props> = ({ project, open, setOpen, mutate }) => {
             Cancel
           </Button>
           <Button
+            id="delete-project-submit-button"
             size="small"
             variant="contained"
             color="error"

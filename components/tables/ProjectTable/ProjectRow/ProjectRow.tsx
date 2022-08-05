@@ -89,14 +89,14 @@ const ProjectRow: FC<Props> = ({
         />
       )}
       <TableRow>
-        <TableCell>{project.id}</TableCell>
-        <TableCell>{project.name}</TableCell>
-        <TableCell>
+        <TableCell className="project-id-td">{project.id}</TableCell>
+        <TableCell className="project-name-td">{project.name}</TableCell>
+        <TableCell className="project-achievement-level-td">
           <Stack direction="row" spacing="0.25rem">
             {renderTag()}
           </Stack>
         </TableCell>
-        <TableCell>
+        <TableCell className="project-students-td">
           {project.students
             ? project.students.map((student) => (
                 <UsersName key={student.id} user={student} />
@@ -104,7 +104,7 @@ const ProjectRow: FC<Props> = ({
             : "-"}
         </TableCell>
         {showAdviserColumn && (
-          <TableCell>
+          <TableCell className="project-adviser-td">
             {project.adviser && project.adviser.id ? (
               <UsersName user={project.adviser} />
             ) : (
@@ -113,7 +113,7 @@ const ProjectRow: FC<Props> = ({
           </TableCell>
         )}
         {showMentorColumn && (
-          <TableCell>
+          <TableCell className="project-mentor-td">
             {project.mentor && project.mentor.id ? (
               <UsersName user={project.mentor} />
             ) : (
@@ -124,15 +124,16 @@ const ProjectRow: FC<Props> = ({
         <TableCell align="right">
           <Stack direction="row" spacing="0.5rem" justifyContent="end">
             <Link href={`${PAGES.PROJECTS}/${project.id}`} passHref>
-              <Button>View</Button>
+              <Button className="view-project-button">View</Button>
             </Link>
             {showEditAction && (
               <Link href={`${PAGES.PROJECTS}/${project.id}/edit`} passHref>
-                <Button>Edit</Button>
+                <Button className="edit-project-button">Edit</Button>
               </Link>
             )}
             {showDeleteAction && (
               <Button
+                className="delete-project-button"
                 onClick={handleOpenDeleteModal}
                 sx={{
                   transition: BASE_TRANSITION,
