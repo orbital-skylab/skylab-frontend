@@ -108,6 +108,7 @@ const Staff: NextPage = () => {
             width="100%"
           >
             <TextField
+              id="staff-cohort-select"
               name="cohort"
               label="Cohort"
               value={selectedCohortYear}
@@ -117,7 +118,11 @@ const Staff: NextPage = () => {
             >
               {cohorts &&
                 cohorts.map(({ academicYear }) => (
-                  <MenuItem key={academicYear} value={academicYear}>
+                  <MenuItem
+                    id={`staff-${academicYear}-option`}
+                    key={academicYear}
+                    value={academicYear}
+                  >
                     {academicYear}
                   </MenuItem>
                 ))}
@@ -128,7 +133,7 @@ const Staff: NextPage = () => {
             onChange={handleTabChange}
             textColor="secondary"
             indicatorColor="secondary"
-            aria-label="project-level-tabs"
+            aria-label="staff-level-tabs"
             variant="scrollable"
             scrollButtons="auto"
             allowScrollButtonsMobile
@@ -138,7 +143,14 @@ const Staff: NextPage = () => {
             }}
           >
             {STAFF_VALUES.map((level) => {
-              return <Tab key={level} value={level} label={level} />;
+              return (
+                <Tab
+                  id={`${level.toLowerCase()}-tab`}
+                  key={level}
+                  value={level}
+                  label={level}
+                />
+              );
             })}
           </Tabs>
         </Stack>

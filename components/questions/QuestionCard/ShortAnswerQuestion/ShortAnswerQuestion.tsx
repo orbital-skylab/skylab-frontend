@@ -23,9 +23,14 @@ const ShortAnswerQuestion: FC<Props> = ({
   };
 
   return (
-    <Stack spacing="0.5rem" sx={{ width: "100%" }}>
+    <Stack
+      className="short-answer-question"
+      spacing="0.5rem"
+      sx={{ width: "100%" }}
+    >
       <QuestionAndDesc question={question} questionType="Short Answer" />
       <TextField
+        className="short-answer-input"
         value={answer}
         onChange={handleChange}
         size="small"

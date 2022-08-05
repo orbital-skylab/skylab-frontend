@@ -10,7 +10,7 @@ export default function useInfiniteFetch<U, T>({
   endpoint,
   queryParams,
   page,
-  requiresAuthorization = false,
+  requiresAuthorization = true,
   responseToData,
   enabled = true,
 }: {

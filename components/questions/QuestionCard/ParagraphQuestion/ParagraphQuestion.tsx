@@ -23,9 +23,14 @@ const ParagraphQuestion: FC<Props> = ({
   };
 
   return (
-    <Stack spacing="0.5rem" sx={{ width: "100%" }}>
+    <Stack
+      className="paragraph-question"
+      spacing="0.5rem"
+      sx={{ width: "100%" }}
+    >
       <QuestionAndDesc question={question} questionType="Paragraph" />
       <TextField
+        className="paragraph-input"
         value={answer}
         onChange={handleChange}
         size="small"

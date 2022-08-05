@@ -18,8 +18,8 @@ import { useState } from "react";
 const useApiCall = ({
   method = HTTP_METHOD.POST,
   endpoint = "",
+  requiresAuthorization = true,
   body = {},
-  requiresAuthorization,
   onSuccess,
   onError,
 }: {

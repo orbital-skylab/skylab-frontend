@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-
+import { describe, expect } from "@jest/globals";
 import { splitOnCapital, splitOnHyphen, validateUrl } from "./string";
 
 describe("#splitOnCapital", () => {

@@ -140,12 +140,14 @@ const Projects: NextPage = () => {
             mb={{ md: "0.5rem" }}
           >
             <TextField
+              id="project-search-input"
               label="Search"
               value={searchTextInput}
               onChange={handleSearchInputChange}
               size="small"
             />
             <TextField
+              id="project-cohort-select"
               name="cohort"
               label="Cohort"
               value={selectedCohortYear}
@@ -155,7 +157,11 @@ const Projects: NextPage = () => {
             >
               {cohorts &&
                 cohorts.map(({ academicYear }) => (
-                  <MenuItem key={academicYear} value={academicYear}>
+                  <MenuItem
+                    id={`cohort-${academicYear}-option`}
+                    key={academicYear}
+                    value={academicYear}
+                  >
                     {academicYear}
                   </MenuItem>
                 ))}
@@ -176,7 +182,14 @@ const Projects: NextPage = () => {
             }}
           >
             {Object.values(LEVELS_OF_ACHIEVEMENT).map((level) => {
-              return <Tab key={level} value={level} label={level} />;
+              return (
+                <Tab
+                  id={`${level.toLowerCase()}-tab`}
+                  key={level}
+                  value={level}
+                  label={level}
+                />
+              );
             })}
           </Tabs>
         </Stack>
@@ -201,7 +214,7 @@ const Projects: NextPage = () => {
                   })
                 : null}
             </Grid>
-            <div ref={bottomOfPageRef} />
+            <div id="project-gallery-bottom-ref" ref={bottomOfPageRef} />
             <Box
               sx={{
                 display: "grid",

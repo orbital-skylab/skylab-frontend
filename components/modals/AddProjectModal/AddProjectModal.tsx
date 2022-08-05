@@ -78,6 +78,7 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate }) => {
     endpoint: `/users/lean?cohortYear=${selectedCohortYear}&role=Student`,
     enabled: Boolean(selectedCohortYear),
   });
+  console.log("sr: ", studentsResponse);
   const { data: advisersResponse } = useFetch<GetLeanUsersResponse>({
     endpoint: `/users/lean?cohortYear=${selectedCohortYear}&role=Adviser`,
     enabled: Boolean(selectedCohortYear),
@@ -129,8 +130,13 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate }) => {
         >
           {(formik) => (
             <>
-              <Stack direction="column" spacing="1rem">
+              <Stack
+                id="add-project-container"
+                direction="column"
+                spacing="1rem"
+              >
                 <TextField
+                  id="add-project-cohort-input"
                   name="cohort"
                   label="Cohort"
                   value={selectedCohortYear}
@@ -146,18 +152,21 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate }) => {
                     ))}
                 </TextField>
                 <TextInput
+                  id="add-project-name-input"
                   name="name"
                   label="Project Name"
                   size="small"
                   formik={formik}
                 />
                 <TextInput
+                  id="add-project-team-name-input"
                   name="teamName"
                   label="Team Name"
                   size="small"
                   formik={formik}
                 />
                 <Dropdown
+                  className="add-project-achievement-level-input"
                   label="Level of Achievement"
                   name="achievement"
                   size="small"
@@ -167,6 +176,7 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate }) => {
                   })}
                 />
                 <MultiDropdown
+                  className="add-project-student-dropdown"
                   name="students"
                   label="Student IDs"
                   formik={formik}
@@ -184,6 +194,7 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate }) => {
                   }
                 />
                 <Dropdown
+                  className="add-project-adviser-dropdown"
                   name="adviser"
                   label="Adviser ID"
                   formik={formik}
@@ -201,6 +212,7 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate }) => {
                   }
                 />
                 <Dropdown
+                  className="add-project-mentor-dropdown"
                   name="mentor"
                   label="Mentor ID"
                   formik={formik}
@@ -227,6 +239,7 @@ const AddProjectModal: FC<Props> = ({ open, setOpen, mutate }) => {
                   Cancel
                 </Button>
                 <Button
+                  id="add-project-submit-button"
                   size="small"
                   variant="contained"
                   onClick={formik.submitForm}

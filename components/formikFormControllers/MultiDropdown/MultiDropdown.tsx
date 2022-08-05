@@ -1,3 +1,4 @@
+import { ArrowDropDown } from "@mui/icons-material";
 import {
   FormControl,
   InputLabel,
@@ -22,6 +23,7 @@ type Props<FormValuesType> = {
   size?: "medium" | "small";
   isCombobox?: boolean;
   isDisabled?: boolean;
+  className?: string;
 };
 
 function MultiDropdown<FormValuesType>({
@@ -32,6 +34,7 @@ function MultiDropdown<FormValuesType>({
   size,
   isCombobox,
   isDisabled = false,
+  className,
 }: Props<FormValuesType>) {
   /** For combobox */
   const [inputValue, setInputValue] = useState("");
@@ -49,6 +52,7 @@ function MultiDropdown<FormValuesType>({
     return (
       <FormControl>
         <Autocomplete
+          className={className}
           multiple
           disableCloseOnSelect
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -88,6 +92,17 @@ function MultiDropdown<FormValuesType>({
           renderInput={(params) => (
             <TextField {...params} label={label} value={values[name]} />
           )}
+          renderOption={(props, option) => {
+            return (
+              <li
+                {...props}
+                className={`${props.className} multidropdown-option`}
+              >
+                {option.label}
+              </li>
+            );
+          }}
+          popupIcon={<ArrowDropDown className="multidropdown-button" />}
         />
         {!!errors[name] && !!touched[name] ? (
           <FormHelperText error>{errors[name]}</FormHelperText>
@@ -100,6 +115,7 @@ function MultiDropdown<FormValuesType>({
     <FormControl>
       <InputLabel>{label}</InputLabel>
       <Select
+        className={className}
         name={name as string}
         multiple
         label={label}

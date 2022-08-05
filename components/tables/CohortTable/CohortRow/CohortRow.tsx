@@ -37,16 +37,27 @@ const CohortRow: FC<Props> = ({ cohort, mutate }) => {
         setOpen={setIsEditCohortOpen}
         mutate={mutate}
       />
-      <TableRow>
-        <TableCell>{cohort.academicYear}</TableCell>
-        <TableCell>{isoDateToLocaleDateWithTime(cohort.startDate)}</TableCell>
-        <TableCell>{isoDateToLocaleDateWithTime(cohort.endDate)}</TableCell>
+      <TableRow className="cohort-row-tr">
+        <TableCell className="cohort-academic-year-td">
+          {cohort.academicYear}
+        </TableCell>
+        <TableCell className="cohort-start-date-td">
+          {isoDateToLocaleDateWithTime(cohort.startDate)}
+        </TableCell>
+        <TableCell className="cohort-end-date-td">
+          {isoDateToLocaleDateWithTime(cohort.endDate)}
+        </TableCell>
         <TableCell align="right">
           <Stack direction="row" spacing="0.5rem" justifyContent="end">
-            <Button size="small" onClick={handleOpenEditModal}>
+            <Button
+              className="edit-cohort-button"
+              size="small"
+              onClick={handleOpenEditModal}
+            >
               Edit
             </Button>
             <Button
+              className="delete-cohort-button"
               size="small"
               onClick={handleOpenDeleteModal}
               sx={{

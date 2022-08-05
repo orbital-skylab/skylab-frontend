@@ -49,7 +49,7 @@ const DeadlineRow: FC<Props> = ({ deadline, deadlines, mutate }) => {
       />
       <TableRow>
         <TableCell>{deadline.id}</TableCell>
-        <TableCell>{deadline.name}</TableCell>
+        <TableCell className="deadline-name-td">{deadline.name}</TableCell>
         <TableCell>{deadline.type}</TableCell>
         <TableCell>
           {deadline.evaluating ? deadline.evaluating.name : "-"}
@@ -62,10 +62,12 @@ const DeadlineRow: FC<Props> = ({ deadline, deadlines, mutate }) => {
                 title="View and edit deadline questions"
                 placement="left"
               >
-                <Button>Questions</Button>
+                <Button id="view-questions-button">Questions</Button>
               </Tooltip>
             </Link>
-            <Button onClick={handleOpenEditModal}>Edit</Button>
+            <Button id="edit-deadline-button" onClick={handleOpenEditModal}>
+              Edit
+            </Button>
             <Button
               onClick={handleOpenDeleteModal}
               sx={{
