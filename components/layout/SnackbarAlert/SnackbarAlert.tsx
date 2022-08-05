@@ -14,7 +14,9 @@ const SnackbarAlert: FC<Props> = ({ alert, handleClose }) => {
       onClose={handleClose}
       anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
     >
-      <Alert severity={alert.severity}>{alert.message}</Alert>
+      <Alert severity={alert.severity} style={{ whiteSpace: "pre-wrap" }}>
+        {alert.message}
+      </Alert>
     </Snackbar>
   );
 };
