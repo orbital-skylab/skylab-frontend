@@ -22,7 +22,7 @@ import useFetch, { isFetching } from "@/hooks/useFetch";
 import useAuth from "@/contexts/useAuth";
 // Helpers
 import { isFuture } from "@/helpers/dates";
-import { transformTabNameIntoId } from "./Dashboard.helpers";
+import { transformTabNameIntoId } from "@/helpers/dashboard";
 // Type
 import type { NextPage } from "next";
 import { ROLES } from "@/types/roles";
