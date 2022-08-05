@@ -40,14 +40,15 @@ const SubmissionTable: FC<Props> = ({
     return `${deadline.id}-${submission.id}-${submission.fromProject?.id}-${submission.fromUser?.id}-${submission.toProject?.id}-${submission.toUser?.id}`;
   };
 
+  const actualShouldIncludeToColumn =
+    shouldIncludeToColumn &&
+    (deadline.type === DEADLINE_TYPE.EVALUATION ||
+      deadline.type === DEADLINE_TYPE.FEEDBACK);
+
   const filteredColumnHeadings = columnHeadings.filter(({ heading }) => {
     switch (heading) {
       case "To":
-        return (
-          shouldIncludeToColumn &&
-          (deadline.type === DEADLINE_TYPE.EVALUATION ||
-            deadline.type === DEADLINE_TYPE.FEEDBACK)
-        );
+        return actualShouldIncludeToColumn;
 
       default:
         return true;
@@ -72,7 +73,7 @@ const SubmissionTable: FC<Props> = ({
               key={getKey(deadline, submission)}
               deadline={deadline}
               submission={submission}
-              shouldIncludeToColumn={shouldIncludeToColumn}
+              shouldIncludeToColumn={actualShouldIncludeToColumn}
             />
           ))}
         </TableBody>

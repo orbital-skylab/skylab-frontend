@@ -3,7 +3,7 @@ import Body from "@/components/layout/Body";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import GoBackButton from "@/components/buttons/GoBackButton";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, debounce, Stack, Typography } from "@mui/material";
 import QuestionSectionsList from "@/components/questions/QuestionSectionsList";
 // Hooks
 import useFetch, { isFetching } from "@/hooks/useFetch";
@@ -23,6 +23,7 @@ import {
 } from "@/types/api";
 import HoverLink from "@/components/typography/HoverLink";
 import { PAGES } from "@/helpers/navigation";
+import { useCallback, useEffect } from "react";
 
 const Submission: NextPage = () => {
   const router = useRouter();
@@ -83,6 +84,21 @@ const Submission: NextPage = () => {
       setError(error);
     }
   };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debounceAutoSave = useCallback(
+    debounce(() => {
+      setSuccess("Automatically saved draft");
+    }, 1000),
+    []
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", debounceAutoSave);
+    return () => {
+      document.removeEventListener("keydown", debounceAutoSave);
+    };
+  }, [debounceAutoSave]);
 
   return (
     <>
