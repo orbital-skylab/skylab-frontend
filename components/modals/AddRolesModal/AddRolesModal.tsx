@@ -66,11 +66,16 @@ const AddRolesModal: FC<Props> = ({ selectedRole, handleCloseModal }) => {
       setTimeout(() => {
         router.reload();
       }, refreshSeconds * 1000);
+
+      const roleName =
+        values.userIds.length !== 1
+          ? selectedRole?.toLowerCase()
+          : toSingular(selectedRole).toLowerCase();
+
       setSuccess(
-        `Successfully added ${
-          values.userIds.length
-        } ${selectedRole?.toLowerCase()}! Refreshing in ${refreshSeconds} seconds...`
+        `Successfully added ${values.userIds.length} ${roleName}! Refreshing in ${refreshSeconds} seconds...`
       );
+      handleCloseModal();
     } catch (error) {
       setError(error);
     }

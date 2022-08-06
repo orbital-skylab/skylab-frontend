@@ -183,10 +183,11 @@ const DeadlineDeliverableRow: FC<Props> = ({
           <LoadingButton
             loading={isCalling(createSubmission.status)}
             onClick={handleClickStart}
+            // Disabled if toProject exists AND (toProjectSubmission doesn't exists OR toProjectSubmission exists and is a draft)
             disabled={
-              !deadlineDeliverable.toProjectSubmission ||
-              !deadlineDeliverable.toProjectSubmission.id ||
-              deadlineDeliverable.toProjectSubmission.isDraft
+              deadlineDeliverable.toProject &&
+              (!deadlineDeliverable.toProjectSubmission ||
+                deadlineDeliverable.toProjectSubmission.isDraft)
             }
           >
             Start
