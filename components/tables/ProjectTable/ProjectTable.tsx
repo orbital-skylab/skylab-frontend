@@ -24,7 +24,8 @@ type Props = {
 };
 
 const columnHeadings: { heading: string; align: "left" | "right" }[] = [
-  { heading: "Project ID", align: "left" },
+  { heading: "ID", align: "left" },
+  { heading: "Team Name", align: "left" },
   { heading: "Project Name", align: "left" },
   { heading: "Level of Achievement", align: "left" },
   { heading: "Students", align: "left" },

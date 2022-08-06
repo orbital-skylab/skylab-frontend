@@ -59,7 +59,7 @@ const EditProject: NextPage = () => {
 
   const initialValues: EditProjectFormValues = {
     name: project?.name ?? "",
-    teamName: project?.name ?? "",
+    teamName: project?.teamName ?? "",
     achievement: project?.achievement ?? LEVELS_OF_ACHIEVEMENT.VOSTOK,
     students: project?.students
       ? project?.students.map(({ studentId }) => studentId)

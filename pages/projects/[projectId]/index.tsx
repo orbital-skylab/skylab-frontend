@@ -114,6 +114,10 @@ const ProjectDetails: NextPage = () => {
                 <Stack spacing="0.5rem">
                   <SpreadAttribute attribute="Project ID" value={project?.id} />
                   <SpreadAttribute
+                    attribute="Project Name"
+                    value={project?.name}
+                  />
+                  <SpreadAttribute
                     attribute="Level of Achievement"
                     value={project?.achievement}
                   />
