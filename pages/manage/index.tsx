@@ -41,10 +41,10 @@ const pages = [
     href: PAGES.MANAGE_USERS_CSV,
   },
   {
-    title: "Projects",
+    title: "Teams",
     id: "manage-projects-card",
     description:
-      "Create, edit, delete, and view all projects. Change the project name, LOA, students, adviser or mentor.",
+      "Create, edit, delete, and view all teams. Change a team's name, LOA, students, adviser or mentor.",
     href: PAGES.MANAGE_PROJECTS,
   },
 ];

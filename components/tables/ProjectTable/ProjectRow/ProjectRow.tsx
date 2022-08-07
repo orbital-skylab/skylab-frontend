@@ -90,6 +90,7 @@ const ProjectRow: FC<Props> = ({
       )}
       <TableRow>
         <TableCell className="project-id-td">{project.id}</TableCell>
+        <TableCell className="project-name-td">{project.teamName}</TableCell>
         <TableCell className="project-name-td">{project.name}</TableCell>
         <TableCell className="project-achievement-level-td">
           <Stack direction="row" spacing="0.25rem">

@@ -42,6 +42,7 @@ import { GetProjectsResponse } from "@/types/api";
 import { Cohort } from "@/types/cohorts";
 import { LEVELS_OF_ACHIEVEMENT_WITH_ALL, Project } from "@/types/projects";
 import { ROLES } from "@/types/roles";
+import { PAGES } from "@/helpers/navigation";
 
 const LIMIT = 50;
 
@@ -158,7 +159,12 @@ const ProjectsList = () => {
         isLoading={isLoadingCohorts}
         authorizedRoles={[ROLES.ADMINISTRATORS]}
       >
-        <AutoBreadcrumbs />
+        <AutoBreadcrumbs
+          breadcrumbs={[
+            { label: "Manage", href: PAGES.MANAGE },
+            { label: "Teams", href: PAGES.MANAGE_PROJECTS },
+          ]}
+        />
         <Stack direction="column" mb="0.5rem">
           <Stack
             direction="row"

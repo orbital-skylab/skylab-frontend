@@ -76,7 +76,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
                   },
                 }}
               >
-                {`${project.name}`}
+                {`${project.teamName}`}
               </Typography>
             </Link>
             <Box
