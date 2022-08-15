@@ -153,7 +153,7 @@ const StudentDashboard: NextPage = () => {
                               {deadline.name}
                             </Typography>
                             <Link
-                              href={`${PAGES.ANONYMOUS_SUBMISSIONS}/${user?.id}`}
+                              href={`${PAGES.ANONYMOUS_QUESTIONS_STUDENT}/${user?.student?.id}`}
                               passHref
                             >
                               <Button variant="outlined" size="small">

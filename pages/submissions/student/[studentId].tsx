@@ -17,21 +17,23 @@ import { Section } from "@/types/deadlines";
 import { Answer } from "@/types/submissions";
 import type { NextPage } from "next";
 
-const AnonymousSubmissions: NextPage = () => {
+const AnonymousSubmissionsStudent: NextPage = () => {
   const { user, isLoading } = useAuth();
   const isAdministrator = Boolean(user?.administrator?.id);
 
   const { query } = useRouter();
-  const { userId } = query;
+  const { studentId } = query;
 
   const { data, status } = useFetch<GetSubmissionsAnonymousQuestions>({
-    endpoint: `/submissions/users/${userId}/anonymous-questions`,
+    endpoint: `/submissions/student/${studentId}/anonymous-questions`,
   });
 
   return (
     <Body isLoading={isLoading || isFetching(status)}>
       <UnauthorizedWrapper
-        isUnauthorized={user?.id !== Number(userId) && !isAdministrator}
+        isUnauthorized={
+          user?.student?.id !== Number(studentId) && !isAdministrator
+        }
       >
         <GoBackButton />
         <NoDataWrapper
@@ -57,7 +59,8 @@ const AnonymousSubmissions: NextPage = () => {
     </Body>
   );
 };
-export default AnonymousSubmissions;
+
+export default AnonymousSubmissionsStudent;
 
 const AnonymousQuestionSectionsList = ({
   questionSections,
