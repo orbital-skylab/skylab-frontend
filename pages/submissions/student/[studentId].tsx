@@ -41,14 +41,14 @@ const AnonymousSubmissionsStudent: NextPage = () => {
           fallback={<NoneFound message="No anonymous answers were found" />}
         >
           <Stack gap="2rem">
-            {data?.deadlines.map(({ deadline, submissions }) => (
+            {data?.deadlines.map(({ deadline, sections, answers }) => (
               <Box key={deadline.id}>
                 <Typography fontWeight={600}>{deadline.name}</Typography>
-                {submissions.map((submission, idx) => (
+                {answers.map((answersArray, idx) => (
                   <AnonymousQuestionSectionsList
                     key={idx}
-                    questionSections={submission.sections}
-                    answersArray={submission.answers}
+                    questionSections={sections}
+                    answersArray={answersArray}
                   />
                 ))}
               </Box>

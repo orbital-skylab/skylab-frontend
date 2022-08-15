@@ -173,10 +173,8 @@ export type GetSubmissionResponse = { submission: Submission };
 export type GetSubmissionsAnonymousQuestions = {
   deadlines: {
     deadline: Deadline;
-    submissions: {
-      sections: Section[];
-      answers: Answer[];
-    }[];
+    sections: Section[];
+    answers: Answer[][];
   }[];
 };
 
