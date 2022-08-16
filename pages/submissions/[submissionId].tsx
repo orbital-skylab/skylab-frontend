@@ -117,7 +117,7 @@ const Submission: NextPage = () => {
               <HoverLink
                 href={`${PAGES.PROJECTS}/${submissionResponse?.submission.fromProject?.id}`}
               >
-                {`From: ${submissionResponse?.submission.fromProject?.name}`}
+                {`From: ${submissionResponse?.submission.fromProject?.teamName}`}
               </HoverLink>
             )}
             {submissionResponse?.submission.fromUser?.id && (
@@ -131,7 +131,7 @@ const Submission: NextPage = () => {
               <HoverLink
                 href={`${PAGES.PROJECTS}/${submissionResponse?.submission.toProject?.id}`}
               >
-                {`To: ${submissionResponse?.submission.toProject.name}`}
+                {`To: ${submissionResponse?.submission.toProject.teamName}`}
               </HoverLink>
             )}
             {submissionResponse?.submission.toUser?.id && (
