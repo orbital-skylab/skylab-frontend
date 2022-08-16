@@ -104,7 +104,6 @@ const AdministratorDashboard: NextPage = () => {
   );
   const {
     data: allTeamsMilestones,
-    originalData: allTeamsMilestonesOriginal, // Original data includes the extra metadata about unsubmitted count, submittedLate count, etc.
     status: fetchAllTeamsMilestonesStatus,
     hasMore,
   } = useInfiniteFetch<
@@ -216,11 +215,6 @@ const AdministratorDashboard: NextPage = () => {
                     searchTextInput={searchTextInput}
                     handleSearchInputChange={handleSearchInputChange}
                     milestoneDeadlines={milestoneDeadlines}
-                    allTeamsMilestonesOriginal={
-                      Array.isArray(allTeamsMilestonesOriginal)
-                        ? allTeamsMilestonesOriginal[0]
-                        : undefined
-                    }
                   />
                   <AllTeamsMilestoneTable
                     deadline={selectedMilestoneDeadline}

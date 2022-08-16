@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 // Components
-import { Chip, MenuItem, Stack, TextField } from "@mui/material";
+import { MenuItem, Stack, TextField } from "@mui/material";
 import { CSVDownload } from "react-csv";
 import { LoadingButton } from "@mui/lab";
 // Hooks
@@ -30,9 +30,6 @@ type Props = {
   searchTextInput: string;
   handleSearchInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   milestoneDeadlines: Deadline[];
-  allTeamsMilestonesOriginal:
-    | GetAdministratorAllTeamMilestoneSubmissionsResponse
-    | undefined;
 };
 
 const ActionRow: FC<Props> = ({
@@ -43,31 +40,11 @@ const ActionRow: FC<Props> = ({
   searchTextInput,
   handleSearchInputChange,
   milestoneDeadlines,
-  allTeamsMilestonesOriginal,
 }) => {
   const { currentCohortYear } = useCohort();
   const { setError } = useSnackbarAlert();
   const [isExporting, setIsExporting] = useState(false);
   const [csvData, setCsvData] = useState<Record<string, string | number>[]>([]);
-
-  const renderChips = () => {
-    if (!allTeamsMilestonesOriginal) {
-      return null;
-    }
-
-    const { unsubmitted, submittedLate, submittedOnTime } =
-      allTeamsMilestonesOriginal;
-    const total = unsubmitted + submittedLate + submittedOnTime;
-    const submittedOnTimePercent = `${(submittedOnTime / total) * 100}%`;
-    const submittedLatePercent = `${(submittedLate / total) * 100}%`;
-
-    return (
-      <>
-        <Chip label={`${submittedOnTimePercent} Submitted On Time`} />
-        <Chip label={`${submittedLatePercent} Submitted Late`} />
-      </>
-    );
-  };
 
   const exportCsv = async () => {
     setIsExporting(true);
@@ -128,7 +105,6 @@ const ActionRow: FC<Props> = ({
               </MenuItem>
             ))}
         </TextField>
-        {renderChips()}
         <TextField
           label="Submission Status"
           value={selectedSubmissionStatus}

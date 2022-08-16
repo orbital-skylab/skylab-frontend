@@ -228,9 +228,6 @@ export type GetMentorTeamSubmissionsResponse = {
 /** Administrator Dashboard Endpoints */
 export type GetAdministratorAllTeamMilestoneSubmissionsResponse = {
   submissions: PossibleSubmission[];
-  unsubmitted: number;
-  submittedOnTime: number;
-  submittedLate: number;
 };
 
 /**
