@@ -188,7 +188,7 @@ const ProjectsList = () => {
                 onClick={handleOpenAddProjectModal}
               >
                 <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
-                Project
+                Team
               </Button>
               <TextField
                 id="project-cohort-select"
@@ -244,7 +244,7 @@ const ProjectsList = () => {
               value={viewHasDropped}
               onClick={handleToggleViewDropped}
               control={<Switch color="secondary" size="small" />}
-              label="View Dropped Projects"
+              label="View Dropped Teams"
               labelPlacement="start"
             />
           </Stack>

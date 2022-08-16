@@ -101,9 +101,15 @@ const QuestionCard: FC<Props> = ({
           );
       }
     } else {
-      if (answer === undefined || !setAnswer) {
+      if (answer === undefined) {
         return alert(
-          `Error with question: ${getQuestionNumber()}: A answer setter is not provided OR the answer at the questionIdOrIdx is undefined`
+          `Error with question: ${getQuestionNumber()}: The answer at the questionIdOrIdx is undefined`
+        );
+      }
+
+      if (!setAnswer) {
+        return alert(
+          `Error with question: ${getQuestionNumber()}: A answer setter is not provided`
         );
       }
 

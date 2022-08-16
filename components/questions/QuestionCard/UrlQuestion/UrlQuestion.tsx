@@ -34,21 +34,27 @@ const UrlQuestion: FC<Props> = ({
     <Stack className="url-question" spacing="0.5rem" sx={{ width: "100%" }}>
       <QuestionAndDesc question={question} questionType="URL" />
       {!isReadonly ? (
-        <TextField
-          className="url-input"
-          value={answer}
-          onChange={handleChange}
-          size="small"
-          type="url"
-          placeholder="Your URL here"
-          error={isInvalid}
-          helperText={isInvalid && "Please enter a valid URL"}
-        />
+        <>
+          <TextField
+            className="url-input"
+            value={answer}
+            onChange={handleChange}
+            size="small"
+            type="url"
+            placeholder="Your URL here"
+            error={isInvalid}
+            helperText={isInvalid && "Please enter a valid URL"}
+          />
+        </>
       ) : (
         <Typography>
-          <Link href={answer} target="_blank" rel="noreferrer">
-            {answer}
-          </Link>
+          {answer !== "" ? (
+            <Link href={answer} target="_blank" rel="noreferrer">
+              {answer}
+            </Link>
+          ) : (
+            "No URL was provided"
+          )}
         </Typography>
       )}
     </Stack>

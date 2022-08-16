@@ -40,10 +40,16 @@ const Submission: NextPage = () => {
     endpoint: `/submissions/${submissionId}`,
     requiresAuthorization: true,
     enabled: submissionId !== undefined,
-    onFetch: (data) => actions.setAnswersFromArray(data.submission.answers),
+    onFetch: (data) => {
+      if (data.submission.answers.length) {
+        actions.setAnswersFromArray(data.submission.answers);
+      } else {
+        actions.setEmptyAnswers(data.submission.sections);
+      }
+    },
   });
 
-  const isEditMode = isSubmissionsFromProjectOrUser(
+  const isReadonly = !isSubmissionsFromProjectOrUser(
     submissionResponse?.submission,
     user
   );
@@ -155,7 +161,7 @@ const Submission: NextPage = () => {
             answersActions={actions}
             submitAnswers={handleSubmit}
             isSubmitting={isCalling(submitAnswers.status)}
-            isReadonly={!isEditMode}
+            isReadonly={isReadonly}
             isDraft={submissionResponse?.submission.isDraft}
           />
         </NoDataWrapper>
