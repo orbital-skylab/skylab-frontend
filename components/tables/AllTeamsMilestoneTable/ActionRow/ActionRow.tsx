@@ -56,18 +56,21 @@ const ActionRow: FC<Props> = ({
         queryParams: {
           cohortYear: currentCohortYear,
           deadlineId: selectedMilestoneDeadline.id,
-          submissionStatus: selectedSubmissionStatus,
+          ...(selectedSubmissionStatus === SUBMISSION_STATUS.ALL
+            ? {}
+            : { submissionStatus: selectedSubmissionStatus }),
         },
         requiresAuthorization: true,
       }).build();
-      const res: GetAdministratorAllTeamMilestoneSubmissionsResponse =
-        await fetchAllTeamsMilestones();
+      const res = await fetchAllTeamsMilestones();
+      const data: GetAdministratorAllTeamMilestoneSubmissionsResponse =
+        await res.json();
 
-      if (!res || !res.submissions) {
+      if (!data || !data.submissions) {
         throw new Error("No team milestone submission data found");
       }
 
-      const data = res.submissions.map((submission) => ({
+      const mappedData = data.submissions.map((submission) => ({
         "Project Id": submission.fromProject?.id ?? "",
         "Project Name": submission.fromProject?.name ?? "",
         "Level of Achievement": submission.fromProject?.achievement ?? "",
@@ -82,7 +85,7 @@ const ActionRow: FC<Props> = ({
           dueBy: selectedMilestoneDeadline.dueBy,
         }),
       }));
-      setCsvData(data);
+      setCsvData(mappedData);
     } catch (error) {
       setError(error);
     }
