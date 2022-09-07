@@ -71,6 +71,10 @@ const AdviserDashboard: NextPage = () => {
     setSelectedTab(newValue);
   };
 
+  const hasUpcomingDeadlines = deadlinesResponse?.deadlines.some(
+    (deadlineDeliverable) => isFuture(deadlineDeliverable.deadline.dueBy)
+  );
+
   const hasPastDeadlines = deadlinesResponse?.deadlines.some(
     (deadlineDeliverable) => !isFuture(deadlineDeliverable.deadline.dueBy)
   );
@@ -109,19 +113,21 @@ const AdviserDashboard: NextPage = () => {
               fallback={<NoneFound message="No upcoming or past deadlines" />}
             >
               <Stack gap="2rem">
-                <Box>
-                  <Typography variant="h6" fontWeight={600}>
-                    Upcoming Deadlines
-                  </Typography>
+                {hasUpcomingDeadlines && (
+                  <Box>
+                    <Typography variant="h6" fontWeight={600}>
+                      Upcoming Deadlines
+                    </Typography>
 
-                  <DeadlineDeliverableTable
-                    deadlineDeliverables={deadlinesResponse?.deadlines.filter(
-                      (deadlineDeliverable) =>
-                        isFuture(deadlineDeliverable.deadline.dueBy)
-                    )}
-                    viewerRole={VIEWER_ROLE.ADVISERS}
-                  />
-                </Box>
+                    <DeadlineDeliverableTable
+                      deadlineDeliverables={deadlinesResponse?.deadlines.filter(
+                        (deadlineDeliverable) =>
+                          isFuture(deadlineDeliverable.deadline.dueBy)
+                      )}
+                      viewerRole={VIEWER_ROLE.ADVISERS}
+                    />
+                  </Box>
+                )}
                 {hasPastDeadlines && (
                   <Box>
                     <Typography variant="h6" fontWeight={600}>
