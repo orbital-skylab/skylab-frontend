@@ -7,8 +7,10 @@ import ErrorWrapper from "../../wrappers/ErrorWrapper";
 import UnauthorizedWrapper from "@/components/wrappers/UnauthorizedWrapper";
 // Hooks
 import useAuth from "@/contexts/useAuth";
+import { useRouter } from "next/router";
 // Helpers
 import { userHasRole } from "@/helpers/roles";
+import { PAGES } from "@/helpers/navigation";
 // Constants
 import { NAVBAR_HEIGHT_REM, WIDTH_XL } from "@/styles/constants";
 // Types
@@ -46,6 +48,7 @@ const Body: FC<Props> = ({
   isError = false,
   authorizedRoles,
 }) => {
+  const router = useRouter();
   const {
     user,
     isPreviewMode,
@@ -71,6 +74,11 @@ const Body: FC<Props> = ({
     !authorizedRoles ||
     (authorizedRoles && user && userHasRole(user, authorizedRoles));
 
+  const handleStopPreview = () => {
+    stopPreview();
+    router.push(PAGES.LANDING);
+  };
+
   return (
     <>
       <Box sx={boxSx}>
@@ -94,7 +102,7 @@ const Body: FC<Props> = ({
                 color="warning"
                 size="small"
                 variant="outlined"
-                onClick={stopPreview}
+                onClick={handleStopPreview}
               >
                 Stop Preview
               </Button>

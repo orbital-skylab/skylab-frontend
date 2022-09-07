@@ -16,6 +16,7 @@ import DeleteUserModal from "@/components/modals/DeleteUserModal";
 import { PAGES } from "@/helpers/navigation";
 // Hooks
 import useAuth from "@/contexts/useAuth";
+import { useRouter } from "next/router";
 // Types
 import { User } from "@/types/users";
 import { ROLES } from "@/types/roles";
@@ -36,6 +37,7 @@ const UserRow: FC<Props> = ({
   leanProjects,
   isFetchingLeanProjects,
 }) => {
+  const router = useRouter();
   const { previewSiteAs } = useAuth();
   const [isDeleteUserOpen, setIsDeleteUserOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState<ROLES | null>(null);
@@ -109,6 +111,7 @@ const UserRow: FC<Props> = ({
 
   const handlePreviewSiteAs = () => {
     previewSiteAs(user);
+    router.push(PAGES.LANDING);
   };
 
   return (
