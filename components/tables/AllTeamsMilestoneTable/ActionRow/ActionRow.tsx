@@ -101,12 +101,15 @@ const ActionRow: FC<Props> = ({
           select
           size="small"
           sx={{
+            width: "fit-content",
             marginLeft: "auto",
           }}
         >
           {Object.values(SUBMISSION_STATUS).map((status) => (
             <MenuItem key={status} value={status}>
-              {status.split("_").join(" ")}
+              {status === "All"
+                ? "All Submissions"
+                : status.split("_").join(" ")}
             </MenuItem>
           ))}
         </TextField>
