@@ -113,7 +113,6 @@ const MentorDashboard: NextPage = () => {
                 <ProjectTable
                   projects={projectsResponse.projects}
                   showAdviserColumn
-                  showEditAction
                 />
               )}
             </NoDataWrapper>
