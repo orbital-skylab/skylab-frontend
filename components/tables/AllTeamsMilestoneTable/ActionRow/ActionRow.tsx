@@ -8,8 +8,8 @@ import useCohort from "@/contexts/useCohort";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Helpers
 import { ApiServiceBuilder } from "@/helpers/api";
-import { generateSubmissionStatus } from "@/helpers/submissions";
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
+import { mapData } from "./ActionRow.helpers";
 // Types
 import {
   GetAdministratorAllTeamMilestoneSubmissionsResponse,
@@ -70,21 +70,7 @@ const ActionRow: FC<Props> = ({
         throw new Error("No team milestone submission data found");
       }
 
-      const mappedData = data.submissions.map((submission) => ({
-        "Project Id": submission.fromProject?.id ?? "",
-        "Project Name": submission.fromProject?.name ?? "",
-        "Level of Achievement": submission.fromProject?.achievement ?? "",
-        "Adviser Name": submission.fromProject?.adviser?.name ?? "",
-        "Mentor Name": submission.fromProject?.mentor?.name ?? "",
-        "Submission ID": submission.id ?? "",
-        "Submission Updated At": submission.updatedAt ?? "",
-        "Submission Status": generateSubmissionStatus({
-          submissionId: submission.id,
-          isDraft: false,
-          updatedAt: submission.updatedAt,
-          dueBy: selectedMilestoneDeadline.dueBy,
-        }),
-      }));
+      const mappedData = mapData(data.submissions, selectedMilestoneDeadline);
       setCsvData(mappedData);
     } catch (error) {
       setError(error);
@@ -115,12 +101,15 @@ const ActionRow: FC<Props> = ({
           select
           size="small"
           sx={{
+            width: "fit-content",
             marginLeft: "auto",
           }}
         >
           {Object.values(SUBMISSION_STATUS).map((status) => (
             <MenuItem key={status} value={status}>
-              {status.split("_").join(" ")}
+              {status === "All"
+                ? "All Submissions"
+                : status.split("_").join(" ")}
             </MenuItem>
           ))}
         </TextField>

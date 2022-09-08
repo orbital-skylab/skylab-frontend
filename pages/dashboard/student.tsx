@@ -61,6 +61,10 @@ const StudentDashboard: NextPage = () => {
     setSelectedTab(newValue);
   };
 
+  const hasUpcomingDeadlines = deadlinesResponse?.deadlines.some(
+    (deadlineDeliverable) => isFuture(deadlineDeliverable.deadline.dueBy)
+  );
+
   const hasPastDeadlines = deadlinesResponse?.deadlines.some(
     (deadlineDeliverable) => !isFuture(deadlineDeliverable.deadline.dueBy)
   );
@@ -98,18 +102,20 @@ const StudentDashboard: NextPage = () => {
               fallback={<NoneFound message="No upcoming or past deadlines" />}
             >
               <Stack gap="2rem">
-                <Box id="upcoming-deadlines-div">
-                  <Typography variant="h6" fontWeight={600}>
-                    Upcoming Deadlines
-                  </Typography>
-                  <DeadlineDeliverableTable
-                    deadlineDeliverables={deadlinesResponse?.deadlines.filter(
-                      (deadlineDeliverable) =>
-                        isFuture(deadlineDeliverable.deadline.dueBy)
-                    )}
-                    viewerRole={VIEWER_ROLE.PROJECTS}
-                  />
-                </Box>
+                {hasUpcomingDeadlines && (
+                  <Box id="upcoming-deadlines-div">
+                    <Typography variant="h6" fontWeight={600}>
+                      Upcoming Deadlines
+                    </Typography>
+                    <DeadlineDeliverableTable
+                      deadlineDeliverables={deadlinesResponse?.deadlines.filter(
+                        (deadlineDeliverable) =>
+                          isFuture(deadlineDeliverable.deadline.dueBy)
+                      )}
+                      viewerRole={VIEWER_ROLE.PROJECTS}
+                    />
+                  </Box>
+                )}
                 {hasPastDeadlines && (
                   <Box id="past-deadlines-div">
                     <Typography variant="h6" fontWeight={600}>
