@@ -16,7 +16,10 @@ type Props = {
   answers: Map<Answer["questionId"], Answer["answer"]>;
   accessAnswersWithQuestionIndex?: boolean;
   answersActions?: UseAnswersActions;
-  submitAnswers?: (options?: { isDraft: boolean }) => void;
+  submitAnswers?: (options?: {
+    isDraft?: boolean;
+    shouldDisplaySuccess?: boolean;
+  }) => void;
   isSubmitting?: boolean;
   isReadonly?: boolean;
   isDraft?: boolean;
@@ -117,12 +120,21 @@ const QuestionSectionsList: FC<Props> = ({
         );
       })}
       {!isReadonly && (
-        <Stack direction="row" justifyContent="end" gap="1rem">
+        <Stack
+          direction="row"
+          justifyContent="end"
+          alignItems="center"
+          gap="1rem"
+        >
           {isDraft && (
             <LoadingButton
               onClick={
                 submitAnswers
-                  ? () => submitAnswers({ isDraft: true })
+                  ? () =>
+                      submitAnswers({
+                        isDraft: true,
+                        shouldDisplaySuccess: true,
+                      })
                   : undefined
               }
               loading={isSubmitting}
@@ -135,7 +147,11 @@ const QuestionSectionsList: FC<Props> = ({
             variant="contained"
             onClick={
               submitAnswers
-                ? () => submitAnswers({ isDraft: false })
+                ? () =>
+                    submitAnswers({
+                      isDraft: false,
+                      shouldDisplaySuccess: true,
+                    })
                 : undefined
             }
             loading={isSubmitting}

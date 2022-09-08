@@ -23,7 +23,8 @@ import {
 } from "@/types/api";
 import HoverLink from "@/components/typography/HoverLink";
 import { PAGES } from "@/helpers/navigation";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
 
 const Submission: NextPage = () => {
   const router = useRouter();
@@ -31,6 +32,7 @@ const Submission: NextPage = () => {
   const { submissionId } = router.query;
   const { answers, actions, getAnswersAsArray } = useAnswers();
   const { setSuccess, setError } = useSnackbarAlert();
+  const [savedAtTime, setSavedAtTime] = useState("");
 
   const {
     data: submissionResponse,
@@ -75,7 +77,10 @@ const Submission: NextPage = () => {
     },
   });
 
-  const handleSubmit = async (options?: { isDraft: boolean }) => {
+  const handleSubmit = async (options?: {
+    isDraft?: boolean;
+    shouldDisplaySuccess?: boolean;
+  }) => {
     const processedValues = {
       answers: getAnswersAsArray(),
       isDraft: Boolean(options?.isDraft),
@@ -83,9 +88,11 @@ const Submission: NextPage = () => {
 
     try {
       await submitAnswers.call(processedValues);
-      setSuccess(
-        `Successfully ${options?.isDraft ? "saved draft" : "submitted"}!`
-      );
+      if (options?.shouldDisplaySuccess) {
+        setSuccess(
+          `Successfully ${options?.isDraft ? "saved draft" : "submitted"}!`
+        );
+      }
     } catch (error) {
       setError(error);
     }
@@ -94,7 +101,10 @@ const Submission: NextPage = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceAutoSave = useCallback(
     debounce(() => {
-      setSuccess("Automatically saved draft");
+      if (submissionResponse && submissionResponse.submission.isDraft) {
+        handleSubmit({ isDraft: true, shouldDisplaySuccess: false });
+        setSavedAtTime(new Date().toISOString());
+      }
     }, 1000),
     []
   );
@@ -164,6 +174,19 @@ const Submission: NextPage = () => {
             isReadonly={isReadonly}
             isDraft={submissionResponse?.submission.isDraft}
           />
+          {!isReadonly && (
+            <Box sx={{ display: "flex", marginTop: "1rem" }}>
+              <Typography variant="subtitle2" sx={{ marginLeft: "auto" }}>
+                {savedAtTime === ""
+                  ? `Last updated at ${isoDateToLocaleDateWithTime(
+                      submissionResponse?.submission.updatedAt ?? ""
+                    )}`
+                  : `Automatically saved at ${isoDateToLocaleDateWithTime(
+                      savedAtTime
+                    )}`}
+              </Typography>
+            </Box>
+          )}
         </NoDataWrapper>
       </Body>
     </>
