@@ -37,22 +37,33 @@ const AnonymousSubmissionsStudent: NextPage = () => {
       >
         <GoBackButton />
         <NoDataWrapper
-          noDataCondition={!data || !data.deadlines || !data.deadlines.length}
+          noDataCondition={
+            !data ||
+            !data.deadlines ||
+            !data.deadlines.length ||
+            // If all the deadlines do not have any anonymous questions
+            !data.deadlines.reduce(
+              (acc, { answers }) => acc || Boolean(answers.length),
+              false
+            )
+          }
           fallback={<NoneFound message="No anonymous answers were found" />}
         >
           <Stack gap="2rem">
-            {data?.deadlines.map(({ deadline, sections, answers }) => (
-              <Box key={deadline.id}>
-                <Typography fontWeight={600}>{deadline.name}</Typography>
-                {answers.map((answersArray, idx) => (
-                  <AnonymousQuestionSectionsList
-                    key={idx}
-                    questionSections={sections}
-                    answersArray={answersArray}
-                  />
-                ))}
-              </Box>
-            ))}
+            {data?.deadlines
+              .filter(({ answers }) => Boolean(answers.length))
+              .map(({ deadline, sections, answers }) => (
+                <Box key={deadline.id}>
+                  <Typography fontWeight={600}>{deadline.name}</Typography>
+                  {answers.map((answersArray, idx) => (
+                    <AnonymousQuestionSectionsList
+                      key={idx}
+                      questionSections={sections}
+                      answersArray={answersArray}
+                    />
+                  ))}
+                </Box>
+              ))}
           </Stack>
         </NoDataWrapper>
       </UnauthorizedWrapper>
