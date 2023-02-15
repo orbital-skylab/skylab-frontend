@@ -1,0 +1,12 @@
+{
+  "email": "admin@skylab.com",
+  "password": "Password123",
+  "originalName": "Skylab Admin",
+  "validName": "New Admin Name",
+  "validProfilePicture": "https://loremflickr.com/640/480",
+  "validGithub": "https://frozen-page.biz",
+  "validLinkedin": "http://incredible-weedkiller.info",
+  "validPersonalSite": "http://queasy-dispute.info",
+  "validSelfIntro": "Perspiciatis atque libero architecto aliquam",
+  "invalidName": ""
+}
