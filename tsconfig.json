@@ -20,11 +20,6 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "cypress/support/commands.js"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "cypress.config.js"],
   "exclude": ["node_modules"]
 }
