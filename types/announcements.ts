@@ -18,7 +18,9 @@ export type Announcement = {
   updatedAt: string;
   author: User;
   cohortYear: number;
-  announcementCommentsCount: number;
+  _count: {
+    announcementComments: number;
+  };
 };
 
 export interface AnnouncementWithCommentThreads extends Announcement {

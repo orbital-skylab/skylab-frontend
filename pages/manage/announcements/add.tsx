@@ -7,13 +7,17 @@ import Body from "@/components/layout/Body";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { Announcement, targetAudienceRoles } from "@/types/announcements";
-import { Button, Stack } from "@mui/material";
+import { Button, MenuItem, Stack, TextField } from "@mui/material";
 import TextInput from "@/components/formikFormControllers/TextInput";
 import RichTextEditor from "@/components/formikFormControllers/RichTextEditor";
 import Checkbox from "@/components/formikFormControllers/Checkbox";
 import useApiCall from "@/hooks/useApiCall";
 import { CreateAnnouncementResponse } from "@/types/api";
 import { useRouter } from "next/router";
+import useCohort from "@/contexts/useCohort";
+import { Cohort } from "@/types/cohorts";
+import { ChangeEvent, useEffect, useState } from "react";
+import useAuth from "@/contexts/useAuth";
 
 type AddAnnouncementFormValuesType = Pick<
   Announcement,
@@ -22,6 +26,11 @@ type AddAnnouncementFormValuesType = Pick<
 
 const AddAnnouncement: NextPage = () => {
   const router = useRouter();
+  const { cohorts, currentCohortYear } = useCohort();
+  const [selectedCohortYear, setSelectedCohortYear] = useState<
+    Cohort["academicYear"] | string
+  >("");
+  const { user } = useAuth();
 
   const addAnnouncement = useApiCall({
     endpoint: "/announcements",
@@ -31,7 +40,13 @@ const AddAnnouncement: NextPage = () => {
   });
 
   const handleSubmit = async (values: AddAnnouncementFormValuesType) => {
-    await addAnnouncement.call(values);
+    await addAnnouncement.call({
+      announcement: {
+        ...values,
+        cohortYear: selectedCohortYear,
+        authorId: user?.id,
+      },
+    });
   };
 
   const initialValues: AddAnnouncementFormValuesType = {
@@ -40,6 +55,18 @@ const AddAnnouncement: NextPage = () => {
     content: "",
     shouldSendEmail: true,
   };
+
+  /** Input Change Handlers */
+  const handleCohortYearChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSelectedCohortYear(Number(e.target.value) as Cohort["academicYear"]);
+  };
+
+  useEffect(() => {
+    if (currentCohortYear) {
+      setSelectedCohortYear(currentCohortYear);
+    }
+  }, [currentCohortYear]);
+
   return (
     <>
       <Body>
@@ -52,6 +79,21 @@ const AddAnnouncement: NextPage = () => {
           {(formik) => (
             <form onSubmit={formik.handleSubmit}>
               <Stack gap="1rem">
+                <TextField
+                  name="cohort"
+                  label="Cohort"
+                  value={selectedCohortYear}
+                  onChange={handleCohortYearChange}
+                  select
+                  size="small"
+                >
+                  {cohorts &&
+                    cohorts.map(({ academicYear }) => (
+                      <MenuItem key={academicYear} value={academicYear}>
+                        {academicYear}
+                      </MenuItem>
+                    ))}
+                </TextField>
                 <Dropdown
                   label="Who should see the announcements?"
                   name="targetAudienceRole"
