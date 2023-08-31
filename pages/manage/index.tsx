@@ -13,6 +13,12 @@ import { ROLES } from "@/types/roles";
 
 const pages = [
   {
+    title: "Announcements",
+    id: "manage-announcements-card",
+    description: "Create, edit and delete announcements.",
+    href: PAGES.MANAGE_ANNOUNCEMENTS,
+  },
+  {
     title: "Cohorts",
     id: "manage-cohorts-card",
     description:

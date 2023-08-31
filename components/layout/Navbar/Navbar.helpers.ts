@@ -12,6 +12,12 @@ import { NavbarOption, NAVBAR_ACTIONS } from "./Navbar.types";
  */
 export const NAVBAR_OPTIONS: NavbarOption[] = [
   {
+    label: "Announcements",
+    id: "nav-announcements",
+    route: PAGES.ANNOUNCEMENTS,
+    currentPageRegExp: /^\/announcements$/,
+  },
+  {
     label: "Dashboard",
     id: "nav-dashboard",
     action: NAVBAR_ACTIONS.ROUTE_TO_DASHBOARD,

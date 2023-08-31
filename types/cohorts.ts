@@ -4,6 +4,9 @@ export type Cohort = {
   academicYear: number;
 };
 
+/**
+ * TODO: Shift to `/types/api.ts`
+ */
 export type GetCohortsResponse = {
   cohorts: Cohort[];
 };
