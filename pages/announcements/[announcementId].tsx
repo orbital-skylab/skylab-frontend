@@ -1,4 +1,5 @@
 import GoBackButton from "@/components/buttons/GoBackButton";
+import CommentThreadCard from "@/components/cards/CommentThreadCard.tsx";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import RichTextEditor from "@/components/formikFormControllers/RichTextEditor";
 import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
@@ -6,6 +7,7 @@ import Body from "@/components/layout/Body";
 import RichText from "@/components/typography/RichText";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import useAuth from "@/contexts/useAuth";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 import { timeAgo } from "@/helpers/dates";
 import { PAGES } from "@/helpers/navigation";
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
@@ -22,6 +24,7 @@ type SubmitCommentFormValuesType = {
 
 const Announcement: NextPage = () => {
   const router = useRouter();
+  const { setSuccess, setError } = useSnackbarAlert();
   const { announcementId } = router.query;
   const { user } = useAuth();
   const {
@@ -40,7 +43,11 @@ const Announcement: NextPage = () => {
   const { call, status } = useApiCall({
     endpoint: `/announcements/${announcementId}/comments`,
     onSuccess: () => {
+      setSuccess("Successfully commented");
       refetch();
+    },
+    onError: () => {
+      setError("An error occurred while commenting. Please try again later");
     },
   });
 
@@ -106,6 +113,20 @@ const Announcement: NextPage = () => {
                 </form>
               )}
             </Formik>
+            <Stack direction="column" gap="0.5rem">
+              <Typography fontSize="1.5rem" fontWeight={600}>
+                Comments
+              </Typography>
+              {announcement?.announcementCommentThreads.map(
+                (commentThread, index) => (
+                  <CommentThreadCard
+                    key={index}
+                    commentThread={commentThread}
+                    refetch={refetch}
+                  />
+                )
+              )}
+            </Stack>
           </Stack>
         </NoDataWrapper>
       </Body>

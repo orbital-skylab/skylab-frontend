@@ -6,7 +6,7 @@ import { TargetAudienceRole, targetAudienceRoles } from "@/types/announcements";
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import useCohort from "@/contexts/useCohort";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
-import AnnouncementCard from "@/components/announcements/AnnouncementCard.tsx";
+import AnnouncementCard from "@/components/cards/AnnouncementCard.tsx";
 import { MenuItem, Stack, TextField, debounce } from "@mui/material";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import useAuth from "@/contexts/useAuth";
