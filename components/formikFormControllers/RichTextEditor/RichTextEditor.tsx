@@ -7,6 +7,7 @@ type Props<FormValuesType> = {
   id?: string;
   formik: FormikProps<FormValuesType>;
   name: keyof FormValuesType;
+  height?: string;
 };
 
 // This is necessary as react-quill does not render properly in SSR environments

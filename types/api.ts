@@ -1,5 +1,5 @@
 import { Adviser } from "./advisers";
-import { Announcement } from "./announcements";
+import { Announcement, AnnouncementWithCommentThreads } from "./announcements";
 import { Deadline, DeadlineDeliverable, Section } from "./deadlines";
 import { Mentor } from "./mentors";
 import { LeanProject, Project } from "./projects";
@@ -259,6 +259,10 @@ export type DeleteProjectRelationsResponse = {
  */
 export type GetAnnouncementsResponse = {
   announcements: Announcement[];
+};
+
+export type GetAnnouncementWithCommentThreadsResponse = {
+  announcement: AnnouncementWithCommentThreads;
 };
 
 export type CreateAnnouncementResponse = {

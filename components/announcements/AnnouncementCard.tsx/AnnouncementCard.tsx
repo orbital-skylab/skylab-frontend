@@ -1,11 +1,11 @@
 import { Announcement } from "@/types/announcements";
 import { Card, Stack, Typography } from "@mui/material";
 import { FC, useState } from "react";
-import parse from "html-react-parser";
 import { timeAgo } from "@/helpers/dates";
 import ActionLink from "@/components/typography/ActionLink";
 import { useRouter } from "next/router";
 import { PAGES } from "@/helpers/navigation";
+import RichText from "@/components/typography/RichText";
 
 type Props = { announcement: Announcement };
 
@@ -25,13 +25,14 @@ const AnnouncementCard: FC<Props> = ({ announcement }) => {
       <Typography fontSize="0.75rem">
         {timeAgo(announcement.createdAt)}
       </Typography>
-      <Typography
-        my="0.5rem"
-        maxHeight={isExpanded ? "fit-content" : nonExpandedHeight}
-        overflow={"hidden"}
-      >
-        {parse(announcement.content)}
-      </Typography>
+      <RichText
+        sx={{
+          my: "0.5rem",
+          maxHeight: isExpanded ? "fit-content" : nonExpandedHeight,
+          overflow: "hidden",
+        }}
+        htmlContent={announcement.content ?? ""}
+      />
       <Stack direction="row" gap="0.75rem">
         <ActionLink
           onClick={() => {
