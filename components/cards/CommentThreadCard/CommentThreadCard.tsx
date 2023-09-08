@@ -11,7 +11,7 @@ import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 
 type Props = {
   commentThread: AnnouncementCommentThread;
-  refetch?: () => void;
+  refetch: () => void;
 };
 
 type SubmitCommentFormValuesType = {
@@ -40,8 +40,8 @@ const CommentThreadCard: FC<Props> = ({ commentThread, refetch }) => {
     },
   });
 
-  const handleSubmitReply = (values: SubmitCommentFormValuesType) => {
-    call({
+  const handleSubmitReply = async (values: SubmitCommentFormValuesType) => {
+    await call({
       comment: {
         ...values,
         authorId: user?.id,
@@ -51,7 +51,7 @@ const CommentThreadCard: FC<Props> = ({ commentThread, refetch }) => {
   };
 
   return (
-    <Card sx={{ p: "0.5rem" }}>
+    <Card sx={{ p: "0.25rem" }}>
       <Formik
         initialValues={{ content: "" } as SubmitCommentFormValuesType}
         onSubmit={handleSubmitReply}
@@ -59,43 +59,53 @@ const CommentThreadCard: FC<Props> = ({ commentThread, refetch }) => {
         {(formik) => (
           <form onSubmit={formik.handleSubmit}>
             <Stack gap="0.5rem">
-              <CommentContent comment={rootComment} />
+              <CommentContent comment={rootComment} refetch={refetch} />
               {remainingComments.map((comment) => (
                 <Stack direction="row" key={comment.id}>
                   <Box
                     sx={{
                       width: "2px",
-                      ml: "0.25rem",
-                      mr: "0.75rem",
+                      ml: "0.5rem",
+                      mr: "0.5rem",
                       height: "full",
                       backgroundColor: "lightgray",
                     }}
                   />
-                  <CommentContent comment={comment} sx={{ py: "0.25rem" }} />
+                  <CommentContent
+                    comment={comment}
+                    sx={{ py: "0.25rem" }}
+                    refetch={refetch}
+                  />
                 </Stack>
               ))}
-              {isReplyOpen ? (
-                <>
-                  <RichTextEditor name="content" formik={formik} />
-                  <Stack direction="row" justifyContent="space-between">
-                    <Button
-                      variant="contained"
-                      type="submit"
-                      size="small"
-                      sx={{ width: "fit-content" }}
-                    >
-                      {isCalling(status) ? "Replying..." : "Reply"}
-                    </Button>
-                    <ActionLink onClick={() => setIsReplyOpen(false)}>
-                      Close
-                    </ActionLink>
+              <Stack sx={{ px: "0.25rem", pb: "0.25rem" }}>
+                {isReplyOpen ? (
+                  <Stack gap="0.75rem">
+                    <RichTextEditor name="content" formik={formik} />
+                    <Stack direction="row" justifyContent="space-between">
+                      <Button
+                        variant="contained"
+                        type="submit"
+                        size="small"
+                        disabled={formik.isSubmitting}
+                        sx={{ width: "fit-content" }}
+                      >
+                        {isCalling(status) ? "Replying..." : "Reply"}
+                      </Button>
+                      <ActionLink
+                        onClick={() => setIsReplyOpen(false)}
+                        sx={{ alignSelf: "end" }}
+                      >
+                        Close
+                      </ActionLink>
+                    </Stack>
                   </Stack>
-                </>
-              ) : (
-                <ActionLink onClick={() => setIsReplyOpen(true)}>
-                  Reply
-                </ActionLink>
-              )}
+                ) : (
+                  <ActionLink onClick={() => setIsReplyOpen(true)}>
+                    Reply
+                  </ActionLink>
+                )}
+              </Stack>
             </Stack>
           </form>
         )}

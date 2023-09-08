@@ -1,5 +1,5 @@
 import GoBackButton from "@/components/buttons/GoBackButton";
-import CommentThreadCard from "@/components/cards/CommentThreadCard.tsx";
+import CommentThreadCard from "@/components/cards/CommentThreadCard";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import RichTextEditor from "@/components/formikFormControllers/RichTextEditor";
 import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";

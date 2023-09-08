@@ -21,6 +21,13 @@ export type Announcement = {
   _count: {
     announcementComments: number;
   };
+  announcementReadLogs: ReadLog[];
+};
+
+type ReadLog = {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export interface AnnouncementWithCommentThreads extends Announcement {
@@ -32,6 +39,7 @@ export type AnnouncementComment = {
   content: string;
   createdAt: string;
   updatedAt: string;
+  deletedAt: string;
   author: User;
   parentCommentId?: number;
   announcementId: number;

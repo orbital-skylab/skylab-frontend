@@ -18,6 +18,7 @@ import useCohort from "@/contexts/useCohort";
 import { Cohort } from "@/types/cohorts";
 import { ChangeEvent, useEffect, useState } from "react";
 import useAuth from "@/contexts/useAuth";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 
 type AddAnnouncementFormValuesType = Pick<
   Announcement,
@@ -25,17 +26,20 @@ type AddAnnouncementFormValuesType = Pick<
 > & { shouldSendEmail: boolean };
 
 const AddAnnouncement: NextPage = () => {
-  const router = useRouter();
   const { cohorts, currentCohortYear } = useCohort();
   const [selectedCohortYear, setSelectedCohortYear] = useState<
     Cohort["academicYear"] | string
   >("");
+  const { setSuccess, setError } = useSnackbarAlert();
   const { user } = useAuth();
 
   const addAnnouncement = useApiCall({
     endpoint: "/announcements",
-    onSuccess: ({ announcement }: CreateAnnouncementResponse) => {
-      router.push(`/announcements/${announcement.id}`);
+    onSuccess: () => {
+      setSuccess("Announcement created successfully");
+    },
+    onError: () => {
+      setError("Something went wrong while creating the announcement");
     },
   });
 

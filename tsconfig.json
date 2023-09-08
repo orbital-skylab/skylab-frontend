@@ -20,6 +20,13 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "cypress.config.js"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "cypress.config.js",
+    "components/cards/AnnouncementCard",
+    "components/cards/CommentThreadCard"
+  ],
   "exclude": ["node_modules"]
 }

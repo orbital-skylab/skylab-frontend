@@ -6,7 +6,7 @@ import { TargetAudienceRole, targetAudienceRoles } from "@/types/announcements";
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import useCohort from "@/contexts/useCohort";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
-import AnnouncementCard from "@/components/cards/AnnouncementCard.tsx";
+import AnnouncementCard from "@/components/cards/AnnouncementCard";
 import { MenuItem, Stack, TextField, debounce } from "@mui/material";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import useAuth from "@/contexts/useAuth";
@@ -30,12 +30,15 @@ const Announcements: NextPage = () => {
     };
   }, [currentCohortYear, selectedTargetAudienceRole, querySearch]);
 
-  const { data: announcementsResponse, status: announcementsStatus } =
-    useFetch<GetAnnouncementsResponse>({
-      endpoint: `/announcements`,
-      queryParams: memoAnnouncementsQueryParams,
-      enabled: Boolean(currentCohortYear),
-    });
+  const {
+    data: announcementsResponse,
+    status: announcementsStatus,
+    refetch: announcementsRefetch,
+  } = useFetch<GetAnnouncementsResponse>({
+    endpoint: `/announcements`,
+    queryParams: memoAnnouncementsQueryParams,
+    enabled: Boolean(currentCohortYear),
+  });
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSetQuerySearch = useCallback(
@@ -118,6 +121,7 @@ const Announcements: NextPage = () => {
               <AnnouncementCard
                 key={announcement.id}
                 announcement={announcement}
+                announcementsRefetch={announcementsRefetch}
               />
             ))}
           </Stack>

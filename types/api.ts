@@ -269,6 +269,18 @@ export type CreateAnnouncementResponse = {
   announcement: Announcement;
 };
 
+export type EditAnnouncementResponse = {
+  announcement: Announcement;
+};
+
+export type GetAnnouncementReadPercentageResponse = {
+  readPercentage: {
+    totalReadCount: number;
+    totalUserCount: number;
+    percentage: number;
+  };
+};
+
 /**
  * Error
  */
