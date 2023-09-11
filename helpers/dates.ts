@@ -1,3 +1,12 @@
+import { formatDistance } from "date-fns";
+
+/**
+ * Displays the time elapsed since the provided date
+ */
+export const timeAgo = (isoDate: string) => {
+  return formatDistance(new Date(isoDate), new Date(), { addSuffix: true });
+};
+
 /**
  * Checks if a JavaScript date object is valid or not
  * @param {Date} date JavaScript date object to check

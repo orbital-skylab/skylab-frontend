@@ -1,4 +1,5 @@
 import { Adviser } from "./advisers";
+import { Announcement, AnnouncementWithCommentThreads } from "./announcements";
 import { Deadline, DeadlineDeliverable, Section } from "./deadlines";
 import { Mentor } from "./mentors";
 import { LeanProject, Project } from "./projects";
@@ -249,6 +250,34 @@ export type EditRelationResponse = {
 export type DeleteProjectRelationsResponse = {
   relations: {
     count: number;
+  };
+};
+
+/**
+ * Announcement Endpoints:
+ * // TODO: Add wiki link
+ */
+export type GetAnnouncementsResponse = {
+  announcements: Announcement[];
+};
+
+export type GetAnnouncementWithCommentThreadsResponse = {
+  announcement: AnnouncementWithCommentThreads;
+};
+
+export type CreateAnnouncementResponse = {
+  announcement: Announcement;
+};
+
+export type EditAnnouncementResponse = {
+  announcement: Announcement;
+};
+
+export type GetAnnouncementReadPercentageResponse = {
+  readPercentage: {
+    totalReadCount: number;
+    totalUserCount: number;
+    percentage: number;
   };
 };
 

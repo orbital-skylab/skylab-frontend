@@ -12,6 +12,7 @@ import { SnackbarAlertProvider } from "@/contexts/useSnackbarAlert";
 // Styling
 import "../styles/globals.scss";
 import { theme } from "@/styles/muiTheme";
+import "react-quill/dist/quill.snow.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
