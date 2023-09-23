@@ -101,8 +101,13 @@ const Announcement: NextPage = () => {
               {(formik) => (
                 <form onSubmit={formik.handleSubmit}>
                   <Stack direction="column" gap="1rem">
-                    <RichTextEditor name="content" formik={formik} />
+                    <RichTextEditor
+                      id="comment-content-input"
+                      name="content"
+                      formik={formik}
+                    />
                     <Button
+                      id="comment-button"
                       variant="contained"
                       type="submit"
                       sx={{ width: "fit-content" }}

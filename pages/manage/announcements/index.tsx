@@ -83,6 +83,7 @@ const Announcements: NextPage = () => {
           <Button
             variant="outlined"
             size="small"
+            id="create-announcement-button"
             onClick={() => {
               router.push(PAGES.MANAGE_ANNOUNCEMENTS_ADD);
             }}

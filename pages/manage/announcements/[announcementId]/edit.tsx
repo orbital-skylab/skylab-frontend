@@ -65,7 +65,7 @@ const EditAnnouncement: NextPage = () => {
         loadingText="Loading edit announcement..."
       >
         <AutoBreadcrumbs />
-        <GoBackButton />
+        <GoBackButton id="go-back-button" />
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmit}
@@ -76,6 +76,7 @@ const EditAnnouncement: NextPage = () => {
               <Stack gap="1rem">
                 <Dropdown
                   label="Who should see the announcements?"
+                  id="edit-announcement-target-audience-role-input"
                   name="targetAudienceRole"
                   formik={formik}
                   options={targetAudienceRoles.map((role) => ({
@@ -83,13 +84,20 @@ const EditAnnouncement: NextPage = () => {
                     value: role,
                   }))}
                 />
-                <TextInput label="Title" name="title" formik={formik} />
+                <TextInput
+                  id="edit-announcement-title-input"
+                  label="Title"
+                  name="title"
+                  formik={formik}
+                />
                 <RichTextEditor
+                  id="edit-announcement-content-input"
                   label="Content"
                   name="content"
                   formik={formik}
                 />
                 <Button
+                  id="edit-announcement-post-button"
                   variant="contained"
                   sx={{ width: "fit-content" }}
                   type="submit"

@@ -4,14 +4,16 @@ import { useRouter } from "next/router";
 import { FC } from "react";
 
 type Props = {
+  id?: string;
   sx?: SxProps;
 };
 
-const GoBackButton: FC<Props> = ({ sx }) => {
+const GoBackButton: FC<Props> = ({ id, sx }) => {
   const router = useRouter();
 
   return (
     <Button
+      id={id}
       color="primary"
       variant="outlined"
       sx={{ mb: "1rem", ...sx }}

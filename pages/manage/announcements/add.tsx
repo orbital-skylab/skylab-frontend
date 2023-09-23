@@ -12,13 +12,13 @@ import TextInput from "@/components/formikFormControllers/TextInput";
 import RichTextEditor from "@/components/formikFormControllers/RichTextEditor";
 import Checkbox from "@/components/formikFormControllers/Checkbox";
 import useApiCall from "@/hooks/useApiCall";
-import { CreateAnnouncementResponse } from "@/types/api";
 import { useRouter } from "next/router";
 import useCohort from "@/contexts/useCohort";
 import { Cohort } from "@/types/cohorts";
 import { ChangeEvent, useEffect, useState } from "react";
 import useAuth from "@/contexts/useAuth";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
+import GoBackButton from "@/components/buttons/GoBackButton";
 
 type AddAnnouncementFormValuesType = Pick<
   Announcement,
@@ -27,6 +27,7 @@ type AddAnnouncementFormValuesType = Pick<
 
 const AddAnnouncement: NextPage = () => {
   const { cohorts, currentCohortYear } = useCohort();
+  const router = useRouter();
   const [selectedCohortYear, setSelectedCohortYear] = useState<
     Cohort["academicYear"] | string
   >("");
@@ -36,7 +37,12 @@ const AddAnnouncement: NextPage = () => {
   const addAnnouncement = useApiCall({
     endpoint: "/announcements",
     onSuccess: () => {
-      setSuccess("Announcement created successfully");
+      setSuccess(
+        "Announcement created successfully! Redirecting you to the announcements page..."
+      );
+      setTimeout(() => {
+        router.push("/manage/announcements");
+      }, 3000);
     },
     onError: () => {
       setError("Something went wrong while creating the announcement");
@@ -75,6 +81,7 @@ const AddAnnouncement: NextPage = () => {
     <>
       <Body>
         <AutoBreadcrumbs />
+        <GoBackButton />
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmit}
@@ -85,6 +92,7 @@ const AddAnnouncement: NextPage = () => {
               <Stack gap="1rem">
                 <TextField
                   name="cohort"
+                  id="create-announcement-cohort-input"
                   label="Cohort"
                   value={selectedCohortYear}
                   onChange={handleCohortYearChange}
@@ -93,13 +101,18 @@ const AddAnnouncement: NextPage = () => {
                 >
                   {cohorts &&
                     cohorts.map(({ academicYear }) => (
-                      <MenuItem key={academicYear} value={academicYear}>
+                      <MenuItem
+                        key={academicYear}
+                        id={`${academicYear}-option`}
+                        value={academicYear}
+                      >
                         {academicYear}
                       </MenuItem>
                     ))}
                 </TextField>
                 <Dropdown
                   label="Who should see the announcements?"
+                  id="create-announcement-target-audience-role-input"
                   name="targetAudienceRole"
                   formik={formik}
                   options={targetAudienceRoles.map((role) => ({
@@ -107,8 +120,14 @@ const AddAnnouncement: NextPage = () => {
                     value: role,
                   }))}
                 />
-                <TextInput label="Title" name="title" formik={formik} />
+                <TextInput
+                  label="Title"
+                  id="create-announcement-title-input"
+                  name="title"
+                  formik={formik}
+                />
                 <RichTextEditor
+                  id="create-announcement-content-input"
                   label="Content"
                   name="content"
                   formik={formik}
@@ -120,6 +139,7 @@ const AddAnnouncement: NextPage = () => {
                 />
                 <Button
                   variant="contained"
+                  id="create-announcement-post-button"
                   sx={{ width: "fit-content" }}
                   type="submit"
                 >

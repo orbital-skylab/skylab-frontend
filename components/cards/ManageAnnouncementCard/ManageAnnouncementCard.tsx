@@ -83,6 +83,7 @@ const ManageAnnouncementCard: FC<Props> = ({ announcement, mutate }) => {
             {isExpanded ? "Read less" : "Read more"}
           </ActionLink>
           <ActionLink
+            id="view-announcement-comments-button"
             onClick={() => {
               router.push(`${PAGES.ANNOUNCEMENTS}/${id}`);
             }}
@@ -90,6 +91,7 @@ const ManageAnnouncementCard: FC<Props> = ({ announcement, mutate }) => {
             {`Comments (${_count.announcementComments})`}
           </ActionLink>
           <ActionLink
+            id="edit-announcement-button"
             sx={{
               ml: "auto",
             }}
@@ -100,6 +102,7 @@ const ManageAnnouncementCard: FC<Props> = ({ announcement, mutate }) => {
             Edit
           </ActionLink>
           <ActionLink
+            id="delete-announcement-button"
             sx={{
               color: "#D32F2F",
             }}
