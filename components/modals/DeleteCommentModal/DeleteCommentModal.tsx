@@ -55,7 +55,7 @@ const DeleteCommentModal: FC<Props> = ({ open, setOpen, comment, refetch }) => {
             Cancel
           </Button>
           <Button
-            id="delete-deadline-confirm-button"
+            id="delete-comment-confirm-button"
             size="small"
             variant="contained"
             color="error"

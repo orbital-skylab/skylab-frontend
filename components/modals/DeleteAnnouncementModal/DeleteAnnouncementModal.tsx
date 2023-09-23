@@ -70,7 +70,7 @@ const DeleteAnnouncementModal: FC<Props> = ({
             Cancel
           </Button>
           <Button
-            id="delete-deadline-confirm-button"
+            id="delete-announcement-confirm-button"
             size="small"
             variant="contained"
             color="error"

@@ -21,6 +21,7 @@ type Props<FormValuesType> = {
   isCombobox?: boolean;
   isDisabled?: boolean;
   className?: string;
+  id?: string;
 };
 
 function Dropdown<FormValuesType>({
@@ -32,6 +33,7 @@ function Dropdown<FormValuesType>({
   isCombobox,
   isDisabled = false,
   className,
+  id,
 }: Props<FormValuesType>) {
   /** For combobox */
   const [inputValue, setInputValue] = useState("");
@@ -50,6 +52,7 @@ function Dropdown<FormValuesType>({
     return (
       <FormControl>
         <Autocomplete
+          id={id}
           className={className}
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           value={values[name] as any}
@@ -89,7 +92,11 @@ function Dropdown<FormValuesType>({
           )}
           renderOption={(props, option) => {
             return (
-              <li {...props} className={`${props.className} dropdown-option`}>
+              <li
+                {...props}
+                id={`${option.value}-option`}
+                className={`${props.className} dropdown-option`}
+              >
                 {option.label}
               </li>
             );
@@ -108,6 +115,7 @@ function Dropdown<FormValuesType>({
       <FormControl>
         <InputLabel>{label}</InputLabel>
         <Select
+          id={id}
           className={className}
           name={name as string}
           label={label}
@@ -119,7 +127,7 @@ function Dropdown<FormValuesType>({
           disabled={isDisabled}
         >
           {options.map(({ value, label }) => (
-            <MenuItem key={value} value={value}>
+            <MenuItem id={`${value}-option`} key={value} value={value}>
               {label}
             </MenuItem>
           ))}

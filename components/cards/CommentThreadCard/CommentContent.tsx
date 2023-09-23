@@ -110,9 +110,14 @@ const CommentContent: FC<Props> = ({ comment, sx, refetch }) => {
                   </Typography>
                   {isEditMode ? (
                     <Stack gap="0.25rem" mt="0.25rem">
-                      <RichTextEditor name="content" formik={formik} />
+                      <RichTextEditor
+                        id="edit-comment-content-input"
+                        name="content"
+                        formik={formik}
+                      />
                       <Stack direction="row" justifyContent="space-between">
                         <Button
+                          id="edit-comment-post-button"
                           size="small"
                           variant="contained"
                           onClick={formik.submitForm}
@@ -152,8 +157,14 @@ const CommentContent: FC<Props> = ({ comment, sx, refetch }) => {
                 </Stack>
                 {isAuthor && !isEditMode ? (
                   <Stack direction="row" alignSelf="end" gap="0.75rem">
-                    <ActionLink onClick={handleToggleEditMode}>Edit</ActionLink>
                     <ActionLink
+                      id="edit-comment-button"
+                      onClick={handleToggleEditMode}
+                    >
+                      Edit
+                    </ActionLink>
+                    <ActionLink
+                      id="delete-comment-button"
                       sx={{
                         color: "#D32F2F",
                       }}

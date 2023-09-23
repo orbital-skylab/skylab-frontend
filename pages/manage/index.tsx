@@ -70,17 +70,17 @@ const Manage: NextPage = () => {
         >
           {pages.map((page) => (
             <Grid id={page.id} item xs={12} sm={4} key={page.title}>
-              <Card
-                sx={{
-                  height: "100%",
-                  cursor: "pointer",
-                  transition: BASE_TRANSITION,
-                  "&:hover": {
-                    transform: "scale(105%)",
-                  },
-                }}
-              >
-                <Link passHref href={page.href}>
+              <Link passHref href={page.href}>
+                <Card
+                  sx={{
+                    height: "100%",
+                    cursor: "pointer",
+                    transition: BASE_TRANSITION,
+                    "&:hover": {
+                      transform: "scale(105%)",
+                    },
+                  }}
+                >
                   <CardContent
                     sx={{
                       display: "flex",
@@ -91,8 +91,8 @@ const Manage: NextPage = () => {
                     <Typography fontWeight={600}>{page.title}</Typography>
                     <Typography variant="body2">{page.description}</Typography>
                   </CardContent>
-                </Link>
-              </Card>
+                </Card>
+              </Link>
             </Grid>
           ))}
         </Grid>

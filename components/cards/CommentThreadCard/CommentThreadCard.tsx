@@ -81,9 +81,14 @@ const CommentThreadCard: FC<Props> = ({ commentThread, refetch }) => {
               <Stack sx={{ px: "0.25rem", pb: "0.25rem" }}>
                 {isReplyOpen ? (
                   <Stack gap="0.75rem">
-                    <RichTextEditor name="content" formik={formik} />
+                    <RichTextEditor
+                      id="reply-comment-content-input"
+                      name="content"
+                      formik={formik}
+                    />
                     <Stack direction="row" justifyContent="space-between">
                       <Button
+                        id="reply-comment-post-button"
                         variant="contained"
                         type="submit"
                         size="small"
@@ -101,7 +106,10 @@ const CommentThreadCard: FC<Props> = ({ commentThread, refetch }) => {
                     </Stack>
                   </Stack>
                 ) : (
-                  <ActionLink onClick={() => setIsReplyOpen(true)}>
+                  <ActionLink
+                    id="reply-comment-button"
+                    onClick={() => setIsReplyOpen(true)}
+                  >
                     Reply
                   </ActionLink>
                 )}
