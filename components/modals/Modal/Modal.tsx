@@ -15,6 +15,7 @@ type Props = {
   title?: string;
   subheader?: string;
   sx?: Record<string, string>;
+  id?: string;
 };
 
 /**
@@ -27,9 +28,11 @@ const Modal: FC<Props> = ({
   title,
   subheader,
   sx,
+  id,
 }) => {
   return (
     <MUIModal
+      id={id}
       aria-labelledby="transition-modal"
       aria-describedby="transition-modal"
       open={open}
