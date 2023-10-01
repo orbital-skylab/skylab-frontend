@@ -43,7 +43,6 @@ const DropdownQuestion: FC<Props> = ({
             </MenuItem>
           ))}
       </TextField>
-      )
     </Stack>
   );
 };
