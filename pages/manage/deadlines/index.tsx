@@ -93,6 +93,7 @@ const Deadlines: NextPage = () => {
             Deadline
           </Button>
           <TextField
+            id="select-cohort-input"
             name="cohort"
             label="Cohort"
             value={selectedCohortYear}

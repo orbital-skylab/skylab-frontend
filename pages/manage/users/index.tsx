@@ -186,6 +186,7 @@ const Users: NextPage = () => {
             }}
           >
             <TextField
+              id="user-search-input"
               label="Search"
               value={searchTextInput}
               onChange={handleSearchInputChange}
@@ -248,7 +249,14 @@ const Users: NextPage = () => {
             }}
           >
             {Object.values(ROLES_WITH_ALL).map((level) => {
-              return <Tab key={level} value={level} label={level} />;
+              return (
+                <Tab
+                  id={`${level.toLowerCase()}-tab`}
+                  key={level}
+                  value={level}
+                  label={level}
+                />
+              );
             })}
           </Tabs>
         </Stack>
