@@ -8,6 +8,7 @@ type Props<FormValuesType> = {
   formik: FormikProps<FormValuesType>;
   name: keyof FormValuesType;
   height?: string;
+  handleChange?: (value: string) => void;
 };
 
 // This is necessary as react-quill does not render properly in SSR environments
@@ -20,6 +21,7 @@ function RichTextEditor<FormValuesType>({
   id,
   formik,
   name,
+  handleChange,
 }: Props<FormValuesType>) {
   const { values, errors, setFieldValue, touched } = formik;
 
@@ -33,6 +35,9 @@ function RichTextEditor<FormValuesType>({
             value={values[name] as unknown as string}
             onChange={(e) => {
               setFieldValue(name as string, e);
+              if (handleChange != undefined) {
+                handleChange(e);
+              }
             }}
           />
         </Box>
