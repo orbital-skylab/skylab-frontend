@@ -21,6 +21,7 @@ import TimeQuestion from "./TimeQuestion";
 import MultipleChoiceQuestion from "./MultipleChoiceQuestion";
 import CheckboxesQuestion from "./CheckboxesQuestion";
 import DropdownQuestion from "./DropdownQuestion";
+import RichTextEditorQuestion from "./RichTextEditorQuestion";
 
 type Props = {
   isEditMode?: boolean;
@@ -77,6 +78,7 @@ const QuestionCard: FC<Props> = ({
         case QUESTION_TYPE.URL:
         case QUESTION_TYPE.DATE:
         case QUESTION_TYPE.TIME:
+        case QUESTION_TYPE.RICH_TEXT_EDITOR:
           return (
             <>
               <EditQuestionWithNoOptions {...editQuestionProps} />
@@ -136,6 +138,8 @@ const QuestionCard: FC<Props> = ({
           return <CheckboxesQuestion {...questionProps} />;
         case QUESTION_TYPE.DROPDOWN:
           return <DropdownQuestion {...questionProps} />;
+        case QUESTION_TYPE.RICH_TEXT_EDITOR:
+          return <RichTextEditorQuestion {...questionProps} />;
       }
     }
   };
