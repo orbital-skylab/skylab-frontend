@@ -132,6 +132,7 @@ const AddRelationModal: FC<Props> = ({ open, setOpen, mutate, projects }) => {
                   Cancel
                 </Button>
                 <Button
+                  id="confirm-add-relation-button"
                   size="small"
                   variant="contained"
                   onClick={formik.submitForm}

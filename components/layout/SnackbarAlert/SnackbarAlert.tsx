@@ -10,6 +10,7 @@ type Props = {
 const SnackbarAlert: FC<Props> = ({ alert, handleClose }) => {
   return (
     <Snackbar
+      id={`${alert.severity}-alert`}
       open={alert.message !== ""}
       onClose={handleClose}
       anchorOrigin={{ vertical: "bottom", horizontal: "center" }}

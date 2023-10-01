@@ -99,6 +99,7 @@ const AddDeadlineModal: FC<Props> = ({
   return (
     <>
       <Modal
+        id="add-deadline-modal"
         open={open}
         handleClose={handleCloseModal}
         title={`Add Deadline for Cohort ${cohortYear}`}

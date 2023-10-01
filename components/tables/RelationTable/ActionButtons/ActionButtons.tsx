@@ -67,6 +67,7 @@ const ActionButtons: FC<Props> = ({ projects, mutate }) => {
           </Button>
         </Tooltip>
         <Button
+          id="add-single-relation-button"
           onClick={handleOpenAddRelationModal}
           variant="outlined"
           sx={{ marginLeft: "auto" }}
