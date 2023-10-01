@@ -39,19 +39,37 @@ const pages = [
       "Create, delete, and view all users. Manage user roles by adding, editing or deleting them.",
     href: PAGES.MANAGE_USERS,
   },
-  {
-    title: "Add Users with CSV files",
-    id: "batch-add-users-card",
-    description:
-      "Add students with projects, advisers, or mentors using CSV files.",
-    href: PAGES.MANAGE_USERS_CSV,
-  },
+  // {
+  //   title: "Add Users with CSV files",
+  //   id: "batch-add-users-card",
+  //   description:
+  //     "Add students with projects, advisers, or mentors using CSV files.",
+  //   href: PAGES.MANAGE_USERS_CSV,
+  // },
   {
     title: "Teams",
     id: "manage-projects-card",
     description:
       "Create, edit, delete, and view all teams. Change a team's name, LOA, students, adviser or mentor.",
     href: PAGES.MANAGE_PROJECTS,
+  },
+  {
+    title: "Add teams and students via CSV",
+    id: "batch-add-teams-card",
+    description: "Add teams and students using CSV files.",
+    href: PAGES.MANAGE_CSV_TEAMS,
+  },
+  {
+    title: "Add advisers via CSV",
+    id: "batch-add-advisers-card",
+    description: "Add advisers using CSV files.",
+    href: PAGES.MANAGE_CSV_ADVISERS,
+  },
+  {
+    title: "Add mentors via CSV",
+    id: "batch-add-mentors-card",
+    description: "Add mentors using CSV files.",
+    href: PAGES.MANAGE_CSV_MENTORS,
   },
 ];
 
