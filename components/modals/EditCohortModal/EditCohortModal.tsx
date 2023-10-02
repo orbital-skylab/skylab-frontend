@@ -96,6 +96,7 @@ const EditCohortModal: FC<Props> = ({ open, setOpen, cohort, mutate }) => {
             <>
               <Stack direction="column" spacing="1rem">
                 <TextInput
+                  id="edit-cohort-start-date-input"
                   name="startDate"
                   type="datetime-local"
                   label="Start Date"
@@ -103,6 +104,7 @@ const EditCohortModal: FC<Props> = ({ open, setOpen, cohort, mutate }) => {
                   formik={formik}
                 />
                 <TextInput
+                  id="edit-cohort-end-date-input"
                   name="endDate"
                   type="datetime-local"
                   label="End Date"
@@ -119,6 +121,7 @@ const EditCohortModal: FC<Props> = ({ open, setOpen, cohort, mutate }) => {
                   Cancel
                 </Button>
                 <LoadingButton
+                  id="confirm-edit-cohort-button"
                   size="small"
                   variant="contained"
                   onClick={formik.submitForm}
