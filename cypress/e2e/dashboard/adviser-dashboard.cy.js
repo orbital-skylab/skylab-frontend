@@ -6,6 +6,10 @@ describe("Testing adviser dashboard feature", () => {
     cy.visit("http://localhost:3000/");
   });
 
+  afterEach(() => {
+    cy.get("#sign-out-button").click();
+  });
+
   it("Views team submission as an adviser", () => {
     cy.get("#your-teams'-submissions-tab").click();
     cy.get("#view-submission-button").click();
@@ -33,45 +37,65 @@ describe("Testing adviser dashboard feature", () => {
     cy.location("pathname").should("include", "/dashboard");
 
     // start a deadline
-    cy.contains("td", "").parent().find("#start-deadline-button").click();
-    cy.location("pathname").should("include", "deadline");
+    cy.contains("td", "Evaluation 1")
+      .parent()
+      .find("#start-deadline-button")
+      .click();
+    cy.location("pathname").should("include", "submissions/");
 
     // fill out and submit deadline
-    cy.get("").type("dummy answer for");
+    cy.get(".short-answer-input").first().type("dummy answer for Evaluation 1");
     cy.get("#submit-deadline-button").click();
     cy.wait(3000);
     cy.go("back");
 
     // check that deadline was submitted correctly and edit it
-    cy.contains("td", "Milestone 2")
+    cy.contains("td", "Evaluation 1")
       .parent()
       .find("#edit-deadline-button")
       .click();
-    cy.get("").should("include.text", "dummy answer for");
-    cy.get("").type("edited dummy answer for");
+    cy.get(".short-answer-input")
+      .first()
+      .should("include.text", "dummy answer for Evaluation 1");
+    cy.get("").type("edited dummy answer for Evaluation 1");
     cy.get("#submit-deadline-button").click();
     cy.wait(3000);
     cy.go("back");
 
     // check that deadline was editted correctly
-    cy.contains("td", "").parent().find("#edit-deadline-button").click();
-    cy.get("").should("include.text", "edited dummy answer for");
+    cy.contains("td", "Evaluation 1")
+      .parent()
+      .find("#edit-deadline-button")
+      .click();
+    cy.get(".short-answer-input")
+      .first()
+      .should("include.text", "edited dummy answer for Evaluation 1");
     cy.go("back");
 
     // start a deadline draft
-    cy.contains("td", "").parent().find("#start-deadline-button").click();
-    cy.location("pathname").should("include", "deadline");
+    cy.contains("td", "Evaluation 2")
+      .parent()
+      .find("#start-deadline-button")
+      .click();
 
     // fill out and save deadline as draft
-    cy.get("").type("dummy draft answer for");
+    cy.get(".short-answer-input")
+      .first()
+      .type("dummy draft answer for Evaluation 2");
     cy.get("#save-draft-button").click();
     cy.wait(3000);
     cy.go("back");
 
     // check that draft was saved
-    cy.contains("td", "").parent().find("#continue-deadline-button").click();
-    cy.location("pathname").should("include", "deadline");
-    cy.get("").should("include.text", "dummy draft answer for");
+    cy.contains("td", "Evaluation 2")
+      .parent()
+      .find("#continue-deadline-button")
+      .click();
+    cy.location("pathname").should("include", "deadline/");
+    cy.get(".short-answer-input")
+      .first()
+      .should("include.text", "dummy draft answer for");
+    cy.go("back");
   });
 
   it("Creates, updates and deletes evaluation relations as an adviser", () => {
