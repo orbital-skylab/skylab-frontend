@@ -1,28 +1,30 @@
-name: "Parent Sync"
+name: Parent Sync
 
 on:
   push:
-    branches:
+    branches: 
       - staging
 
 jobs:
   parent-sync:
-    name: "Parent Sync"
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-        with:
-            submodules: "recursive"
+      - uses: actions/checkout@v2
+        with: 
+          repository: orbital-skylab/skylab-e2e
+          token: ${{ secrets.PRIVATE_TOKEN_GITHUB }}
+          submodules: true
 
-      - name: Set Up Git Credentials
+      - name: Pull & update submodules recursively
         run: |
-          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          git config --global user.name "${GITHUB_ACTOR}"
+          git submodule update --init --recursive
+          git submodule update --recursive --remote
 
-      - name: Sync Submodule Reference in Parent Repository
+      - name: Commit
         run: |
-          git submodule update --remote --merge
-          git add skylab-frontend
-          git commit -m "chore: update submodule reference"
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions - update submodules"
+          git add --all
+          git commit -m "ci: update submodules" || echo "No changes to commit"
           git push
