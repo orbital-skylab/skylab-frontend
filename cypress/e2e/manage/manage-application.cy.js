@@ -158,7 +158,7 @@ describe("Testing application feature", () => {
     cy.location("pathname").should("include", "/manage");
 
     // navigate to manage applications page
-    cy.get("#manage-applications").click();
+    cy.get("#manage-applications-card").click();
     cy.location("pathname").should("include", "/applications");
 
     // withdraw application
