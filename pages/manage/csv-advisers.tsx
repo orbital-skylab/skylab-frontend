@@ -54,6 +54,7 @@ const CsvAdvisers: NextPage = () => {
             creating a new user and attaching an adviser role to it.
           </Typography>
           <BatchAddAdvisersForm
+            addAdvisersData={addAdvisersData}
             setAddAdvisersData={setAddAdvisersData}
             handleAddAdvisers={handleAddAdvisers}
             handleClearAddAdvisers={handleClearAddAdvisers}

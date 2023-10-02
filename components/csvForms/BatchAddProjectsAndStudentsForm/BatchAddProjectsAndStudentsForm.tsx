@@ -8,6 +8,7 @@ import { ADD_PROJECTS_AND_STUDENTS_CSV_DESCRIPTION } from "./BatchAddProjectsAnd
 import BatchAddForm from "../BatchAddForm";
 
 type Props = {
+  addProjectsAndStudentsData: AddProjectsAndStudentsData;
   setAddProjectsAndStudentsData: Dispatch<
     SetStateAction<AddProjectsAndStudentsData>
   >;
@@ -17,6 +18,7 @@ type Props = {
 };
 
 const BatchAddStudentsForm: FC<Props> = ({
+  addProjectsAndStudentsData,
   setAddProjectsAndStudentsData,
   handleAddProjectsAndStudents,
   handleClearProjectsAndStudents,
@@ -26,6 +28,7 @@ const BatchAddStudentsForm: FC<Props> = ({
     <BatchAddForm
       headers={Object.values(ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS)}
       description={ADD_PROJECTS_AND_STUDENTS_CSV_DESCRIPTION}
+      addData={addProjectsAndStudentsData}
       setAddData={setAddProjectsAndStudentsData}
       handleAdd={handleAddProjectsAndStudents}
       handleClear={handleClearProjectsAndStudents}

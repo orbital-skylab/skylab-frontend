@@ -18,6 +18,11 @@ import {
   Box,
   Input,
   Alert,
+  Table,
+  TableHead,
+  TableRow,
+  TableBody,
+  TableCell,
 } from "@mui/material";
 // Helpers
 import Papa from "papaparse";
@@ -30,7 +35,9 @@ import { WithDescriptionExampleValidator } from "@/types/batchForms";
 
 type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setAddData: Dispatch<SetStateAction<any>>;
+  addData: Record<string, string | number>[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setAddData: Dispatch<SetStateAction<Record<string, string | number>[]>>;
   handleAdd: () => void;
   handleClear: () => void;
   isSubmitting: boolean;
@@ -39,6 +46,7 @@ type Props = {
 };
 
 const BatchAddForm: FC<Props> = ({
+  addData,
   setAddData,
   handleAdd,
   handleClear,
@@ -99,7 +107,7 @@ const BatchAddForm: FC<Props> = ({
                 results.data.length !== 1 ? "s" : ""
               } successfully detected. Ready to add them?`
             );
-            setAddData(results.data);
+            setAddData(results.data as Record<string, string | number>[]);
           }
         },
       });
@@ -107,7 +115,7 @@ const BatchAddForm: FC<Props> = ({
 
     // Ensures that users can reupload files
     const input: HTMLInputElement | null =
-      document.querySelector(`#studentUploadInput`);
+      document.querySelector(`#uploadInput`);
     if (input) {
       input.value = "";
     }
@@ -116,10 +124,17 @@ const BatchAddForm: FC<Props> = ({
   return (
     <>
       <Card>
-        <CardContent sx={{ display: "grid", placeItems: "center" }}>
+        <CardContent
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
           <LoadingWrapper
             isLoading={isSubmitting}
-            loadingText="Adding projects and students..."
+            loadingText="Batch adding..."
           >
             {!!parseStatus.message && fileDetails ? (
               <Stack
@@ -149,6 +164,48 @@ const BatchAddForm: FC<Props> = ({
                   >
                     {parseStatus.message}
                   </Alert>
+                ) : null}
+
+                {/* Preview */}
+                {parseStatus.severity === "success" && addData ? (
+                  <Box
+                    sx={{
+                      width: "100%",
+                    }}
+                  >
+                    <Typography fontWeight="bold">Preview data</Typography>
+                    <Box
+                      sx={{
+                        overflow: "scroll",
+                        maxHeight: "40rem",
+                      }}
+                    >
+                      <Table
+                        stickyHeader
+                        size="small"
+                        sx={{
+                          width: "100%",
+                        }}
+                      >
+                        <TableHead>
+                          <TableRow>
+                            {Object.keys(addData[0]).map((header, index) => (
+                              <TableCell key={index}>{header}</TableCell>
+                            ))}
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {addData.map((row, index) => (
+                            <TableRow key={index}>
+                              {Object.values(row).map((value, index) => (
+                                <TableCell key={index}>{value}</TableCell>
+                              ))}
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </Box>
+                  </Box>
                 ) : null}
 
                 {/* Follow up actions */}
@@ -209,7 +266,7 @@ const BatchAddForm: FC<Props> = ({
                   </Box>
                 </Typography>
                 <Input
-                  id="studentUploadInput"
+                  id="uploadInput"
                   type="file"
                   inputProps={{
                     accept:

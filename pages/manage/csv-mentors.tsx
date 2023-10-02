@@ -53,6 +53,7 @@ const CsvAdvisers: NextPage = () => {
             creating a new user and attaching a mentor role to it.
           </Typography>
           <BatchAddMentorsForm
+            addMentorsData={addMentorsData}
             setAddMentorsData={setAddMentorsData}
             handleAddMentors={handleAddMentors}
             handleClearAddMentors={handleClearAddMentors}

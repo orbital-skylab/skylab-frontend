@@ -61,6 +61,7 @@ const CsvTeams: NextPage = () => {
             user and adding the student role to them.
           </Typography>
           <BatchAddStudentsForm
+            addProjectsAndStudentsData={addProjectsAndStudentsData}
             setAddProjectsAndStudentsData={setAddProjectsAndStudentsData}
             handleAddProjectsAndStudents={handleAddProjectsAndStudents}
             handleClearProjectsAndStudents={handleClearProjectsAndStudents}
