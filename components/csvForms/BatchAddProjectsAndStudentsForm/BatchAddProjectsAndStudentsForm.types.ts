@@ -7,6 +7,7 @@ import { UserMetadata } from "@/types/users";
  */
 export enum ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS {
   PROJECT_NAME = "Project Name",
+  TEAM_NAME = "Team Name",
   LOA = "Level of Achievement",
   COHORT_YEAR = "Cohort Year",
   PROPOSAL_PDF = "Proposal PDF",

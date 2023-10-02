@@ -115,7 +115,7 @@ const BatchAddForm: FC<Props> = ({
 
     // Ensures that users can reupload files
     const input: HTMLInputElement | null =
-      document.querySelector(`#uploadInput`);
+      document.querySelector(`#upload-csv-input`);
     if (input) {
       input.value = "";
     }
@@ -167,7 +167,9 @@ const BatchAddForm: FC<Props> = ({
                 ) : null}
 
                 {/* Preview */}
-                {parseStatus.severity === "success" && addData ? (
+                {parseStatus.severity === "success" &&
+                addData &&
+                addData.length ? (
                   <Box
                     sx={{
                       width: "100%",
@@ -211,11 +213,16 @@ const BatchAddForm: FC<Props> = ({
                 {/* Follow up actions */}
                 <Stack direction="column" spacing="0.5rem">
                   {parseStatus.severity === "success" ? (
-                    <Button onClick={handleAdd} variant="contained">
+                    <Button
+                      id="upload-csv-button"
+                      onClick={handleAdd}
+                      variant="contained"
+                    >
                       Add
                     </Button>
                   ) : null}
                   <Button
+                    id="upload-csv-clear-button"
                     onClick={() => {
                       resetParseStatus();
                       handleClear();
@@ -228,6 +235,7 @@ const BatchAddForm: FC<Props> = ({
               </Stack>
             ) : (
               <Box
+                id="upload-csv-drag-area"
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -266,7 +274,7 @@ const BatchAddForm: FC<Props> = ({
                   </Box>
                 </Typography>
                 <Input
-                  id="uploadInput"
+                  id="upload-csv-input"
                   type="file"
                   inputProps={{
                     accept:
