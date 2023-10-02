@@ -140,11 +140,13 @@ const EditProject: NextPage = () => {
                             </Alert>
                           )}
                           <TextInput
+                            id="edit-project-name-input"
                             name="name"
                             label="Project Name"
                             formik={formik}
                           />
                           <TextInput
+                            id="edit-team-name-input"
                             name="teamName"
                             label="Team Name"
                             formik={formik}
@@ -245,6 +247,7 @@ const EditProject: NextPage = () => {
 
                           <Stack direction="row" justifyContent="end">
                             <LoadingButton
+                              id="confirm-edit-project-button"
                               type="submit"
                               variant="contained"
                               disabled={areAllEmptyValues(formik.values)}
