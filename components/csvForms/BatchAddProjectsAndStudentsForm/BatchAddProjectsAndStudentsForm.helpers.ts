@@ -10,8 +10,8 @@ import { WithDescriptionExampleValidator } from "@/types/batchForms";
 export const ADD_PROJECTS_AND_STUDENTS_CSV_DESCRIPTION: WithDescriptionExampleValidator<ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS> =
   {
     [ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS.PROJECT_NAME]: {
-      description: "The name of the team/project.",
-      example: "NUSGrabYourOwnFood",
+      description: "The name of the project.",
+      example: "CCSGP Volunteer Job Board",
       validator: (val: string) => {
         const schema = z.string();
         const result = schema.safeParse(val);
@@ -20,6 +20,19 @@ export const ADD_PROJECTS_AND_STUDENTS_CSV_DESCRIPTION: WithDescriptionExampleVa
         }
 
         return `${ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS.PROJECT_NAME} (${result.error.issues[0].message})`;
+      },
+    },
+    [ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS.TEAM_NAME]: {
+      description: "The name of the team.",
+      example: "NUSGrabYourOwnFood",
+      validator: (val: string) => {
+        const schema = z.string();
+        const result = schema.safeParse(val);
+        if (result.success) {
+          return true;
+        }
+
+        return `${ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS.TEAM_NAME} (${result.error.issues[0].message})`;
       },
     },
     [ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS.LOA]: {
@@ -183,6 +196,9 @@ export const processBatchStudentData = (
       return {
         name: project[
           ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS.PROJECT_NAME
+        ] as string,
+        teamName: project[
+          ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS.TEAM_NAME
         ] as string,
         achievement: project[
           ADD_PROJECTS_AND_STUDENTS_CSV_HEADERS.LOA

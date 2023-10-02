@@ -67,6 +67,7 @@ const DeleteUserModal: FC<Props> = ({ open, setOpen, user, mutate }) => {
             Cancel
           </Button>
           <Button
+            id="delete-user-submit-button"
             size="small"
             variant="contained"
             color="error"

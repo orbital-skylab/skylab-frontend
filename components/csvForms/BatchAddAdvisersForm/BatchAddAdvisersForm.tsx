@@ -9,6 +9,7 @@ import BatchAddForm from "../BatchAddForm";
 import { ADD_ADVISERS_CSV_DESCRIPTION } from "./BatchAddAdvisersForm.helpers";
 
 type Props = {
+  addAdvisersData: AddAdvisersData;
   setAddAdvisersData: Dispatch<SetStateAction<AddAdvisersData>>;
   handleAddAdvisers: () => void;
   handleClearAddAdvisers: () => void;
@@ -16,6 +17,7 @@ type Props = {
 };
 
 const BatchAddStudentsForm: FC<Props> = ({
+  addAdvisersData,
   setAddAdvisersData,
   handleAddAdvisers,
   handleClearAddAdvisers,
@@ -25,6 +27,7 @@ const BatchAddStudentsForm: FC<Props> = ({
     <BatchAddForm
       headers={Object.values(ADD_ADVISERS_CSV_HEADERS)}
       description={ADD_ADVISERS_CSV_DESCRIPTION}
+      addData={addAdvisersData}
       setAddData={setAddAdvisersData}
       handleAdd={handleAddAdvisers}
       handleClear={handleClearAddAdvisers}

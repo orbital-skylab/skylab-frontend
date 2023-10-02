@@ -212,6 +212,7 @@ const Users: NextPage = () => {
             ))}
             <Stack direction="row" spacing="1rem" marginLeft="auto">
               <TextField
+                id="user-cohort-select"
                 label="Cohort"
                 value={selectedCohortYear}
                 onChange={handleCohortYearChange}
@@ -220,7 +221,11 @@ const Users: NextPage = () => {
               >
                 {cohorts &&
                   cohorts.map(({ academicYear }) => (
-                    <MenuItem key={academicYear} value={academicYear}>
+                    <MenuItem
+                      id={`${academicYear}-cohort-option`}
+                      key={academicYear}
+                      value={academicYear}
+                    >
                       {academicYear}
                     </MenuItem>
                   ))}

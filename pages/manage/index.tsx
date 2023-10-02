@@ -39,13 +39,6 @@ const pages = [
       "Create, delete, and view all users. Manage user roles by adding, editing or deleting them.",
     href: PAGES.MANAGE_USERS,
   },
-  // {
-  //   title: "Add Users with CSV files",
-  //   id: "batch-add-users-card",
-  //   description:
-  //     "Add students with projects, advisers, or mentors using CSV files.",
-  //   href: PAGES.MANAGE_USERS_CSV,
-  // },
   {
     title: "Teams",
     id: "manage-projects-card",
