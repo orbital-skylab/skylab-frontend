@@ -87,6 +87,7 @@ const DeadlineRow: FC<Props> = ({ deadline, deadlines, mutate }) => {
               Duplicate
             </Button>
             <Button
+              id="delete-deadline-button"
               onClick={handleOpenDeleteModal}
               sx={{
                 transition: BASE_TRANSITION,
