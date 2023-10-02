@@ -143,6 +143,7 @@ const AddRolesModal: FC<Props> = ({ selectedRole, handleCloseModal }) => {
                   Cancel
                 </Button>
                 <Button
+                  id="confirm-add-roles-button"
                   size="small"
                   variant="contained"
                   onClick={formik.submitForm}

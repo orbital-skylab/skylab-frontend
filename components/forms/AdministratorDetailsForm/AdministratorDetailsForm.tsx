@@ -11,6 +11,7 @@ const AdministratorDetailsForm: FC<Props> = ({ formik }) => {
   return (
     <>
       <TextInput
+        id="administrator-start-date-input"
         name="startDate"
         type="datetime-local"
         label="Start Date"
@@ -18,6 +19,7 @@ const AdministratorDetailsForm: FC<Props> = ({ formik }) => {
         formik={formik}
       />
       <TextInput
+        id="administrator-end-date-input"
         name="endDate"
         type="datetime-local"
         label="End Date"

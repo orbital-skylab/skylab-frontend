@@ -106,6 +106,7 @@ const AddUserModal: FC<Props> = ({
                 <UserDetailsForm formik={formik} />
                 <Typography>{`${toSingular(selectedRole)} Details`}</Typography>
                 <TextField
+                  id="user-role-select"
                   label="Role"
                   value={selectedRole}
                   onChange={handleSelectedRoleChange}
@@ -114,7 +115,11 @@ const AddUserModal: FC<Props> = ({
                 >
                   {Object.values(ROLES).map((role) => {
                     return (
-                      <MenuItem key={role} value={role}>
+                      <MenuItem
+                        key={role}
+                        value={role}
+                        id={`${role.toLowerCase()}-option`}
+                      >
                         {toSingular(role)}
                       </MenuItem>
                     );
@@ -158,6 +163,7 @@ const AddUserModal: FC<Props> = ({
                   Cancel
                 </Button>
                 <Button
+                  id="confirm-add-user-button"
                   size="small"
                   variant="contained"
                   onClick={formik.submitForm}

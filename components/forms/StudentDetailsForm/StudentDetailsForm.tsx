@@ -37,12 +37,14 @@ const StudentDetailsForm: FC<Props> = ({
         />
       )}
       <TextInput
+        id="student-nusnet-id-input"
         name="nusnetId"
         label="NUSNET ID"
         size="small"
         formik={formik}
       />
       <TextInput
+        id="student-matric-no-input"
         name="matricNo"
         label="Matriculation Number"
         size="small"

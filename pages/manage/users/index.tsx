@@ -193,6 +193,7 @@ const Users: NextPage = () => {
               size="small"
             />
             <Button
+              id="add-user-button"
               variant="outlined"
               size="small"
               onClick={handleOpenAddUserModal}
@@ -202,6 +203,7 @@ const Users: NextPage = () => {
             </Button>
             {Object.values(ROLES).map((role) => (
               <Button
+                id={`add-${role.toLowerCase()}-button`}
                 key={role}
                 variant="outlined"
                 size="small"
