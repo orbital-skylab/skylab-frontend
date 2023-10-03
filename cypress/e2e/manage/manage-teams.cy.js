@@ -7,7 +7,7 @@ describe("Testing teams management feature", () => {
   });
 
   after(() => {
-    cy.get("#sign-out-button").click();
+    cy.get("#nav-sign-out").click();
   });
 
   it("Creates, updates and deletes teams as an admin", () => {

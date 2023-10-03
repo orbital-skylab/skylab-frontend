@@ -7,7 +7,7 @@ describe("Testing mentor dashboard feature", () => {
   });
 
   after(() => {
-    cy.get("#sign-out-button").click();
+    cy.get("#nav-sign-out").click();
   });
 
   it("Views teams and submissions as a mentor", () => {

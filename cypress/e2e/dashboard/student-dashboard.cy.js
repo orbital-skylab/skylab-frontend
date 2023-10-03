@@ -11,7 +11,7 @@ describe("Testing student dashboard feature", () => {
   });
 
   afterEach(() => {
-    cy.get("#sign-out-button").click();
+    cy.get("#nav-sign-out").click();
   });
 
   it("Submits and edits deadline as a student", () => {

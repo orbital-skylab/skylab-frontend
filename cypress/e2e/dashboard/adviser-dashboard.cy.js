@@ -11,7 +11,7 @@ describe("Testing adviser dashboard feature", () => {
   });
 
   afterEach(() => {
-    cy.get("#sign-out-button").click();
+    cy.get("#nav-sign-out").click();
   });
 
   it("Views and edits teams as an adviser", () => {
