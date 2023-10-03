@@ -3,3 +3,5 @@
 node_modules
 storybook-static
 package-lock.json
+coverage
+.nyc_output
