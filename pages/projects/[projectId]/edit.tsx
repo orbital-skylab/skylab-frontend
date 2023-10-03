@@ -105,7 +105,7 @@ const EditProject: NextPage = () => {
     <>
       <Body
         isLoading={isFetching(getProjectStatus) || isLoading}
-        authorizedRoles={[ROLES.ADMINISTRATORS]}
+        authorizedRoles={[ROLES.ADVISERS, ROLES.ADMINISTRATORS]}
       >
         <NoDataWrapper
           noDataCondition={project === undefined}
