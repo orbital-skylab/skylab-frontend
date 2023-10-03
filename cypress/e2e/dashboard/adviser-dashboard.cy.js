@@ -2,7 +2,7 @@
 
 describe("Testing adviser dashboard feature", () => {
   beforeEach(() => {
-    cy.login("student@skylab.com", "Password123");
+    cy.login("adviser@skylab.com", "Password123");
     cy.visit("http://localhost:3000/");
   });
 
