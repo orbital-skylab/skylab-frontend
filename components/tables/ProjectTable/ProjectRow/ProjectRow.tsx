@@ -131,7 +131,9 @@ const ProjectRow: FC<Props> = ({
             </Link>
             {showEditAction && (
               <Link href={`${PAGES.PROJECTS}/${project.id}/edit`} passHref>
-                <Button className="edit-project-button">Edit</Button>
+                <Button id="edit-team-button" className="edit-project-button">
+                  Edit
+                </Button>
               </Link>
             )}
             {showDeleteAction && (

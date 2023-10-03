@@ -16,9 +16,10 @@ describe("Testing mentor dashboard feature", () => {
     cy.location("pathname").should("include", "/dashboard");
 
     // view submission
-    cy.get("#your-teams'-submissions-tab").click();
+    cy.get("#your-teams\\'-submissions-tab").click();
     cy.get("#view-submission-button").click();
     cy.location("pathname").should("include", "/submissions/");
+    cy.go("back");
 
     // view team
     cy.get("#view-your-teams-tab").click();

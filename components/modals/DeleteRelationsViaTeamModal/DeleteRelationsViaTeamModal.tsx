@@ -122,6 +122,7 @@ const DeleteRelationsViaTeamModal: FC<Props> = ({
                   Cancel
                 </Button>
                 <Button
+                  id="confirm-delete-team-relations-button"
                   size="small"
                   variant="contained"
                   color="error"

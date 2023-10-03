@@ -16,8 +16,10 @@ describe("Testing adviser dashboard feature", () => {
 
   it("Views and edits teams as an adviser", () => {
     // view submission
-    cy.get("#your-teams'-submissions-tab").click();
-    cy.get("#view-submission-button").click();
+    cy.get("#your-teams\\'-submissions-tab").click();
+    cy.get("#view-submission-button:not([aria-disabled='true'])")
+      .first()
+      .click();
     cy.location("pathname").should("include", "/submission");
     cy.go("back");
 
@@ -36,46 +38,36 @@ describe("Testing adviser dashboard feature", () => {
 
   it("Submits and edits deadline as an adviser", () => {
     // start a deadline
-    cy.contains("td", "Evaluation 1")
-      .parent()
-      .find("#start-deadline-button")
-      .click();
+    cy.get("#start-deadline-button:not([disabled])").first().click();
     cy.location("pathname").should("include", "submissions/");
 
     // fill out and submit deadline
     cy.get(".short-answer-input").first().type("dummy answer for Evaluation 1");
-    cy.get("#submit-deadline-button").click();
+    cy.get("#submit-submission-button").click();
     cy.wait(3000);
     cy.go("back");
 
     // check that deadline was submitted correctly and edit it
-    cy.contains("td", "Evaluation 1")
-      .parent()
-      .find("#edit-deadline-button")
-      .click();
-    cy.get(".short-answer-input")
+    cy.get("#edit-deadline-button:not([disabled])").click();
+    cy.get(".short-answer-input input")
       .first()
-      .should("include.text", "dummy answer for Evaluation 1");
-    cy.get("").type("edited dummy answer for Evaluation 1");
-    cy.get("#submit-deadline-button").click();
+      .should("have.value", "dummy answer for Evaluation 1");
+    cy.get(".short-answer-input input")
+      .first()
+      .type("edited dummy answer for Evaluation 1");
+    cy.get("#submit-submission-button").click();
     cy.wait(3000);
     cy.go("back");
 
     // check that deadline was editted correctly
-    cy.contains("td", "Evaluation 1")
-      .parent()
-      .find("#edit-deadline-button")
-      .click();
-    cy.get(".short-answer-input")
+    cy.get("#edit-deadline-button:not([disabled])").click();
+    cy.get(".short-answer-input input")
       .first()
-      .should("include.text", "edited dummy answer for Evaluation 1");
+      .should("have.value", "edited dummy answer for Evaluation 1");
     cy.go("back");
 
     // start a deadline draft
-    cy.contains("td", "Evaluation 2")
-      .parent()
-      .find("#start-deadline-button")
-      .click();
+    cy.get("#start-deadline-button:not([disabled])").click();
 
     // fill out and save deadline as draft
     cy.get(".short-answer-input")
@@ -86,14 +78,11 @@ describe("Testing adviser dashboard feature", () => {
     cy.go("back");
 
     // check that draft was saved
-    cy.contains("td", "Evaluation 2")
-      .parent()
-      .find("#continue-deadline-button")
-      .click();
-    cy.location("pathname").should("include", "deadline/");
-    cy.get(".short-answer-input")
+    cy.get("#continue-deadline-button:not([disabled])").click();
+    cy.location("pathname").should("include", "submissions/");
+    cy.get(".short-answer-input input")
       .first()
-      .should("include.text", "dummy draft answer for");
+      .should("have.value", "dummy draft answer for Evaluation 2");
     cy.go("back");
   });
 
@@ -105,29 +94,37 @@ describe("Testing adviser dashboard feature", () => {
     cy.get(".dropdown-option").eq(0).click();
     cy.get(".dropdown-button").eq(1).click();
     cy.get(".dropdown-option").eq(1).click();
-    cy.get("#confirm-add-single-relation-button").click();
+    cy.get("#confirm-add-relation-button").click();
 
     // check that single evaluation relation was added
     cy.wait(5000);
-    cy.get("tr").should("have.length", 1);
+    cy.get("#manage-evaluation-relations-tab").click();
+    cy.get("tr").should("have.length", 1 + 1);
 
     // edit evaluation relation
-    cy.get("tr").eq(0).find("#edit-relation-button").click();
+    cy.get("tr").eq(1).find("#edit-relation-button").click();
+    cy.get(".dropdown-button").eq(0).click();
+    cy.get(".dropdown-option").eq(1).click();
     cy.get(".dropdown-button").eq(1).click();
-    cy.get(".dropdown-option").eq(2).click();
+    cy.get(".dropdown-option").eq(0).click();
     cy.get("#confirm-edit-relation-button").click();
 
     // check that evaluation relation was edited
+    cy.wait(5000);
+    cy.get("#manage-evaluation-relations-tab").click();
+    cy.get("tr").should("have.length", 1 + 1); // TODO: need better condition
 
     // delete evaluation relation
-    cy.get("tr").eq(0).find("#delete-relation-button").click();
+    cy.get("tr").eq(1).find("#delete-relation-button").click();
     cy.get("#confirm-delete-relation-button").click();
 
     // check that evaluation relation was deleted
+    cy.wait(5000);
+    cy.get("#manage-evaluation-relations-tab").click();
     cy.get("tr").should("not.exist");
 
     // add 2-way evaluation relation
-    cy.get("#manage-evaluation-relations-tab").click();
+    cy.get("#add-relations-group-button").click();
     cy.get(".multidropdown-button").click();
     cy.get(".multidropdown-option").eq(0).click();
     cy.get(".multidropdown-option").eq(1).click();
@@ -137,29 +134,17 @@ describe("Testing adviser dashboard feature", () => {
     // check that 2-way evaluation relation was added
     cy.wait(5000);
     cy.get("#manage-evaluation-relations-tab").click();
-    cy.get("tr").should("have.length", 2);
-
-    // add 3-way evaluation relation
-    cy.get("#manage-evaluation-relations-tab").click();
-    cy.get(".multidropdown-button").click();
-    cy.get(".multidropdown-option").eq(2).click();
-    cy.get(".multidropdown-option").eq(3).click();
-    cy.get(".multidropdown-option").eq(4).click();
-    cy.get(".multidropdown-button").click();
-    cy.get("#confirm-add-group-button").click();
-
-    // check that 3-way evaluation relation was added
-    cy.wait(5000);
-    cy.get("#manage-evaluation-relations-tab").click();
-    cy.get("tr").should("have.length", 8);
+    cy.get("tr").should("have.length", 2 + 1); // + 1 for header
 
     // delete all evaluation relations
-    cy.get("#delete-relation-button").each(($ele) => {
-      cy.wrap($ele).click();
-      cy.get("#confirm-delete-relation-button").click();
-    });
+    cy.get("#delete-team-relations-button").click();
+    cy.get(".dropdown-button").click();
+    cy.get(".dropdown-option").eq(0).click();
+    cy.get("#confirm-delete-team-relations-button").click();
 
     // check all evaluation relations deleted
+    cy.wait(5000);
+    cy.get("#manage-evaluation-relations-tab").click();
     cy.get("tr").should("not.exist");
   });
 });

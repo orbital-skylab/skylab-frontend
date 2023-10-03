@@ -54,12 +54,17 @@ const ActionButtons: FC<Props> = ({ projects, mutate }) => {
       />
       <Stack direction="row" sx={{ gap: "0.5rem" }}>
         <Tooltip title="Quickly add relations by creating 'groups'">
-          <Button onClick={handleOpenAddRelationGroupModal} variant="outlined">
+          <Button
+            id="add-relations-group-button"
+            onClick={handleOpenAddRelationGroupModal}
+            variant="outlined"
+          >
             <Add sx={{ marginRight: "0.2rem" }} /> Relations via Group
           </Button>
         </Tooltip>
         <Tooltip title="Delete all relations linked to a team">
           <Button
+            id="delete-team-relations-button"
             onClick={handleOpenDeleteRelationsViaTeamModal}
             variant="outlined"
           >

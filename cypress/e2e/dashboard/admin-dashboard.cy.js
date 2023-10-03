@@ -18,7 +18,7 @@ describe("Testing admin dashboard feature", () => {
     cy.get(".dropdown-option").eq(0).click();
     cy.get(".dropdown-button").eq(1).click();
     cy.get(".dropdown-option").eq(1).click();
-    cy.get("#confirm-add-single-relation-button").click();
+    cy.get("#confirm-add-relation-button").click();
 
     // check that single evaluation relation was added
     cy.wait(5000);

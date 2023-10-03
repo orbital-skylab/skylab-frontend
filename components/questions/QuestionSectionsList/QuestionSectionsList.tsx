@@ -130,6 +130,7 @@ const QuestionSectionsList: FC<Props> = ({
         >
           {isDraft && (
             <LoadingButton
+              id="save-draft-button"
               onClick={
                 submitAnswers
                   ? () =>
