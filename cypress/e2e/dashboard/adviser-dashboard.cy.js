@@ -4,38 +4,37 @@ describe("Testing adviser dashboard feature", () => {
   beforeEach(() => {
     cy.login("adviser@skylab.com", "Password123");
     cy.visit("http://localhost:3000/");
+
+    // navigate to dashboard page
+    cy.get("#nav-dashboard").click();
+    cy.location("pathname").should("include", "/dashboard");
   });
 
   afterEach(() => {
     cy.get("#sign-out-button").click();
   });
 
-  it("Views team submission as an adviser", () => {
+  it("Views and edits teams as an adviser", () => {
+    // view submission
     cy.get("#your-teams'-submissions-tab").click();
     cy.get("#view-submission-button").click();
     cy.location("pathname").should("include", "/submission");
     cy.go("back");
-  });
 
-  it("Views team as an adviser", () => {
+    // view team
     cy.get("#manage-your-teams-tab").click();
     cy.get("#view-team-button").click();
     cy.location("pathname").should("include", "/projects");
     cy.go("back");
-  });
 
-  it("Edit team as an adviser", () => {
+    // edit team
     cy.get("#manage-your-teams-tab").click();
     cy.get("#edit-team-button").click();
     cy.location("pathname").should("include", "/edit");
     cy.go("back");
   });
 
-  it("Submits deadline as an adviser", () => {
-    // navigate to dashboard page
-    cy.get("#nav-dashboard").click();
-    cy.location("pathname").should("include", "/dashboard");
-
+  it("Submits and edits deadline as an adviser", () => {
     // start a deadline
     cy.contains("td", "Evaluation 1")
       .parent()
