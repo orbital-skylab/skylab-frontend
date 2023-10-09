@@ -50,6 +50,7 @@ const ActionButtons: FC<Props> = ({ projects, mutate }) => {
         open={isDeleteRelationsViaTeamOpen}
         setOpen={setIsDeleteRelationsViaTeamOpen}
         projects={projects}
+        relations={[]}
       />
       <Stack direction="row" sx={{ gap: "0.5rem" }}>
         <Tooltip title="Quickly add relations by creating 'groups'">

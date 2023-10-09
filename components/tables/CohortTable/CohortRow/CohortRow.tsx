@@ -5,7 +5,8 @@ import { Button, Stack, TableCell, TableRow } from "@mui/material";
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
 // Types
 import { Mutate } from "@/hooks/useFetch";
-import { Cohort, GetCohortsResponse } from "@/types/cohorts";
+import { Cohort } from "@/types/cohorts";
+import { GetCohortsResponse } from "@/types/api";
 import EditCohortModal from "@/components/modals/EditCohortModal";
 import DeleteCohortModal from "@/components/modals/DeleteCohortModal";
 

@@ -9,10 +9,10 @@ import {
   TableRow,
 } from "@mui/material";
 import CohortRow from "./CohortRow";
-
 // Types
 import { Mutate } from "@/hooks/useFetch";
-import { Cohort, GetCohortsResponse } from "@/types/cohorts";
+import { Cohort } from "@/types/cohorts";
+import { GetCohortsResponse } from "@/types/api";
 
 type Props = { cohorts: Cohort[]; mutate: Mutate<GetCohortsResponse> };
 

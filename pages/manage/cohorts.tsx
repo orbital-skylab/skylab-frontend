@@ -11,7 +11,7 @@ import CohortTable from "@/components/tables/CohortTable";
 // Hooks
 import useFetch, { isFetching } from "@/hooks/useFetch";
 // Types
-import { GetCohortsResponse } from "@/types/cohorts";
+import { GetCohortsResponse } from "@/types/api";
 import { Add } from "@mui/icons-material";
 import AddCohortModal from "@/components/modals/AddCohortModal";
 import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";

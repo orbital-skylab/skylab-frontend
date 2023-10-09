@@ -9,8 +9,10 @@ import SubmissionTable from "@/components/tables/SubmissionTable";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import ProjectTable from "@/components/tables/ProjectTable";
-import RelationTable from "@/components/tables/RelationTable";
-import ActionButtons from "@/components/tables/RelationTable/ActionButtons";
+import EmptyEvaluationRelations from "@/components/emptyStates/EmptyEvaluationRelations/EmptyEvaluationRelations";
+import CreateAutomaticallyModal from "@/components/modals/CreateAutomaticallyModal/CreateAutomaticallyModal";
+import AddRelationsModal from "@/components/modals/AddRelationsModal";
+import AdviserManageRelationsContent from "@/components/relations/AdviserManageRelationsContent/AdviserManageRelationsContent";
 // Hooks
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import useAuth from "@/contexts/useAuth";
@@ -38,6 +40,9 @@ enum TAB {
 const AdviserDashboard: NextPage = () => {
   const { user } = useAuth();
   const [selectedTab, setSelectedTab] = useState<TAB>(TAB.DEADLINES);
+  const [isCreateAutomaticallyModalOpen, setIsCreateAutomaticallyModalOpen] =
+    useState(false);
+  const [isAddRelationsModalOpen, setIsAddRelationsModalOpen] = useState(false);
 
   const { data: deadlinesResponse, status: fetchDeadlinesStatus } =
     useFetch<GetAdviserDeadlinesResponse>({
@@ -197,23 +202,37 @@ const AdviserDashboard: NextPage = () => {
         <TabPanel value={TAB.MANAGE_RELATIONSHIPS}>
           <LoadingWrapper isLoading={isFetching(fetchRelationsStatus)}>
             <Stack>
-              <ActionButtons
+              <CreateAutomaticallyModal
+                open={isCreateAutomaticallyModalOpen}
+                setOpen={setIsCreateAutomaticallyModalOpen}
+                projects={projectsResponse?.projects ?? []}
+                mutate={mutateRelations}
+              />
+              {/* This acts as the create manually modal */}
+              <AddRelationsModal
+                open={isAddRelationsModalOpen}
+                setOpen={setIsAddRelationsModalOpen}
                 projects={projectsResponse?.projects ?? []}
                 mutate={mutateRelations}
               />
               <NoDataWrapper
                 noDataCondition={!relationsResponse?.relations.length}
                 fallback={
-                  <NoneFound message="No evaluation relations found." />
+                  <EmptyEvaluationRelations
+                    handleCreateAutomatically={() =>
+                      setIsCreateAutomaticallyModalOpen(true)
+                    }
+                    handleCreateManually={() =>
+                      setIsAddRelationsModalOpen(true)
+                    }
+                  />
                 }
               >
-                {relationsResponse && relationsResponse.relations && (
-                  <RelationTable
-                    relations={relationsResponse.relations}
-                    mutate={mutateRelations}
-                    projects={projectsResponse?.projects ?? []}
-                  />
-                )}
+                <AdviserManageRelationsContent
+                  relations={relationsResponse?.relations ?? []}
+                  projects={projectsResponse?.projects ?? []}
+                  mutateRelations={mutateRelations}
+                />
               </NoDataWrapper>
             </Stack>
           </LoadingWrapper>

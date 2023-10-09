@@ -6,9 +6,9 @@ import { Button, Stack } from "@mui/material";
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Types
-import { HTTP_METHOD } from "@/types/api";
+import { HTTP_METHOD, GetCohortsResponse } from "@/types/api";
 import { Mutate } from "@/hooks/useFetch";
-import { Cohort, GetCohortsResponse } from "@/types/cohorts";
+import { Cohort } from "@/types/cohorts";
 
 type Props = {
   open: boolean;
