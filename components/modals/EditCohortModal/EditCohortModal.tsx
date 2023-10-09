@@ -16,13 +16,13 @@ import { ERRORS } from "@/helpers/errors";
 import useApiCall from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Types
-import { HTTP_METHOD } from "@/types/api";
-import { Mutate } from "@/hooks/useFetch";
 import {
-  Cohort,
+  HTTP_METHOD,
   EditCohortResponse,
   GetCohortsResponse,
-} from "@/types/cohorts";
+} from "@/types/api";
+import { Mutate } from "@/hooks/useFetch";
+import { Cohort } from "@/types/cohorts";
 
 type EditCohortFormValuesType = Omit<Cohort, "academicYear">;
 

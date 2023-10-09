@@ -18,11 +18,6 @@ import {
   Box,
   Input,
   Alert,
-  Table,
-  TableHead,
-  TableRow,
-  TableBody,
-  TableCell,
 } from "@mui/material";
 // Helpers
 import Papa from "papaparse";
@@ -32,6 +27,7 @@ import useAlert from "@/hooks/useAlert";
 // Types
 import { BASE_TRANSITION } from "@/styles/constants";
 import { WithDescriptionExampleValidator } from "@/types/batchForms";
+import BatchAddFormPreviewTable from "@/components/tables/BatchAddFormPreviewTable/BatchAddFormPreviewTable";
 
 type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -182,30 +178,7 @@ const BatchAddForm: FC<Props> = ({
                         maxHeight: "40rem",
                       }}
                     >
-                      <Table
-                        stickyHeader
-                        size="small"
-                        sx={{
-                          width: "100%",
-                        }}
-                      >
-                        <TableHead>
-                          <TableRow>
-                            {Object.keys(addData[0]).map((header, index) => (
-                              <TableCell key={index}>{header}</TableCell>
-                            ))}
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {addData.map((row, index) => (
-                            <TableRow key={index}>
-                              {Object.values(row).map((value, index) => (
-                                <TableCell key={index}>{value}</TableCell>
-                              ))}
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
+                      <BatchAddFormPreviewTable previewData={addData} />
                     </Box>
                   </Box>
                 ) : null}

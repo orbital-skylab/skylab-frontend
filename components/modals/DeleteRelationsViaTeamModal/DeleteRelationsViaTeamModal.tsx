@@ -3,6 +3,7 @@ import { Dispatch, FC, SetStateAction } from "react";
 import { Stack, Button } from "@mui/material";
 import Modal from "../Modal";
 import Dropdown from "@/components/formikFormControllers/Dropdown";
+import PreviewRelationsTable from "@/components/tables/PreviewRelationsTable/PreviewRelationsTable";
 // Hook
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 import { useRouter } from "next/router";
@@ -14,6 +15,7 @@ import { HTTP_METHOD } from "@/types/api";
 import { Formik } from "formik";
 import { Project } from "@/types/projects";
 import { ERRORS } from "@/helpers/errors";
+import { EvaluationRelation } from "@/types/relations";
 
 const refreshSeconds = 3;
 
@@ -21,6 +23,7 @@ type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   projects: Project[];
+  relations: EvaluationRelation[];
 };
 
 interface DeleteRelationsViaTeamFormValuesType {
@@ -31,6 +34,7 @@ const DeleteRelationsViaTeamModal: FC<Props> = ({
   open,
   setOpen,
   projects,
+  relations,
 }) => {
   const { setSuccess, setError } = useSnackbarAlert();
   const router = useRouter();
@@ -70,7 +74,7 @@ const DeleteRelationsViaTeamModal: FC<Props> = ({
       <Modal
         open={open}
         handleClose={handleCloseModal}
-        title={`Delete Relation`}
+        title={`Delete Relations via Team`}
         subheader={`You are deleting all relations linked to a specified team. Note that only the relations will be deleted but the teams will not be deleted.\n\nThis action is irreversible, are you sure?`}
         sx={{ width: "400px" }}
       >
@@ -84,7 +88,7 @@ const DeleteRelationsViaTeamModal: FC<Props> = ({
               <Stack direction="column" spacing="1rem">
                 <Dropdown
                   name="projectId"
-                  label="Project"
+                  label="Team"
                   formik={formik}
                   size="small"
                   isCombobox
@@ -92,13 +96,22 @@ const DeleteRelationsViaTeamModal: FC<Props> = ({
                     projects && projects.length
                       ? projects.map((project) => {
                           return {
-                            label: `${project.id}: ${project.name}`,
+                            label: `${project.id}: ${project.teamName}`,
                             value: project.id,
                           };
                         })
                       : []
                   }
                 />
+                {relations.length && formik.values.projectId !== "" ? (
+                  <PreviewRelationsTable
+                    relations={relations.filter(
+                      (relation) =>
+                        relation.fromProjectId === formik.values.projectId ||
+                        relation.toProjectId === formik.values.projectId
+                    )}
+                  />
+                ) : null}
               </Stack>
               <Stack
                 direction="row"
@@ -113,7 +126,7 @@ const DeleteRelationsViaTeamModal: FC<Props> = ({
                   variant="contained"
                   color="error"
                   onClick={formik.submitForm}
-                  disabled={formik.isSubmitting}
+                  disabled={formik.isSubmitting || !formik.values.projectId}
                 >
                   Delete
                 </Button>

@@ -3,10 +3,12 @@ import { Dispatch, FC, SetStateAction } from "react";
 import Modal from "../Modal";
 import { Button, Stack } from "@mui/material";
 import MultiDropdown from "@/components/formikFormControllers/MultiDropdown";
+import PreviewRelationsTable from "@/components/tables/PreviewRelationsTable/PreviewRelationsTable";
 // Helpers
 import { Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { ERRORS } from "@/helpers/errors";
+import { generateGroupRelations } from "@/helpers/relations";
 // Hooks
 import useApiCall from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
@@ -18,7 +20,7 @@ import { Project } from "@/types/projects";
 const refreshSeconds = 3;
 
 interface AddRelationGroupFormValuesType {
-  projectIds: [];
+  projectIds: number[];
 }
 
 type Props = {
@@ -70,8 +72,8 @@ const AddRelationsViaGroupModal: FC<Props> = ({ open, setOpen, projects }) => {
       <Modal
         open={open}
         handleClose={handleCloseModal}
-        title={`Add Group`}
-        subheader="Adding 'groups' is a shortcut to add multiple relations at once. For example, creating a group with three projects A, B, and C would result in 6 relations being created: A -> B, A -> C, B -> A, B -> C, C -> A, C -> B."
+        title={`Add Relations via Group`}
+        subheader={`Adding a 'group' is a shortcut to add multiple relations at once.\n\nFor example, creating a group with three projects A, B, and C would result in 6 relations being created: A -> B, A -> C, B -> A, B -> C, C -> A, C -> B.`}
       >
         <Formik
           initialValues={initialValues}
@@ -83,7 +85,7 @@ const AddRelationsViaGroupModal: FC<Props> = ({ open, setOpen, projects }) => {
               <Stack direction="column" spacing="1rem">
                 <MultiDropdown
                   name="projectIds"
-                  label="Projects"
+                  label="Teams"
                   formik={formik}
                   size="small"
                   isCombobox
@@ -98,6 +100,17 @@ const AddRelationsViaGroupModal: FC<Props> = ({ open, setOpen, projects }) => {
                       : []
                   }
                 />
+                {formik.values.projectIds.length ? (
+                  <PreviewRelationsTable
+                    relations={generateGroupRelations(
+                      projects.filter((project) => {
+                        console.log("hey0:", formik.values.projectIds);
+                        console.log("hey1:", project.id);
+                        return formik.values.projectIds.includes(project.id);
+                      })
+                    )}
+                  />
+                ) : null}
               </Stack>
               <Stack
                 direction="row"
@@ -111,7 +124,9 @@ const AddRelationsViaGroupModal: FC<Props> = ({ open, setOpen, projects }) => {
                   size="small"
                   variant="contained"
                   onClick={formik.submitForm}
-                  disabled={formik.isSubmitting}
+                  disabled={
+                    formik.isSubmitting || !formik.values.projectIds.length
+                  }
                 >
                   Add
                 </Button>

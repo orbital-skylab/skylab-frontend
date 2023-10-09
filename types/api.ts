@@ -1,5 +1,6 @@
 import { Adviser } from "./advisers";
 import { Announcement, AnnouncementWithCommentThreads } from "./announcements";
+import { Cohort } from "./cohorts";
 import { Deadline, DeadlineDeliverable, Section } from "./deadlines";
 import { Mentor } from "./mentors";
 import { LeanProject, Project } from "./projects";
@@ -143,6 +144,22 @@ export type CreateProjectResponse = {
 };
 
 /**
+ * Cohorts Endpoints:
+ * https://github.com/orbital-skylab/skylab-backend/wiki/Cohorts-Endpoints
+ */
+export type GetCohortsResponse = {
+  cohorts: Cohort[];
+};
+
+export type GetCohortResponse = {
+  cohort: Cohort;
+};
+
+export type AddCohortResponse = GetCohortResponse;
+
+export type EditCohortResponse = GetCohortResponse;
+
+/**
  * Deadlines Endpoints:
  * https://github.com/orbital-skylab/skylab-backend/wiki/Deadlines-Endpoints
  */
@@ -233,7 +250,7 @@ export type GetAdministratorAllTeamMilestoneSubmissionsResponse = {
 
 /**
  * Evaluation Relations Endpoints:
- * https://github.com/orbital-skylab/skylab-backend/wiki/Evaluation-Relationships-Endpoints
+ * https://github.om/orbital-skylab/skylab-backend/wiki/Evaluation-Relationships-Endpoints
  */
 export type CreateRelationResponse = {
   relation: EvaluationRelation;
@@ -254,8 +271,8 @@ export type DeleteProjectRelationsResponse = {
 };
 
 /**
- * Announcement Endpoints:
- * // TODO: Add wiki link
+ * Announcements Endpoints:
+ * https://github.com/orbital-skylab/skylab-backend/wiki/Announcement-Endpoints
  */
 export type GetAnnouncementsResponse = {
   announcements: Announcement[];

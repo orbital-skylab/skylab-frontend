@@ -16,9 +16,13 @@ import { ERRORS } from "@/helpers/errors";
 import useApiCall from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Types
-import { HTTP_METHOD } from "@/types/api";
+import {
+  HTTP_METHOD,
+  AddCohortResponse,
+  GetCohortsResponse,
+} from "@/types/api";
 import { Mutate } from "@/hooks/useFetch";
-import { AddCohortResponse, Cohort, GetCohortsResponse } from "@/types/cohorts";
+import { Cohort } from "@/types/cohorts";
 
 type AddCohortFormValuesType = Cohort;
 

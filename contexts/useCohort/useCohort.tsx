@@ -3,7 +3,7 @@ import {
   ICohort,
   CohortProviderProps,
 } from "@/contexts/useCohort/useCohort.types";
-import { GetCohortResponse, GetCohortsResponse } from "@/types/cohorts";
+import { GetCohortResponse, GetCohortsResponse } from "@/types/api";
 import useFetch, { isError, isFetching } from "../../hooks/useFetch";
 import useSnackbarAlert from "../useSnackbarAlert";
 
