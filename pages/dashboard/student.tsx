@@ -162,7 +162,11 @@ const StudentDashboard: NextPage = () => {
                               href={`${PAGES.ANONYMOUS_QUESTIONS_STUDENT}/${user?.student?.id}`}
                               passHref
                             >
-                              <Button variant="outlined" size="small">
+                              <Button
+                                className="view-anonymous-answers"
+                                variant="outlined"
+                                size="small"
+                              >
                                 View Anonymous Answers
                               </Button>
                             </Link>
