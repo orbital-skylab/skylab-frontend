@@ -118,7 +118,7 @@ const AddUserModal: FC<Props> = ({
                       <MenuItem
                         key={role}
                         value={role}
-                        id={`${role.toLowerCase()}-option`}
+                        id={`${toSingular(role).toLowerCase()}-option`}
                       >
                         {toSingular(role)}
                       </MenuItem>

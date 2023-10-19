@@ -13,7 +13,7 @@ const GoBackButton: FC<Props> = ({ id, sx }) => {
 
   return (
     <Button
-      id={id}
+      id={id ?? "go-back-button"}
       color="primary"
       variant="outlined"
       sx={{ mb: "1rem", ...sx }}

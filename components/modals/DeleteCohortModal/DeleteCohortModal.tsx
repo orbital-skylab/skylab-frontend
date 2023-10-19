@@ -66,7 +66,7 @@ const DeleteCohortModal: FC<Props> = ({ open, setOpen, cohort, mutate }) => {
             Cancel
           </Button>
           <Button
-            id="confirm-delete-cohort-modal"
+            id="confirm-delete-cohort-button"
             size="small"
             variant="contained"
             color="error"
