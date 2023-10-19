@@ -14,7 +14,7 @@ describe("Testing application feature", () => {
 
     // create new application form
     cy.get("#add-deadline-button").click();
-    cy.get("#deadline-name-input").type("Apply for Orbital");
+    cy.get("#deadline-name-input").clear().type("Apply for Orbital");
     cy.get("#add-deadline-modal [data-testid=ArrowDropDownIcon]")
       .parent()
       .click();
@@ -25,7 +25,10 @@ describe("Testing application feature", () => {
     cy.contains("td", "Apply for Orbital").should("exist");
 
     // duplicate existing application form
-    cy.get("#duplicate-deadline-button").click();
+    cy.contains("td", "Apply for Orbital")
+      .parent()
+      .find("#duplicate-deadline-button")
+      .click();
     cy.get("#duplicate-deadline-modal [data-testid=ArrowDropDownIcon]")
       .parent()
       .click();
@@ -36,6 +39,8 @@ describe("Testing application feature", () => {
     cy.get("#select-cohort-input").click();
     cy.get("[data-value=2024]").click({ force: true });
     cy.contains("td", "Copy of Apply for Orbital").should("exist");
+
+    cy.get("#nav-sign-out").click();
   });
 
   it("Fills out first application form as anonymous applicant", () => {
@@ -46,18 +51,43 @@ describe("Testing application feature", () => {
     cy.location("pathname").should("include", "/application");
 
     // fill out application form
-    cy.get(".short-answer-question").eq(0).find("input").type("Tom");
-    cy.get(".short-answer-question").eq(1).find("input").type("Jerry");
-    cy.get(".short-answer-question").eq(2).find("input").type("tom@skylab.com");
+    cy.get(".short-answer-question").eq(0).find("input").clear().type("Tom");
+    cy.get(".short-answer-question").eq(1).find("input").clear().type("Jerry");
+    cy.get(".short-answer-question")
+      .eq(2)
+      .find("input")
+      .clear()
+      .type("tom@skylab.com");
     cy.get(".short-answer-question")
       .eq(3)
       .find("input")
+      .clear()
       .type("jerry@skylab.com");
-    cy.get(".short-answer-question").eq(4).find("input").type("A0214584A");
-    cy.get(".short-answer-question").eq(5).find("input").type("A0214584B");
-    cy.get(".short-answer-question").eq(6).find("input").type("E0528181");
-    cy.get(".short-answer-question").eq(7).find("input").type("E0528182");
-    cy.get(".short-answer-question").eq(8).find("input").type("TomJerry");
+    cy.get(".short-answer-question")
+      .eq(4)
+      .find("input")
+      .clear()
+      .type("A0214584A");
+    cy.get(".short-answer-question")
+      .eq(5)
+      .find("input")
+      .clear()
+      .type("A0214584B");
+    cy.get(".short-answer-question")
+      .eq(6)
+      .find("input")
+      .clear()
+      .type("E0528181");
+    cy.get(".short-answer-question")
+      .eq(7)
+      .find("input")
+      .clear()
+      .type("E0528182");
+    cy.get(".short-answer-question")
+      .eq(8)
+      .find("input")
+      .clear()
+      .type("TomJerry");
     cy.get(".dropdown-question")
       .first()
       .find("[data-testid=ArrowDropDownIcon]")
@@ -76,21 +106,43 @@ describe("Testing application feature", () => {
     cy.location("pathname").should("include", "/application");
 
     // fill out application form while trying repeated credentials
-    cy.get(".short-answer-question").eq(0).find("input").type("Tom2");
-    cy.get(".short-answer-question").eq(1).find("input").type("Jerry2");
+    cy.get(".short-answer-question").eq(0).find("input").clear().type("Tom2");
+    cy.get(".short-answer-question").eq(1).find("input").clear().type("Jerry2");
     cy.get(".short-answer-question")
       .eq(2)
       .find("input")
+      .clear()
       .type("tom2@skylab.com");
     cy.get(".short-answer-question")
       .eq(3)
       .find("input")
+      .clear()
       .type("jerry2@skylab.com");
-    cy.get(".short-answer-question").eq(4).find("input").type("A0214584A");
-    cy.get(".short-answer-question").eq(5).find("input").type("A0214584B");
-    cy.get(".short-answer-question").eq(6).find("input").type("E0528181");
-    cy.get(".short-answer-question").eq(7).find("input").type("E0528182");
-    cy.get(".short-answer-question").eq(8).find("input").type("Tom2Jerry2");
+    cy.get(".short-answer-question")
+      .eq(4)
+      .find("input")
+      .clear()
+      .type("A0214584A");
+    cy.get(".short-answer-question")
+      .eq(5)
+      .find("input")
+      .clear()
+      .type("A0214584B");
+    cy.get(".short-answer-question")
+      .eq(6)
+      .find("input")
+      .clear()
+      .type("E0528181");
+    cy.get(".short-answer-question")
+      .eq(7)
+      .find("input")
+      .clear()
+      .type("E0528182");
+    cy.get(".short-answer-question")
+      .eq(8)
+      .find("input")
+      .clear()
+      .type("Tom2Jerry2");
     cy.get(".dropdown-question")
       .first()
       .find("[data-testid=ArrowDropDownIcon]")
@@ -100,19 +152,39 @@ describe("Testing application feature", () => {
     cy.get("#submit-submission-button").click();
     cy.get("#error-alert").should("exist");
 
-    cy.get(".short-answer-question").eq(4).find("input").type("A0214584C");
+    cy.get(".short-answer-question")
+      .eq(4)
+      .find("input")
+      .clear()
+      .clear()
+      .type("A0214584C");
     cy.get("#submit-submission-button").click();
     cy.get("#error-alert").should("exist");
 
-    cy.get(".short-answer-question").eq(5).find("input").type("A0214584D");
+    cy.get(".short-answer-question")
+      .eq(5)
+      .find("input")
+      .clear()
+      .clear()
+      .type("A0214584D");
     cy.get("#submit-submission-button").click();
     cy.get("#error-alert").should("exist");
 
-    cy.get(".short-answer-question").eq(6).find("input").type("E0528183");
+    cy.get(".short-answer-question")
+      .eq(6)
+      .find("input")
+      .clear()
+      .clear()
+      .type("E0528183");
     cy.get("#submit-submission-button").click();
     cy.get("#error-alert").should("exist");
 
-    cy.get(".short-answer-question").eq(7).find("input").type("E0528184");
+    cy.get(".short-answer-question")
+      .eq(7)
+      .find("input")
+      .clear()
+      .clear()
+      .type("E0528184");
     cy.get("#submit-submission-button").click();
     cy.location("pathname").should("not.include", "/application");
   });
@@ -125,21 +197,43 @@ describe("Testing application feature", () => {
     cy.location("pathname").should("include", "/application");
 
     // fill out application form
-    cy.get(".short-answer-question").eq(0).find("input").type("Tom3");
-    cy.get(".short-answer-question").eq(1).find("input").type("Jerry3");
+    cy.get(".short-answer-question").eq(0).find("input").clear().type("Tom3");
+    cy.get(".short-answer-question").eq(1).find("input").clear().type("Jerry3");
     cy.get(".short-answer-question")
       .eq(2)
       .find("input")
+      .clear()
       .type("tom3@skylab.com");
     cy.get(".short-answer-question")
       .eq(3)
       .find("input")
+      .clear()
       .type("jerry3@skylab.com");
-    cy.get(".short-answer-question").eq(4).find("input").type("A0214584E");
-    cy.get(".short-answer-question").eq(5).find("input").type("A0214584F");
-    cy.get(".short-answer-question").eq(6).find("input").type("E0528185");
-    cy.get(".short-answer-question").eq(7).find("input").type("E0528186");
-    cy.get(".short-answer-question").eq(8).find("input").type("Tom3Jerry3");
+    cy.get(".short-answer-question")
+      .eq(4)
+      .find("input")
+      .clear()
+      .type("A0214584E");
+    cy.get(".short-answer-question")
+      .eq(5)
+      .find("input")
+      .clear()
+      .type("A0214584F");
+    cy.get(".short-answer-question")
+      .eq(6)
+      .find("input")
+      .clear()
+      .type("E0528185");
+    cy.get(".short-answer-question")
+      .eq(7)
+      .find("input")
+      .clear()
+      .type("E0528186");
+    cy.get(".short-answer-question")
+      .eq(8)
+      .find("input")
+      .clear()
+      .type("Tom3Jerry3");
     cy.get(".dropdown-question")
       .first()
       .find("[data-testid=ArrowDropDownIcon]")
@@ -171,6 +265,8 @@ describe("Testing application feature", () => {
     // check application has been removed
     cy.wait(2000);
     cy.contains("td", "Tom3Jerry3").should("not.exist");
+
+    cy.get("#nav-sign-out").click();
   });
 
   it("Rejects application as an admin", () => {
@@ -181,7 +277,7 @@ describe("Testing application feature", () => {
     cy.location("pathname").should("include", "/manage");
 
     // navigate to manage applications page
-    cy.get("#manage-applications").click();
+    cy.get("#manage-applications-card").click();
     cy.location("pathname").should("include", "/applications");
 
     // reject application
@@ -196,6 +292,8 @@ describe("Testing application feature", () => {
       .parent()
       .contains("td", "Rejected")
       .should("exist");
+
+    cy.get("#nav-sign-out").click();
   });
 
   it("Approves application as an admin", () => {
@@ -206,7 +304,7 @@ describe("Testing application feature", () => {
     cy.location("pathname").should("include", "/manage");
 
     // navigate to manage applications page
-    cy.get("#manage-applications").click();
+    cy.get("#manage-applications-card").click();
     cy.location("pathname").should("include", "/applications");
 
     // approve application
@@ -227,7 +325,7 @@ describe("Testing application feature", () => {
     cy.get("#manage-projects-card").click();
     cy.location("pathname").should("include", "/projects");
 
-    cy.get("#project-search-input").type("TomJerry");
+    cy.get("#project-search-input").clear().type("TomJerry");
     cy.wait(2000);
     cy.contains("td", "TomJerry").should("exist");
     cy.contains("td", "TomJerry")
@@ -244,11 +342,13 @@ describe("Testing application feature", () => {
     cy.location("pathname").should("include", "/users");
 
     cy.get("#students-tab").click();
-    cy.get("#user-search-input").type("Tom");
+    cy.get("#user-search-input").clear().type("Tom");
     cy.wait(2000);
     cy.contains("td", "Tom").should("exist");
-    cy.get("#user-search-input").type("Jerry");
+    cy.get("#user-search-input").clear().type("Jerry");
     cy.wait(2000);
     cy.contains("td", "Jerry").should("exist");
+
+    cy.get("#nav-sign-out").click();
   });
 });

@@ -3,7 +3,6 @@
 describe("Testing adviser dashboard feature", () => {
   beforeEach(() => {
     cy.login("adviser@skylab.com", "Password123");
-    cy.visit("http://localhost:3000/");
 
     // navigate to dashboard page
     cy.get("#nav-dashboard").click();
@@ -41,48 +40,30 @@ describe("Testing adviser dashboard feature", () => {
     cy.get("#start-deadline-button:not([disabled])").first().click();
     cy.location("pathname").should("include", "submissions/");
 
-    // fill out and submit deadline
-    cy.get(".short-answer-input").first().type("dummy answer for Evaluation 1");
-    cy.get("#submit-submission-button").click();
+    // fill out deadline questions and save as draft
+    cy.get(".short-answer-input").first().type("dummy answer for Evaluation 2");
+    cy.get("#save-draft-button").click();
     cy.wait(3000);
     cy.go("back");
 
-    // check that deadline was submitted correctly and edit it
-    cy.get("#edit-deadline-button:not([disabled])").click();
+    // check that draft was saved correctly and edit it
+    cy.get("#continue-deadline-button:not([disabled])").first().click();
     cy.get(".short-answer-input input")
       .first()
-      .should("have.value", "dummy answer for Evaluation 1");
+      .should("have.value", "dummy answer for Evaluation 2");
     cy.get(".short-answer-input input")
       .first()
-      .type("edited dummy answer for Evaluation 1");
+      .clear()
+      .type("edited dummy answer for Evaluation 2");
     cy.get("#submit-submission-button").click();
     cy.wait(3000);
     cy.go("back");
 
     // check that deadline was editted correctly
-    cy.get("#edit-deadline-button:not([disabled])").click();
+    cy.get("#edit-deadline-button:not([disabled])").eq(1).click();
     cy.get(".short-answer-input input")
       .first()
-      .should("have.value", "edited dummy answer for Evaluation 1");
-    cy.go("back");
-
-    // start a deadline draft
-    cy.get("#start-deadline-button:not([disabled])").click();
-
-    // fill out and save deadline as draft
-    cy.get(".short-answer-input")
-      .first()
-      .type("dummy draft answer for Evaluation 2");
-    cy.get("#save-draft-button").click();
-    cy.wait(3000);
-    cy.go("back");
-
-    // check that draft was saved
-    cy.get("#continue-deadline-button:not([disabled])").click();
-    cy.location("pathname").should("include", "submissions/");
-    cy.get(".short-answer-input input")
-      .first()
-      .should("have.value", "dummy draft answer for Evaluation 2");
+      .should("have.value", "edited dummy answer for Evaluation 2");
     cy.go("back");
   });
 

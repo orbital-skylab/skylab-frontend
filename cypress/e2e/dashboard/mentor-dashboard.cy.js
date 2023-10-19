@@ -3,7 +3,6 @@
 describe("Testing mentor dashboard feature", () => {
   before(() => {
     cy.login("mentor@skylab.com", "Password123");
-    cy.visit("http://localhost:3000/");
   });
 
   after(() => {
@@ -17,13 +16,15 @@ describe("Testing mentor dashboard feature", () => {
 
     // view submission
     cy.get("#your-teams\\'-submissions-tab").click();
-    cy.get("#view-submission-button").click();
+    cy.get("#view-submission-button:not([aria-disabled='true'])")
+      .first()
+      .click();
     cy.location("pathname").should("include", "/submissions/");
     cy.go("back");
 
     // view team
     cy.get("#view-your-teams-tab").click();
-    cy.get("#view-team-button").click();
+    cy.get("#view-team-button").first().click();
     cy.location("pathname").should("include", "/projects/");
   });
 });

@@ -3,10 +3,9 @@
 describe("Testing teams management feature", () => {
   beforeEach(() => {
     cy.login("admin@skylab.com", "Password123");
-    cy.visit("http://localhost:3000/");
   });
 
-  after(() => {
+  afterEach(() => {
     cy.get("#nav-sign-out").click();
   });
 
@@ -16,7 +15,7 @@ describe("Testing teams management feature", () => {
     cy.location("pathname").should("include", "/manage");
 
     // navigate to manage teams page
-    cy.get("#manage-teams-card").click();
+    cy.get("#manage-projects-card").click();
     cy.location("pathname").should("include", "/projects");
 
     // view team
@@ -28,36 +27,38 @@ describe("Testing teams management feature", () => {
     cy.get("#add-project-button").click();
     cy.get("#add-project-name-input").type("New Project");
     cy.get("#add-project-team-name-input").type("New Team");
+    cy.get(".add-project-adviser-dropdown").click();
+    cy.get(".dropdown-option").first().click({ force: true });
     cy.get(".add-project-student-dropdown").click();
     cy.get(".multidropdown-option").then(($elements) => {
       const numOptions = $elements.length;
       cy.wrap($elements)
         .eq(numOptions - 2)
-        .click();
+        .click({ force: true });
       cy.wrap($elements)
         .eq(numOptions - 1)
-        .click();
+        .click({ force: true });
     });
-    cy.get(".add-project-student-dropdown").click();
+    cy.get(".add-project-student-dropdown .multidropdown-button").click();
     cy.get("#add-project-submit-button").click();
 
     // check team created
-    cy.get("#project-search-input").type("New Team");
+    cy.get("#project-search-input").clear().type("New");
     cy.contains("td", "New Team").should("exist");
     cy.contains("td", "New Project").should("exist");
 
     // edit team
     cy.contains("td", "New Team").parent().find(".edit-project-button").click();
     cy.location("pathname").should("include", "/edit");
-    cy.get("#edit-project-name-input").type("Newer Project");
-    cy.get("#edit-team-name-input").type("Newer Team");
+    cy.get("#edit-project-name-input").clear().type("Newer Project");
+    cy.get("#edit-team-name-input").clear().type("Newer Team");
     cy.get("#confirm-edit-project-button").click();
     cy.go("back");
 
     // check team edited
-    cy.get("#project-search-input").type("Newer Team");
+    cy.get("#project-search-input").clear().type("Newer");
     cy.contains("td", "Newer Team").should("exist");
-    cy.get("#project-search-input").type("New Team");
+    cy.get("#project-search-input").clear().type("New");
     cy.contains("td", "New Team").should("not.exist");
 
     // delete team
@@ -68,7 +69,7 @@ describe("Testing teams management feature", () => {
     cy.get("#delete-project-submit-button").click();
 
     // check team deleted
-    cy.get("#project-search-input").type("Newer Team");
+    cy.get("#project-search-input").clear().type("Newer");
     cy.contains("td", "Newer Team").should("not.exist");
   });
 });

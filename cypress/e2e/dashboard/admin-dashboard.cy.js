@@ -3,7 +3,6 @@
 describe("Testing admin dashboard feature", () => {
   beforeEach(() => {
     cy.login("admin@skylab.com", "Password123");
-    cy.visit("http://localhost:3000/");
   });
 
   it("Creates, updates and deletes evaluation relations as an admin", () => {
@@ -22,10 +21,10 @@ describe("Testing admin dashboard feature", () => {
 
     // check that single evaluation relation was added
     cy.wait(5000);
-    cy.get("tr").should("have.length", 1);
+    cy.get("tr").should("have.length", 1 + 1); // +1 for header
 
     // edit evaluation relation
-    cy.get("tr").eq(0).find("#edit-relation-button").click();
+    cy.get("tr").eq(1).find("#edit-relation-button").click();
     cy.get(".dropdown-button").eq(1).click();
     cy.get(".dropdown-option").eq(2).click();
     cy.get("#confirm-edit-relation-button").click();
@@ -33,7 +32,7 @@ describe("Testing admin dashboard feature", () => {
     // check that evaluation relation was edited
 
     // delete evaluation relation
-    cy.get("tr").eq(0).find("#delete-relation-button").click();
+    cy.get("tr").eq(1).find("#delete-relation-button").click();
     cy.get("#confirm-delete-relation-button").click();
 
     // check that evaluation relation was deleted
@@ -41,6 +40,7 @@ describe("Testing admin dashboard feature", () => {
 
     // add 2-way evaluation relation
     cy.get("#manage-evaluation-relations-tab").click();
+    cy.get("#add-relations-group-button").click();
     cy.get(".multidropdown-button").click();
     cy.get(".multidropdown-option").eq(0).click();
     cy.get(".multidropdown-option").eq(1).click();
@@ -50,10 +50,11 @@ describe("Testing admin dashboard feature", () => {
     // check that 2-way evaluation relation was added
     cy.wait(5000);
     cy.get("#manage-evaluation-relations-tab").click();
-    cy.get("tr").should("have.length", 2);
+    cy.get("tr").should("have.length", 2 + 1);
 
     // add 3-way evaluation relation
     cy.get("#manage-evaluation-relations-tab").click();
+    cy.get("#add-relations-group-button").click();
     cy.get(".multidropdown-button").click();
     cy.get(".multidropdown-option").eq(2).click();
     cy.get(".multidropdown-option").eq(3).click();
@@ -64,15 +65,29 @@ describe("Testing admin dashboard feature", () => {
     // check that 3-way evaluation relation was added
     cy.wait(5000);
     cy.get("#manage-evaluation-relations-tab").click();
-    cy.get("tr").should("have.length", 8);
+    cy.get("tr").should("have.length", 6 + 2 + 1);
 
     // delete all evaluation relations
-    cy.get("#delete-relation-button").each(($ele) => {
-      cy.wrap($ele).click();
-      cy.get("#confirm-delete-relation-button").click();
-    });
+    cy.get("#delete-team-relations-button").click();
+    cy.get(".dropdown-button").click();
+    cy.get(".dropdown-option").eq(0).click();
+    cy.get("#confirm-delete-team-relations-button").click();
+    cy.wait(5000);
+    cy.get("#manage-evaluation-relations-tab").click();
+    cy.get("#delete-team-relations-button").click();
+    cy.get(".dropdown-button").click();
+    cy.get(".dropdown-option").eq(2).click();
+    cy.get("#confirm-delete-team-relations-button").click();
+    cy.wait(5000);
+    cy.get("#manage-evaluation-relations-tab").click();
+    cy.get("#delete-team-relations-button").click();
+    cy.get(".dropdown-button").click();
+    cy.get(".dropdown-option").eq(3).click();
+    cy.get("#confirm-delete-team-relations-button").click();
 
     // check all evaluation relations deleted
+    cy.wait(5000);
+    cy.get("#manage-evaluation-relations-tab").click();
     cy.get("tr").should("not.exist");
   });
 });

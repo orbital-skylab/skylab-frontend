@@ -3,7 +3,6 @@
 describe("Testing deadlines management feature", () => {
   beforeEach(() => {
     cy.login("admin@skylab.com", "Password123");
-    cy.visit("http://localhost:3000/");
   });
 
   after(() => {
@@ -21,58 +20,80 @@ describe("Testing deadlines management feature", () => {
 
     // create deadline
     cy.get("#add-deadline-button").click();
-    cy.get("#deadline-name-input").type(`Splashup ${new Date().getFullYear()}`);
+    cy.get("#deadline-name-input")
+      .clear()
+      .type(`Splashup ${new Date().getFullYear()}`);
     cy.get("#submit-deadline-button").click();
 
     // check deadline created
-    cy.get("td", `Splashup ${new Date().getFullYear()}`).should("exist");
+    cy.scrollTo("bottom");
+    cy.contains("td", `Splashup ${new Date().getFullYear()}`).should("exist");
 
     // edit deadline
-    cy.get("td", `Splashup ${new Date().getFullYear()}`)
+    cy.contains("td", `Splashup ${new Date().getFullYear()}`)
       .parent()
-      .find("#edit-deadline-button");
-    cy.get("#deadline-name-input").type(
-      `Splashdown ${new Date().getFullYear()}`
-    );
+      .find("#edit-deadline-button")
+      .click();
+    cy.get("#edit-deadline-name-input")
+      .clear()
+      .type(`Splashdown ${new Date().getFullYear()}`);
     cy.get("#confirm-edit-deadline-button").click();
 
     // check deadline edited
-    cy.get("td", `Splashup ${new Date().getFullYear()}`).should("not.exist");
-    cy.get("td", `Splashdown ${new Date().getFullYear()}`).should("exist");
+    cy.scrollTo("bottom");
+    cy.contains("td", `Splashup ${new Date().getFullYear()}`).should(
+      "not.exist"
+    );
+    cy.contains("td", `Splashdown ${new Date().getFullYear()}`).should("exist");
 
     // edit deadline questions
-    cy.get("td", `Splashdown ${new Date().getFullYear()}`)
+    cy.contains("td", `Splashdown ${new Date().getFullYear()}`)
       .parent()
-      .find("#view-questions-button");
+      .find("#view-questions-button")
+      .click();
     cy.location("pathname").should("contain", "deadlines/");
 
-    cy.get(".question-input")
+    cy.get(".question-input input")
       .first()
-      .find("input")
+      .clear()
       .type(`dummy question for Splashdown ${new Date().getFullYear()}`);
     cy.get(".question-type-select").first().click();
     cy.get("[data-value=ShortAnswer]").click({ force: true });
+    cy.scrollTo("bottom");
     cy.get("#save-deadline-questions-button").click();
-    cy.wait(2000);
-    cy.go("back");
+    cy.wait(1000);
+    cy.scrollTo("top");
+    cy.get("#go-back-button").click();
 
     // check deadline questions edited
-    cy.get("td", `Splashdown ${new Date().getFullYear()}`)
+    cy.scrollTo("bottom");
+    cy.contains("td", `Splashdown ${new Date().getFullYear()}`)
       .parent()
-      .find("#view-questions-button");
-    cy.contains(
-      ".question-input",
-      `dummy question for Splashdown ${new Date().getFullYear()}`
-    ).should("exist");
-    cy.go("back");
+      .find("#view-questions-button")
+      .click();
+    cy.get(".question-input input")
+      .first()
+      .should(
+        "have.value",
+        `dummy question for Splashdown ${new Date().getFullYear()}`
+      );
+    cy.scrollTo("top");
+    cy.get("#go-back-button").click();
+
+    // delete deadline question
+
+    // check deadline question deleted
 
     // delete deadline
-    cy.get("td", `Splashdown ${new Date().getFullYear()}`)
+    cy.contains("td", `Splashdown ${new Date().getFullYear()}`)
       .parent()
-      .find("#delete-deadline-button");
+      .find("#delete-deadline-button")
+      .click();
     cy.get("#delete-deadline-confirm-button");
 
     // check deadline deleted
-    cy.get("td", `Splashdown ${new Date().getFullYear()}`).should("not.exist");
+    cy.contains("td", `Splashdown ${new Date().getFullYear()}`).should(
+      "not.exist"
+    );
   });
 });
