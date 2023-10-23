@@ -8,6 +8,7 @@ import { PAGES } from "@/helpers/navigation";
 import { EvaluationRelation } from "@/types/relations";
 
 type Props = {
+  idx?: number;
   relation: EvaluationRelation;
   showAdviserColumn: boolean;
   selectedRelationIds: Set<number>;
@@ -15,6 +16,7 @@ type Props = {
 };
 
 const RelationCheckmarkRow: FC<Props> = ({
+  idx,
   relation,
   showAdviserColumn,
   selectedRelationIds,
@@ -39,6 +41,7 @@ const RelationCheckmarkRow: FC<Props> = ({
       <TableRow>
         <TableCell padding="checkbox">
           <Checkbox
+            id={`${idx}-checkbox`}
             color="info"
             checked={isItemSelected}
             onClick={toggleSelected}

@@ -16,6 +16,7 @@ import { useState } from "react";
 import { DropdownOption } from "../Dropdown";
 
 type Props<FormValuesType> = {
+  id?: string;
   name: keyof FormValuesType;
   label: string;
   options: DropdownOption[];
@@ -27,6 +28,7 @@ type Props<FormValuesType> = {
 };
 
 function MultiDropdown<FormValuesType>({
+  id,
   name,
   label,
   options,
@@ -52,6 +54,7 @@ function MultiDropdown<FormValuesType>({
     return (
       <FormControl>
         <Autocomplete
+          id={id}
           className={className}
           multiple
           disableCloseOnSelect
@@ -115,6 +118,7 @@ function MultiDropdown<FormValuesType>({
     <FormControl>
       <InputLabel>{label}</InputLabel>
       <Select
+        id={id}
         className={className}
         name={name as string}
         multiple

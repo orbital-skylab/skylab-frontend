@@ -46,6 +46,7 @@ const EmptyEvaluationRelations: FC<Props> = ({
                 mt: "auto",
               }}
               onClick={handleCreateAutomatically}
+              id="create-automatically-button"
             >
               Create automatically
             </Button>
@@ -70,6 +71,7 @@ const EmptyEvaluationRelations: FC<Props> = ({
                 mt: "auto",
               }}
               onClick={handleCreateManually}
+              id="create-manually-button"
             >
               Create manually
             </Button>

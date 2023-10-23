@@ -62,6 +62,7 @@ const RelationCheckmarkTable: FC<Props> = ({
             <TableRow>
               <TableCell padding="checkbox">
                 <Checkbox
+                  id="select-all-relations-checkbox"
                   color="primary"
                   checked={
                     relations.length > 0 && numSelected === relations.length
@@ -80,8 +81,9 @@ const RelationCheckmarkTable: FC<Props> = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {relations.map((relation) => (
+            {relations.map((relation, idx) => (
               <RelationCheckmarkRow
+                idx={idx}
                 key={relation.id}
                 relation={relation}
                 showAdviserColumn={Boolean(showAdviserColumn)}

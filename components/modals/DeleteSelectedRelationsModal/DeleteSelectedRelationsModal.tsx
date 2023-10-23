@@ -91,6 +91,7 @@ const DeleteSelectedRelationsModal: FC<Props> = ({
             Cancel
           </Button>
           <Button
+            id="confirm-delete-selected-relations-button"
             size="small"
             variant="contained"
             color="error"

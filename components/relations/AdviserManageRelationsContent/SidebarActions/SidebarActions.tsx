@@ -109,6 +109,7 @@ const SidebarActions: FC<Props> = ({
               disabled={selectedRelationIds.size === 0}
               color="error"
               onClick={handleOpenDeleteSelectedRelationsModal}
+              id="delete-selected-relations-button"
             >
               Delete selected relations
             </Button>

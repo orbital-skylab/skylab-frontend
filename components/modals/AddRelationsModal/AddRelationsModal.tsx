@@ -102,6 +102,7 @@ const AddRelationsModal: FC<Props> = ({ open, setOpen, mutate, projects }) => {
             <>
               <Stack direction="column" spacing="1rem">
                 <Dropdown
+                  id="from-project-id-input"
                   name="fromProjectId"
                   label="Evaluator"
                   formik={formik}
@@ -119,6 +120,7 @@ const AddRelationsModal: FC<Props> = ({ open, setOpen, mutate, projects }) => {
                   }
                 />
                 <MultiDropdown
+                  id="to-project-ids-input"
                   name="toProjectIds"
                   label="Evaluatee(s)"
                   formik={formik}

@@ -98,6 +98,7 @@ const CreateAutomaticallyModal: FC<Props> = ({
           variant="contained"
           onClick={handleSubmit}
           disabled={isSubmitting}
+          id="add-relations-button"
         >
           Add relations
         </Button>
