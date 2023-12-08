@@ -13,6 +13,7 @@ import { Mutate } from "@/hooks/useFetch";
 import { GetDeadlinesResponse } from "@/types/api";
 // Constants
 import { BASE_TRANSITION } from "@/styles/constants";
+import DuplicateDeadlineModal from "@/components/modals/DuplicateDeadlineModal";
 
 type Props = {
   deadline: Deadline;
@@ -22,10 +23,15 @@ type Props = {
 
 const DeadlineRow: FC<Props> = ({ deadline, deadlines, mutate }) => {
   const [isEditDeadlineOpen, setIsEditDeadlineOpen] = useState(false);
+  const [isDuplicateModalOpen, setIsDuplicateModalOpen] = useState(false);
   const [isDeleteDeadlineOpen, setIsDeleteDeadlineOpen] = useState(false);
 
   const handleOpenEditModal = () => {
     setIsEditDeadlineOpen(true);
+  };
+
+  const handleOpenDuplicateModal = () => {
+    setIsDuplicateModalOpen(true);
   };
 
   const handleOpenDeleteModal = () => {
@@ -45,6 +51,12 @@ const DeadlineRow: FC<Props> = ({ deadline, deadlines, mutate }) => {
         deadlines={deadlines}
         open={isEditDeadlineOpen}
         setOpen={setIsEditDeadlineOpen}
+        mutate={mutate}
+      />
+      <DuplicateDeadlineModal
+        deadline={deadline}
+        open={isDuplicateModalOpen}
+        setOpen={setIsDuplicateModalOpen}
         mutate={mutate}
       />
       <TableRow>
@@ -69,6 +81,13 @@ const DeadlineRow: FC<Props> = ({ deadline, deadlines, mutate }) => {
               Edit
             </Button>
             <Button
+              id="duplicate-deadline-button"
+              onClick={handleOpenDuplicateModal}
+            >
+              Duplicate
+            </Button>
+            <Button
+              id="delete-deadline-button"
               onClick={handleOpenDeleteModal}
               sx={{
                 transition: BASE_TRANSITION,

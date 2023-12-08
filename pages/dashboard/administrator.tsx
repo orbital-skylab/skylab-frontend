@@ -42,6 +42,7 @@ import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 import useInfiniteFetch, {
   createBottomOfPageRef,
 } from "@/hooks/useInfiniteFetch";
+import { transformTabNameIntoId } from "@/helpers/dashboard";
 
 enum TAB {
   SUBMISSIONS = "All Teams' Milestone Submissions",
@@ -189,7 +190,12 @@ const AdministratorDashboard: NextPage = () => {
           }}
         >
           {Object.values(TAB).map((tab) => (
-            <Tab key={tab} value={tab} label={tab} />
+            <Tab
+              key={tab}
+              value={tab}
+              label={tab}
+              id={transformTabNameIntoId(tab)}
+            />
           ))}
         </Tabs>
 

@@ -44,7 +44,7 @@ export const getFromProjectOrUserId = (
       return { fromProjectId: user.student?.projectId };
 
     case VIEWER_ROLE.ADVISERS:
-      return { fromUserId: user.adviser?.id };
+      return { fromUserId: user.id };
   }
 };
 

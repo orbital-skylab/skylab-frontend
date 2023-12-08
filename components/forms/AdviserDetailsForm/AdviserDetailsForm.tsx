@@ -38,12 +38,14 @@ const AdviserDetailsForm: FC<Props> = ({
         />
       ) : null}
       <TextInput
+        id="adviser-nusnet-id-input"
         name="nusnetId"
         label="NUSNET ID"
         size="small"
         formik={formik}
       />
       <TextInput
+        id="adviser-matric-no-input"
         name="matricNo"
         label="Matriculation Number"
         size="small"

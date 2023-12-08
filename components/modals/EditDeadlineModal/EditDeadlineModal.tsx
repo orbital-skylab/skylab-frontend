@@ -111,6 +111,7 @@ const EditDeadlineModal: FC<Props> = ({
             <>
               <Stack direction="column" spacing="1rem">
                 <TextInput
+                  id="edit-deadline-name-input"
                   name="name"
                   label="Name"
                   size="small"
@@ -162,6 +163,7 @@ const EditDeadlineModal: FC<Props> = ({
                   Cancel
                 </Button>
                 <LoadingButton
+                  id="confirm-edit-deadline-button"
                   size="small"
                   variant="contained"
                   onClick={formik.submitForm}

@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-/// <reference types="cypress" />
 
 context("Actions", () => {
   before(() => {
@@ -43,7 +42,9 @@ context("Actions", () => {
         cy.get("#edit-announcement-button").click();
       });
     cy.location("pathname").should("include", "edit");
-    cy.get("#edit-announcement-title-input").type("Test announcement (Edited)");
+    cy.get("#edit-announcement-title-input")
+      .clear()
+      .type("Test announcement (Edited)");
     cy.get("#edit-announcement-post-button").click();
     cy.get("#go-back-button").click();
     cy.location("pathname").should("include", "manage/announcements");
@@ -76,7 +77,7 @@ context("Actions", () => {
         cy.get("#edit-comment-button").click();
       });
     cy.get("#edit-comment-content-input").within(() => {
-      cy.get(".ql-editor").type("Test comment (Edited)");
+      cy.get(".ql-editor").clear().type("Test comment (Edited)");
     });
     cy.get("#edit-comment-post-button").click();
     cy.get("p").contains("Test comment (Edited)").should("exist");
@@ -110,7 +111,7 @@ context("Actions", () => {
         cy.get("#edit-comment-button").click();
       });
     cy.get("#edit-comment-content-input").within(() => {
-      cy.get(".ql-editor").type("Test reply (Edited)");
+      cy.get(".ql-editor").clear().type("Test reply (Edited)");
     });
     cy.get("#edit-comment-post-button").click();
     cy.get("p").contains("Test reply (Edited)").should("exist");
@@ -166,5 +167,3 @@ context("Actions", () => {
     cy.get("#nav-manage").should("not.exist");
   });
 });
-
-export {};

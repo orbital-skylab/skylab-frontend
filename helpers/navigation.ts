@@ -16,6 +16,7 @@ export enum PAGES {
   MANAGE_CSV_ADVISERS = "/manage/csv-advisers",
   MANAGE_CSV_MENTORS = "/manage/csv-mentors",
   MANAGE_PROJECTS = "/manage/projects",
+  MANAGE_APPLICATIONS = "/manage/applications",
   ANNOUNCEMENTS = "/announcements",
   DASHBOARD = "/dashboard",
   DASHBOARD_STUDENT = "/dashboard/student",

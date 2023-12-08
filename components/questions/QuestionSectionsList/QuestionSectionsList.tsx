@@ -24,6 +24,7 @@ type Props = {
   isReadonly?: boolean;
   isDraft?: boolean;
   includeAnonymousQuestions?: boolean;
+  isApplication?: boolean;
 };
 
 const QuestionSectionsList: FC<Props> = ({
@@ -33,6 +34,7 @@ const QuestionSectionsList: FC<Props> = ({
   answersActions,
   submitAnswers,
   isSubmitting,
+  isApplication = false,
   isReadonly = false,
   isDraft = true,
   includeAnonymousQuestions = false,
@@ -128,6 +130,7 @@ const QuestionSectionsList: FC<Props> = ({
         >
           {isDraft && (
             <LoadingButton
+              id="save-draft-button"
               onClick={
                 submitAnswers
                   ? () =>
@@ -144,6 +147,7 @@ const QuestionSectionsList: FC<Props> = ({
             </LoadingButton>
           )}
           <LoadingButton
+            id="submit-submission-button"
             variant="contained"
             onClick={
               submitAnswers
@@ -157,7 +161,7 @@ const QuestionSectionsList: FC<Props> = ({
             loading={isSubmitting}
             disabled={isSubmitting}
           >
-            {isDraft ? "Submit" : "Update"}
+            {isApplication ? "Apply" : isDraft ? "Submit" : "Update"}
           </LoadingButton>
         </Stack>
       )}

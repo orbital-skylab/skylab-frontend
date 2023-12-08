@@ -49,6 +49,7 @@ const UserRow: FC<Props> = ({
     if (user.student && user.student.id !== undefined) {
       tags.push(
         <Chip
+          className="student-tag"
           key={"student" + user.student.id}
           label="Student"
           color="primary"
@@ -60,6 +61,7 @@ const UserRow: FC<Props> = ({
     if (user.adviser && user.adviser.id !== undefined) {
       tags.push(
         <Chip
+          className="adviser-tag"
           key={"adviser" + user.adviser.id}
           label="Adviser"
           color="secondary"
@@ -71,6 +73,7 @@ const UserRow: FC<Props> = ({
     if (user.mentor && user.mentor.id !== undefined) {
       tags.push(
         <Chip
+          className="mentor-tag"
           key={"mentor" + user.mentor.id}
           label="Mentor"
           color="info"
@@ -82,6 +85,7 @@ const UserRow: FC<Props> = ({
     if (user.administrator && user.administrator.id !== undefined) {
       tags.push(
         <Chip
+          className="administrator-tag"
           key={"administrator" + user.administrator.id}
           label="Administrator"
           color="success"
@@ -150,15 +154,16 @@ const UserRow: FC<Props> = ({
         <TableCell align="right">
           <Stack direction="row" justifyContent="end" spacing="0.5rem">
             <Link href={`${PAGES.USERS}/${user.id}`} passHref>
-              <Button>View</Button>
+              <Button id="view-user-button">View</Button>
             </Link>
             <Link href={`${PAGES.USERS}/${user.id}/edit`} passHref>
-              <Button>Edit</Button>
+              <Button id="edit-user-button">Edit</Button>
             </Link>
             <Tooltip title="Preview the website as this user and their role(s)">
               <Button onClick={handlePreviewSiteAs}>Preview</Button>
             </Tooltip>
             <Button
+              id="delete-user-button"
               onClick={handleOpenDeleteModal}
               sx={{
                 transition: BASE_TRANSITION,

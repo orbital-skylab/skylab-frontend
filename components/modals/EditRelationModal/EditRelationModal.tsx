@@ -145,6 +145,7 @@ const EditRelationModal: FC<Props> = ({
                   Cancel
                 </Button>
                 <Button
+                  id="confirm-edit-relation-button"
                   size="small"
                   variant="contained"
                   onClick={formik.submitForm}

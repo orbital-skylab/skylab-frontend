@@ -10,8 +10,15 @@ type Props = {
 const UserDetailsForm: FC<Props> = ({ formik }) => {
   return (
     <>
-      <TextInput name="name" label="Name" size="small" formik={formik} />
       <TextInput
+        id="user-name-input"
+        name="name"
+        label="Name"
+        size="small"
+        formik={formik}
+      />
+      <TextInput
+        id="user-email-input"
         name="email"
         type="email"
         label="Email Address"

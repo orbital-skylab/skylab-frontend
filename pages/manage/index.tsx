@@ -64,6 +64,13 @@ const pages = [
     description: "Add mentors using CSV files.",
     href: PAGES.MANAGE_CSV_MENTORS,
   },
+  {
+    title: "Applications",
+    id: "manage-applications-card",
+    description:
+      "Accept, reject and withdraw applications for the next Orbital cohort",
+    href: PAGES.MANAGE_APPLICATIONS,
+  },
 ];
 
 const Manage: NextPage = () => {

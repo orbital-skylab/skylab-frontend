@@ -45,6 +45,7 @@ export enum QUESTION_TYPE {
   URL = "Url",
   DATE = "Date",
   TIME = "Time",
+  RICH_TEXT_EDITOR = "RichTextEditor",
 }
 
 export type Question = {

@@ -181,6 +181,7 @@ const DeadlineDeliverableRow: FC<Props> = ({
       case STATUS.NOT_YET_STARTED: {
         return (
           <LoadingButton
+            id="start-deadline-button"
             loading={isCalling(createSubmission.status)}
             onClick={handleClickStart}
             // Disabled if toProject exists AND (toProjectSubmission doesn't exists OR toProjectSubmission exists and is a draft)
@@ -200,7 +201,7 @@ const DeadlineDeliverableRow: FC<Props> = ({
             href={`${PAGES.SUBMISSIONS}/${deadlineDeliverable.submission?.id}`}
             passHref
           >
-            <Button>Continue</Button>
+            <Button id="continue-deadline-button">Continue</Button>
           </Link>
         );
       }
@@ -211,7 +212,7 @@ const DeadlineDeliverableRow: FC<Props> = ({
             href={`${PAGES.SUBMISSIONS}/${deadlineDeliverable.submission?.id}`}
             passHref
           >
-            <Button>Edit</Button>
+            <Button id="edit-deadline-button">Edit</Button>
           </Link>
         );
       }

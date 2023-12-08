@@ -186,12 +186,14 @@ const Users: NextPage = () => {
             }}
           >
             <TextField
+              id="user-search-input"
               label="Search"
               value={searchTextInput}
               onChange={handleSearchInputChange}
               size="small"
             />
             <Button
+              id="add-user-button"
               variant="outlined"
               size="small"
               onClick={handleOpenAddUserModal}
@@ -201,6 +203,7 @@ const Users: NextPage = () => {
             </Button>
             {Object.values(ROLES).map((role) => (
               <Button
+                id={`add-${role.toLowerCase()}-button`}
                 key={role}
                 variant="outlined"
                 size="small"
@@ -248,7 +251,14 @@ const Users: NextPage = () => {
             }}
           >
             {Object.values(ROLES_WITH_ALL).map((level) => {
-              return <Tab key={level} value={level} label={level} />;
+              return (
+                <Tab
+                  id={`${level.toLowerCase()}-tab`}
+                  key={level}
+                  value={level}
+                  label={level}
+                />
+              );
             })}
           </Tabs>
         </Stack>

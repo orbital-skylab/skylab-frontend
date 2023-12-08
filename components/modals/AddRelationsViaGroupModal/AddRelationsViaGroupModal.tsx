@@ -70,6 +70,7 @@ const AddRelationsViaGroupModal: FC<Props> = ({ open, setOpen, projects }) => {
   return (
     <>
       <Modal
+        id="add-group-modal"
         open={open}
         handleClose={handleCloseModal}
         title={`Add Relations via Group`}
@@ -121,6 +122,7 @@ const AddRelationsViaGroupModal: FC<Props> = ({ open, setOpen, projects }) => {
                   Cancel
                 </Button>
                 <Button
+                  id="confirm-add-group-button"
                   size="small"
                   variant="contained"
                   onClick={formik.submitForm}

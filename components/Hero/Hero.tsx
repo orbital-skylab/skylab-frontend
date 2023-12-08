@@ -6,7 +6,11 @@ import { useRouter } from "next/router";
 import { FC } from "react";
 import HeroSignIn from "./HeroSignIn";
 
-const Hero: FC = () => {
+type Props = {
+  isApplicationOngoing: boolean;
+};
+
+const Hero: FC<Props> = ({ isApplicationOngoing }) => {
   const { user } = useAuth();
   const router = useRouter();
 
@@ -59,18 +63,46 @@ const Hero: FC = () => {
                     NUS Orbital
                   </Typography>
                 </Typography>
-                <Button
-                  variant="contained"
-                  size="large"
-                  sx={{
-                    width: "fit-content",
-                    alignSelf: { xs: "center", md: !user ? "start" : "center" },
-                    marginTop: "1.5rem",
-                  }}
-                  onClick={() => router.push(PAGES.PROJECTS)}
-                >
-                  View Projects
-                </Button>
+                <Stack direction="row" columnGap={2}>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    sx={{
+                      width: "fit-content",
+                      alignSelf: {
+                        xs: "center",
+                        md: !user ? "start" : "center",
+                      },
+                      marginTop: "1.5rem",
+                    }}
+                    onClick={() => router.push(PAGES.PROJECTS)}
+                  >
+                    View Projects
+                  </Button>
+                  {!user && isApplicationOngoing ? (
+                    <Button
+                      id="apply-now-button"
+                      variant="contained"
+                      size="large"
+                      color="secondary"
+                      sx={{
+                        width: "fit-content",
+                        alignSelf: {
+                          xs: "center",
+                          md: !user ? "start" : "center",
+                        },
+                        marginTop: "1.5rem",
+                      }}
+                      onClick={() =>
+                        router.push(`${PAGES.SUBMISSIONS}/application`)
+                      }
+                    >
+                      Apply Now
+                    </Button>
+                  ) : (
+                    <></>
+                  )}
+                </Stack>
               </Stack>
             </Grid>
             <Grid

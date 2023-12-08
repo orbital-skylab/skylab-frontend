@@ -75,8 +75,11 @@ const RelationRow: FC<Props> = ({
         )}
         <TableCell align="right">
           <Stack direction="row" justifyContent="end" spacing="0.5rem">
-            <Button onClick={handleOpenEditModal}>Edit</Button>
+            <Button id="edit-relation-button" onClick={handleOpenEditModal}>
+              Edit
+            </Button>
             <Button
+              id="delete-relation-button"
               onClick={handleOpenDeleteModal}
               sx={{
                 transition: BASE_TRANSITION,

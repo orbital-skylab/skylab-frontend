@@ -130,7 +130,12 @@ const SubmissionRow: FC<Props> = ({
   ) => {
     return (
       <Link href={`${PAGES.SUBMISSIONS}/${submissionId}`} passHref>
-        <Button disabled={status === STATUS.NOT_YET_STARTED}>View</Button>
+        <Button
+          id="view-submission-button"
+          disabled={status === STATUS.NOT_YET_STARTED}
+        >
+          View
+        </Button>
       </Link>
     );
   };
