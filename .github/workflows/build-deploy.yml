@@ -5,7 +5,7 @@ on: [push, pull_request]
 # Target Branch Job
 jobs:
   Lint-Build-Test:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       # Check Out Repository
       - uses: actions/checkout@v1
@@ -13,7 +13,7 @@ jobs:
       # Install Node.js
       - uses: actions/setup-node@v1.4.4
         with:
-          node-version: 14.15.0
+          node-version: 16.13.2
 
       - name: Clear npm cache
         run: npm cache clean --force
