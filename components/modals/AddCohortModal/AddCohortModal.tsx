@@ -82,7 +82,12 @@ const AddCohortModal: FC<Props> = ({ open, setOpen, mutate }) => {
 
   return (
     <>
-      <Modal open={open} handleClose={handleCloseModal} title={`Add Cohort`}>
+      <Modal
+        id="add-cohort-modal"
+        open={open}
+        handleClose={handleCloseModal}
+        title={`Add Cohort`}
+      >
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmit}
