@@ -13,6 +13,7 @@ import {
 } from "./roles";
 import { Answer, PossibleSubmission, Submission } from "./submissions";
 import { LeanUser, User, UserMetadata } from "./users";
+import { VoteEvent } from "./voteEvents";
 
 export enum HTTP_METHOD {
   GET = "GET",
@@ -296,6 +297,25 @@ export type GetAnnouncementReadPercentageResponse = {
     totalUserCount: number;
     percentage: number;
   };
+};
+
+/**
+ * Voting Endpoints
+ */
+export type GetVoteEventResponse = {
+  voteEvent: VoteEvent;
+};
+
+export type GetVoteEventsResponse = {
+  voteEvents: VoteEvent[];
+};
+
+export type CreateVoteEventResponse = {
+  voteEvent: VoteEvent;
+};
+
+export type EditVoteEventResponse = {
+  voteEvent: VoteEvent;
 };
 
 /**
