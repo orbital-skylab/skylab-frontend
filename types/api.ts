@@ -13,7 +13,7 @@ import {
 } from "./roles";
 import { Answer, PossibleSubmission, Submission } from "./submissions";
 import { LeanUser, User, UserMetadata } from "./users";
-import { VoteEvent } from "./voteEvents";
+import { ExternalVoter, VoteEvent, VoterManagement } from "./voteEvents";
 
 export enum HTTP_METHOD {
   GET = "GET",
@@ -316,6 +316,26 @@ export type CreateVoteEventResponse = {
 
 export type EditVoteEventResponse = {
   voteEvent: VoteEvent;
+};
+
+export type EditVoterManagementResponse = {
+  voterManagement: VoterManagement;
+};
+
+export type GetExternalVotersResponse = {
+  externalVoters: ExternalVoter[];
+};
+
+export type CreateExternalVoterResponse = {
+  externalVoter: ExternalVoter;
+};
+
+export type GetInternalVotersResponse = {
+  internalVoters: User[];
+};
+
+export type CreateInternalVoterResponse = {
+  internalVoter: User;
 };
 
 /**

@@ -12,6 +12,12 @@ import { NavbarOption, NAVBAR_ACTIONS } from "./Navbar.types";
  */
 export const NAVBAR_OPTIONS: NavbarOption[] = [
   {
+    label: "Voting",
+    id: "nav-voting",
+    route: PAGES.VOTING,
+    currentPageRegExp: /voting/,
+  },
+  {
     label: "Announcements",
     id: "nav-announcements",
     route: PAGES.ANNOUNCEMENTS,
