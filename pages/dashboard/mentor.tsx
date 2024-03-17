@@ -81,23 +81,24 @@ const MentorDashboard: NextPage = () => {
               fallback={<NoneFound message="No team submissions available" />}
             >
               <Stack gap="2rem">
-                {teamSubmissionsResponse && teamSubmissionsResponse.deadlines && (
-                  <>
-                    {teamSubmissionsResponse.deadlines.map(
-                      ({ deadline, submissions }) => (
-                        <Box key={deadline.id}>
-                          <Typography variant="h6" fontWeight={600}>
-                            {deadline.name}
-                          </Typography>
-                          <SubmissionTable
-                            deadline={deadline}
-                            submissions={submissions}
-                          />
-                        </Box>
-                      )
-                    )}
-                  </>
-                )}
+                {teamSubmissionsResponse &&
+                  teamSubmissionsResponse.deadlines && (
+                    <>
+                      {teamSubmissionsResponse.deadlines.map(
+                        ({ deadline, submissions }) => (
+                          <Box key={deadline.id}>
+                            <Typography variant="h6" fontWeight={600}>
+                              {deadline.name}
+                            </Typography>
+                            <SubmissionTable
+                              deadline={deadline}
+                              submissions={submissions}
+                            />
+                          </Box>
+                        )
+                      )}
+                    </>
+                  )}
               </Stack>
             </NoDataWrapper>
           </LoadingWrapper>

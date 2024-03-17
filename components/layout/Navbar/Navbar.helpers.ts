@@ -12,6 +12,12 @@ import { NavbarOption, NAVBAR_ACTIONS } from "./Navbar.types";
  */
 export const NAVBAR_OPTIONS: NavbarOption[] = [
   {
+    label: "Forum",
+    id: "nav-forum",
+    route: PAGES.FORUM,
+    currentPageRegExp: /forum/,
+  },
+  {
     label: "Announcements",
     id: "nav-announcements",
     route: PAGES.ANNOUNCEMENTS,

@@ -13,6 +13,7 @@ import {
 } from "./roles";
 import { Answer, PossibleSubmission, Submission } from "./submissions";
 import { LeanUser, User, UserMetadata } from "./users";
+import { ForumPost } from "./forumpost";
 
 export enum HTTP_METHOD {
   GET = "GET",
@@ -296,6 +297,14 @@ export type GetAnnouncementReadPercentageResponse = {
     totalUserCount: number;
     percentage: number;
   };
+};
+
+export type GetForumPostsResponse = {
+  forumPosts: ForumPost[];
+};
+
+export type GetForumPostResponse = {
+  forumPost: ForumPost;
 };
 
 /**
