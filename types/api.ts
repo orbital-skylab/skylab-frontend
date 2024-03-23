@@ -13,7 +13,7 @@ import {
 } from "./roles";
 import { Answer, PossibleSubmission, Submission } from "./submissions";
 import { LeanUser, User, UserMetadata } from "./users";
-import { ForumPost } from "./forumpost";
+import { ForumPost, ForumPostWithCommentThreads } from "./forumpost";
 
 export enum HTTP_METHOD {
   GET = "GET",
@@ -305,6 +305,10 @@ export type GetForumPostsResponse = {
 
 export type GetForumPostResponse = {
   forumPost: ForumPost;
+};
+
+export type GetForumPostWithCommentThreadsResponse = {
+  forumPost: ForumPostWithCommentThreads;
 };
 
 /**
