@@ -25,7 +25,7 @@ import { useState, useMemo, SyntheticEvent } from "react";
 import { filterType } from "@/helpers/forumpost";
 
 const Forum: NextPage = () => {
-  type FilterTypeValue = (typeof filterType)[keyof typeof filterType];
+  type FilterTypeValue = typeof filterType[keyof typeof filterType];
   const router = useRouter();
   const [selectedPosts, setSelectedPosts] = useState<FilterTypeValue>(
     filterType.ALL
