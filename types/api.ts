@@ -299,6 +299,9 @@ export type GetAnnouncementReadPercentageResponse = {
   };
 };
 
+/**
+ * Forum Posts Endpoints:
+ */
 export type GetForumPostsResponse = {
   forumPosts: ForumPost[];
 };
