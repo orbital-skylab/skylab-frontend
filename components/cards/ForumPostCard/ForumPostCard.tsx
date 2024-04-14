@@ -19,16 +19,15 @@ import { PAGES } from "@/helpers/navigation";
 import { formatCategory } from "@/helpers/forumpost";
 import { Mutate } from "@/hooks/useFetch";
 import Link from "next/link";
-import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
+import { timeAgo } from "@/helpers/dates";
 import useAuth from "@/contexts/useAuth";
 import DeleteForumPostModal from "@/components/modals/DeleteForumPostModal";
-import { GetForumPostsResponse } from "@/types/api";
 import RichText from "@/components/typography/RichText";
 import { useRouter } from "next/router";
 
 type Props = {
   post: ForumPost;
-  mutate: Mutate<GetForumPostsResponse>;
+  mutate: Mutate<ForumPost[]>;
 };
 
 const ForumPostCard: FC<Props> = ({ post, mutate }) => {
@@ -85,9 +84,7 @@ const ForumPostCard: FC<Props> = ({ post, mutate }) => {
             ) : null
           }
           title={<strong>{title}</strong>}
-          subheader={`Created by ${name} on ${isoDateToLocaleDateWithTime(
-            createdAt
-          )}`}
+          subheader={`Created by ${name} ${timeAgo(createdAt)}`}
         />
         <Link passHref href={`${PAGES.FORUM}/${id}`}>
           <CardActionArea component="a">

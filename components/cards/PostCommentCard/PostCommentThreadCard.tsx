@@ -25,7 +25,7 @@ const CommentThreadCard: FC<Props> = ({ commentThread, refetch }) => {
   const { user } = useAuth();
 
   const { call, status } = useApiCall({
-    endpoint: `/forumposts/${rootComment.id}/comments`,
+    endpoint: `/forumposts/${rootComment.forumPostId}/comments`,
     onSuccess: () => {
       setSuccess("Successfully replied to comment");
       if (refetch) {

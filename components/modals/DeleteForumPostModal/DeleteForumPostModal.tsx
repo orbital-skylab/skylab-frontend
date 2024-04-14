@@ -3,7 +3,7 @@ import Modal from "../Modal";
 import { Button, Stack } from "@mui/material";
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
-import { HTTP_METHOD, GetForumPostsResponse } from "@/types/api";
+import { HTTP_METHOD } from "@/types/api";
 import { Mutate } from "@/hooks/useFetch";
 import { ForumPost } from "@/types/forumpost";
 
@@ -11,7 +11,7 @@ type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   forumpost: ForumPost;
-  mutate: Mutate<GetForumPostsResponse>;
+  mutate: Mutate<ForumPost[]>;
 };
 
 const DeleteForumPostModal: FC<Props> = ({
@@ -26,13 +26,11 @@ const DeleteForumPostModal: FC<Props> = ({
     method: HTTP_METHOD.DELETE,
     endpoint: `/forumposts/${forumpost.id}`,
     onSuccess: () => {
-      mutate((data) => {
-        const oldForumPostIdx = data.forumPosts.findIndex(
-          (oldForumPost) => oldForumPost.id === forumpost.id
+      mutate((previousPosts) => {
+        const updatedPosts = previousPosts.filter(
+          (post) => post.id !== forumpost.id
         );
-        const newforumPosts = [...data.forumPosts];
-        newforumPosts.splice(oldForumPostIdx, 1);
-        return { forumPosts: newforumPosts };
+        return updatedPosts;
       });
     },
   });
@@ -40,9 +38,7 @@ const DeleteForumPostModal: FC<Props> = ({
   const handleDelete = async () => {
     try {
       await deleteForumPost.call();
-      setSuccess(
-        `You have successfully deleted the announcement ${forumpost.title}!`
-      );
+      setSuccess(`You have successfully deleted the post ${forumpost.title}!`);
       handleCloseModal();
     } catch (error) {
       setError(error);

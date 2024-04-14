@@ -8,7 +8,7 @@ import { timeAgo } from "@/helpers/dates";
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
 import { ForumPostComment } from "@/types/forumpost";
 import { HTTP_METHOD } from "@/types/api";
-import { Box, Button, Stack, SxProps, Typography } from "@mui/material";
+import { Avatar, Box, Button, Stack, SxProps, Typography } from "@mui/material";
 import { Formik } from "formik";
 import { FC, useState } from "react";
 
@@ -102,12 +102,22 @@ const CommentContent: FC<Props> = ({ comment, sx, refetch }) => {
                     width: "100%",
                   }}
                 >
-                  <Typography fontSize="1rem" fontWeight={600}>
-                    {comment.user.name}
-                  </Typography>
-                  <Typography fontSize="0.75rem" mb="0.25rem">
-                    {timeAgo(comment.createdAt)}
-                  </Typography>
+                  <Stack direction="row">
+                    <Avatar
+                      src={comment?.user.profilePicUrl}
+                      aria-label="recipe"
+                    >
+                      {comment?.user.name[0]}
+                    </Avatar>
+                    <Stack direction="column" marginLeft={1}>
+                      <Typography fontSize="1rem" fontWeight={600}>
+                        {comment.user.name}
+                      </Typography>
+                      <Typography fontSize="0.75rem" mb="0.5rem">
+                        {timeAgo(comment.createdAt)}
+                      </Typography>
+                    </Stack>
+                  </Stack>
                   {isEditMode ? (
                     <Stack gap="0.25rem" mt="0.25rem">
                       <RichTextEditor

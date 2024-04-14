@@ -67,7 +67,7 @@ const PostDetails: NextPage = () => {
       <Body isLoading={isFetching(getPostStatus)} loadingText="Loading post...">
         <GoBackButton />
         <Stack direction="column" gap="2rem">
-          <Card sx={{ maxWidth: 1200, margin: "auto", mt: 4 }}>
+          <Card sx={{ margin: "auto", width: "100%" }}>
             <CardHeader
               avatar={
                 <Avatar src={post?.user.profilePicUrl} aria-label="recipe">
@@ -118,9 +118,6 @@ const PostDetails: NextPage = () => {
             )}
           </Formik>
           <Stack direction="column" gap="0.5rem">
-            <Typography fontSize="1.5rem" fontWeight={600}>
-              Comments
-            </Typography>
             {post?.postCommentThreads.map((commentThread, index) => (
               <PostCommentThreadCard
                 key={index}

@@ -40,7 +40,7 @@ const EditPost: NextPage = () => {
     endpoint: `/forumposts/${postId}`,
     onSuccess: () => {
       setSuccess(
-        "Post created successfully! Redirecting you to the forum page..."
+        "Post edited successfully! Redirecting you to the forum page..."
       );
       setTimeout(() => {
         router.push("/forum");

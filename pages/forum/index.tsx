@@ -9,24 +9,33 @@ import {
   Tabs,
   Tab,
   tabsClasses,
+  Box,
+  Typography,
 } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import CustomHead from "@/components/layout/CustomHead";
 import Body from "@/components/layout/Body";
 import ForumPostCard from "@/components/cards/ForumPostCard";
 import { PAGES } from "@/helpers/navigation";
-import useFetch from "@/hooks/useFetch";
 import { isError, isFetching } from "@/hooks/useFetch";
 import { GetForumPostsResponse } from "@/types/api";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
-import { useState, useMemo, SyntheticEvent } from "react";
+import { useState, useMemo, SyntheticEvent, useRef } from "react";
 import { filterType } from "@/helpers/forumpost";
+import useInfiniteFetch, {
+  createBottomOfPageRef,
+} from "@/hooks/useInfiniteFetch";
+import { ForumPost } from "@/types/forumpost";
+import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
+
+const LIMIT = 30;
 
 const Forum: NextPage = () => {
   type FilterTypeValue = typeof filterType[keyof typeof filterType];
   const router = useRouter();
+  const [page, setPage] = useState(0);
   const [selectedPosts, setSelectedPosts] = useState<FilterTypeValue>(
     filterType.ALL
   );
@@ -34,6 +43,7 @@ const Forum: NextPage = () => {
   const memoQueryParams = useMemo(() => {
     return {
       category: selectedPosts,
+      limit: LIMIT,
     };
   }, [selectedPosts]);
 
@@ -41,20 +51,33 @@ const Forum: NextPage = () => {
     data: postsResponse,
     status: fetchPostsStatus,
     mutate: mutateForumPosts,
-  } = useFetch<GetForumPostsResponse>({
+    hasMore,
+  } = useInfiniteFetch<GetForumPostsResponse, ForumPost>({
     endpoint: `/forumposts`,
-    enabled: true,
     queryParams: memoQueryParams,
+    page,
+    responseToData: (response) => response.forumPosts,
+    enabled: true,
   });
 
-  const forumPosts = postsResponse?.forumPosts;
+  const forumPosts = postsResponse;
 
   const handleTabChange = (
     event: SyntheticEvent,
     newPostType: FilterTypeValue
   ) => {
     setSelectedPosts(newPostType);
+    setPage(0);
   };
+
+  /** To fetch more projects when the bottom of the page is reached */
+  const observer = useRef<IntersectionObserver | null>(null);
+  const bottomOfPageRef = createBottomOfPageRef(
+    isFetching(fetchPostsStatus),
+    hasMore,
+    setPage,
+    observer
+  );
 
   return (
     <>
@@ -146,6 +169,20 @@ const Forum: NextPage = () => {
                   </Grid>
                 ))}
               </Grid>
+              <div ref={bottomOfPageRef} />
+              <Box
+                sx={{
+                  display: "grid",
+                  placeItems: "center",
+                  height: "100px",
+                }}
+              >
+                {isFetching(fetchPostsStatus) ? (
+                  <LoadingSpinner size={50} />
+                ) : !hasMore ? (
+                  <Typography>No more posts found</Typography>
+                ) : null}
+              </Box>
             </NoDataWrapper>
           </LoadingWrapper>
         </Container>
