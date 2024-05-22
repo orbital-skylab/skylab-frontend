@@ -38,7 +38,7 @@ const VoteEvents: NextPage = () => {
             onClick={handleOpenAddVoteEventModal}
           >
             <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
-            New Voting Event
+            New Vote Event
           </Button>
         </Stack>
         <LoadingWrapper
@@ -53,7 +53,9 @@ const VoteEvents: NextPage = () => {
             )}
             fallback={<NoneFound message="No vote events found" />}
           >
-            <VoteEventTable voteEvents={data?.voteEvents} mutate={mutate} />
+            {data && (
+              <VoteEventTable voteEvents={data.voteEvents} mutate={mutate} />
+            )}
           </NoDataWrapper>
         </LoadingWrapper>
       </Body>

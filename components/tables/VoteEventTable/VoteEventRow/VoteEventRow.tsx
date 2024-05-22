@@ -37,11 +37,8 @@ const VoteEventRow: FC<Props> = ({ voteEvent, mutate }) => {
         <TableCell align="right">
           <Stack direction="row" justifyContent="end" spacing="0.5rem">
             <Link href={`/vote-events/${voteEvent.id}/edit`} passHref>
-              <Tooltip
-                title="View and edit deadline questions"
-                placement="left"
-              >
-                <Button id="edit-user-button">Edit</Button>
+              <Tooltip title="Edit vote event" placement="left">
+                <Button id="edit-vote-event-button">Edit</Button>
               </Tooltip>
             </Link>
             <Button

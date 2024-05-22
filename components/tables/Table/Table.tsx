@@ -30,7 +30,7 @@ const Table: FC<Props> = ({ headings, rows }) => {
           </TableRow>
         </TableHead>
 
-        <TableBody>{...rows}</TableBody>
+        <TableBody>{rows}</TableBody>
       </MUITable>
     </TableContainer>
   );

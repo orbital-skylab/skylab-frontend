@@ -1,16 +1,9 @@
-import { FC } from "react";
-import VoteEventRow from "./VoteEventRow";
-import { VoteEvent } from "@/types/voteEvents";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
+import Table from "@/components/tables/Table";
 import { Mutate } from "@/hooks/useFetch";
 import { GetVoteEventsResponse } from "@/types/api";
+import { VoteEvent } from "@/types/voteEvents";
+import { FC } from "react";
+import VoteEventRow from "./VoteEventRow";
 
 type Props = {
   voteEvents: VoteEvent[] | undefined;
@@ -25,29 +18,10 @@ const columnHeadings: { heading: string; align: "left" | "right" }[] = [
 ];
 
 const VoteEventTable: FC<Props> = ({ voteEvents = [], mutate }) => {
-  return (
-    <TableContainer>
-      <Table>
-        <TableHead>
-          <TableRow>
-            {columnHeadings.map(({ heading, align }) => (
-              <TableCell key={heading} align={align}>
-                {heading}
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {voteEvents.map((voteEvent) => (
-            <VoteEventRow
-              key={voteEvent.id}
-              voteEvent={voteEvent}
-              mutate={mutate}
-            />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
+  const voteEventRows = voteEvents.map((voteEvent) => (
+    <VoteEventRow key={voteEvent.id} voteEvent={voteEvent} mutate={mutate} />
+  ));
+
+  return <Table headings={columnHeadings} rows={voteEventRows} />;
 };
 export default VoteEventTable;
