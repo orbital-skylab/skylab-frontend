@@ -1,23 +1,22 @@
-import { Dispatch, FC, SetStateAction } from "react";
+import TextInput from "@/components/formikFormControllers/TextInput";
+import { editGeneralSettingsValidationSchema as addVoteEventValidationSchema } from "@/components/voting/voteEvent/GeneralSettingsTab/GeneralSettingsTab";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
+import {
+  dateTimeLocalInputToIsoDate,
+  getTodayAtTimeIso,
+  isoDateToDateTimeLocalInput,
+} from "@/helpers/dates";
+import useApiCall from "@/hooks/useApiCall";
 import { Mutate } from "@/hooks/useFetch";
 import {
   CreateVoteEventResponse,
   GetVoteEventsResponse,
   HTTP_METHOD,
 } from "@/types/api";
-import { Formik, FormikHelpers } from "formik";
-import {
-  dateTimeLocalInputToIsoDate,
-  getTodayAtTimeIso,
-  isoDateToDateTimeLocalInput,
-} from "@/helpers/dates";
 import { Button, Stack } from "@mui/material";
+import { Formik, FormikHelpers } from "formik";
+import { Dispatch, FC, SetStateAction } from "react";
 import Modal from "../Modal";
-import TextInput from "@/components/formikFormControllers/TextInput";
-import useApiCall from "@/hooks/useApiCall";
-import useSnackbarAlert from "@/contexts/useSnackbarAlert";
-import { ERRORS } from "@/helpers/errors";
-import * as Yup from "yup";
 
 interface AddVoteEventFormValuesType {
   title: string;
@@ -142,9 +141,3 @@ const AddVoteEventModal: FC<Props> = ({ open, setOpen, mutate }) => {
   );
 };
 export default AddVoteEventModal;
-
-const addVoteEventValidationSchema = Yup.object().shape({
-  title: Yup.string().required(ERRORS.REQUIRED),
-  startTime: Yup.string().required(ERRORS.REQUIRED),
-  endTime: Yup.string().required(ERRORS.REQUIRED),
-});

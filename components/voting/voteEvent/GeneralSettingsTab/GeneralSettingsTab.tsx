@@ -110,8 +110,21 @@ const GeneralSettingsTab: FC<Props> = ({ voteEvent, mutate }) => {
 };
 export default GeneralSettingsTab;
 
-const editGeneralSettingsValidationSchema = Yup.object().shape({
+export const editGeneralSettingsValidationSchema = Yup.object().shape({
   title: Yup.string().required(ERRORS.REQUIRED),
   startTime: Yup.string().required(ERRORS.REQUIRED),
-  endTime: Yup.string().required(ERRORS.REQUIRED),
+  endTime: Yup.string()
+    .required(ERRORS.REQUIRED)
+    .when("startTime", {
+      is: (startTime: string) => !!startTime,
+      then: Yup.string().test(
+        "is-greater-than-start-date-time",
+        "End date time must be greater than start date time",
+        function (endTime) {
+          return (
+            !!endTime && new Date(endTime) > new Date(this.parent?.startTime)
+          );
+        }
+      ),
+    }),
 });
