@@ -4,6 +4,7 @@ import VoteEventEdit from "@/components/voting/voteEvent/VoteEventEdit";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import { GetVoteEventResponse } from "@/types/api";
+import { ROLES } from "@/types/roles";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 
@@ -19,6 +20,7 @@ const EditVoteEvent: NextPage = () => {
     <Body
       isLoading={isFetching(status)}
       loadingText="Loading edit vote event..."
+      authorizedRoles={[ROLES.ADMINISTRATORS]}
     >
       <NoDataWrapper
         noDataCondition={data === undefined}

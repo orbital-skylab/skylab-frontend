@@ -29,7 +29,7 @@ type Props = {
   mutate: Mutate<GetVoteEventResponse>;
 };
 
-const GeneralSettings: FC<Props> = ({ voteEvent, mutate }) => {
+const GeneralSettingsTab: FC<Props> = ({ voteEvent, mutate }) => {
   const { id: voteEventId } = voteEvent;
   const { setSuccess, setError } = useSnackbarAlert();
 
@@ -78,7 +78,7 @@ const GeneralSettings: FC<Props> = ({ voteEvent, mutate }) => {
       validationSchema={editGeneralSettingsValidationSchema}
     >
       {(formik) => (
-        <Stack direction="column" spacing="1rem">
+        <Stack direction="column" spacing="1rem" flexGrow={1}>
           <TextInput name="title" label="Title" size="small" formik={formik} />
           <TextInput
             name="startTime"
@@ -108,7 +108,7 @@ const GeneralSettings: FC<Props> = ({ voteEvent, mutate }) => {
     </Formik>
   );
 };
-export default GeneralSettings;
+export default GeneralSettingsTab;
 
 const editGeneralSettingsValidationSchema = Yup.object().shape({
   title: Yup.string().required(ERRORS.REQUIRED),
