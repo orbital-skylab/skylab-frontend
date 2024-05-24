@@ -78,6 +78,29 @@ export const getUserRoles = (user: User | undefined) => {
 };
 
 /**
+ * Gets the most important role of a user
+ * @param user The User object to check
+ * @returns {ROLES | ""} The most important role
+ */
+export const getMostImportantRole = (user: User | undefined) => {
+  if (!user) {
+    return "";
+  }
+
+  if (userHasRole(user, ROLES.ADMINISTRATORS)) {
+    return ROLES.ADMINISTRATORS;
+  } else if (userHasRole(user, ROLES.MENTORS)) {
+    return ROLES.MENTORS;
+  } else if (userHasRole(user, ROLES.ADVISERS)) {
+    return ROLES.ADVISERS;
+  } else if (userHasRole(user, ROLES.STUDENTS)) {
+    return ROLES.STUDENTS;
+  }
+
+  return "";
+};
+
+/**
  * Retrieves the specified role ID of a user
  * Eg. getRoleId(user, "Students") === user.student.id
  * @param user The User object to retrieve the ID from
