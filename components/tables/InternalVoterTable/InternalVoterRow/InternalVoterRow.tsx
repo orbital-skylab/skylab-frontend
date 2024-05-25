@@ -1,4 +1,5 @@
 import DeleteInternalVoterModal from "@/components/modals/DeleteInternalVoterModal";
+import { getMostImportantRole, toSingular } from "@/helpers/roles";
 import { Mutate } from "@/hooks/useFetch";
 import { BASE_TRANSITION } from "@/styles/constants";
 import { GetInternalVotersResponse } from "@/types/api";
@@ -35,6 +36,8 @@ const InternalVoterRow: FC<Props> = ({
       />
       <TableRow>
         <TableCell>{internalVoter.email}</TableCell>
+        <TableCell>{internalVoter.name}</TableCell>
+        <TableCell>{toSingular(getMostImportantRole(internalVoter))}</TableCell>
         <TableCell align="right">
           <Stack direction="row" justifyContent="end" spacing="0.5rem">
             <Button

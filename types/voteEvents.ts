@@ -28,13 +28,12 @@ export type VoteEvent = {
 };
 
 export type VoterManagement = {
-  voteEventId: number;
   hasInternalList: boolean;
-  hasRegistration: boolean;
-  hasInternalCsvImport: boolean;
   hasExternalList: boolean;
-  hasGeneration: boolean;
+  hasInternalCsvImport: boolean;
   hasExternalCsvImport: boolean;
+  hasGeneration: boolean;
+  hasRegistration: boolean;
   isRegistrationOpen: boolean;
 };
 
