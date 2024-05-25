@@ -15,19 +15,6 @@ type Props = {
 };
 
 const VoteEventEdit: FC<Props> = ({ voteEvent, mutate }) => {
-  let { voterManagement } = voteEvent;
-  if (voterManagement === null || voterManagement === undefined) {
-    voterManagement = {
-      voteEventId: 0,
-      hasInternalList: false,
-      hasExternalList: false,
-      hasExternalCsvImport: false,
-      hasInternalCsvImport: false,
-      hasGeneration: false,
-      hasRegistration: false,
-      isRegistrationOpen: false,
-    };
-  }
   const [selectedTab, setSelectedTab] = useState<VOTE_EVENT_TABS>(
     VOTE_EVENT_TABS.GENERAL_SETTINGS
   );
@@ -73,12 +60,7 @@ const VoteEventEdit: FC<Props> = ({ voteEvent, mutate }) => {
           <GeneralSettingsTab voteEvent={voteEvent} mutate={mutate} />
         )}
         {selectedTab === VOTE_EVENT_TABS.VOTER_MANAGEMENT && (
-          <VoterManagementTab
-            voteEventId={voteEvent.id}
-            voterManagement={voterManagement}
-            isRegistrationOpen={voterManagement.isRegistrationOpen}
-            mutate={mutate}
-          />
+          <VoterManagementTab voteEvent={voteEvent} mutate={mutate} />
         )}
         {selectedTab === VOTE_EVENT_TABS.CANDIDATES && (
           <CandidatesTab voteEventId={voteEvent.id} />

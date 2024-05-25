@@ -1,34 +1,35 @@
 import Checkbox from "@/components/formikFormControllers/Checkbox";
 import Dropdown from "@/components/formikFormControllers/Dropdown";
+import SetVoterManagementConfigModal from "@/components/modals/SetVoterManagementConfigModal";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 import { PAGES } from "@/helpers/navigation";
 import useApiCall from "@/hooks/useApiCall";
 import useFetch, { Mutate, isFetching } from "@/hooks/useFetch";
 import {
-  EditVoterManagementResponse,
+  EditVoteEventResponse,
   GetVoteEventResponse,
   GetVoteEventsResponse,
   HTTP_METHOD,
 } from "@/types/api";
-import { VoterManagement } from "@/types/voteEvents";
+import { VoteEvent, VoterManagement } from "@/types/voteEvents";
 import { LoadingButton } from "@mui/lab";
 import { Button, Stack, Typography } from "@mui/material";
 import { Formik } from "formik";
-import { Dispatch, FC, SetStateAction } from "react";
+import { Dispatch, FC, SetStateAction, useState } from "react";
 import * as Yup from "yup";
 import Modal from "../Modal";
 
-type EditVoterManagementFormValuesType = Omit<
+export type EditVoterManagementFormValuesType = Omit<
   VoterManagement,
-  "voteEventId"
+  "isRegistrationOpen"
 > & {
   copyInternalVoteEventId: number | "";
   copyExternalVoteEventId: number | "";
 };
 
 type Props = {
-  voteEventId: number;
+  voteEvent: VoteEvent;
   voterManagement: VoterManagement;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -36,28 +37,36 @@ type Props = {
 };
 
 const VoterManagementConfigModal: FC<Props> = ({
-  voteEventId,
+  voteEvent,
   voterManagement,
   open,
   setOpen,
   mutate,
 }) => {
   const { setSuccess, setError } = useSnackbarAlert();
-  const { voteEventId: voterManagementId, ...values } = voterManagement;
+  const { isRegistrationOpen, ...values } = voterManagement;
+  const [isSetVoterManagementOpen, setIsSetVoterManagementOpen] =
+    useState(false);
+  const [voteEventData, setVoteEventData] = useState<{ voteEvent: VoteEvent }>({
+    voteEvent,
+  });
 
-  const { data, status } = useFetch<GetVoteEventsResponse>({
+  const handleOpenSetVoterManagement = () => {
+    setIsSetVoterManagementOpen(true);
+  };
+
+  const { data: allVoteEventData, status } = useFetch<GetVoteEventsResponse>({
     endpoint: PAGES.VOTING,
   });
 
-  const editVoterManagement = useApiCall({
+  const setVoterManagement = useApiCall({
     method: HTTP_METHOD.PUT,
-    endpoint: `/vote-events/${voteEventId}/voter-management`,
-    onSuccess: ({ voterManagement }: EditVoterManagementResponse) => {
-      mutate((data) => {
+    endpoint: `/vote-events/${voteEvent.id}/voter-management`,
+    onSuccess: ({ voteEvent }: EditVoteEventResponse) => {
+      mutate(() => {
         return {
           voteEvent: {
-            ...data.voteEvent,
-            voterManagement: voterManagement,
+            ...voteEvent,
           },
         };
       });
@@ -72,17 +81,29 @@ const VoterManagementConfigModal: FC<Props> = ({
 
   const handleSubmit = async (values: EditVoterManagementFormValuesType) => {
     const processedValues = {
-      voterManagement: {
-        internalList: values.internalList || false,
-        externalList: values.externalList || false,
-        registration: values.registration || false,
-        internalCsvImport: values.internalCsvImport || false,
-        generation: values.generation || false,
-        externalCsvImport: values.externalCsvImport || false,
+      voteEvent: {
+        ...voteEvent,
+        voterManagement: {
+          hasInternalList: values.hasInternalList || false,
+          hasExternalList: values.hasExternalList || false,
+          hasRegistration: values.hasRegistration || false,
+          hasInternalCsvImport: values.hasInternalCsvImport || false,
+          hasGeneration: values.hasGeneration || false,
+          hasExternalCsvImport: values.hasExternalCsvImport || false,
+          isRegistrationOpen,
+        },
       },
     };
+
+    if (voteEvent.voterManagement) {
+      setVoteEventData(processedValues);
+      handleOpenSetVoterManagement();
+      setOpen(false);
+      return;
+    }
+
     try {
-      await editVoterManagement.call(processedValues);
+      await setVoterManagement.call(processedValues);
       setSuccess("You have successfully edited the voter management config!");
       setOpen(false);
     } catch (error) {
@@ -91,16 +112,18 @@ const VoterManagementConfigModal: FC<Props> = ({
   };
 
   const handleCloseModal = () => {
-    if (voterManagementId !== voteEventId) {
-      setError("Initial config has to be saved before closing the modal");
-      return;
-    }
-
     setOpen(false);
   };
 
   return (
     <>
+      <SetVoterManagementConfigModal
+        open={isSetVoterManagementOpen}
+        processedValues={voteEventData}
+        setOpen={setIsSetVoterManagementOpen}
+        setOpenPrevious={setOpen}
+        setVoterManagement={setVoterManagement}
+      />
       <Modal
         open={open}
         handleClose={handleCloseModal}
@@ -116,28 +139,30 @@ const VoterManagementConfigModal: FC<Props> = ({
               <Stack direction="column" spacing="1rem">
                 <Checkbox
                   label="Internal List"
-                  name="internalList"
+                  name="hasInternalList"
                   formik={formik}
                 />
-                {formik.values.internalList && (
+                {formik.values.hasInternalList && (
                   <>
                     <Typography variant="subtitle2">
-                      Select additional methods to populate
+                      Select additional methods to add internal voters
                     </Typography>
                     <Stack direction="column" spacing="1rem" paddingLeft="2rem">
                       <Checkbox
                         label="Registration"
-                        name="registration"
+                        name="hasRegistration"
                         formik={formik}
                       />
                       <Checkbox
                         label="Import CSV"
-                        name="internalCsvImport"
+                        name="hasInternalCsvImport"
                         formik={formik}
                       />
                     </Stack>
                     <LoadingWrapper
-                      isLoading={data === undefined && isFetching(status)}
+                      isLoading={
+                        allVoteEventData === undefined && isFetching(status)
+                      }
                       loadingText="Loading vote events"
                     >
                       <Dropdown
@@ -145,10 +170,10 @@ const VoterManagementConfigModal: FC<Props> = ({
                         name="copyInternalVoteEventId"
                         formik={formik}
                         options={
-                          data?.voteEvents
-                            ? data.voteEvents
+                          allVoteEventData?.voteEvents
+                            ? allVoteEventData.voteEvents
                                 .filter((voteEvent) => {
-                                  return voteEvent.id !== voteEventId;
+                                  return voteEvent.id !== voteEvent.id;
                                 })
                                 .map((voteEvent) => {
                                   return {
@@ -164,28 +189,30 @@ const VoterManagementConfigModal: FC<Props> = ({
                 )}
                 <Checkbox
                   label="External List"
-                  name="externalList"
+                  name="hasExternalList"
                   formik={formik}
                 />
-                {formik.values.externalList && (
+                {formik.values.hasExternalList && (
                   <>
                     <Typography variant="subtitle2">
-                      Select additional methods to populate
+                      Select additional methods to add external voters
                     </Typography>
                     <Stack direction="column" spacing="1rem" paddingLeft="2rem">
                       <Checkbox
                         label="Auto id generation"
-                        name="generation"
+                        name="hasGeneration"
                         formik={formik}
                       />
                       <Checkbox
                         label="Import CSV"
-                        name="externalCsvImport"
+                        name="hasExternalCsvImport"
                         formik={formik}
                       />
                     </Stack>
                     <LoadingWrapper
-                      isLoading={data === undefined && isFetching(status)}
+                      isLoading={
+                        allVoteEventData === undefined && isFetching(status)
+                      }
                       loadingText="Loading vote events"
                     >
                       <Dropdown
@@ -193,10 +220,10 @@ const VoterManagementConfigModal: FC<Props> = ({
                         name="copyExternalVoteEventId"
                         formik={formik}
                         options={
-                          data?.voteEvents
-                            ? data.voteEvents
+                          allVoteEventData?.voteEvents
+                            ? allVoteEventData.voteEvents
                                 .filter((voteEvent) => {
-                                  return voteEvent.id !== voteEventId;
+                                  return voteEvent.id !== voteEvent.id;
                                 })
                                 .map((voteEvent) => {
                                   return {
@@ -216,11 +243,10 @@ const VoterManagementConfigModal: FC<Props> = ({
                 justifyContent="space-between"
                 marginTop="2rem"
               >
-                {voterManagementId === voteEventId && (
-                  <Button size="small" onClick={handleCloseModal}>
-                    Cancel
-                  </Button>
-                )}
+                <Button size="small" onClick={handleCloseModal}>
+                  Cancel
+                </Button>
+
                 <LoadingButton
                   id="confirm-edit-voter-management-config-button"
                   size="small"

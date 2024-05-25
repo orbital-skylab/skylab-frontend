@@ -9,7 +9,7 @@ import {
   GetInternalVotersResponse,
   GetVoteEventResponse,
 } from "@/types/api";
-import { LIST_TYPES, VoterManagement } from "@/types/voteEvents";
+import { LIST_TYPES, VoteEvent } from "@/types/voteEvents";
 import {
   Button,
   Stack,
@@ -21,28 +21,24 @@ import {
 import { FC, useState } from "react";
 
 type Props = {
-  voteEventId: number;
-  voterManagement: VoterManagement | undefined;
+  voteEvent: VoteEvent;
   mutate: Mutate<GetVoteEventResponse>;
 };
 
-const VoterManagementTab: FC<Props> = ({
-  voteEventId,
-  voterManagement,
-  mutate,
-}) => {
-  const voterManagementSet = !!voterManagement;
-  if (!voterManagement) {
-    voterManagement = {
-      hasInternalList: false,
-      hasExternalList: false,
-      hasGeneration: false,
-      hasRegistration: false,
-      hasInternalCsvImport: false,
-      hasExternalCsvImport: false,
-      isRegistrationOpen: false,
-    };
-  }
+const PRE_SET_VOTER_MANAGEMENT = {
+  hasInternalList: false,
+  hasExternalList: false,
+  hasGeneration: false,
+  hasRegistration: false,
+  hasInternalCsvImport: false,
+  hasExternalCsvImport: false,
+  isRegistrationOpen: false,
+};
+
+const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
+  const { id: voteEventId } = voteEvent;
+  const voterManagementSet = !!voteEvent.voterManagement;
+  const voterManagement = voteEvent.voterManagement ?? PRE_SET_VOTER_MANAGEMENT;
   const {
     hasInternalList,
     hasExternalList,
@@ -99,7 +95,7 @@ const VoterManagementTab: FC<Props> = ({
   return (
     <>
       <VoterManagementConfigModal
-        voteEventId={voteEventId}
+        voteEvent={voteEvent}
         voterManagement={voterManagement}
         open={isVoterManagementConfigOpen}
         setOpen={setIsVoterManagementConfigOpen}

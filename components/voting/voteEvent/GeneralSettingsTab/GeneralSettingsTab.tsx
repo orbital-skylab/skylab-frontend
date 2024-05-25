@@ -38,7 +38,11 @@ const GeneralSettingsTab: FC<Props> = ({ voteEvent, mutate }) => {
     endpoint: `/vote-events/${voteEventId}`,
     onSuccess: ({ voteEvent }: EditVoteEventResponse) => {
       mutate(() => {
-        return { voteEvent: voteEvent };
+        return {
+          voteEvent: {
+            ...voteEvent,
+          },
+        };
       });
       setSuccess("Vote event edited successfully");
     },
