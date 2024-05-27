@@ -39,15 +39,7 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
   const { id: voteEventId } = voteEvent;
   const voterManagementSet = !!voteEvent.voterManagement;
   const voterManagement = voteEvent.voterManagement ?? PRE_SET_VOTER_MANAGEMENT;
-  const {
-    hasInternalList,
-    hasExternalList,
-    hasGeneration,
-    hasRegistration,
-    hasInternalCsvImport,
-    hasExternalCsvImport,
-    isRegistrationOpen,
-  } = voterManagement;
+  const { hasInternalList, hasExternalList } = voterManagement;
   const internalOnly = hasInternalList && !hasExternalList;
   const externalOnly = hasExternalList && !hasInternalList;
   const bothInternalAndExternal = hasInternalList && hasExternalList;
@@ -140,9 +132,7 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
             {selectedList === LIST_TYPES.INTERNAL_VOTERS && (
               <AddInternalVoterMenu
                 voteEventId={voteEventId}
-                hasRegistration={hasRegistration}
-                hasInternalCsvImport={hasInternalCsvImport}
-                isRegistrationOpen={isRegistrationOpen}
+                voterManagement={voterManagement}
                 mutateInternalVoters={mutateInternalVoters}
                 mutateVoteEvent={mutate}
               />
@@ -150,8 +140,7 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
             {selectedList === LIST_TYPES.EXTERNAL_VOTERS && (
               <AddExternalVoterMenu
                 voteEventId={voteEventId}
-                hasGeneration={hasGeneration}
-                hasExternalCsvImport={hasExternalCsvImport}
+                voterManagement={voterManagement}
                 mutate={mutateExternalVoters}
               />
             )}
