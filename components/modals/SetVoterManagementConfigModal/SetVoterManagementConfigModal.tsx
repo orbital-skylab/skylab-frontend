@@ -55,7 +55,12 @@ const SetVoterManagementConfigModal: FC<Props> = ({
       sx={{ width: "400px" }}
     >
       <Stack direction="row" justifyContent="space-between">
-        <Button size="small" onClick={handleCloseModal}>
+        <Button
+          id="set-voter-management-config-modal-cancel-button"
+          size="small"
+          onClick={handleCloseModal}
+          disabled={isCalling(setVoterManagement.status)}
+        >
           Cancel
         </Button>
         <Button

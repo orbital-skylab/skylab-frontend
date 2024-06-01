@@ -102,10 +102,19 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
             sx={{ marginBottom: "1rem", marginTop: "1rem" }}
           >
             {voterManagementConfigButton}
-            {internalOnly && <Typography>Internal Voters</Typography>}
-            {externalOnly && <Typography>External Voters</Typography>}
+            {internalOnly && (
+              <Typography id="internal-voters-header">
+                Internal Voters
+              </Typography>
+            )}
+            {externalOnly && (
+              <Typography id="external-voters-header">
+                External Voters
+              </Typography>
+            )}
             {bothInternalAndExternal && (
               <Tabs
+                id="voter-list-tabs"
                 value={selectedList}
                 onChange={handleTabChange}
                 aria-label="voter-list-tabs"
@@ -120,7 +129,7 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
                 {Object.values(LIST_TYPES).map((type) => {
                   return (
                     <Tab
-                      id={`${type.toLowerCase()}-tab`}
+                      id={`${type.split(" ")[0].toLowerCase()}-tab`}
                       key={type}
                       value={type}
                       label={type}

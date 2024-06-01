@@ -83,8 +83,15 @@ const GeneralSettingsTab: FC<Props> = ({ voteEvent, mutate }) => {
     >
       {(formik) => (
         <Stack direction="column" spacing="1rem" flexGrow={1}>
-          <TextInput name="title" label="Title" size="small" formik={formik} />
           <TextInput
+            id="title-input"
+            name="title"
+            label="Title"
+            size="small"
+            formik={formik}
+          />
+          <TextInput
+            id="start-time-input"
             name="startTime"
             type="datetime-local"
             label="Start Date Time"
@@ -92,6 +99,7 @@ const GeneralSettingsTab: FC<Props> = ({ voteEvent, mutate }) => {
             formik={formik}
           />
           <TextInput
+            id="end-time-input"
             name="endTime"
             type="datetime-local"
             label="End Date Time"
@@ -99,7 +107,7 @@ const GeneralSettingsTab: FC<Props> = ({ voteEvent, mutate }) => {
             formik={formik}
           />
           <Button
-            id="edit-announcement-post-button"
+            id="edit-vote-event-general-settings-button"
             variant="contained"
             sx={{ width: "fit-content" }}
             type="submit"

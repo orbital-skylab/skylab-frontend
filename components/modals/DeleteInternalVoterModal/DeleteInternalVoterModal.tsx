@@ -61,7 +61,12 @@ const DeleteInternalVoterModal: FC<Props> = ({
       subheader={`You are deleting the internal voter ${internalVoter.email}.\n\nThis action is irreversible, are you sure?`}
     >
       <Stack spacing={2} direction="row" justifyContent="flex-end">
-        <Button size="small" onClick={handleCloseModal}>
+        <Button
+          id="delete-internal-voter-cancel-button"
+          size="small"
+          onClick={handleCloseModal}
+          disabled={isCalling(DeleteInternalVoter.status)}
+        >
           Cancel
         </Button>
         <Button

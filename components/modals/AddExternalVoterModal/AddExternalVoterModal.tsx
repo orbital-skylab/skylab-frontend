@@ -68,6 +68,7 @@ const AddExternalVoterModal: FC<Props> = ({
         {(formik) => (
           <>
             <TextInput
+              id="voterId-input"
               name="voterId"
               label="Voter ID"
               size="small"

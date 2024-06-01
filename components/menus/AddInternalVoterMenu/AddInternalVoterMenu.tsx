@@ -86,20 +86,14 @@ const AddInternalVoterMenu: FC<Props> = ({
         size="small"
         onClick={handleOpen}
         endIcon={<KeyboardArrowDown />}
-      ></Button>
+      >
+        Add Voter
+      </Button>
       <Menu
         id="add-internal-voter-menu"
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
-        // anchorOrigin={{
-        //     vertical: 'top',
-        //     horizontal: 'left',
-        //   }}
-        //   transformOrigin={{
-        //     vertical: 'top',
-        //     horizontal: 'left',
-        //   }}
       >
         {AddInternalVoterMenuFactory.generateItems(
           voteEventId,

@@ -9,6 +9,7 @@ import {
 import { FC } from "react";
 
 type Props = {
+  id?: string;
   headings: { heading: string; align: "left" | "right" }[];
   rows: JSX.Element[];
 };
@@ -16,9 +17,9 @@ type Props = {
 /**
  * Wrapper component to manage all the table logic while using the MUI Table component under the hood
  */
-const Table: FC<Props> = ({ headings, rows }) => {
+const Table: FC<Props> = ({ id, headings, rows }) => {
   return (
-    <TableContainer>
+    <TableContainer id={id}>
       <MUITable>
         <TableHead>
           <TableRow>

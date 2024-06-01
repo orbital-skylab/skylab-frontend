@@ -44,7 +44,11 @@ const InternalVoterTable: FC<Props> = ({
         noDataCondition={internalVoters.length === 0}
         fallback={<NoneFound message="No internal voters found" />}
       >
-        <Table headings={columnHeadings} rows={internalVoterRows} />
+        <Table
+          id="internal-voter-table"
+          headings={columnHeadings}
+          rows={internalVoterRows}
+        />
       </NoDataWrapper>
     </LoadingWrapper>
   );

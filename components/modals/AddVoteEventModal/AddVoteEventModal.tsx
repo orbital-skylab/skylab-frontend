@@ -95,12 +95,14 @@ const AddVoteEventModal: FC<Props> = ({ open, setOpen, mutate }) => {
             <>
               <Stack direction="column" spacing="1rem">
                 <TextInput
+                  id="add-vote-event-title-input"
                   name="title"
                   label="Title"
                   size="small"
                   formik={formik}
                 />
                 <TextInput
+                  id="add-vote-event-start-time-input"
                   name="startTime"
                   type="datetime-local"
                   label="Start Date Time"
@@ -108,6 +110,7 @@ const AddVoteEventModal: FC<Props> = ({ open, setOpen, mutate }) => {
                   formik={formik}
                 />
                 <TextInput
+                  id="add-vote-event-end-time-input"
                   name="endTime"
                   type="datetime-local"
                   label="End Date Time"
@@ -120,11 +123,16 @@ const AddVoteEventModal: FC<Props> = ({ open, setOpen, mutate }) => {
                 justifyContent="space-between"
                 marginTop="2rem"
               >
-                <Button size="small" onClick={handleCloseModal}>
+                <Button
+                  id="cancel-add-vote-event-button"
+                  size="small"
+                  onClick={handleCloseModal}
+                  disabled={formik.isSubmitting}
+                >
                   Cancel{" "}
                 </Button>
                 <Button
-                  id="submit-vote-event-button"
+                  id="add-vote-event-button"
                   size="small"
                   variant="contained"
                   onClick={formik.submitForm}

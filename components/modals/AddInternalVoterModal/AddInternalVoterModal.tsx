@@ -68,6 +68,7 @@ const AddInternalVoterModal: FC<Props> = ({
         {(formik) => (
           <>
             <TextInput
+              id="email-input"
               name="email"
               label="Email"
               size="small"

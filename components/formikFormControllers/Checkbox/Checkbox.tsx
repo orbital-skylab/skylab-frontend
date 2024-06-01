@@ -7,12 +7,14 @@ import {
 import { FormikProps } from "formik";
 
 type Props<FormValuesType> = {
+  id?: string;
   label: string;
   name: keyof FormValuesType;
   formik: FormikProps<FormValuesType>;
 };
 
 function Checkbox<FormValuesType>({
+  id,
   label,
   name,
   formik,
@@ -28,6 +30,7 @@ function Checkbox<FormValuesType>({
             name={name as string}
             onChange={handleChange}
             onBlur={handleBlur}
+            id={id}
           />
         }
         label={label}

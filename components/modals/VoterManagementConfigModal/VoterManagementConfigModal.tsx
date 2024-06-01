@@ -138,6 +138,7 @@ const VoterManagementConfigModal: FC<Props> = ({
             <>
               <Stack direction="column" spacing="1rem">
                 <Checkbox
+                  id="internal-list-checkbox"
                   label="Internal List"
                   name="hasInternalList"
                   formik={formik}
@@ -149,11 +150,13 @@ const VoterManagementConfigModal: FC<Props> = ({
                     </Typography>
                     <Stack direction="column" spacing="1rem" paddingLeft="2rem">
                       <Checkbox
+                        id="registration-checkbox"
                         label="Registration"
                         name="hasRegistration"
                         formik={formik}
                       />
                       <Checkbox
+                        id="internal-csv-import-checkbox"
                         label="Import CSV"
                         name="hasInternalCsvImport"
                         formik={formik}
@@ -166,6 +169,7 @@ const VoterManagementConfigModal: FC<Props> = ({
                       loadingText="Loading vote events"
                     >
                       <Dropdown
+                        id="copy-internal-voters-dropdown"
                         label="Copy internal voters from another event"
                         name="copyInternalVoteEventId"
                         formik={formik}
@@ -188,6 +192,7 @@ const VoterManagementConfigModal: FC<Props> = ({
                   </>
                 )}
                 <Checkbox
+                  id="external-list-checkbox"
                   label="External List"
                   name="hasExternalList"
                   formik={formik}
@@ -199,11 +204,13 @@ const VoterManagementConfigModal: FC<Props> = ({
                     </Typography>
                     <Stack direction="column" spacing="1rem" paddingLeft="2rem">
                       <Checkbox
+                        id="generation-checkbox"
                         label="Auto id generation"
                         name="hasGeneration"
                         formik={formik}
                       />
                       <Checkbox
+                        id="external-csv-import-checkbox"
                         label="Import CSV"
                         name="hasExternalCsvImport"
                         formik={formik}
@@ -216,6 +223,7 @@ const VoterManagementConfigModal: FC<Props> = ({
                       loadingText="Loading vote events"
                     >
                       <Dropdown
+                        id="copy-external-voters-dropdown"
                         label="Copy external voters from another event"
                         name="copyExternalVoteEventId"
                         formik={formik}
@@ -243,7 +251,11 @@ const VoterManagementConfigModal: FC<Props> = ({
                 justifyContent="space-between"
                 marginTop="2rem"
               >
-                <Button size="small" onClick={handleCloseModal}>
+                <Button
+                  id="cancel-edit-voter-management-config-button"
+                  size="small"
+                  onClick={handleCloseModal}
+                >
                   Cancel
                 </Button>
 

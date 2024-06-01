@@ -59,7 +59,12 @@ const DeleteExternalVoterModal: FC<Props> = ({
       subheader={`You are deleting the external voter ${externalVoter.id}.\n\nThis action is irreversible, are you sure?`}
     >
       <Stack spacing={2} direction="row" justifyContent="flex-end">
-        <Button size="small" onClick={handleCloseModal}>
+        <Button
+          id="delete-external-voter-cancel-button"
+          size="small"
+          onClick={handleCloseModal}
+          disabled={isCalling(DeleteExternalVoter.status)}
+        >
           Cancel
         </Button>
         <Button

@@ -59,7 +59,12 @@ const DeleteVoteEventModal: FC<Props> = ({
       subheader={`You are deleting the vote event ${voteEvent.title}.\n\nThis action is irreversible, are you sure?`}
     >
       <Stack spacing={2} direction="row" justifyContent="flex-end">
-        <Button size="small" onClick={handleCloseModal}>
+        <Button
+          id="delete-vote-event-cancel-button"
+          size="small"
+          onClick={handleCloseModal}
+          disabled={isCalling(deleteVoteEvent.status)}
+        >
           Cancel
         </Button>
         <Button

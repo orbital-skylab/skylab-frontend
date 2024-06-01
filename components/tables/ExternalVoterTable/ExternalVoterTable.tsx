@@ -34,7 +34,11 @@ const ExternalVoterTable: FC<Props> = ({ externalVoters, status, mutate }) => {
         noDataCondition={externalVoters.length === 0}
         fallback={<NoneFound message="No external voters found" />}
       >
-        <Table headings={columnHeadings} rows={externalVoterRows} />
+        <Table
+          id="external-voter-table"
+          headings={columnHeadings}
+          rows={externalVoterRows}
+        />
       </NoDataWrapper>
     </LoadingWrapper>
   );

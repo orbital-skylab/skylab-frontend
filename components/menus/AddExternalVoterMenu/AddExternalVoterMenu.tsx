@@ -81,20 +81,14 @@ const AddExternalVoterMenu: FC<Props> = ({
         size="small"
         onClick={handleOpen}
         endIcon={<KeyboardArrowDown />}
-      ></Button>
+      >
+        Add Voters
+      </Button>
       <Menu
         id="add-external-voter-menu"
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
-        // anchorOrigin={{
-        //     vertical: 'top',
-        //     horizontal: 'left',
-        //   }}
-        //   transformOrigin={{
-        //     vertical: 'top',
-        //     horizontal: 'left',
-        //   }}
       >
         {AddExternalVoterMenuFactory.generateItems(
           voteEventId,
