@@ -26,7 +26,10 @@ export const isoDateToLocaleDateWithTime = (isoDate: string) => {
   if (!isValidDate(date)) {
     return "An invalid date was provided";
   }
-  return date.toLocaleString().slice(0, 17);
+  return date.toLocaleString("en-GB", {
+    dateStyle: "short",
+    timeStyle: "short",
+  });
 };
 
 /**
