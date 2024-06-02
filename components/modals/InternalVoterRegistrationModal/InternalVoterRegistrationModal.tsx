@@ -15,6 +15,7 @@ type Props = {
   voteEventId: number;
   isRegistrationOpen: boolean;
   open: boolean;
+  handleCloseMenu: () => void;
   setOpen: Dispatch<SetStateAction<boolean>>;
   mutate: Mutate<GetVoteEventResponse>;
 };
@@ -23,6 +24,7 @@ const InternalVoterRegistrationModal: FC<Props> = ({
   voteEventId,
   isRegistrationOpen,
   open,
+  handleCloseMenu,
   setOpen,
   mutate,
 }) => {
@@ -62,6 +64,7 @@ const InternalVoterRegistrationModal: FC<Props> = ({
   };
 
   const handleCloseModal = () => {
+    handleCloseMenu();
     setOpen(false);
   };
 

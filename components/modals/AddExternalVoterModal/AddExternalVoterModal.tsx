@@ -15,6 +15,7 @@ import { Dispatch, FC, SetStateAction } from "react";
 type Props = {
   voteEventId: number;
   open: boolean;
+  handleCloseMenu: () => void;
   setOpen: Dispatch<SetStateAction<boolean>>;
   mutate: Mutate<GetExternalVotersResponse>;
 };
@@ -22,6 +23,7 @@ type Props = {
 const AddExternalVoterModal: FC<Props> = ({
   voteEventId,
   open,
+  handleCloseMenu,
   setOpen,
   mutate,
 }) => {
@@ -47,6 +49,7 @@ const AddExternalVoterModal: FC<Props> = ({
     try {
       await addExternalVoter.call({ voterId: values.voterId });
       setOpen(false);
+      handleCloseMenu();
       setSuccess("You have successfully added an external voter!");
     } catch (error) {
       setError(error);

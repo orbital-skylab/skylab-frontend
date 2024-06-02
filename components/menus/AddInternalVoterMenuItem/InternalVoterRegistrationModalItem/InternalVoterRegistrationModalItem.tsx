@@ -21,7 +21,6 @@ const InternalVoterRegistrationModalItem: FC<Props> = ({
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
-    handleCloseMenu();
   };
 
   return (
@@ -30,6 +29,7 @@ const InternalVoterRegistrationModalItem: FC<Props> = ({
         voteEventId={voteEventId}
         isRegistrationOpen={isRegistrationOpen}
         open={isModalOpen}
+        handleCloseMenu={handleCloseMenu}
         setOpen={setIsModalOpen}
         mutate={mutateVoteEvent}
       />

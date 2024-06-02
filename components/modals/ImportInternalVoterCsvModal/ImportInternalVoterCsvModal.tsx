@@ -7,6 +7,7 @@ import { Dispatch, FC, SetStateAction } from "react";
 type Props = {
   voteEventId: number;
   open: boolean;
+  handleCloseMenu: () => void;
   setOpen: Dispatch<SetStateAction<boolean>>;
   mutate: Mutate<GetInternalVotersResponse>;
 };
@@ -14,11 +15,13 @@ type Props = {
 const ImportInternalVoterCsvModal: FC<Props> = ({
   //voteEventId,
   open,
+  handleCloseMenu,
   setOpen,
   //mutate,
 }) => {
   const handleImport = () => {
     handleCloseModal();
+    handleCloseMenu();
   };
 
   const handleCloseModal = () => {

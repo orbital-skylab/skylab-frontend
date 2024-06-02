@@ -20,7 +20,6 @@ const AddInternalVoterModalItem: FC<Props> = ({
 
   const handleOpenAddInternalVoterModal = () => {
     setIsAddInternalVoterModalOpen(true);
-    handleCloseMenu();
   };
 
   return (
@@ -29,6 +28,7 @@ const AddInternalVoterModalItem: FC<Props> = ({
         voteEventId={voteEventId}
         open={isAddInternalVoterModalOpen}
         setOpen={setIsAddInternalVoterModalOpen}
+        handleCloseMenu={handleCloseMenu}
         mutate={mutateInternalVoters}
       />
       <MenuItem onClick={handleOpenAddInternalVoterModal}>

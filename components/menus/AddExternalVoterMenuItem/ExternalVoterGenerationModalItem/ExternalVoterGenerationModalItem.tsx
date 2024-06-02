@@ -19,7 +19,6 @@ const ExternalVoterGenerationModalItem: FC<Props> = ({
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
-    handleCloseMenu();
   };
 
   return (
@@ -28,6 +27,7 @@ const ExternalVoterGenerationModalItem: FC<Props> = ({
         voteEventId={voteEventId}
         open={isModalOpen}
         setOpen={setIsModalOpen}
+        handleCloseMenu={handleCloseMenu}
         mutate={mutateExternalVoters}
       />
       <MenuItem onClick={handleOpenModal}>Generate Voter IDs</MenuItem>

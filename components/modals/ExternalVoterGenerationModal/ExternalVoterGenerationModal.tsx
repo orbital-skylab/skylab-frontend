@@ -7,6 +7,7 @@ import { Button, Stack } from "@mui/material";
 type Props = {
   voteEventId: number;
   open: boolean;
+  handleCloseMenu: () => void;
   setOpen: Dispatch<SetStateAction<boolean>>;
   mutate: Mutate<GetExternalVotersResponse>;
 };
@@ -14,10 +15,12 @@ type Props = {
 const ExternalVoterGenerationModal: FC<Props> = ({
   //voteEventId,
   open,
+  handleCloseMenu,
   setOpen,
   //mutate,
 }) => {
   const handleGenerate = () => {
+    handleCloseMenu();
     handleCloseModal();
   };
 

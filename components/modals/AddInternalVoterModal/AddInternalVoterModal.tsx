@@ -15,6 +15,7 @@ import { Dispatch, FC, SetStateAction } from "react";
 type Props = {
   voteEventId: number;
   open: boolean;
+  handleCloseMenu: () => void;
   setOpen: Dispatch<SetStateAction<boolean>>;
   mutate: Mutate<GetInternalVotersResponse>;
 };
@@ -22,6 +23,7 @@ type Props = {
 const AddInternalVoterModal: FC<Props> = ({
   voteEventId,
   open,
+  handleCloseMenu,
   setOpen,
   mutate,
 }) => {
@@ -47,6 +49,7 @@ const AddInternalVoterModal: FC<Props> = ({
     try {
       await addInternalVoter.call({ email: values.email });
       setOpen(false);
+      handleCloseMenu();
       setSuccess("You have successfully added an internal voter!");
     } catch (error) {
       setError(error);

@@ -15,7 +15,7 @@ const EditVoteEvent: NextPage = () => {
   const { data, status, mutate } = useFetch<GetVoteEventResponse>({
     endpoint: `/vote-events/${voteEventId}`,
   });
-  console.log(data);
+
   return (
     <Body
       isLoading={isFetching(status)}

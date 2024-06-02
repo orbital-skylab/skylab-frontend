@@ -19,7 +19,6 @@ const ImportInternalVoterCsvModalItem: FC<Props> = ({
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
-    handleCloseMenu();
   };
 
   return (
@@ -27,6 +26,7 @@ const ImportInternalVoterCsvModalItem: FC<Props> = ({
       <ImportInternalVoterCsvModal
         voteEventId={voteEventId}
         open={isModalOpen}
+        handleCloseMenu={handleCloseMenu}
         setOpen={setIsModalOpen}
         mutate={mutateInternalVoters}
       />

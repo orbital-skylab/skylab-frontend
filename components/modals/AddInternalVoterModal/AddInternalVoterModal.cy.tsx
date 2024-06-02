@@ -6,11 +6,13 @@ import { mount } from "cypress/react18";
 describe("<AddInternalVoterModal />", () => {
   let setOpenSpy: any;
   let mutateSpy: any;
+  let handleCloseMenuSpy: any;
   const voteEventId = 1;
 
   beforeEach(() => {
     setOpenSpy = cy.spy().as("setOpenSpy");
     mutateSpy = cy.spy().as("mutateSpy");
+    handleCloseMenuSpy = cy.spy().as("handleCloseMenuSpy");
   });
 
   it("should render opened modal", () => {
@@ -19,6 +21,7 @@ describe("<AddInternalVoterModal />", () => {
       <AddInternalVoterModal
         voteEventId={voteEventId}
         open={true}
+        handleCloseMenu={handleCloseMenuSpy}
         setOpen={setOpenSpy}
         mutate={mutateSpy}
       />
@@ -33,6 +36,7 @@ describe("<AddInternalVoterModal />", () => {
       <AddInternalVoterModal
         voteEventId={voteEventId}
         open={false}
+        handleCloseMenu={handleCloseMenuSpy}
         setOpen={setOpenSpy}
         mutate={mutateSpy}
       />
@@ -47,6 +51,7 @@ describe("<AddInternalVoterModal />", () => {
       <AddInternalVoterModal
         voteEventId={voteEventId}
         open={true}
+        handleCloseMenu={handleCloseMenuSpy}
         setOpen={setOpenSpy}
         mutate={mutateSpy}
       />
@@ -71,6 +76,7 @@ describe("<AddInternalVoterModal />", () => {
     cy.get("@setOpenSpy").should("be.calledOnce");
     cy.get("@setOpenSpy").should("be.calledWith", false);
     cy.get("@mutateSpy").should("be.calledOnce");
+    cy.get("@handleCloseMenuSpy").should("be.calledOnce");
   });
 
   it("should have a functioning return button", () => {
@@ -79,6 +85,7 @@ describe("<AddInternalVoterModal />", () => {
       <AddInternalVoterModal
         voteEventId={voteEventId}
         open={true}
+        handleCloseMenu={handleCloseMenuSpy}
         setOpen={setOpenSpy}
         mutate={mutateSpy}
       />

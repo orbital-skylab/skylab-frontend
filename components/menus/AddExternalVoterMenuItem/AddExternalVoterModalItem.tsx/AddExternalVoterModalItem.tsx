@@ -19,7 +19,6 @@ const AddExternalVoterModalItem: FC<Props> = ({
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
-    handleCloseMenu();
   };
 
   return (
@@ -27,6 +26,7 @@ const AddExternalVoterModalItem: FC<Props> = ({
       <AddExternalVoterModal
         voteEventId={voteEventId}
         open={isModalOpen}
+        handleCloseMenu={handleCloseMenu}
         setOpen={setIsModalOpen}
         mutate={mutateExternalVoters}
       />
