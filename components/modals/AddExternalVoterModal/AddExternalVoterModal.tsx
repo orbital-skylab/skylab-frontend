@@ -1,6 +1,7 @@
-import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 import TextInput from "@/components/formikFormControllers/TextInput";
 import Modal from "@/components/modals/Modal";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
+import { ERRORS } from "@/helpers/errors";
 import useApiCall from "@/hooks/useApiCall";
 import { Mutate } from "@/hooks/useFetch";
 import {
@@ -11,6 +12,7 @@ import {
 import { Button, Stack } from "@mui/material";
 import { Formik } from "formik";
 import { Dispatch, FC, SetStateAction } from "react";
+import * as Yup from "yup";
 
 type Props = {
   voteEventId: number;
@@ -67,7 +69,11 @@ const AddExternalVoterModal: FC<Props> = ({
       title="Add Voter ID"
       subheader="Enter the voter ID of the external voter you want to add."
     >
-      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={handleSubmit}
+        validationSchema={addExternalVoterValidationSchema}
+      >
         {(formik) => (
           <>
             <TextInput
@@ -107,3 +113,7 @@ const AddExternalVoterModal: FC<Props> = ({
   );
 };
 export default AddExternalVoterModal;
+
+const addExternalVoterValidationSchema = Yup.object().shape({
+  voterId: Yup.string().required(ERRORS.REQUIRED),
+});

@@ -79,6 +79,36 @@ describe("<AddInternalVoterModal />", () => {
     cy.get("@handleCloseMenuSpy").should("be.calledOnce");
   });
 
+  it("should not submit form with invalid data", () => {
+    // Mount the component
+    mount(
+      <AddInternalVoterModal
+        voteEventId={voteEventId}
+        open={true}
+        handleCloseMenu={handleCloseMenuSpy}
+        setOpen={setOpenSpy}
+        mutate={mutateSpy}
+      />
+    );
+
+    // Submit the form with empty field
+    cy.get("#add-internal-voter-button").click();
+
+    cy.get("@setOpenSpy").should("not.be.called");
+    cy.get("@mutateSpy").should("not.be.called");
+    cy.get("@handleCloseMenuSpy").should("not.be.called");
+    cy.contains("This field is required").should("exist");
+
+    // Submit form with invalid email
+    cy.get("#email-input").type("invalid-email");
+    cy.get("#add-internal-voter-button").click();
+
+    cy.get("@setOpenSpy").should("not.be.called");
+    cy.get("@mutateSpy").should("not.be.called");
+    cy.get("@handleCloseMenuSpy").should("not.be.called");
+    cy.contains("Invalid email").should("exist");
+  });
+
   it("should have a functioning return button", () => {
     // Mount the component
     mount(

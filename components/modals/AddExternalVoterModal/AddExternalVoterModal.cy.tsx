@@ -79,6 +79,27 @@ describe("<AddExternalVoterModal />", () => {
     cy.get("@handleCloseMenuSpy").should("be.calledOnce");
   });
 
+  it("should not submit form with invalid data", () => {
+    // Mount the component
+    mount(
+      <AddExternalVoterModal
+        voteEventId={voteEventId}
+        open={true}
+        handleCloseMenu={handleCloseMenuSpy}
+        setOpen={setOpenSpy}
+        mutate={mutateSpy}
+      />
+    );
+
+    // Submit the form
+    cy.get("#add-external-voter-button").click();
+
+    cy.get("@setOpenSpy").should("not.be.called");
+    cy.get("@mutateSpy").should("not.be.called");
+    cy.get("@handleCloseMenuSpy").should("not.be.called");
+    cy.contains("This field is required").should("exist");
+  });
+
   it("should have a functioning return button", () => {
     // Mount the component
     mount(

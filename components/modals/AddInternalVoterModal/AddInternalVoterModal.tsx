@@ -1,6 +1,7 @@
 import TextInput from "@/components/formikFormControllers/TextInput";
 import Modal from "@/components/modals/Modal";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
+import { ERRORS } from "@/helpers/errors";
 import useApiCall from "@/hooks/useApiCall";
 import { Mutate } from "@/hooks/useFetch";
 import {
@@ -11,6 +12,7 @@ import {
 import { Button, Stack } from "@mui/material";
 import { Formik } from "formik";
 import { Dispatch, FC, SetStateAction } from "react";
+import * as Yup from "yup";
 
 type Props = {
   voteEventId: number;
@@ -67,7 +69,11 @@ const AddInternalVoterModal: FC<Props> = ({
       title="Add By Email"
       subheader={`Enter an email to add the following user as an internal voter.`}
     >
-      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={handleSubmit}
+        validationSchema={addInternalVoterValidationSchema}
+      >
         {(formik) => (
           <>
             <TextInput
@@ -107,3 +113,7 @@ const AddInternalVoterModal: FC<Props> = ({
   );
 };
 export default AddInternalVoterModal;
+
+const addInternalVoterValidationSchema = Yup.object().shape({
+  email: Yup.string().email("Invalid email").required(ERRORS.REQUIRED),
+});
