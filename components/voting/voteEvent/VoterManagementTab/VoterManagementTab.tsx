@@ -76,11 +76,10 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
   const voterManagementConfigButton = (
     <Button
       id="open-voter-management-config-button"
-      variant="outlined"
-      size="small"
+      variant="contained"
       onClick={handleOpenVoterManagementConfig}
     >
-      Management Config
+      Set Management Config
     </Button>
   );
 
@@ -190,7 +189,16 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
           )}
         </Stack>
       ) : (
-        <div>{voterManagementConfigButton}</div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          {voterManagementConfigButton}
+        </div>
       )}
     </>
   );

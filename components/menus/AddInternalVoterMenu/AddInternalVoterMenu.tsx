@@ -83,11 +83,10 @@ const AddInternalVoterMenu: FC<Props> = ({
       <Button
         id="add-internal-voter-button"
         variant="outlined"
-        size="small"
         onClick={handleOpen}
         endIcon={<KeyboardArrowDown />}
       >
-        Add Voter
+        Add Voters
       </Button>
       <Menu
         id="add-internal-voter-menu"
