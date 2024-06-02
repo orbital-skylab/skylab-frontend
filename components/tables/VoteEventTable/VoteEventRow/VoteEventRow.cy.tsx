@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { mount } from "cypress/react18";
 import VoteEventRow from "./VoteEventRow";
+import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
 
 describe("<VoteEventRow />", () => {
   let mutateSpy: any;
@@ -21,8 +22,12 @@ describe("<VoteEventRow />", () => {
     cy.get("tr").should("be.visible");
     cy.get("td").should("have.length", 4);
     cy.contains("Sample Vote Event").should("be.visible");
-    cy.contains("6/1/2024").should("be.visible");
-    cy.contains("6/2/2024").should("be.visible");
+    cy.contains(isoDateToLocaleDateWithTime(voteEvent.startTime)).should(
+      "be.visible"
+    );
+    cy.contains(isoDateToLocaleDateWithTime(voteEvent.endTime)).should(
+      "be.visible"
+    );
     cy.get("#edit-vote-event-button").should("be.visible");
     cy.get("#delete-vote-event-button").should("be.visible");
   });
