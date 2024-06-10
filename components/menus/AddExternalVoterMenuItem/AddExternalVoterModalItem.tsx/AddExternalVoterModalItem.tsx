@@ -22,7 +22,7 @@ const AddExternalVoterModalItem: FC<Props> = ({
   };
 
   return (
-    <>
+    <div onKeyDown={(e) => e.stopPropagation()}>
       <AddExternalVoterModal
         voteEventId={voteEventId}
         open={isModalOpen}
@@ -31,7 +31,7 @@ const AddExternalVoterModalItem: FC<Props> = ({
         mutate={mutateExternalVoters}
       />
       <MenuItem onClick={handleOpenModal}>Add Voter ID</MenuItem>
-    </>
+    </div>
   );
 };
 export default AddExternalVoterModalItem;

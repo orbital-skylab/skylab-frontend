@@ -23,7 +23,7 @@ const AddInternalVoterModalItem: FC<Props> = ({
   };
 
   return (
-    <>
+    <div onKeyDown={(e) => e.stopPropagation()}>
       <AddInternalVoterModal
         voteEventId={voteEventId}
         open={isAddInternalVoterModalOpen}
@@ -34,7 +34,7 @@ const AddInternalVoterModalItem: FC<Props> = ({
       <MenuItem onClick={handleOpenAddInternalVoterModal}>
         Add By Email
       </MenuItem>
-    </>
+    </div>
   );
 };
 export default AddInternalVoterModalItem;
