@@ -8,6 +8,10 @@ type Props = {
 };
 
 const RichText: FC<Props> = ({ sx, htmlContent }) => {
-  return <Typography sx={sx}>{parse(htmlContent)}</Typography>;
+  return (
+    <Typography component="span" sx={sx}>
+      {parse(htmlContent)}
+    </Typography>
+  );
 };
 export default RichText;

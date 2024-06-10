@@ -26,8 +26,8 @@ export const categoryType = {
 
 // Mapping of key value pairs for filtering
 export const filterType = {
-  ALL: "All",
-  "YOUR POSTS": "Author",
+  "ALL POSTS": "All",
+  "MY POSTS": "Author",
   "MILESTONE 1": "MilestoneOne",
   "MILESTONE 2": "MilestoneTwo",
   "MILESTONE 3": "MilestoneThree",

@@ -11,6 +11,7 @@ export type ForumPost = {
     profilePicUrl: string;
     name: string;
   };
+  isStickied: boolean;
 };
 
 export type ForumPostComment = {
