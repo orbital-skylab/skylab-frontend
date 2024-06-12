@@ -1,6 +1,6 @@
 import NoneFound from "@/components/emptyStates/NoneFound";
 import Body from "@/components/layout/Body";
-import VoteEventEdit from "@/components/voting/voteEvent/VoteEventEdit";
+import VoteEventEdit from "@/components/tabs/voteEvent/VoteEventEdit";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import { GetVoteEventResponse } from "@/types/api";

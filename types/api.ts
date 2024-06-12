@@ -341,6 +341,17 @@ export type CreateExternalVoterResponse = {
 };
 
 /**
+ * Candaidate Endpoints
+ */
+export type GetCandidatesResponse = {
+  candidates: Project[];
+};
+
+export type CreateCandidateResponse = {
+  candidate: Project;
+};
+
+/**
  * Error
  */
 export type Error = { message: string };
