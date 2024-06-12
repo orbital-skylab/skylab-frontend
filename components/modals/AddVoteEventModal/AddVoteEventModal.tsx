@@ -1,5 +1,5 @@
 import TextInput from "@/components/formikFormControllers/TextInput";
-import { editGeneralSettingsValidationSchema as addVoteEventValidationSchema } from "@/components/voting/voteEvent/GeneralSettingsTab/GeneralSettingsTab";
+import { editGeneralSettingsValidationSchema as addVoteEventValidationSchema } from "@/components/tabs/voteEvent/GeneralSettingsTab/GeneralSettingsTab";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 import {
   dateTimeLocalInputToIsoDate,
