@@ -38,8 +38,7 @@ const AddVoteEventModal: FC<Props> = ({ open, setOpen, mutate }) => {
     endpoint: `/vote-events`,
     onSuccess: ({ voteEvent }: CreateVoteEventResponse) => {
       mutate((data) => {
-        const newVoteEvents = [...data.voteEvents];
-        newVoteEvents.push(voteEvent);
+        const newVoteEvents = [voteEvent, ...data.voteEvents];
         return { voteEvents: newVoteEvents };
       });
     },

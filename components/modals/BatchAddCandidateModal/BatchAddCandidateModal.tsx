@@ -41,8 +41,8 @@ const BatchAddCandidateModal: FC<Props> = ({
     method: HTTP_METHOD.POST,
     endpoint: `/vote-events/${voteEventId}/candidates/batch`,
     onSuccess: ({ candidates }: GetCandidatesResponse) => {
-      mutate((data) => {
-        const newCandidates = [...data.candidates, ...candidates];
+      mutate(() => {
+        const newCandidates = [...candidates];
 
         return { candidates: newCandidates };
       });
