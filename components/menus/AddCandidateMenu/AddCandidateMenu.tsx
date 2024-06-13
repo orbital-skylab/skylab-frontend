@@ -56,7 +56,7 @@ const AddCandidateMenu: FC<Props> = ({ voteEventId, mutate }) => {
         onClick={handleOpen}
         endIcon={<KeyboardArrowDown />}
       >
-        Add Voters
+        Add Candidates
       </Button>
       <Menu
         id="add-external-voter-menu"

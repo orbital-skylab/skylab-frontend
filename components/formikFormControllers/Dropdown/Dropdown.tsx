@@ -22,6 +22,7 @@ type Props<FormValuesType> = {
   isDisabled?: boolean;
   className?: string;
   id?: string;
+  style?: React.CSSProperties;
 };
 
 function Dropdown<FormValuesType>({
@@ -34,6 +35,7 @@ function Dropdown<FormValuesType>({
   isDisabled = false,
   className,
   id,
+  style = {},
 }: Props<FormValuesType>) {
   /** For combobox */
   const [inputValue, setInputValue] = useState("");
@@ -125,6 +127,7 @@ function Dropdown<FormValuesType>({
           MenuProps={{ disableScrollLock: true }}
           size={size}
           disabled={isDisabled}
+          style={style}
         >
           {options.map(({ value, label }) => (
             <MenuItem id={`${value}-option`} key={value} value={value}>

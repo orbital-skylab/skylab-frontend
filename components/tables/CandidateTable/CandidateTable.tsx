@@ -19,8 +19,8 @@ type Props = {
 const columnHeadings: { heading: string; align: "left" | "right" }[] = [
   { heading: "Project ID", align: "left" },
   { heading: "Name", align: "left" },
-  { heading: "cohort", align: "left" },
-  { heading: "achievement", align: "left" },
+  { heading: "Cohort", align: "left" },
+  { heading: "Achievement", align: "left" },
   { heading: "Actions", align: "right" },
 ];
 
@@ -46,7 +46,7 @@ const CandidateTable: FC<Props> = ({
         fallback={<NoneFound title="" message="No candidates found" />}
       >
         <Table
-          id="candidate-table"
+          id="candidates-table"
           headings={columnHeadings}
           rows={candidateRows}
         />

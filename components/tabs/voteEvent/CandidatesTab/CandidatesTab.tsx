@@ -19,9 +19,14 @@ const CandidatesTab: FC<Props> = ({ voteEventId }) => {
   });
   return (
     <Stack flexGrow={1}>
-      <div style={{ display: "grid", gridTemplateColumns: "auto 1fr" }}>
-        <div style={{ gridColumn: 1 }}></div>
-        <div style={{ gridColumn: 2 }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 1fr",
+          alignItems: "center",
+        }}
+      >
+        <div style={{ gridColumn: 2, textAlign: "center" }}>
           <Typography id="candidates-header">Candidates</Typography>
         </div>
         <div style={{ gridColumn: 3 }}>

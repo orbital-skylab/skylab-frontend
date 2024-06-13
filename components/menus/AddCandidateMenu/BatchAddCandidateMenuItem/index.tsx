@@ -1,0 +1,2 @@
+import BatchAddCandidateMenuItem from "@/components/menus/AddCandidateMenu/BatchAddCandidateMenuItem/BatchAddCandidateMenuItem";
+export default BatchAddCandidateMenuItem;
