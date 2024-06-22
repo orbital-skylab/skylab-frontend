@@ -17,6 +17,13 @@ export enum DISPLAY_TYPES {
   GALLERY = "Gallery",
 }
 
+export enum VOTE_EVENT_STATUS {
+  INCOMPLETE = "Incomplete",
+  UPCOMING = "Upcoming",
+  IN_PROGRESS = "In Progress",
+  COMPLETED = "Completed",
+}
+
 export type VoteEvent = {
   id: number;
   title: string;
@@ -30,10 +37,6 @@ export type VoteEvent = {
 export type VoterManagement = {
   hasInternalList: boolean;
   hasExternalList: boolean;
-  hasInternalCsvImport: boolean;
-  hasExternalCsvImport: boolean;
-  hasGeneration: boolean;
-  hasRegistration: boolean;
   isRegistrationOpen: boolean;
 };
 
@@ -41,8 +44,7 @@ export type VoteConfig = {
   maxVotes: number;
   minVotes: number;
   isRandomOrder: boolean;
-  isCumulative: boolean;
-  hasRankChoices: boolean;
+  instructions: string;
   displayType: DISPLAY_TYPES;
 };
 

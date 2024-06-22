@@ -14,6 +14,7 @@ const columnHeadings: { heading: string; align: "left" | "right" }[] = [
   { heading: "Title", align: "left" },
   { heading: "Start Time", align: "left" },
   { heading: "End Time", align: "left" },
+  { heading: "Status", align: "left" },
   { heading: "Actions", align: "right" },
 ];
 
