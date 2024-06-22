@@ -14,7 +14,7 @@ import {
 } from "@/types/api";
 import { VoteEvent, VoterManagement } from "@/types/voteEvents";
 import { LoadingButton } from "@mui/lab";
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { Formik } from "formik";
 import { Dispatch, FC, SetStateAction, useState } from "react";
 import * as Yup from "yup";
@@ -56,7 +56,7 @@ const VoterManagementConfigModal: FC<Props> = ({
   };
 
   const { data: allVoteEventData, status } = useFetch<GetVoteEventsResponse>({
-    endpoint: PAGES.VOTING,
+    endpoint: PAGES.VOTE_EVENTS,
   });
 
   const setVoterManagement = useApiCall({
@@ -86,10 +86,6 @@ const VoterManagementConfigModal: FC<Props> = ({
         voterManagement: {
           hasInternalList: values.hasInternalList || false,
           hasExternalList: values.hasExternalList || false,
-          hasRegistration: values.hasRegistration || false,
-          hasInternalCsvImport: values.hasInternalCsvImport || false,
-          hasGeneration: values.hasGeneration || false,
-          hasExternalCsvImport: values.hasExternalCsvImport || false,
           isRegistrationOpen,
         },
       },
@@ -144,52 +140,33 @@ const VoterManagementConfigModal: FC<Props> = ({
                   formik={formik}
                 />
                 {formik.values.hasInternalList && (
-                  <>
-                    <Typography variant="subtitle2">
-                      Select additional methods to add internal voters
-                    </Typography>
-                    <Stack direction="column" spacing="1rem" paddingLeft="2rem">
-                      <Checkbox
-                        id="registration-checkbox"
-                        label="Registration"
-                        name="hasRegistration"
-                        formik={formik}
-                      />
-                      <Checkbox
-                        id="internal-csv-import-checkbox"
-                        label="Import CSV"
-                        name="hasInternalCsvImport"
-                        formik={formik}
-                      />
-                    </Stack>
-                    <LoadingWrapper
-                      isLoading={
-                        allVoteEventData === undefined && isFetching(status)
+                  <LoadingWrapper
+                    isLoading={
+                      allVoteEventData === undefined && isFetching(status)
+                    }
+                    loadingText="Loading vote events"
+                  >
+                    <Dropdown
+                      id="copy-internal-voters-dropdown"
+                      label="Copy internal voters from another event"
+                      name="copyInternalVoteEventId"
+                      formik={formik}
+                      options={
+                        allVoteEventData?.voteEvents
+                          ? allVoteEventData.voteEvents
+                              .filter((voteEvent) => {
+                                return voteEvent.id !== voteEvent.id;
+                              })
+                              .map((voteEvent) => {
+                                return {
+                                  label: `${voteEvent.id} - ${voteEvent.title}`,
+                                  value: voteEvent.id,
+                                };
+                              })
+                          : []
                       }
-                      loadingText="Loading vote events"
-                    >
-                      <Dropdown
-                        id="copy-internal-voters-dropdown"
-                        label="Copy internal voters from another event"
-                        name="copyInternalVoteEventId"
-                        formik={formik}
-                        options={
-                          allVoteEventData?.voteEvents
-                            ? allVoteEventData.voteEvents
-                                .filter((voteEvent) => {
-                                  return voteEvent.id !== voteEvent.id;
-                                })
-                                .map((voteEvent) => {
-                                  return {
-                                    label: `${voteEvent.id} - ${voteEvent.title}`,
-                                    value: voteEvent.id,
-                                  };
-                                })
-                            : []
-                        }
-                      />
-                    </LoadingWrapper>
-                  </>
+                    />
+                  </LoadingWrapper>
                 )}
                 <Checkbox
                   id="external-list-checkbox"
@@ -198,52 +175,33 @@ const VoterManagementConfigModal: FC<Props> = ({
                   formik={formik}
                 />
                 {formik.values.hasExternalList && (
-                  <>
-                    <Typography variant="subtitle2">
-                      Select additional methods to add external voters
-                    </Typography>
-                    <Stack direction="column" spacing="1rem" paddingLeft="2rem">
-                      <Checkbox
-                        id="generation-checkbox"
-                        label="Auto id generation"
-                        name="hasGeneration"
-                        formik={formik}
-                      />
-                      <Checkbox
-                        id="external-csv-import-checkbox"
-                        label="Import CSV"
-                        name="hasExternalCsvImport"
-                        formik={formik}
-                      />
-                    </Stack>
-                    <LoadingWrapper
-                      isLoading={
-                        allVoteEventData === undefined && isFetching(status)
+                  <LoadingWrapper
+                    isLoading={
+                      allVoteEventData === undefined && isFetching(status)
+                    }
+                    loadingText="Loading vote events"
+                  >
+                    <Dropdown
+                      id="copy-external-voters-dropdown"
+                      label="Copy external voters from another event"
+                      name="copyExternalVoteEventId"
+                      formik={formik}
+                      options={
+                        allVoteEventData?.voteEvents
+                          ? allVoteEventData.voteEvents
+                              .filter((voteEvent) => {
+                                return voteEvent.id !== voteEvent.id;
+                              })
+                              .map((voteEvent) => {
+                                return {
+                                  label: `${voteEvent.id} - ${voteEvent.title}`,
+                                  value: voteEvent.id,
+                                };
+                              })
+                          : []
                       }
-                      loadingText="Loading vote events"
-                    >
-                      <Dropdown
-                        id="copy-external-voters-dropdown"
-                        label="Copy external voters from another event"
-                        name="copyExternalVoteEventId"
-                        formik={formik}
-                        options={
-                          allVoteEventData?.voteEvents
-                            ? allVoteEventData.voteEvents
-                                .filter((voteEvent) => {
-                                  return voteEvent.id !== voteEvent.id;
-                                })
-                                .map((voteEvent) => {
-                                  return {
-                                    label: `${voteEvent.id} - ${voteEvent.title}`,
-                                    value: voteEvent.id,
-                                  };
-                                })
-                            : []
-                        }
-                      />
-                    </LoadingWrapper>
-                  </>
+                    />
+                  </LoadingWrapper>
                 )}
               </Stack>
               <Stack

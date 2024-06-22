@@ -23,6 +23,8 @@ const AddInternalVoterMenuFactory = {
     mutateInternalVoters: Mutate<GetInternalVotersResponse>,
     mutateVoteEvent: Mutate<GetVoteEventResponse>
   ) => {
+    const { isRegistrationOpen } = voterManagement;
+
     const menuItems = [
       <AddInternalVoterModalItem
         key={"add-internal-voter-modal-item"}
@@ -30,32 +32,20 @@ const AddInternalVoterMenuFactory = {
         handleCloseMenu={handleCloseMenu}
         mutateInternalVoters={mutateInternalVoters}
       />,
+      <ImportInternalVoterCsvModalItem
+        key={"import-internal-voter-csv-modal-item"}
+        voteEventId={voteEventId}
+        handleCloseMenu={handleCloseMenu}
+        mutateInternalVoters={mutateInternalVoters}
+      />,
+      <InternalVoterRegistrationModalItem
+        key={"internal-voter-registration-modal-item"}
+        voteEventId={voteEventId}
+        isRegistrationOpen={isRegistrationOpen}
+        handleCloseMenu={handleCloseMenu}
+        mutateVoteEvent={mutateVoteEvent}
+      />,
     ];
-    const { hasInternalCsvImport, hasRegistration, isRegistrationOpen } =
-      voterManagement;
-
-    if (hasInternalCsvImport) {
-      menuItems.push(
-        <ImportInternalVoterCsvModalItem
-          key={"import-internal-voter-csv-modal-item"}
-          voteEventId={voteEventId}
-          handleCloseMenu={handleCloseMenu}
-          mutateInternalVoters={mutateInternalVoters}
-        />
-      );
-    }
-
-    if (hasRegistration) {
-      menuItems.push(
-        <InternalVoterRegistrationModalItem
-          key={"internal-voter-registration-modal-item"}
-          voteEventId={voteEventId}
-          isRegistrationOpen={isRegistrationOpen}
-          handleCloseMenu={handleCloseMenu}
-          mutateVoteEvent={mutateVoteEvent}
-        />
-      );
-    }
 
     return menuItems;
   },

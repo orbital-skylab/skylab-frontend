@@ -10,10 +10,6 @@ describe("<VoterManagementConfigModal />", () => {
     isRegistrationOpen: false,
     hasInternalList: false,
     hasExternalList: false,
-    hasRegistration: false,
-    hasInternalCsvImport: false,
-    hasGeneration: false,
-    hasExternalCsvImport: false,
   };
   const voteEvent = {
     id: 1,

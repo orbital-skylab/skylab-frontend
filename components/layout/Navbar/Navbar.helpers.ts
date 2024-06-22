@@ -14,7 +14,7 @@ export const NAVBAR_OPTIONS: NavbarOption[] = [
   {
     label: "Voting",
     id: "nav-voting",
-    route: PAGES.VOTING,
+    route: PAGES.VOTE_EVENTS,
     currentPageRegExp: /voting/,
   },
   {

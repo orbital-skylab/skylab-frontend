@@ -14,11 +14,8 @@ describe("<VoterManagementTab />", () => {
     isRegistrationOpen: false,
     hasInternalList: false,
     hasExternalList: false,
-    hasRegistration: false,
-    hasInternalCsvImport: false,
-    hasGeneration: false,
-    hasExternalCsvImport: false,
   };
+
   const internalVoters = [
     {
       id: 1,

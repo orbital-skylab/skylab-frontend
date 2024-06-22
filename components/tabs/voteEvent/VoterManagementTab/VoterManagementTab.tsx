@@ -28,10 +28,6 @@ type Props = {
 const PRE_SET_VOTER_MANAGEMENT = {
   hasInternalList: false,
   hasExternalList: false,
-  hasGeneration: false,
-  hasRegistration: false,
-  hasInternalCsvImport: false,
-  hasExternalCsvImport: false,
   isRegistrationOpen: false,
 };
 
@@ -148,7 +144,6 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
             {selectedList === LIST_TYPES.EXTERNAL_VOTERS && (
               <AddExternalVoterMenu
                 voteEventId={voteEventId}
-                voterManagement={voterManagement}
                 mutate={mutateExternalVoters}
               />
             )}
