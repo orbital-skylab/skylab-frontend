@@ -32,16 +32,19 @@ const DeleteVoteEventModal: FC<Props> = ({
         );
         return { voteEvents: newVoteEvents };
       });
+      setSuccess(
+        `You have successfully deleted the vote event ${voteEvent.title}!`
+      );
+      handleCloseModal();
+    },
+    onError: () => {
+      setError("Something went wrong while deleting the vote event");
     },
   });
 
   const handleDeleteVoteEvent = async () => {
     try {
       await deleteVoteEvent.call();
-      setSuccess(
-        `You have successfully deleted the vote event ${voteEvent.title}!`
-      );
-      handleCloseModal();
     } catch (error) {
       setError(error);
     }

@@ -352,6 +352,17 @@ export type CreateCandidateResponse = {
 };
 
 /**
+ * Vote Endpoints
+ */
+export type GetVotesResponse = {
+  votes: {
+    projectId: number;
+  }[];
+};
+
+export type SubmitVotesResponse = GetVotesResponse;
+
+/**
  * Error
  */
 export type Error = { message: string };

@@ -15,7 +15,7 @@ import { useState } from "react";
 const VoteEvents: NextPage = () => {
   const [isAddVoteEventOpen, setIsAddVoteEventOpen] = useState(false);
   const { data, status, mutate } = useFetch<GetVoteEventsResponse>({
-    endpoint: PAGES.VOTING,
+    endpoint: PAGES.VOTE_EVENTS,
   });
 
   const handleOpenAddVoteEventModal = () => {
