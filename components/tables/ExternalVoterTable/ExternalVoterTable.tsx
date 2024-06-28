@@ -32,7 +32,7 @@ const ExternalVoterTable: FC<Props> = ({ externalVoters, status, mutate }) => {
     <LoadingWrapper isLoading={isFetching(status)}>
       <NoDataWrapper
         noDataCondition={externalVoters.length === 0}
-        fallback={<NoneFound message="No external voters found" />}
+        fallback={<NoneFound title="" message="No external voters found" />}
       >
         <Table
           id="external-voter-table"

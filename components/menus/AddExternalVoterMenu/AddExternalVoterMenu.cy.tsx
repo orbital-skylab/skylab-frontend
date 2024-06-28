@@ -3,19 +3,16 @@ import { mount } from "cypress/react18";
 import AddExternalVoterMenu from "./AddExternalVoterMenu";
 
 describe("<AddExternalVoterMenu />", () => {
-  let mutateExternalVotersSpy: any;
+  let mutateSpy: any;
   const voteEventId = 1;
 
   beforeEach(() => {
-    mutateExternalVotersSpy = cy.spy().as("mutateExternalVotersSpy");
+    mutateSpy = cy.spy().as("mutateSpy");
   });
 
-  it("should open the menu with one item when button is clicked", () => {
+  it("should open the menu when clicked", () => {
     mount(
-      <AddExternalVoterMenu
-        voteEventId={voteEventId}
-        mutate={mutateExternalVotersSpy}
-      />
+      <AddExternalVoterMenu voteEventId={voteEventId} mutate={mutateSpy} />
     );
 
     // Click on the button to open the menu
@@ -23,10 +20,8 @@ describe("<AddExternalVoterMenu />", () => {
 
     // Assert that the menu is opened
     cy.get("#add-external-voter-menu").should("be.visible");
-
-    // Assert the presence of expected items
-
-    // Assert spies are not called
-    cy.get("@mutateExternalVotersSpy").should("not.have.been.called");
+    cy.contains("Add External Voter").should("be.visible");
+    cy.contains("Import CSV").should("be.visible");
+    cy.contains("Generate Voter IDs").should("be.visible");
   });
 });

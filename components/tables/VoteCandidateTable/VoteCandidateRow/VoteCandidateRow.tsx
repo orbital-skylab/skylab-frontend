@@ -29,11 +29,9 @@ const VoteCandidateRow: FC<Props> = ({
           <Stack direction="row" justifyContent="end" spacing="0.5rem">
             <Button
               id={`candidate-${candidate.id}-vote-button`}
-              variant="contained"
+              variant={isSelected ? "outlined" : "contained"}
               onClick={handleToggleSelected}
-              sx={{
-                backgroundColor: isSelected ? "success" : "primary",
-              }}
+              size="small"
             >
               {isSelected ? "Voted" : "Vote"}
             </Button>

@@ -42,7 +42,7 @@ const InternalVoterTable: FC<Props> = ({
     <LoadingWrapper isLoading={isFetching(status)}>
       <NoDataWrapper
         noDataCondition={internalVoters.length === 0}
-        fallback={<NoneFound message="No internal voters found" />}
+        fallback={<NoneFound title="" message="No internal voters found" />}
       >
         <Table
           id="internal-voter-table"

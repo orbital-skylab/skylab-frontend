@@ -114,7 +114,7 @@ function Dropdown<FormValuesType>({
 
   return (
     <>
-      <FormControl>
+      <FormControl size={size}>
         <InputLabel>{label}</InputLabel>
         <Select
           id={id}

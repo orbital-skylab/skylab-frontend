@@ -1,6 +1,6 @@
 import NoneFound from "@/components/emptyStates/NoneFound";
 import Table from "@/components/tables/Table";
-import VoteCandidateRow from "@/components/tables/VoteCandidateTable/VoteCandidateTableRow";
+import VoteCandidateRow from "@/components/tables/VoteCandidateTable/VoteCandidateRow";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import { FETCH_STATUS, isFetching } from "@/hooks/useFetch";
@@ -17,7 +17,7 @@ type Props = {
 const columnHeadings: { heading: string; align: "left" | "right" }[] = [
   { heading: "Project ID", align: "left" },
   { heading: "Name", align: "left" },
-  { heading: "Actions", align: "right" },
+  { heading: "Vote", align: "right" },
 ];
 
 const VoteCandidateTable: FC<Props> = ({

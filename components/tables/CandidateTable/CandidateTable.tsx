@@ -30,6 +30,7 @@ const CandidateTable: FC<Props> = ({
   status,
   mutate,
 }) => {
+  candidates = candidates.sort((a, b) => a.id - b.id);
   const candidateRows = candidates.map((candidate) => (
     <CandidateRow
       key={candidate.id}

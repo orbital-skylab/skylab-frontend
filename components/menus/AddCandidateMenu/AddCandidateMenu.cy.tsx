@@ -17,7 +17,7 @@ describe("<AddCandidateMenu />", () => {
     cy.get("#add-candidate-menu-button").click();
 
     // Assert that the menu is opened
-    cy.get("#add-external-voter-menu").should("be.visible");
+    cy.get("#add-candidate-menu").should("be.visible");
     cy.contains("Add Candidate").should("be.visible");
     cy.contains("Batch Add Candidates").should("be.visible");
   });

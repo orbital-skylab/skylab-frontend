@@ -62,7 +62,7 @@ describe("<AddInternalVoterModal />", () => {
 
     // Submit the form
     cy.intercept(
-      "PUT",
+      "POST",
       `/api/vote-events/${voteEventId}/voter-management/internal-voters`,
       {
         statusCode: 200,

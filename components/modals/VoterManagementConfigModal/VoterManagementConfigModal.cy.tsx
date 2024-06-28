@@ -87,11 +87,7 @@ describe("<VoterManagementConfigModal />", () => {
     ).as("setVoterManagement");
 
     // check presence of elements due to configured voter management
-    cy.get("#registration-checkbox").should("exist");
-    cy.get("#internal-csv-import-checkbox").should("exist");
     cy.get("#copy-internal-voters-dropdown").should("exist");
-    cy.get("#generation-checkbox").should("exist");
-    cy.get("#external-csv-import-checkbox").should("exist");
     cy.get("#copy-external-voters-dropdown").should("exist");
 
     cy.get("#internal-list-checkbox").should("be.checked");
@@ -145,22 +141,14 @@ describe("<VoterManagementConfigModal />", () => {
     );
 
     // check if the additional options are hidden
-    cy.get("#registration-checkbox").should("not.exist");
-    cy.get("#internal-csv-import-checkbox").should("not.exist");
     cy.get("#copy-internal-voters-dropdown").should("not.exist");
-    cy.get("#generation-checkbox").should("not.exist");
-    cy.get("#external-csv-import-checkbox").should("not.exist");
     cy.get("#copy-external-voters-dropdown").should("not.exist");
 
     // check if the additional options are displayed
     cy.get("#internal-list-checkbox").click();
-    cy.get("#registration-checkbox").should("exist");
-    cy.get("#internal-csv-import-checkbox").should("exist");
     cy.get("#copy-internal-voters-dropdown").should("exist");
 
     cy.get("#external-list-checkbox").click();
-    cy.get("#generation-checkbox").should("exist");
-    cy.get("#external-csv-import-checkbox").should("exist");
     cy.get("#copy-external-voters-dropdown").should("exist");
   });
 

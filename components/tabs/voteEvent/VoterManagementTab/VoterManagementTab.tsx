@@ -98,12 +98,12 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
           >
             {voterManagementConfigButton}
             {internalOnly && (
-              <Typography id="internal-voters-header">
+              <Typography variant="h5" id="internal-voters-header">
                 Internal Voters
               </Typography>
             )}
             {externalOnly && (
-              <Typography id="external-voters-header">
+              <Typography variant="h5" id="external-voters-header">
                 External Voters
               </Typography>
             )}

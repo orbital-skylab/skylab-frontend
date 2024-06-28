@@ -1,8 +1,8 @@
 import Checkbox from "@/components/formikFormControllers/Checkbox";
 import Dropdown from "@/components/formikFormControllers/Dropdown";
-import RichTextEditor from "@/components/formikFormControllers/RichTextEditor";
 import TextInput from "@/components/formikFormControllers/TextInput";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
+import { ERRORS } from "@/helpers/errors";
 import useApiCall from "@/hooks/useApiCall";
 import { Mutate } from "@/hooks/useFetch";
 import {
@@ -10,7 +10,7 @@ import {
   GetVoteEventResponse,
   HTTP_METHOD,
 } from "@/types/api";
-import { DISPLAY_TYPES, VoteConfig, VoteEvent } from "@/types/voteEvents";
+import { DISPLAY_TYPES, VoteEvent } from "@/types/voteEvents";
 import { LoadingButton } from "@mui/lab";
 import { Stack } from "@mui/material";
 import { Formik } from "formik";
@@ -20,6 +20,14 @@ import * as Yup from "yup";
 type Props = {
   voteEvent: VoteEvent;
   mutate: Mutate<GetVoteEventResponse>;
+};
+
+type EditVoteConfigFormValues = {
+  displayType: DISPLAY_TYPES | "";
+  minVotes: number;
+  maxVotes: number;
+  isRandomOrder: boolean;
+  instructions: string;
 };
 
 const VoteConfigTab: FC<Props> = ({ voteEvent, mutate }) => {
@@ -44,7 +52,7 @@ const VoteConfigTab: FC<Props> = ({ voteEvent, mutate }) => {
     },
   });
 
-  const handleSubmit = async (values: VoteConfig) => {
+  const handleSubmit = async (values: EditVoteConfigFormValues) => {
     try {
       await editVoteConfig.call({
         voteEvent: {
@@ -59,12 +67,12 @@ const VoteConfigTab: FC<Props> = ({ voteEvent, mutate }) => {
     }
   };
 
-  const initialValues: VoteConfig = {
+  const initialValues: EditVoteConfigFormValues = {
     maxVotes: voteEvent.voteConfig?.maxVotes || 1,
     minVotes: voteEvent.voteConfig?.minVotes || 1,
     isRandomOrder: voteEvent.voteConfig?.isRandomOrder || false,
     instructions: voteEvent.voteConfig?.instructions || "",
-    displayType: voteEvent.voteConfig?.displayType || DISPLAY_TYPES.NONE,
+    displayType: voteEvent.voteConfig?.displayType || "",
   };
 
   return (
@@ -74,12 +82,13 @@ const VoteConfigTab: FC<Props> = ({ voteEvent, mutate }) => {
       validationSchema={editVoteConfigValidationSchema}
     >
       {(formik) => (
-        <Stack spacing={2}>
+        <Stack spacing={2} flexGrow={1}>
           <Dropdown
             id="display-type-dropdown"
             label="Select candidate display type"
             name="displayType"
             formik={formik}
+            size="small"
             options={Object.values(DISPLAY_TYPES).map((displayType) => ({
               label: displayType,
               value: displayType,
@@ -105,9 +114,11 @@ const VoteConfigTab: FC<Props> = ({ voteEvent, mutate }) => {
             name="isRandomOrder"
             formik={formik}
           />
-          <RichTextEditor
+          <TextInput
             id="instructions-input"
             name="instructions"
+            label="Vote event instructions"
+            multiline={true}
             formik={formik}
           />
           <LoadingButton
@@ -128,18 +139,22 @@ const VoteConfigTab: FC<Props> = ({ voteEvent, mutate }) => {
 export default VoteConfigTab;
 
 const editVoteConfigValidationSchema = Yup.object().shape({
-  displayType: Yup.string().required("Required"),
+  displayType: Yup.string()
+    .required(ERRORS.REQUIRED)
+    .not([""], ERRORS.REQUIRED),
   minVotes: Yup.number()
+    .typeError("Minimum number of votes must be an integer")
     .integer("Minimum number of votes must be an integer")
     .min(0, "Minimum number of votes vote cannot be less than 0")
     .max(
       Yup.ref("maxVotes"),
       "Minimum number of votes cannot be greater than Maximum number of votes"
     )
-    .required("Minimum number of vote is required"),
+    .required(ERRORS.REQUIRED),
   maxVotes: Yup.number()
+    .typeError("Maximum number of votes must be an integer")
     .integer("Maximum number of votes must be an integer")
     .min(1, "Maximum number of votes cannot be less than 1")
-    .required("Maximum number of votes is required"),
-  isRandomOrder: Yup.boolean().required("Required"),
+    .required(ERRORS.REQUIRED),
+  isRandomOrder: Yup.boolean().required(ERRORS.REQUIRED),
 });

@@ -66,7 +66,7 @@ const VoteEventEdit: FC<Props> = ({ voteEvent, mutate }) => {
           <CandidatesTab voteEventId={voteEvent.id} />
         )}
         {selectedTab === VOTE_EVENT_TABS.VOTE_CONFIG && (
-          <VoteConfigTab voteEventId={voteEvent.id} />
+          <VoteConfigTab voteEvent={voteEvent} mutate={mutate} />
         )}
         {selectedTab === VOTE_EVENT_TABS.RESULTS && (
           <ResultsTab voteEventId={voteEvent.id} />

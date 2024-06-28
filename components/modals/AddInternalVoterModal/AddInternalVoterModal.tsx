@@ -32,7 +32,7 @@ const AddInternalVoterModal: FC<Props> = ({
   const { setSuccess, setError } = useSnackbarAlert();
 
   const addInternalVoter = useApiCall({
-    method: HTTP_METHOD.PUT,
+    method: HTTP_METHOD.POST,
     endpoint: `/vote-events/${voteEventId}/voter-management/internal-voters`,
     onSuccess: ({ internalVoter }: CreateInternalVoterResponse) => {
       mutate((data) => {

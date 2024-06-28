@@ -24,7 +24,7 @@ describe("<AddInternalVoterModalItem />", () => {
     );
 
     // Click on the menu item
-    cy.contains("Add By Email").click();
+    cy.contains("Add Internal Voter").click();
 
     // Assert that the modal is opened
     cy.get("body").should("contain", "Add By Email");

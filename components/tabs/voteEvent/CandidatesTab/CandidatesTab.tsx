@@ -17,6 +17,7 @@ const CandidatesTab: FC<Props> = ({ voteEventId }) => {
   } = useFetch<GetCandidatesResponse>({
     endpoint: `/vote-events/${voteEventId}/candidates`,
   });
+
   return (
     <Stack flexGrow={1}>
       <div
@@ -27,9 +28,13 @@ const CandidatesTab: FC<Props> = ({ voteEventId }) => {
         }}
       >
         <div style={{ gridColumn: 2, textAlign: "center" }}>
-          <Typography id="candidates-header">Candidates</Typography>
+          <Typography variant="h5" id="candidates-header">
+            Candidates
+          </Typography>
         </div>
-        <div style={{ gridColumn: 3 }}>
+        <div
+          style={{ gridColumn: 3, display: "flex", justifyContent: "right" }}
+        >
           <AddCandidateMenu voteEventId={voteEventId} mutate={mutate} />
         </div>
       </div>

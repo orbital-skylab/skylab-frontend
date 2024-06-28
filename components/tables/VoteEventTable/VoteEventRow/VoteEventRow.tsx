@@ -62,10 +62,10 @@ const VoteEventRow: FC<Props> = ({ voteEvent, mutate }) => {
         </TableCell>
         <TableCell align="right">
           <Stack direction="row" justifyContent="end" spacing="0.5rem">
-            {status === VOTE_EVENT_STATUS.INCOMPLETE && (
+            {status === VOTE_EVENT_STATUS.IN_PROGRESS && (
               <Link href={`/vote-events/${voteEvent.id}`} passHref>
-                <Tooltip title="Edit vote event" placement="top">
-                  <Button id="edit-vote-event-button">Vote</Button>
+                <Tooltip title="Vote in this event" placement="top">
+                  <Button id="vote-event-vote-button">Vote</Button>
                 </Tooltip>
               </Link>
             )}

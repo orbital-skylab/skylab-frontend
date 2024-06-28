@@ -74,16 +74,19 @@ const SubmitVotesModal: FC<Props> = ({
 
   return (
     <Modal
+      id="submit-votes-modal"
       open={open}
       handleClose={handleCloseModal}
       title={`Submit Votes`}
       subheader={`Total votes: ${
         projectIds.length
-      }\nYou have voted for the following projects: ${projectIds.join(", ")}`}
+      }\nYou have voted for the following project IDs: ${projectIds.join(
+        ", "
+      )}`}
     >
-      <Stack spacing={2} direction="row" justifyContent="flex-end">
+      <Stack spacing={2} direction="row" justifyContent="space-between">
         <Button
-          id="delete-vote-event-cancel-button"
+          id="submit-votes-return-button"
           size="small"
           onClick={handleCloseModal}
           disabled={isCalling(submitVotes.status)}
@@ -91,7 +94,7 @@ const SubmitVotesModal: FC<Props> = ({
           return
         </Button>
         <Button
-          id="delete-vote-event-confirm-button"
+          id="submit-votes-button"
           size="small"
           onClick={handleSubmit}
           variant="contained"

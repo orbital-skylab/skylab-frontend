@@ -79,7 +79,8 @@ const BatchAddCandidateModal: FC<Props> = ({
       open={open}
       handleClose={handleCloseModal}
       title="Batch Add Candidate"
-      subheader={`Batch add projects from a specific cohort and achievement level as candidates.`}
+      subheader={`Batch add projects from a specific cohort and achievement level as candidates. 
+        This will only add projects that are not already candidates.`}
     >
       <Formik
         initialValues={initialValues}

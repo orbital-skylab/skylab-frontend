@@ -24,7 +24,7 @@ describe("<AddExternalVoterModalItem />", () => {
     );
 
     // Click on the menu item
-    cy.contains("Add Voter ID").click();
+    cy.contains("Add External Voter").click();
 
     // Assert that the modal is opened
     cy.get("body").should("contain", "Add Voter ID");
