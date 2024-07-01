@@ -15,7 +15,7 @@ type Props = {
 };
 
 const columnHeadings: { heading: string; align: "left" | "right" }[] = [
-  { heading: "Voter Id", align: "left" },
+  { heading: "Voter ID", align: "left" },
   { heading: "Actions", align: "right" },
 ];
 

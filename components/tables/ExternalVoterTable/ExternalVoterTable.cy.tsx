@@ -25,7 +25,7 @@ describe("<ExternalVoterTable />", () => {
     );
 
     // Check column headings
-    cy.get("thead").contains("Voter Id").should("be.visible");
+    cy.get("thead").contains("Voter ID").should("be.visible");
     cy.get("thead").contains("Actions").should("be.visible");
 
     // Check rows

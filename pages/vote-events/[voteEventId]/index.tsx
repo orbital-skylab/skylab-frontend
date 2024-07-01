@@ -146,8 +146,8 @@ const VotingPage: NextPage = () => {
             </Typography>
             <Stack direction="row" justifyContent="space-between">
               <Typography variant="h6">
-                Vote for a maximum of {voteConfig?.maxVotes} and minimum of{" "}
-                {voteConfig?.minVotes} candidates.
+                Vote for a maximum of {voteConfig?.maxVotes}, and minimum of{" "}
+                {voteConfig?.minVotes} projects.
               </Typography>
               <Typography variant="h6">Votes cast: {voteCount}</Typography>
             </Stack>

@@ -51,7 +51,7 @@ const VoteEvents: NextPage = () => {
               (data && data.voteEvents === undefined) ||
                 data?.voteEvents.length === 0
             )}
-            fallback={<NoneFound message="No vote events found" />}
+            fallback={<NoneFound title="" message="No vote events found" />}
           >
             {data && (
               <VoteEventTable voteEvents={data.voteEvents} mutate={mutate} />
