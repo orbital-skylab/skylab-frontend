@@ -1,3 +1,6 @@
+import { Project } from "@/types/projects";
+import { User } from "@/types/users";
+
 export enum LIST_TYPES {
   INTERNAL_VOTERS = "Internal Voters",
   EXTERNAL_VOTERS = "External Voters",
@@ -31,7 +34,7 @@ export type VoteEvent = {
   endTime: string;
   voterManagement?: VoterManagement;
   voteConfig?: VoteConfig;
-  ResultsFilter?: ResultsFilter;
+  resultsFilter: ResultsFilter;
 };
 
 export type VoterManagement = {
@@ -49,14 +52,14 @@ export type VoteConfig = {
 };
 
 export type ResultsFilter = {
-  voteEventId: number;
   displayLimit: number;
   showRank: boolean;
+  showVotes: boolean;
   showPoints: boolean;
   showPercentage: boolean;
   areResultsPublished: boolean;
   studentWeight: number;
-  advisorWeight: number;
+  adviserWeight: number;
   mentorWeight: number;
   administratorWeight: number;
   publicWeight: number;
@@ -65,4 +68,22 @@ export type ResultsFilter = {
 export type ExternalVoter = {
   id: string;
   voteEventId: number;
+};
+
+export type Vote = {
+  id: number;
+  voteEventId: number;
+  projectId: number;
+  userId: number | null;
+  externalVoterId: string | null;
+  internalVoter: User | null;
+  project: Project;
+};
+
+export type VoteEventResult = {
+  rank: number | null;
+  project: Project;
+  votes: number | null;
+  points: number | null;
+  percentage: number | null;
 };

@@ -1,4 +1,22 @@
-import { VOTE_EVENT_STATUS, VoteEvent } from "@/types/voteEvents";
+import {
+  ResultsFilter,
+  VOTE_EVENT_STATUS,
+  VoteEvent,
+} from "@/types/voteEvents";
+
+export const DEFAULT_RESULTS_FILTER: ResultsFilter = {
+  areResultsPublished: false,
+  displayLimit: 0,
+  showRank: false,
+  showVotes: false,
+  showPoints: false,
+  showPercentage: false,
+  publicWeight: 1,
+  studentWeight: 1,
+  mentorWeight: 1,
+  adviserWeight: 1,
+  administratorWeight: 1,
+};
 
 /**
  * Gets the status of a vote event

@@ -2,6 +2,7 @@
 import { mount } from "cypress/react18";
 import GeneralSettingsTab from "./GeneralSettingsTab";
 import { isoDateToDateTimeLocalInput } from "@/helpers/dates";
+import { DEFAULT_RESULTS_FILTER } from "@/helpers/voteEvent";
 
 describe("<GeneralSettingsTab />", () => {
   let mutateSpy: any;
@@ -10,6 +11,7 @@ describe("<GeneralSettingsTab />", () => {
     title: "Test Vote Event",
     startTime: "2024-06-01T08:00:00Z",
     endTime: "2024-06-02T08:00:00Z",
+    resultsFilter: DEFAULT_RESULTS_FILTER,
   };
 
   beforeEach(() => {

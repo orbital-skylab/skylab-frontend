@@ -2,6 +2,7 @@
 import React from "react";
 import DeleteVoteEventModal from "./DeleteVoteEventModal";
 import { mount } from "cypress/react18";
+import { DEFAULT_RESULTS_FILTER } from "@/helpers/voteEvent";
 
 describe("<DeleteVoteEventModal />", () => {
   let setOpenSpy: any;
@@ -13,6 +14,7 @@ describe("<DeleteVoteEventModal />", () => {
     title: "Test Vote Event Title",
     startTime: "2022-01-01T00:00:00.000Z",
     endTime: "2022-03-01T23:59:59.000Z",
+    resultsFilter: DEFAULT_RESULTS_FILTER,
   };
 
   beforeEach(() => {

@@ -3,6 +3,7 @@ import { mount } from "cypress/react18";
 import VoteEventRow from "./VoteEventRow";
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
 import { DISPLAY_TYPES } from "@/types/voteEvents";
+import { DEFAULT_RESULTS_FILTER } from "@/helpers/voteEvent";
 
 describe("<VoteEventRow />", () => {
   let mutateSpy: any;
@@ -23,6 +24,7 @@ describe("<VoteEventRow />", () => {
       instructions: "Sample Instructions",
       isRandomOrder: false,
     },
+    resultsFilter: DEFAULT_RESULTS_FILTER,
   };
 
   beforeEach(() => {

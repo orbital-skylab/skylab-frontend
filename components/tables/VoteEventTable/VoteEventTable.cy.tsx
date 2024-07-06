@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
+import { DEFAULT_RESULTS_FILTER } from "@/helpers/voteEvent";
 import { mount } from "cypress/react18";
 import VoteEventTable from "./VoteEventTable";
-import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
 
 describe("<VoteEventTable />", () => {
   let mutateSpy: any;
@@ -11,18 +12,21 @@ describe("<VoteEventTable />", () => {
       title: "Sample Vote Event 1",
       startTime: "2024-06-01T08:00:00Z",
       endTime: "2024-06-02T08:00:00Z",
+      resultsFilter: DEFAULT_RESULTS_FILTER,
     },
     {
       id: 2,
       title: "Sample Vote Event 2",
       startTime: "2024-06-03T08:00:00Z",
       endTime: "2024-06-04T08:00:00Z",
+      resultsFilter: DEFAULT_RESULTS_FILTER,
     },
     {
       id: 3,
       title: "Sample Vote Event 3",
       startTime: "2024-07-03T08:00:00Z",
       endTime: "2024-08-04T08:00:00Z",
+      resultsFilter: DEFAULT_RESULTS_FILTER,
     },
   ];
 

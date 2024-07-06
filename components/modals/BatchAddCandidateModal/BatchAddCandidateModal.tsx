@@ -57,7 +57,7 @@ const BatchAddCandidateModal: FC<Props> = ({
   const handleSubmit = async (values: typeof initialValues) => {
     try {
       await batchAddCandidate.call({
-        cohort: values.cohort,
+        cohort: parseInt(values.cohort),
         achievement: values.achievement,
       });
       setOpen(false);

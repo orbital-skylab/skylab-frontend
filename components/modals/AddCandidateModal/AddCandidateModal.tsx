@@ -49,7 +49,7 @@ const AddCandidateModal: FC<Props> = ({
 
   const handleSubmit = async (values: typeof initialValues) => {
     try {
-      await addCandidate.call({ projectId: values.projectId });
+      await addCandidate.call({ projectId: parseInt(values.projectId) });
       setOpen(false);
       handleCloseMenu();
       setSuccess(

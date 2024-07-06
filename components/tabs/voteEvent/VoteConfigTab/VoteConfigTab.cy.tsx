@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import VoteConfigTab from "@/components/tabs/voteEvent/VoteConfigTab/VoteConfigTab";
 import { ERRORS } from "@/helpers/errors";
+import { DEFAULT_RESULTS_FILTER } from "@/helpers/voteEvent";
 import { DISPLAY_TYPES } from "@/types/voteEvents";
 import { mount } from "cypress/react18";
 
@@ -11,6 +12,7 @@ describe("<VoteConfigTab />", () => {
     title: "Test Vote Event",
     startTime: "2022-01-01T00:00:00Z",
     endTime: "2122-01-02T00:00:00Z",
+    resultsFilter: DEFAULT_RESULTS_FILTER,
   };
 
   beforeEach(() => {

@@ -1,160 +1,90 @@
-import Checkbox from "@/components/formikFormControllers/Checkbox";
-import Dropdown from "@/components/formikFormControllers/Dropdown";
-import TextInput from "@/components/formikFormControllers/TextInput";
-import useSnackbarAlert from "@/contexts/useSnackbarAlert";
-import { ERRORS } from "@/helpers/errors";
-import useApiCall from "@/hooks/useApiCall";
-import { Mutate } from "@/hooks/useFetch";
-import {
-  EditVoteEventResponse,
-  GetVoteEventResponse,
-  HTTP_METHOD,
-} from "@/types/api";
-import { DISPLAY_TYPES, VoteEvent } from "@/types/voteEvents";
-import { LoadingButton } from "@mui/lab";
-import { Stack } from "@mui/material";
-import { Formik } from "formik";
-import { FC } from "react";
-import * as Yup from "yup";
+import VoteConfigModal from "@/components/modals/VoteConfigModal";
+import VotesTable from "@/components/tables/VotesTable";
+import useFetch, { Mutate } from "@/hooks/useFetch";
+import { GetVoteEventResponse, GetVoteEventVotesResponse } from "@/types/api";
+import { VoteEvent } from "@/types/voteEvents";
+import { Button, Stack, Typography } from "@mui/material";
+import { FC, useState } from "react";
 
 type Props = {
   voteEvent: VoteEvent;
   mutate: Mutate<GetVoteEventResponse>;
 };
 
-type EditVoteConfigFormValues = {
-  displayType: DISPLAY_TYPES | "";
-  minVotes: number;
-  maxVotes: number;
-  isRandomOrder: boolean;
-  instructions: string;
-};
-
 const VoteConfigTab: FC<Props> = ({ voteEvent, mutate }) => {
-  const { id: voteEventId } = voteEvent;
-  const { setSuccess, setError } = useSnackbarAlert();
+  const [openVoteConfigModal, setOpenVoteConfigModal] = useState(false);
+  const isVoteConfigSet = !!voteEvent.voteConfig;
 
-  const editVoteConfig = useApiCall({
-    method: HTTP_METHOD.PUT,
-    endpoint: `/vote-events/${voteEventId}`,
-    onSuccess: ({ voteEvent }: EditVoteEventResponse) => {
-      mutate(() => {
-        return {
-          voteEvent: {
-            ...voteEvent,
-          },
-        };
-      });
-      setSuccess("Vote config edited successfully");
-    },
-    onError: () => {
-      setError("Something went wrong while editing the vote config");
-    },
+  const {
+    data: votesData,
+    status,
+    mutate: mutateVotes,
+  } = useFetch<GetVoteEventVotesResponse>({
+    endpoint: `/vote-events/${voteEvent.id}/votes/all`,
   });
 
-  const handleSubmit = async (values: EditVoteConfigFormValues) => {
-    try {
-      await editVoteConfig.call({
-        voteEvent: {
-          ...voteEvent,
-          voteConfig: {
-            ...values,
-          },
-        },
-      });
-    } catch (error) {
-      setError(error);
-    }
+  const handleOpenVoteConfigModal = () => {
+    setOpenVoteConfigModal(true);
   };
 
-  const initialValues: EditVoteConfigFormValues = {
-    maxVotes: voteEvent.voteConfig?.maxVotes || 1,
-    minVotes: voteEvent.voteConfig?.minVotes || 1,
-    isRandomOrder: voteEvent.voteConfig?.isRandomOrder || false,
-    instructions: voteEvent.voteConfig?.instructions || "",
-    displayType: voteEvent.voteConfig?.displayType || "",
-  };
+  const voteConfigButton = (
+    <Button
+      id="vote-config-modal-button"
+      variant="contained"
+      onClick={handleOpenVoteConfigModal}
+    >
+      Set Vote Config
+    </Button>
+  );
 
   return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={handleSubmit}
-      validationSchema={editVoteConfigValidationSchema}
-    >
-      {(formik) => (
-        <Stack spacing={2} flexGrow={1}>
-          <Dropdown
-            id="display-type-dropdown"
-            label="Select candidate display type"
-            name="displayType"
-            formik={formik}
-            size="small"
-            options={Object.values(DISPLAY_TYPES).map((displayType) => ({
-              label: displayType,
-              value: displayType,
-            }))}
-          />
-          <TextInput
-            id="min-votes-input"
-            name="minVotes"
-            label="Minimum number of votes"
-            size="small"
-            formik={formik}
-          />
-          <TextInput
-            id="max-votes-input"
-            name="maxVotes"
-            label="Maximum number of votes"
-            size="small"
-            formik={formik}
-          />
-          <Checkbox
-            id="random-order-checkbox"
-            label="Randomize candidate order"
-            name="isRandomOrder"
-            formik={formik}
-          />
-          <TextInput
-            id="instructions-input"
-            name="instructions"
-            label="Vote event instructions"
-            multiline={true}
-            formik={formik}
-          />
-          <LoadingButton
-            id="save-vote-config-button"
-            size="small"
-            variant="contained"
-            onClick={formik.submitForm}
-            disabled={formik.isSubmitting}
-            loading={formik.isSubmitting}
+    <>
+      <VoteConfigModal
+        voteEvent={voteEvent}
+        open={openVoteConfigModal}
+        setOpen={setOpenVoteConfigModal}
+        mutate={mutate}
+      />
+      {isVoteConfigSet ? (
+        <Stack flexGrow={1}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr",
+              alignItems: "center",
+            }}
           >
-            Save
-          </LoadingButton>
+            <div
+              style={{ gridColumn: 1, display: "flex", justifyContent: "left" }}
+            >
+              {voteConfigButton}
+            </div>
+            <div style={{ gridColumn: 2, textAlign: "center" }}>
+              <Typography variant="h5" id="votes-header">
+                Votes
+              </Typography>
+            </div>
+          </div>
+          <VotesTable
+            votes={votesData?.votes || []}
+            status={status}
+            voteEventId={voteEvent.id}
+            mutate={mutateVotes}
+          />
         </Stack>
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          {voteConfigButton}
+        </div>
       )}
-    </Formik>
+    </>
   );
 };
 export default VoteConfigTab;
-
-const editVoteConfigValidationSchema = Yup.object().shape({
-  displayType: Yup.string()
-    .required(ERRORS.REQUIRED)
-    .not([""], ERRORS.REQUIRED),
-  minVotes: Yup.number()
-    .typeError("Minimum number of votes must be an integer")
-    .integer("Minimum number of votes must be an integer")
-    .min(0, "Minimum number of votes vote cannot be less than 0")
-    .max(
-      Yup.ref("maxVotes"),
-      "Minimum number of votes cannot be greater than Maximum number of votes"
-    )
-    .required(ERRORS.REQUIRED),
-  maxVotes: Yup.number()
-    .typeError("Maximum number of votes must be an integer")
-    .integer("Maximum number of votes must be an integer")
-    .min(1, "Maximum number of votes cannot be less than 1")
-    .required(ERRORS.REQUIRED),
-  isRandomOrder: Yup.boolean().required(ERRORS.REQUIRED),
-});

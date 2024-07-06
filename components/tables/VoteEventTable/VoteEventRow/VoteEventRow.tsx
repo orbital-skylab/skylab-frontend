@@ -31,8 +31,13 @@ const statusColorMap = {
 const VoteEventRow: FC<Props> = ({ voteEvent, mutate }) => {
   const [isDeleteVoteEventOpen, setIsDeleteVoteEventOpen] = useState(false);
 
-  const status = getVoteEventStatus(voteEvent);
-  const statusColor = statusColorMap[status];
+  const voteEventStatus = getVoteEventStatus(voteEvent);
+  const statusColor = statusColorMap[voteEventStatus];
+  const areResultsPublished =
+    voteEvent.resultsFilter?.areResultsPublished ?? false;
+  const isVotingInProgress = voteEventStatus === VOTE_EVENT_STATUS.IN_PROGRESS;
+  const hasVoteEventStarted =
+    isVotingInProgress || voteEventStatus === VOTE_EVENT_STATUS.COMPLETED;
 
   const handleOpenDeleteModal = () => {
     setIsDeleteVoteEventOpen(true);
@@ -54,7 +59,7 @@ const VoteEventRow: FC<Props> = ({ voteEvent, mutate }) => {
         <TableCell>{isoDateToLocaleDateWithTime(voteEvent.endTime)}</TableCell>
         <TableCell>
           <Chip
-            label={status}
+            label={voteEventStatus}
             sx={{
               backgroundColor: statusColor,
             }}
@@ -62,10 +67,17 @@ const VoteEventRow: FC<Props> = ({ voteEvent, mutate }) => {
         </TableCell>
         <TableCell align="right">
           <Stack direction="row" justifyContent="end" spacing="0.5rem">
-            {status === VOTE_EVENT_STATUS.IN_PROGRESS && (
+            {isVotingInProgress && (
               <Link href={`/vote-events/${voteEvent.id}`} passHref>
                 <Tooltip title="Vote in this event" placement="top">
                   <Button id="vote-event-vote-button">Vote</Button>
+                </Tooltip>
+              </Link>
+            )}
+            {areResultsPublished && hasVoteEventStarted && (
+              <Link href={`/vote-events/${voteEvent.id}/results`} passHref>
+                <Tooltip title="View results" placement="top">
+                  <Button id="vote-event-results-button">Results</Button>
                 </Tooltip>
               </Link>
             )}
