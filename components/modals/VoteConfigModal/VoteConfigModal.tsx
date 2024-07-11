@@ -12,7 +12,7 @@ import {
 } from "@/types/api";
 import { DISPLAY_TYPES, VoteEvent } from "@/types/voteEvents";
 import { LoadingButton } from "@mui/lab";
-import { Stack } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { Formik } from "formik";
 import { Dispatch, FC, SetStateAction } from "react";
 import * as Yup from "yup";
@@ -49,6 +49,7 @@ const VoteConfigModal: FC<Props> = ({ voteEvent, open, setOpen, mutate }) => {
         };
       });
       setSuccess("Vote config edited successfully");
+      handleCloseModal();
     },
     onError: () => {
       setError("Something went wrong while editing the vote config");
@@ -95,56 +96,71 @@ const VoteConfigModal: FC<Props> = ({ voteEvent, open, setOpen, mutate }) => {
         validationSchema={voteConfigValidationSchema}
       >
         {(formik) => (
-          <Stack spacing={2} flexGrow={1}>
-            <Dropdown
-              id="display-type-dropdown"
-              label="Select candidate display type"
-              name="displayType"
-              formik={formik}
-              size="small"
-              options={Object.values(DISPLAY_TYPES).map((displayType) => ({
-                label: displayType,
-                value: displayType,
-              }))}
-            />
-            <TextInput
-              id="min-votes-input"
-              name="minVotes"
-              label="Minimum number of votes"
-              size="small"
-              formik={formik}
-            />
-            <TextInput
-              id="max-votes-input"
-              name="maxVotes"
-              label="Maximum number of votes"
-              size="small"
-              formik={formik}
-            />
-            <Checkbox
-              id="random-order-checkbox"
-              label="Randomize candidate order"
-              name="isRandomOrder"
-              formik={formik}
-            />
-            <TextInput
-              id="instructions-input"
-              name="instructions"
-              label="Vote event instructions"
-              multiline={true}
-              formik={formik}
-            />
-            <LoadingButton
-              id="save-vote-config-button"
-              size="small"
-              variant="contained"
-              onClick={formik.submitForm}
-              disabled={formik.isSubmitting}
-              loading={formik.isSubmitting}
+          <>
+            <Stack spacing={2} flexGrow={1}>
+              <Dropdown
+                id="display-type-dropdown"
+                label="Select candidate display type"
+                name="displayType"
+                formik={formik}
+                size="small"
+                options={Object.values(DISPLAY_TYPES).map((displayType) => ({
+                  label: displayType,
+                  value: displayType,
+                }))}
+              />
+              <TextInput
+                id="min-votes-input"
+                name="minVotes"
+                label="Minimum number of votes"
+                size="small"
+                formik={formik}
+              />
+              <TextInput
+                id="max-votes-input"
+                name="maxVotes"
+                label="Maximum number of votes"
+                size="small"
+                formik={formik}
+              />
+              <Checkbox
+                id="random-order-checkbox"
+                label="Randomize candidate order"
+                name="isRandomOrder"
+                formik={formik}
+              />
+              <TextInput
+                id="instructions-input"
+                name="instructions"
+                label="Vote event instructions"
+                multiline={true}
+                formik={formik}
+              />
+            </Stack>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              marginTop="2rem"
             >
-              Save
-            </LoadingButton>
-          </Stack>
+              <Button
+                id="vote-config-return-button"
+                size="small"
+                onClick={handleCloseModal}
+              >
+                Return
+              </Button>
+              <LoadingButton
+                id="save-vote-config-button"
+                size="small"
+                variant="contained"
+                onClick={formik.submitForm}
+                disabled={formik.isSubmitting}
+                loading={formik.isSubmitting}
+              >
+                Save
+              </LoadingButton>
+            </Stack>
+          </>
         )}
       </Formik>
     </Modal>
@@ -159,7 +175,7 @@ const voteConfigValidationSchema = Yup.object().shape({
   minVotes: Yup.number()
     .typeError("Minimum number of votes must be an integer")
     .integer("Minimum number of votes must be an integer")
-    .min(0, "Minimum number of votes cannot be less than 0")
+    .min(1, "Minimum number of votes cannot be less than 1")
     .max(
       Yup.ref("maxVotes"),
       "Minimum number of votes cannot be greater than Maximum number of votes"

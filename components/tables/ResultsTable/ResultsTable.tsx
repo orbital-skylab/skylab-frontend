@@ -3,7 +3,7 @@ import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import { FETCH_STATUS, isFetching } from "@/hooks/useFetch";
 
-import ResultRow from "@/components/tables/ResultsTable/ResultRow/ResultsRow";
+import ResultRow from "@/components/tables/ResultsTable/ResultRow/ResultRow";
 import Table from "@/components/tables/Table";
 import { VoteEventResult } from "@/types/voteEvents";
 import { FC } from "react";
@@ -33,7 +33,7 @@ const resultsFactory = {
     }
 
     if (results[0].percentage) {
-      columnHeadings.push({ heading: "Point Percentage", align: "left" });
+      columnHeadings.push({ heading: "Points Percentage", align: "left" });
     }
 
     const resultRows = results.map((result, idx) => {
@@ -64,9 +64,9 @@ const ResultsTable: FC<Props> = ({ results, status }) => {
     <LoadingWrapper isLoading={isFetching(status)}>
       <NoDataWrapper
         noDataCondition={results.length === 0}
-        fallback={<NoneFound title="" message="No Results found" />}
+        fallback={<NoneFound title="" message="No results found" />}
       >
-        <Table id="votes-table" headings={columnHeadings} rows={resultRows} />
+        <Table id="results-table" headings={columnHeadings} rows={resultRows} />
       </NoDataWrapper>
     </LoadingWrapper>
   );

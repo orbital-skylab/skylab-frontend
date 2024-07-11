@@ -2,7 +2,7 @@
 import CandidatesTab from "@/components/tabs/voteEvent/CandidatesTab/CandidatesTab";
 import { mount } from "cypress/react18";
 
-describe("<VoterManagementTab />", () => {
+describe("<CandidatesTab />", () => {
   let candidates: any;
   const voteEventId = 1;
 

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import VoteConfigTab from "@/components/tabs/voteEvent/VoteConfigTab/VoteConfigTab";
-import { ERRORS } from "@/helpers/errors";
 import { DEFAULT_RESULTS_FILTER } from "@/helpers/voteEvent";
+import { LEVELS_OF_ACHIEVEMENT } from "@/types/projects";
 import { DISPLAY_TYPES } from "@/types/voteEvents";
 import { mount } from "cypress/react18";
 
@@ -15,27 +15,64 @@ describe("<VoteConfigTab />", () => {
     resultsFilter: DEFAULT_RESULTS_FILTER,
   };
 
+  const vote = {
+    id: 1,
+    projectId: 1,
+    userId: null,
+    voteEventId: voteEvent.id,
+    externalVoterId: null,
+    project: {
+      id: 1,
+      name: "Project 1",
+      achievement: "Artemis" as LEVELS_OF_ACHIEVEMENT,
+      cohortYear: 2024,
+      proposalPdf: "https://www.google.com",
+      posterUrl: "https://loremflickr.com/640/480",
+      videoUrl: "https://www.youtube.com/watch?v=6n3pFFPSlW4",
+      teamName: "Team 1",
+      hasDropped: false,
+      students: [],
+    },
+    internalVoter: null,
+  };
+
+  const votes = [
+    {
+      ...vote,
+      userId: 1,
+      internalVoter: {
+        id: 1,
+        name: "Internal Voter",
+        email: "test@email.com",
+      },
+    },
+    {
+      ...vote,
+      id: 2,
+      userId: 2,
+      internalVoter: {
+        id: 2,
+        name: "Internal Voter 2",
+        email: "test2@email.com",
+      },
+    },
+    {
+      ...vote,
+      id: 3,
+      externalVoterId: "External Voter",
+    },
+  ];
+
   beforeEach(() => {
     mutateSpy = cy.spy().as("mutateSpy");
 
-    cy.intercept("PUT", `/api/vote-events/${voteEvent.id}`, {
+    cy.intercept("GET", `/api/vote-events/${voteEvent.id}/votes/all`, {
       statusCode: 200,
-      body: {},
-    }).as("editVoteEventRequest");
+      body: { votes: votes },
+    }).as("votesRequest");
   });
 
-  it("should render with default values if vote config has not been set", () => {
-    // Mount the component
-    mount(<VoteConfigTab voteEvent={voteEvent} mutate={mutateSpy} />);
-
-    cy.get("#display-type-dropdown").should("have.value", "");
-    cy.get("#min-votes-input").should("have.value", "1");
-    cy.get("#max-votes-input").should("have.value", "1");
-    cy.get("#instructions-input").should("have.value", "");
-    cy.get("#random-order-checkbox").should("not.be.checked");
-  });
-
-  it("should render with vote config values if vote config has been set", () => {
+  it("should render with votes table and vote config button if vote config is set", () => {
     // Mount the component
     mount(
       <VoteConfigTab
@@ -53,107 +90,49 @@ describe("<VoteConfigTab />", () => {
       />
     );
 
-    cy.get("#display-type-dropdown").contains(DISPLAY_TYPES.TABLE);
-    cy.get("#min-votes-input").should("have.value", "2");
-    cy.get("#max-votes-input").should("have.value", "3");
-    cy.get("#instructions-input").should("have.value", "vote instructions");
-    cy.get("#random-order-checkbox").should("be.checked");
+    // Check if the header is rendered
+    cy.get("#votes-header").should("be.visible");
+
+    // Check if results table is rendered
+    cy.wait("@votesRequest");
+    cy.get("#votes-table").should("be.visible");
+
+    // Check if vote config button is rendered
+    cy.get("#vote-config-modal-button").should("be.visible");
   });
 
-  it("should submit form with valid data", () => {
+  it("should render the component with correct UI elements if vote config has not been set", () => {
     // Mount the component
     mount(<VoteConfigTab voteEvent={voteEvent} mutate={mutateSpy} />);
 
-    // Set display type and submit the form
-    cy.get("#display-type-dropdown").click();
-    cy.get(`#${DISPLAY_TYPES.TABLE}-option`).click();
-    cy.get("#save-vote-config-button").click();
+    cy.get("#vote-config-modal-button").should("be.visible");
 
-    cy.wait("@editVoteEventRequest");
-    cy.get("@mutateSpy").should("be.calledOnce");
+    cy.get("#votes-header").should("not.exist");
+    cy.get("#votes-table").should("not.exist");
   });
 
-  it("should not submit form if display type is not selected", () => {
+  it("should open the vote config modal when the vote config button is clicked", () => {
     // Mount the component
-    mount(<VoteConfigTab voteEvent={voteEvent} mutate={mutateSpy} />);
+    mount(
+      <VoteConfigTab
+        voteEvent={{
+          ...voteEvent,
+          voteConfig: {
+            displayType: DISPLAY_TYPES.TABLE,
+            minVotes: 2,
+            maxVotes: 3,
+            instructions: "vote instructions",
+            isRandomOrder: true,
+          },
+        }}
+        mutate={mutateSpy}
+      />
+    );
 
-    // Submit the form with empty display type
-    cy.get("#save-vote-config-button").click();
+    // Click the vote config button
+    cy.get("#vote-config-modal-button").click();
 
-    cy.get("#display-type-dropdown")
-      .parent()
-      .parent()
-      .contains(ERRORS.REQUIRED)
-      .should("be.visible");
-    cy.get("@mutateSpy").should("not.be.called");
-  });
-
-  it("should not submit form if min and max votes are not valid", () => {
-    // Mount the component
-    mount(<VoteConfigTab voteEvent={voteEvent} mutate={mutateSpy} />);
-
-    // min and max votes are not integers
-    cy.get("#min-votes-input").clear().type("a");
-    cy.get("#max-votes-input").clear().type("0.1");
-    cy.get("#save-vote-config-button").click();
-
-    cy.get("#min-votes-input")
-      .parent()
-      .parent()
-      .contains("Minimum number of votes must be an integer")
-      .should("be.visible");
-    cy.get("#max-votes-input")
-      .parent()
-      .parent()
-      .contains("Maximum number of votes must be an integer")
-      .should("be.visible");
-
-    // min and max votes empty
-    cy.get("#min-votes-input").clear();
-    cy.get("#max-votes-input").clear();
-    cy.get("#save-vote-config-button").click();
-
-    cy.get("#min-votes-input")
-      .parent()
-      .parent()
-      .contains(ERRORS.REQUIRED)
-      .should("be.visible");
-    cy.get("#max-votes-input")
-      .parent()
-      .parent()
-      .contains(ERRORS.REQUIRED)
-      .should("be.visible");
-
-    // min votes is greater than max votes
-    cy.get("#min-votes-input").clear().type("3");
-    cy.get("#max-votes-input").clear().type("2");
-    cy.get("#save-vote-config-button").click();
-
-    cy.get("#min-votes-input")
-      .parent()
-      .parent()
-      .contains(
-        "Minimum number of votes cannot be greater than Maximum number of votes"
-      )
-      .should("be.visible");
-
-    // min cannot be less than 0 and max cannot be less than 1
-    cy.get("#min-votes-input").clear().type("-1");
-    cy.get("#max-votes-input").clear().type("0");
-    cy.get("#save-vote-config-button").click();
-
-    cy.get("#min-votes-input")
-      .parent()
-      .parent()
-      .contains("Minimum number of votes vote cannot be less than 0")
-      .should("be.visible");
-    cy.get("#max-votes-input")
-      .parent()
-      .parent()
-      .contains("Maximum number of votes cannot be less than 1")
-      .should("be.visible");
-
-    // check that mutate is not called
-    cy.get("@mutateSpy").should("not.be.called");
+    // Check if the modal is open
+    cy.contains("Vote Config").should("be.visible");
   });
 });

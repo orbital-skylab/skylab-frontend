@@ -68,7 +68,7 @@ const DeleteVoteModal: FC<Props> = ({
           Cancel
         </Button>
         <Button
-          id="delete-cvote-confirm-button"
+          id="delete-vote-confirm-button"
           size="small"
           onClick={handleDeleteVote}
           variant="contained"

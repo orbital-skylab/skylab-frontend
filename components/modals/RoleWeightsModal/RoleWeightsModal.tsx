@@ -86,8 +86,8 @@ const RoleWeightsModal: FC<Props> = ({ voteEvent, open, setOpen, mutate }) => {
       open={open}
       handleClose={handleCloseModal}
       title={`Role Weights`}
-      subheader="Points per vote = weight * vote\nIf a user has multiple roles, the highest priority role in order of Administrator, 
-      Mentor, Advisor and Student will be assigned. External voters will be assigned the Public role."
+      subheader={`Points per vote = weight * vote\nIf a user has multiple roles, the highest priority role in order of Administrator, 
+      Mentor, Advisor and Student will be assigned. External voters will be assigned the Public role.`}
     >
       <Formik
         initialValues={initialValues}
@@ -98,7 +98,7 @@ const RoleWeightsModal: FC<Props> = ({ voteEvent, open, setOpen, mutate }) => {
           <>
             <Stack direction="column" spacing="1rem">
               <TextInput
-                id="administer-weight-input"
+                id="administrator-weight-input"
                 name="administratorWeight"
                 label="Administrator Weight"
                 size="small"

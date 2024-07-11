@@ -1,2 +1,2 @@
-import ResultRow from "@/components/tables/ResultsTable/ResultRow/ResultsRow";
+import ResultRow from "@/components/tables/ResultsTable/ResultRow/ResultRow";
 export default ResultRow;

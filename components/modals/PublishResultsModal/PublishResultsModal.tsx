@@ -82,7 +82,7 @@ const PublishResultsModal: FC<Props> = ({
       setSuccess(
         `Results ${isCurrentlyPublished ? "unpublished" : "published"}`
       );
-      setOpen(false);
+      handleCloseModal();
     } catch (error) {
       setError(error);
     }
@@ -119,12 +119,6 @@ const PublishResultsModal: FC<Props> = ({
                 id="show-rank-checkbox"
                 label="Show Rank"
                 name="showRank"
-                formik={formik}
-              />
-              <Checkbox
-                id="show-votes-checkbox"
-                label="Show Number of Votes"
-                name="showVotes"
                 formik={formik}
               />
               <Checkbox
