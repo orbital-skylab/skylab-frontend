@@ -18,7 +18,7 @@ import * as Yup from "yup";
 import Modal from "../Modal";
 
 export type PublishResultsFormValuesType = {
-  displayLimit: number;
+  displayLimit: string;
   showRank: boolean;
   showVotes: boolean;
   showPoints: boolean;
@@ -56,7 +56,7 @@ const PublishResultsModal: FC<Props> = ({
   });
 
   const initialValues: PublishResultsFormValuesType = {
-    displayLimit: resultsFilter.displayLimit,
+    displayLimit: resultsFilter.displayLimit.toString(),
     showRank: resultsFilter.showRank,
     showVotes: resultsFilter.showVotes,
     showPoints: resultsFilter.showPoints,
@@ -72,6 +72,7 @@ const PublishResultsModal: FC<Props> = ({
         resultsFilter: {
           ...resultsFilter,
           ...values,
+          displayLimit: parseInt(values.displayLimit),
           areResultsPublished: !isCurrentlyPublished,
         },
       },

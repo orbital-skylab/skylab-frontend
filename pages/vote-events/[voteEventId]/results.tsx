@@ -29,10 +29,8 @@ const ResultsPage: NextPage = () => {
   const hasVoteEventStarted =
     voteEventStatus === VOTE_EVENT_STATUS.IN_PROGRESS ||
     voteEventStatus === VOTE_EVENT_STATUS.COMPLETED;
-
-  if (!hasVoteEventStarted) {
-    return <NoneFound title="Vote event has not started!" message="" />;
-  }
+  const areResultsAvailable =
+    voteEventData && voteEventData.voteEvent.resultsFilter.areResultsPublished;
 
   return (
     <Body
@@ -45,14 +43,25 @@ const ResultsPage: NextPage = () => {
         noDataCondition={typeof voteEventId !== "string" || !voteEventData}
         fallback={<NoneFound title="No such vote event found!" message="" />}
       >
-        <Typography align="center" variant="h4">
-          {voteEventData?.voteEvent.title}
-        </Typography>
-
-        <ResultsTable
-          results={resultsData?.results || []}
-          status={fetchResultsStatus}
-        />
+        <NoDataWrapper
+          noDataCondition={!hasVoteEventStarted}
+          fallback={
+            <NoneFound title="Vote event has not started!" message="" />
+          }
+        >
+          <NoDataWrapper
+            noDataCondition={!areResultsAvailable}
+            fallback={<NoneFound title="Results Not published!" message="" />}
+          >
+            <Typography align="center" variant="h4" id="results-header">
+              {voteEventData?.voteEvent.title}
+            </Typography>
+            <ResultsTable
+              results={resultsData?.results || []}
+              status={fetchResultsStatus}
+            />
+          </NoDataWrapper>
+        </NoDataWrapper>
       </NoDataWrapper>
     </Body>
   );

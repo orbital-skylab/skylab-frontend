@@ -48,7 +48,7 @@ const VoteEventEdit: FC<Props> = ({ voteEvent, mutate }) => {
           {Object.values(VOTE_EVENT_TABS).map((tab) => {
             return (
               <Tab
-                id={`${tab.toLowerCase()}-tab`}
+                id={`${tab.toLowerCase().split(" ").join("-")}-tab`}
                 key={tab}
                 value={tab}
                 label={tab}

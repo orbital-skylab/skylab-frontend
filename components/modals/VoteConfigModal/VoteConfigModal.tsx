@@ -20,8 +20,8 @@ import Modal from "../Modal";
 
 type EditVoteConfigFormValues = {
   displayType: DISPLAY_TYPES | "";
-  minVotes: number;
-  maxVotes: number;
+  minVotes: string;
+  maxVotes: string;
   isRandomOrder: boolean;
   instructions: string;
 };
@@ -63,6 +63,8 @@ const VoteConfigModal: FC<Props> = ({ voteEvent, open, setOpen, mutate }) => {
           ...voteEvent,
           voteConfig: {
             ...values,
+            minVotes: parseInt(values.minVotes),
+            maxVotes: parseInt(values.maxVotes),
           },
         },
       });
@@ -72,8 +74,8 @@ const VoteConfigModal: FC<Props> = ({ voteEvent, open, setOpen, mutate }) => {
   };
 
   const initialValues: EditVoteConfigFormValues = {
-    maxVotes: voteEvent.voteConfig?.maxVotes || 1,
-    minVotes: voteEvent.voteConfig?.minVotes || 1,
+    maxVotes: voteEvent.voteConfig?.maxVotes.toString() || "1",
+    minVotes: voteEvent.voteConfig?.minVotes.toString() || "1",
     isRandomOrder: voteEvent.voteConfig?.isRandomOrder || false,
     instructions: voteEvent.voteConfig?.instructions || "",
     displayType: voteEvent.voteConfig?.displayType || "",

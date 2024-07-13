@@ -37,8 +37,8 @@ describe("<VoteEventRow />", () => {
     cy.contains("Sample Vote Event").should("be.visible");
     cy.contains(isoDateToLocaleDateWithTime(startTime)).should("be.visible");
     cy.contains(isoDateToLocaleDateWithTime(endTime)).should("be.visible");
-    cy.get("#edit-vote-event-button").should("be.visible");
-    cy.get("#delete-vote-event-button").should("be.visible");
+    cy.get(`#edit-vote-event-${voteEvent.id}-button`).should("be.visible");
+    cy.get(`#delete-vote-event-${voteEvent.id}-button`).should("be.visible");
   };
 
   it("should render the in progress vote event row", () => {
@@ -47,7 +47,7 @@ describe("<VoteEventRow />", () => {
     assertCommonElements(voteEvent.startTime, voteEvent.endTime);
 
     cy.contains("In Progress").should("be.visible");
-    cy.get("#vote-event-vote-button").should(
+    cy.get(`#vote-event-${voteEvent.id}-vote-button`).should(
       "have.attr",
       "href",
       `/vote-events/${voteEvent.id}`
@@ -65,7 +65,7 @@ describe("<VoteEventRow />", () => {
     assertCommonElements(voteEvent.startTime, voteEvent.endTime);
 
     cy.contains("Incomplete").should("be.visible");
-    cy.get("#vote-event-vote-button").should("not.exist");
+    cy.get(`#vote-event-${voteEvent.id}-vote-button`).should("not.exist");
   });
 
   it("should render the upcoming vote event row", () => {
@@ -79,7 +79,7 @@ describe("<VoteEventRow />", () => {
     assertCommonElements("2094-06-01T08:00:00Z", voteEvent.endTime);
 
     cy.contains("Upcoming").should("be.visible");
-    cy.get("#vote-event-vote-button").should("not.exist");
+    cy.get(`#vote-event-${voteEvent.id}-vote-button`).should("not.exist");
   });
 
   it("should render the completed vote event row", () => {
@@ -93,23 +93,44 @@ describe("<VoteEventRow />", () => {
     assertCommonElements(voteEvent.startTime, "2014-06-01T08:00:00Z");
 
     cy.contains("Completed").should("be.visible");
-    cy.get("#vote-event-vote-button").should("not.exist");
+    cy.get(`#vote-event-${voteEvent.id}-vote-button`).should("not.exist");
   });
 
   it("should have an edit button with link", () => {
     mount(<VoteEventRow voteEvent={voteEvent} mutate={mutateSpy} />);
 
-    cy.get("#edit-vote-event-button").should(
+    cy.get(`#edit-vote-event-${voteEvent.id}-button`).should(
       "have.attr",
       "href",
       `/vote-events/${voteEvent.id}/edit`
     );
   });
 
+  it("should have a results button with link if results are published", () => {
+    mount(
+      <VoteEventRow
+        voteEvent={{
+          ...voteEvent,
+          resultsFilter: {
+            ...DEFAULT_RESULTS_FILTER,
+            areResultsPublished: true,
+          },
+        }}
+        mutate={mutateSpy}
+      />
+    );
+
+    cy.get(`#vote-event-${voteEvent.id}-results-button`).should(
+      "have.attr",
+      "href",
+      `/vote-events/${voteEvent.id}/results`
+    );
+  });
+
   it("should open the delete modal when the delete button is clicked", () => {
     mount(<VoteEventRow voteEvent={voteEvent} mutate={mutateSpy} />);
 
-    cy.get("#delete-vote-event-button").click();
+    cy.get(`#delete-vote-event-${voteEvent.id}-button`).click();
 
     cy.contains("Delete Vote Event").should("be.visible");
     cy.get("@mutateSpy").should("not.have.been.called");

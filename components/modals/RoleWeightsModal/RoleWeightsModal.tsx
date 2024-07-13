@@ -17,11 +17,11 @@ import * as Yup from "yup";
 import Modal from "../Modal";
 
 export type RoleWeightsFormValuesType = {
-  studentWeight: number;
-  adviserWeight: number;
-  mentorWeight: number;
-  administratorWeight: number;
-  publicWeight: number;
+  studentWeight: string;
+  adviserWeight: string;
+  mentorWeight: string;
+  administratorWeight: string;
+  publicWeight: string;
 };
 
 type Props = {
@@ -50,11 +50,11 @@ const RoleWeightsModal: FC<Props> = ({ voteEvent, open, setOpen, mutate }) => {
   });
 
   const initialValues: RoleWeightsFormValuesType = {
-    studentWeight: resultsFilter.studentWeight,
-    adviserWeight: resultsFilter.adviserWeight,
-    mentorWeight: resultsFilter.mentorWeight,
-    administratorWeight: resultsFilter.administratorWeight,
-    publicWeight: resultsFilter.publicWeight,
+    studentWeight: resultsFilter.studentWeight.toString(),
+    adviserWeight: resultsFilter.adviserWeight.toString(),
+    mentorWeight: resultsFilter.mentorWeight.toString(),
+    administratorWeight: resultsFilter.administratorWeight.toString(),
+    publicWeight: resultsFilter.publicWeight.toString(),
   };
 
   const handleSubmit = async (values: RoleWeightsFormValuesType) => {
@@ -63,7 +63,11 @@ const RoleWeightsModal: FC<Props> = ({ voteEvent, open, setOpen, mutate }) => {
         ...voteEvent,
         resultsFilter: {
           ...resultsFilter,
-          ...values,
+          studentWeight: parseInt(values.studentWeight),
+          adviserWeight: parseInt(values.adviserWeight),
+          mentorWeight: parseInt(values.mentorWeight),
+          administratorWeight: parseInt(values.administratorWeight),
+          publicWeight: parseInt(values.publicWeight),
         },
       },
     };
@@ -83,6 +87,7 @@ const RoleWeightsModal: FC<Props> = ({ voteEvent, open, setOpen, mutate }) => {
 
   return (
     <Modal
+      id="role-weights-modal"
       open={open}
       handleClose={handleCloseModal}
       title={`Role Weights`}

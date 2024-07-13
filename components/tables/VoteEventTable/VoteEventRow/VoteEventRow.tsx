@@ -70,24 +70,30 @@ const VoteEventRow: FC<Props> = ({ voteEvent, mutate }) => {
             {isVotingInProgress && (
               <Link href={`/vote-events/${voteEvent.id}`} passHref>
                 <Tooltip title="Vote in this event" placement="top">
-                  <Button id="vote-event-vote-button">Vote</Button>
+                  <Button id={`vote-event-${voteEvent.id}-vote-button`}>
+                    Vote
+                  </Button>
                 </Tooltip>
               </Link>
             )}
             {areResultsPublished && hasVoteEventStarted && (
               <Link href={`/vote-events/${voteEvent.id}/results`} passHref>
                 <Tooltip title="View results" placement="top">
-                  <Button id="vote-event-results-button">Results</Button>
+                  <Button id={`vote-event-${voteEvent.id}-results-button`}>
+                    Results
+                  </Button>
                 </Tooltip>
               </Link>
             )}
             <Link href={`/vote-events/${voteEvent.id}/edit`} passHref>
               <Tooltip title="Edit vote event" placement="top">
-                <Button id="edit-vote-event-button">Edit</Button>
+                <Button id={`edit-vote-event-${voteEvent.id}-button`}>
+                  Edit
+                </Button>
               </Tooltip>
             </Link>
             <Button
-              id="delete-vote-event-button"
+              id={`delete-vote-event-${voteEvent.id}-button`}
               onClick={handleOpenDeleteModal}
               sx={{
                 transition: BASE_TRANSITION,
