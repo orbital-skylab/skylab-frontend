@@ -71,7 +71,7 @@ const AddInternalVoterMenu: FC<Props> = ({
   return (
     <>
       <Button
-        id="add-internal-voter-button"
+        id="add-internal-voter-menu-button"
         variant="outlined"
         onClick={handleOpen}
         endIcon={<KeyboardArrowDown />}

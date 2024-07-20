@@ -64,6 +64,7 @@ const AddExternalVoterModal: FC<Props> = ({
 
   return (
     <Modal
+      id="add-external-voter-modal"
       open={open}
       handleClose={handleCloseModal}
       title="Add Voter ID"

@@ -48,6 +48,7 @@ const SetVoterManagementConfigModal: FC<Props> = ({
 
   return (
     <Modal
+      id="confirm-set-voter-management-config-modal"
       open={open}
       handleClose={handleCloseModal}
       title="Warning"

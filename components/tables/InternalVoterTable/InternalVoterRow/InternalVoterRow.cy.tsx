@@ -44,7 +44,9 @@ describe("<InternalVoterRow />", () => {
     cy.contains(internalVoter.email).should("be.visible");
     cy.contains(internalVoter.name).should("be.visible");
     cy.contains("Student").should("be.visible");
-    cy.get("#delete-internal-voter-button").should("be.visible");
+    cy.get(`#delete-internal-voter-${internalVoter.id}-button`).should(
+      "be.visible"
+    );
   });
 
   it("should open the delete modal when the delete button is clicked", () => {
@@ -56,7 +58,7 @@ describe("<InternalVoterRow />", () => {
       />
     );
 
-    cy.get("#delete-internal-voter-button").click();
+    cy.get(`#delete-internal-voter-${internalVoter.id}-button`).click();
 
     cy.contains("Delete Internal Voter").should("be.visible");
     cy.contains(internalVoter.email).should("be.visible");

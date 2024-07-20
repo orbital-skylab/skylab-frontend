@@ -68,6 +68,7 @@ describe("Testing vote event results tab", () => {
 
   it("should be able to set role weights", () => {
     cy.get("#role-weights-modal-button").click();
+    cy.get("#role-weights-modal").should("be.visible");
     cy.get("#administrator-weight-input").clear().type("10");
     cy.get("#mentor-weight-input").clear().type("10");
     cy.get("#adviser-weight-input").clear().type("10");
@@ -94,6 +95,7 @@ describe("Testing vote event results tab", () => {
     // Publish the results
     navigateToResultsTab(voteEventId);
     cy.get("#publish-results-modal-button").click();
+    cy.get("#publish-results-modal").should("be.visible");
     cy.get("#publish-results-button").click();
     cy.get("#success-alert").should("be.visible");
     cy.get("#publish-results-modal").should("not.exist");

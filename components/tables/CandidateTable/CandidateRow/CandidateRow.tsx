@@ -36,7 +36,7 @@ const CandidateRow: FC<Props> = ({ voteEventId, candidate, mutate }) => {
         <TableCell align="right">
           <Stack direction="row" justifyContent="end" spacing="0.5rem">
             <Button
-              id="delete-candidate-button"
+              id={`delete-candidate-${candidate.id}-button`}
               onClick={handleOpenDeleteModal}
               sx={{
                 transition: BASE_TRANSITION,

@@ -29,7 +29,9 @@ const DeleteVoteModal: FC<Props> = ({
     endpoint: `/vote-events/${voteEventId}/votes/${vote.id}`,
     onSuccess: () => {
       mutate((data) => {
-        const newVotes = data.votes.filter((vote) => vote.id !== vote.id);
+        const newVotes = data.votes.filter(
+          (voteItem) => voteItem.id !== vote.id
+        );
         return { votes: newVotes };
       });
     },
@@ -53,6 +55,7 @@ const DeleteVoteModal: FC<Props> = ({
 
   return (
     <Modal
+      id="delete-vote-modal"
       open={open}
       handleClose={handleCloseModal}
       title={`Delete Vote`}

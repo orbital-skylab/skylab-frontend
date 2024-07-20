@@ -41,7 +41,7 @@ const InternalVoterRow: FC<Props> = ({
         <TableCell align="right">
           <Stack direction="row" justifyContent="end" spacing="0.5rem">
             <Button
-              id="delete-internal-voter-button"
+              id={`delete-internal-voter-${internalVoter.id}-button`}
               onClick={handleOpenDeleteModal}
               sx={{
                 transition: BASE_TRANSITION,

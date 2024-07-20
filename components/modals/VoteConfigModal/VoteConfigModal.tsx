@@ -87,6 +87,7 @@ const VoteConfigModal: FC<Props> = ({ voteEvent, open, setOpen, mutate }) => {
 
   return (
     <Modal
+      id="vote-config-modal"
       open={open}
       handleClose={handleCloseModal}
       title={`Vote Config`}

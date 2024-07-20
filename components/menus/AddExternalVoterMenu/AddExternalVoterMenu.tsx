@@ -58,7 +58,7 @@ const AddExternalVoterMenu: FC<Props> = ({ voteEventId, mutate }) => {
   return (
     <>
       <Button
-        id="add-external-voter-button"
+        id="add-external-voter-menu-button"
         variant="outlined"
         onClick={handleOpen}
         endIcon={<KeyboardArrowDown />}

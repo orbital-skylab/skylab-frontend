@@ -32,7 +32,7 @@ const VoteEvents: NextPage = () => {
       <Body>
         <Stack direction="row" justifyContent="end" spacing="0.5rem">
           <Button
-            id="add-vote-event-button"
+            id="add-vote-event-modal-button"
             variant="outlined"
             size="small"
             onClick={handleOpenAddVoteEventModal}

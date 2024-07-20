@@ -21,7 +21,9 @@ describe("<ExternalVoterRow />", () => {
     cy.get("tr").should("be.visible");
     cy.get("td").should("have.length", 2);
     cy.contains(externalVoter.id).should("be.visible");
-    cy.get("#delete-external-voter-button").should("be.visible");
+    cy.get(`#delete-external-voter-${externalVoter.id}-button`).should(
+      "be.visible"
+    );
   });
 
   it("should open the delete modal when the delete button is clicked", () => {
@@ -29,7 +31,7 @@ describe("<ExternalVoterRow />", () => {
       <ExternalVoterRow externalVoter={externalVoter} mutate={mutateSpy} />
     );
 
-    cy.get("#delete-external-voter-button").click();
+    cy.get(`#delete-external-voter-${externalVoter.id}-button`).click();
 
     cy.contains("Delete External Voter").should("be.visible");
     cy.contains(externalVoter.id).should("be.visible");

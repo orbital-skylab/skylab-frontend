@@ -39,7 +39,7 @@ const VoteRow: FC<Props> = ({ voteEventId, vote, mutate }) => {
         <TableCell align="right">
           <Stack direction="row" justifyContent="end" spacing="0.5rem">
             <Button
-              id="delete-vote-button"
+              id={`delete-vote-${vote.id}-button`}
               onClick={handleOpenDeleteModal}
               sx={{
                 transition: BASE_TRANSITION,

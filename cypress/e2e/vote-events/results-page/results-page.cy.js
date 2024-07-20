@@ -47,7 +47,7 @@ describe("Testing vote event results page", () => {
 
   it("Should display the vote event results if there are votes", () => {
     navigateToResultsPage(voteEventId);
-    //cy.get("#results-header").should("be.visible");
+    cy.get("#results-header").should("be.visible");
     cy.get("#results-table").should("be.visible");
   });
 

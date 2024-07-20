@@ -56,10 +56,11 @@ const DeleteVoteEventModal: FC<Props> = ({
 
   return (
     <Modal
+      id="delete-vote-event-modal"
       open={open}
       handleClose={handleCloseModal}
       title={`Delete Vote Event`}
-      subheader={`You are deleting the vote event ${voteEvent.title}.\n\nThis action is irreversible, are you sure?`}
+      subheader={`You are deleting the vote event: ${voteEvent.title}.\n\nThis action is irreversible, are you sure?`}
     >
       <Stack spacing={2} direction="row" justifyContent="flex-end">
         <Button

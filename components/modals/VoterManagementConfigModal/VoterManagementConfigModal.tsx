@@ -70,6 +70,8 @@ const VoterManagementConfigModal: FC<Props> = ({
           },
         };
       });
+      setSuccess("You have successfully edited the voter management config!");
+      setOpen(false);
     },
   });
 
@@ -100,8 +102,6 @@ const VoterManagementConfigModal: FC<Props> = ({
 
     try {
       await setVoterManagement.call(processedValues);
-      setSuccess("You have successfully edited the voter management config!");
-      setOpen(false);
     } catch (error) {
       setError(error);
     }
@@ -121,6 +121,7 @@ const VoterManagementConfigModal: FC<Props> = ({
         setVoterManagement={setVoterManagement}
       />
       <Modal
+        id="edit-voter-management-config-modal"
         open={open}
         handleClose={handleCloseModal}
         title={`Edit Voter Management`}

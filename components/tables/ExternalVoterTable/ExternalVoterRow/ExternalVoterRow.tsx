@@ -32,7 +32,7 @@ const ExternalVoterRow: FC<Props> = ({ externalVoter, mutate }) => {
         <TableCell align="right">
           <Stack direction="row" justifyContent="end" spacing="0.5rem">
             <Button
-              id="delete-external-voter-button"
+              id={`delete-external-voter-${externalVoter.id}-button`}
               onClick={handleOpenDeleteModal}
               sx={{
                 transition: BASE_TRANSITION,

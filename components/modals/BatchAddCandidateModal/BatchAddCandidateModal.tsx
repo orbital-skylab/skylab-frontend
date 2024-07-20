@@ -76,6 +76,7 @@ const BatchAddCandidateModal: FC<Props> = ({
 
   return (
     <Modal
+      id="batch-add-candidate-modal"
       open={open}
       handleClose={handleCloseModal}
       title="Batch Add Candidate"

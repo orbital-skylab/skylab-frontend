@@ -102,10 +102,6 @@ const VotingPage: NextPage = () => {
       : candidatesArray;
   }, [candidatesData, voteConfig]);
 
-  if (isVoteEventNotOpen) {
-    return <NoneFound title="Vote event is not open!" message="" />;
-  }
-
   return (
     <Body
       isLoading={
@@ -117,68 +113,79 @@ const VotingPage: NextPage = () => {
         noDataCondition={typeof voteEventId !== "string" || !voteEventData}
         fallback={<NoneFound title="No such vote event found!" message="" />}
       >
-        <Typography align="center" variant="h4">
-          {voteEventData?.voteEvent.title}
-        </Typography>
-        {alreadyVoted ? (
-          <Stack spacing={1}>
-            <Typography align="center" variant="h6" sx={{ marginTop: "1rem" }}>
-              Votes Submitted
-            </Typography>
-            <Typography align="center">
-              You have voted for the following project IDs:
-            </Typography>
-            <Typography align="center">
-              {votes.map((vote) => vote.projectId).join(", ")}
-            </Typography>
-          </Stack>
-        ) : (
-          <>
-            <SubmitVotesModal
-              voteEventId={parseInt(voteEventId as string)}
-              selectedCandidates={selectedCandidates}
-              open={openSubmitVotesModal}
-              setOpen={setOpenSubmitVotesModal}
-              mutate={mutateVotes}
-            />
-            <Typography sx={{ marginY: "2rem" }}>
-              {voteConfig?.instructions || ""}
-            </Typography>
-            <Stack direction="row" justifyContent="space-between">
-              <Typography variant="h6">
-                Vote for a maximum of {voteConfig?.maxVotes}, and minimum of{" "}
-                {voteConfig?.minVotes} projects.
-              </Typography>
-              <Typography variant="h6">Votes cast: {voteCount}</Typography>
-            </Stack>
-            {candidateDisplayFactory.generateItems(
-              candidates,
-              selectedCandidates,
-              fetchcandidatesStatus,
-              setSelectedCandidates
-            )}
-            <Stack>
-              <Button
-                id="submit-votes-modal-button"
-                onClick={handleOpenSubmitVotesModal}
-                variant="contained"
-                color="secondary"
-                disabled={
-                  !voteConfig ||
-                  voteCount < voteConfig.minVotes ||
-                  voteCount > voteConfig.maxVotes
-                }
-                sx={{
-                  position: "fixed",
-                  bottom: "2rem",
-                  right: "2rem",
-                }}
+        <NoDataWrapper
+          noDataCondition={
+            isVoteEventNotOpen === undefined || isVoteEventNotOpen
+          }
+          fallback={<NoneFound title="Vote event is not open!" message="" />}
+        >
+          <Typography id="vote-event-title" align="center" variant="h4">
+            {voteEventData?.voteEvent.title}
+          </Typography>
+          {alreadyVoted ? (
+            <Stack spacing={1}>
+              <Typography
+                align="center"
+                variant="h6"
+                sx={{ marginTop: "1rem" }}
               >
-                Submit
-              </Button>
+                Votes Submitted
+              </Typography>
+              <Typography align="center">
+                You have voted for the following project IDs:
+              </Typography>
+              <Typography align="center">
+                {votes.map((vote) => vote.projectId).join(", ")}
+              </Typography>
             </Stack>
-          </>
-        )}
+          ) : (
+            <>
+              <SubmitVotesModal
+                voteEventId={parseInt(voteEventId as string)}
+                selectedCandidates={selectedCandidates}
+                open={openSubmitVotesModal}
+                setOpen={setOpenSubmitVotesModal}
+                mutate={mutateVotes}
+              />
+              <Typography sx={{ marginY: "2rem" }}>
+                {voteConfig?.instructions || ""}
+              </Typography>
+              <Stack direction="row" justifyContent="space-between">
+                <Typography variant="h6">
+                  Vote for a maximum of {voteConfig?.maxVotes}, and minimum of{" "}
+                  {voteConfig?.minVotes} projects.
+                </Typography>
+                <Typography variant="h6">Votes cast: {voteCount}</Typography>
+              </Stack>
+              {candidateDisplayFactory.generateItems(
+                candidates,
+                selectedCandidates,
+                fetchcandidatesStatus,
+                setSelectedCandidates
+              )}
+              <Stack>
+                <Button
+                  id="submit-votes-modal-button"
+                  onClick={handleOpenSubmitVotesModal}
+                  variant="contained"
+                  color="secondary"
+                  disabled={
+                    !voteConfig ||
+                    voteCount < voteConfig.minVotes ||
+                    voteCount > voteConfig.maxVotes
+                  }
+                  sx={{
+                    position: "fixed",
+                    bottom: "2rem",
+                    right: "2rem",
+                  }}
+                >
+                  Submit
+                </Button>
+              </Stack>
+            </>
+          )}
+        </NoDataWrapper>
       </NoDataWrapper>
     </Body>
   );

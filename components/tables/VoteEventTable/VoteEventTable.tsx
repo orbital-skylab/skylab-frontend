@@ -23,6 +23,12 @@ const VoteEventTable: FC<Props> = ({ voteEvents = [], mutate }) => {
     <VoteEventRow key={voteEvent.id} voteEvent={voteEvent} mutate={mutate} />
   ));
 
-  return <Table headings={columnHeadings} rows={voteEventRows} />;
+  return (
+    <Table
+      id="vote-events-table"
+      headings={columnHeadings}
+      rows={voteEventRows}
+    />
+  );
 };
 export default VoteEventTable;

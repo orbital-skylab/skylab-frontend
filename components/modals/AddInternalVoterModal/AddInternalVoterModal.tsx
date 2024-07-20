@@ -64,6 +64,7 @@ const AddInternalVoterModal: FC<Props> = ({
 
   return (
     <Modal
+      id="add-internal-voter-modal"
       open={open}
       handleClose={handleCloseModal}
       title="Add By Email"

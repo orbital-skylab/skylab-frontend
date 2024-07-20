@@ -32,16 +32,16 @@ const DeleteExternalVoterModal: FC<Props> = ({
         );
         return { externalVoters: newExternalVoters };
       });
+      setSuccess(
+        `You have successfully deleted the external voter ${externalVoter.id}!`
+      );
+      handleCloseModal();
     },
   });
 
   const handleDeleteExternalVoter = async () => {
     try {
       await DeleteExternalVoter.call();
-      setSuccess(
-        `You have successfully deleted the external voter ${externalVoter.id}!`
-      );
-      handleCloseModal();
     } catch (error) {
       setError(error);
     }
@@ -53,6 +53,7 @@ const DeleteExternalVoterModal: FC<Props> = ({
 
   return (
     <Modal
+      id="delete-external-voter-modal"
       open={open}
       handleClose={handleCloseModal}
       title={`Delete External Voter`}

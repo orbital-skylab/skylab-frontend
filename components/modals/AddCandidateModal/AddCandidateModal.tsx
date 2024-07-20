@@ -66,6 +66,7 @@ const AddCandidateModal: FC<Props> = ({
 
   return (
     <Modal
+      id="add-candidate-modal"
       open={open}
       handleClose={handleCloseModal}
       title="Add Candidate"

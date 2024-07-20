@@ -19,13 +19,13 @@ const AddCandidateMenuFactory = {
   ) => {
     const menuItems = [
       <AddCandidateMenuItem
-        key={"add-candidate-modal-item"}
+        key={"add-candidate-menu-item"}
         voteEventId={voteEventId}
         handleCloseMenu={handleCloseMenu}
         mutateCandidates={mutateCandidates}
       />,
       <BatchAddCandidateMenuItem
-        key={"batch-add-candidate-modal-item"}
+        key={"batch-add-candidate-menu-item"}
         voteEventId={voteEventId}
         handleCloseMenu={handleCloseMenu}
         mutateCandidates={mutateCandidates}

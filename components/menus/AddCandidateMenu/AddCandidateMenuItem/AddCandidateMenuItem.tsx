@@ -30,7 +30,9 @@ const AddCandidateMenuItem: FC<Props> = ({
         handleCloseMenu={handleCloseMenu}
         mutate={mutateCandidates}
       />
-      <MenuItem onClick={handleOpenModal}>Add Candidate</MenuItem>
+      <MenuItem id="add-candidate-menu-item-button" onClick={handleOpenModal}>
+        Add Candidate
+      </MenuItem>
     </>
   );
 };

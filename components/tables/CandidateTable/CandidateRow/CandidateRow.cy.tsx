@@ -30,7 +30,7 @@ describe("<CandidateRow />", () => {
     cy.contains(candidate.name).should("be.visible");
     cy.contains(candidate.cohortYear).should("be.visible");
     cy.contains(candidate.achievement).should("be.visible");
-    cy.get("#delete-candidate-button").should("be.visible");
+    cy.get(`#delete-candidate-${candidate.id}-button`).should("be.visible");
   });
 
   it("should open the delete modal when the delete button is clicked", () => {
@@ -42,7 +42,7 @@ describe("<CandidateRow />", () => {
       />
     );
 
-    cy.get("#delete-candidate-button").click();
+    cy.get(`#delete-candidate-${candidate.id}-button`).click();
 
     cy.contains("Delete Candidate").should("be.visible");
     cy.contains(

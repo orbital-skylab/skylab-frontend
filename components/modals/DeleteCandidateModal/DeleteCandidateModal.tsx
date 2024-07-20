@@ -55,6 +55,7 @@ const DeleteCandidateModal: FC<Props> = ({
 
   return (
     <Modal
+      id="delete-candidate-modal"
       open={open}
       handleClose={handleCloseModal}
       title={`Delete Candidate`}

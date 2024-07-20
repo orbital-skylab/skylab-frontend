@@ -36,7 +36,8 @@ describe("<VoteRow />", () => {
     id: string,
     name: string,
     projectId: number,
-    projectName: string
+    projectName: string,
+    voteId: number
   ) => {
     cy.get("tr").should("be.visible");
     cy.get("td").should("have.length", 5);
@@ -44,7 +45,7 @@ describe("<VoteRow />", () => {
     cy.contains(name).should("be.visible");
     cy.contains(projectId).should("be.visible");
     cy.contains(projectName).should("be.visible");
-    cy.get("#delete-vote-button").should("be.visible");
+    cy.get(`#delete-vote-${voteId}-button`).should("be.visible");
   };
 
   it("should render the vote row with an internal voter", () => {
@@ -70,7 +71,8 @@ describe("<VoteRow />", () => {
       internalVoterVote.userId.toString(),
       internalVoterVote.internalVoter?.name,
       vote.project.id,
-      vote.project.name
+      vote.project.name,
+      vote.id
     );
   });
 
@@ -91,14 +93,15 @@ describe("<VoteRow />", () => {
       externalVoterVote.externalVoterId,
       "-",
       vote.project.id,
-      vote.project.name
+      vote.project.name,
+      vote.id
     );
   });
 
   it("should open the delete modal when the delete button is clicked", () => {
     mount(<VoteRow voteEventId={voteEventId} vote={vote} mutate={mutateSpy} />);
 
-    cy.get("#delete-vote-button").click();
+    cy.get(`#delete-vote-${vote.id}-button`).click();
 
     cy.contains("Delete Vote").should("be.visible");
     cy.get("@mutateSpy").should("not.have.been.called");

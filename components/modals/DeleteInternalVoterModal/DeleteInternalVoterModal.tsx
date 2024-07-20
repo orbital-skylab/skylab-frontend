@@ -34,16 +34,16 @@ const DeleteInternalVoterModal: FC<Props> = ({
         );
         return { internalVoters: newInternalVoters };
       });
+      setSuccess(
+        `You have successfully deleted the internal voter ${internalVoter.email}!`
+      );
+      handleCloseModal();
     },
   });
 
   const handleDeleteInternalVoter = async () => {
     try {
       await DeleteInternalVoter.call();
-      setSuccess(
-        `You have successfully deleted the internal voter ${internalVoter.email}!`
-      );
-      handleCloseModal();
     } catch (error) {
       setError(error);
     }
@@ -55,6 +55,7 @@ const DeleteInternalVoterModal: FC<Props> = ({
 
   return (
     <Modal
+      id="delete-internal-voter-modal"
       open={open}
       handleClose={handleCloseModal}
       title={`Delete Internal Voter`}

@@ -32,6 +32,7 @@ const VoteEventEdit: FC<Props> = ({ voteEvent, mutate }) => {
         sx={{ bgcolor: "background.paper", display: "flex", marginTop: "1rem" }}
       >
         <Tabs
+          id="vote-event-tabs"
           value={selectedTab}
           onChange={handleTabChange}
           orientation="vertical"

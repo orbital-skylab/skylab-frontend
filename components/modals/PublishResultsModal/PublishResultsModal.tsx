@@ -95,6 +95,7 @@ const PublishResultsModal: FC<Props> = ({
 
   return (
     <Modal
+      id="publish-results-modal"
       open={open}
       handleClose={handleCloseModal}
       title={`Publish Results`}

@@ -16,7 +16,7 @@ describe("<AddExternalVoterMenu />", () => {
     );
 
     // Click on the button to open the menu
-    cy.get("#add-external-voter-button").click();
+    cy.get("#add-external-voter-menu-button").click();
 
     // Assert that the menu is opened
     cy.get("#add-external-voter-menu").should("be.visible");
