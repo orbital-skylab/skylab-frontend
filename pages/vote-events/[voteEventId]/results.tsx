@@ -17,11 +17,13 @@ const ResultsPage: NextPage = () => {
   const { data: voteEventData, status: fetchVoteEventStatus } =
     useFetch<GetVoteEventResponse>({
       endpoint: `/vote-events/${voteEventId}`,
+      enabled: !!voteEventId,
     });
 
   const { data: resultsData, status: fetchResultsStatus } =
     useFetch<GetVoteEventResultsResponse>({
       endpoint: `/vote-events/${voteEventId}/results`,
+      enabled: !!voteEventId,
     });
 
   const voteEventStatus =

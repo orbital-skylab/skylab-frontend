@@ -16,6 +16,7 @@ const CandidatesTab: FC<Props> = ({ voteEventId }) => {
     mutate,
   } = useFetch<GetCandidatesResponse>({
     endpoint: `/vote-events/${voteEventId}/candidates`,
+    enabled: !!voteEventId,
   });
 
   return (

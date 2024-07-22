@@ -21,6 +21,7 @@ const VoteConfigTab: FC<Props> = ({ voteEvent, mutate }) => {
     mutate: mutateVotes,
   } = useFetch<GetVoteEventVotesResponse>({
     endpoint: `/vote-events/${voteEvent.id}/votes/all`,
+    enabled: isVoteConfigSet,
   });
 
   const handleOpenVoteConfigModal = () => {

@@ -84,6 +84,7 @@ const ResultsTab: FC<Props> = ({ voteEvent, mutate }) => {
 
   const { data: votesData, status } = useFetch<GetVoteEventVotesResponse>({
     endpoint: `/vote-events/${voteEvent.id}/votes/all`,
+    enabled: !!voteEvent.id,
   });
 
   const results = calculateResults(

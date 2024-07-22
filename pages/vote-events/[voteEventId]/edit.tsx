@@ -14,6 +14,7 @@ const EditVoteEvent: NextPage = () => {
 
   const { data, status, mutate } = useFetch<GetVoteEventResponse>({
     endpoint: `/vote-events/${voteEventId}`,
+    enabled: !!voteEventId,
   });
 
   return (

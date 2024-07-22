@@ -55,6 +55,7 @@ const VotingPage: NextPage = () => {
   const { data: voteEventData, status: fetchVoteEventStatus } =
     useFetch<GetVoteEventResponse>({
       endpoint: `/vote-events/${voteEventId}`,
+      enabled: !!voteEventId,
     });
 
   const {
@@ -63,6 +64,7 @@ const VotingPage: NextPage = () => {
     mutate: mutateVotes,
   } = useFetch<GetVotesResponse>({
     endpoint: `/vote-events/${voteEventId}/votes?userId=${user?.id}`,
+    enabled: !!voteEventId && !!user?.id,
     onFetch: (data) => {
       const selectedCandidates = data.votes.reduce((acc, vote) => {
         acc[vote.projectId] = true;
@@ -76,6 +78,7 @@ const VotingPage: NextPage = () => {
   const { data: candidatesData, status: fetchcandidatesStatus } =
     useFetch<GetCandidatesResponse>({
       endpoint: `/vote-events/${voteEventId}/candidates`,
+      enabled: !!voteEventId,
     });
 
   const handleOpenSubmitVotesModal = () => {
