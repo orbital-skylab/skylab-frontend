@@ -7,8 +7,6 @@ describe("Testing vote event voter management tab", () => {
   const externalVoterOnlyVoteEventId = 8; // Vote event with external voters only
   const noVoterManagementVoteEventId = 1; // Vote event with no voter management set
   let voteEvent = {};
-  let internalVoter = {};
-  let externalVoter = {};
 
   const navigateToTab = (voteEventId) => {
     cy.intercept("GET", `/api/vote-events/${voteEventId}`, (req) => {
