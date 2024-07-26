@@ -9,6 +9,7 @@ import {
   GetCandidatesResponse,
   HTTP_METHOD,
 } from "@/types/api";
+import { LoadingButton } from "@mui/lab";
 import { Button, Stack } from "@mui/material";
 import { Formik } from "formik";
 import { Dispatch, FC, SetStateAction } from "react";
@@ -99,15 +100,16 @@ const AddCandidateModal: FC<Props> = ({
               >
                 Return
               </Button>
-              <Button
+              <LoadingButton
                 id="add-candidate-button"
                 size="small"
                 variant="contained"
                 onClick={formik.submitForm}
                 disabled={formik.isSubmitting}
+                loading={formik.isSubmitting}
               >
                 Add
-              </Button>
+              </LoadingButton>
             </Stack>
           </>
         )}
@@ -119,6 +121,6 @@ export default AddCandidateModal;
 
 const addCandidateValidationSchema = Yup.object().shape({
   projectId: Yup.string().required(ERRORS.REQUIRED).matches(/^\d+$/, {
-    message: "Project ID must be a number",
+    message: "Project ID must be an integer",
   }),
 });

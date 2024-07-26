@@ -83,7 +83,7 @@ describe("<VoterManagementConfigModal />", () => {
     // Intercept PUT request
     cy.intercept(
       "PUT",
-      `/api/vote-events/${voteEvent.id}/voter-management`,
+      `/api/vote-events/${voteEvent.id}`,
       cy.spy().as("myRequest")
     ).as("setVoterManagement");
 
@@ -115,7 +115,7 @@ describe("<VoterManagementConfigModal />", () => {
     );
 
     // Intercept PUT request
-    cy.intercept("PUT", `/api/vote-events/${voteEvent.id}/voter-management`, {
+    cy.intercept("PUT", `/api/vote-events/${voteEvent.id}`, {
       statusCode: 200,
       body: {},
     }).as("setVoterManagement");

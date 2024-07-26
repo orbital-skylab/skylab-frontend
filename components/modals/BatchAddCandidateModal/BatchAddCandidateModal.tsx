@@ -11,6 +11,7 @@ import {
   HTTP_METHOD,
 } from "@/types/api";
 import { LEVELS_OF_ACHIEVEMENT_WITH_ALL } from "@/types/projects";
+import { LoadingButton } from "@mui/lab";
 import { Button, Stack } from "@mui/material";
 import { Formik } from "formik";
 import { Dispatch, FC, SetStateAction } from "react";
@@ -81,7 +82,7 @@ const BatchAddCandidateModal: FC<Props> = ({
       handleClose={handleCloseModal}
       title="Batch Add Candidate"
       subheader={`Batch add projects from a specific cohort and achievement level as candidates. 
-        This will only add projects that are not already candidates.`}
+        This will perform a union of selected candidates and existing candidates.`}
     >
       <Formik
         initialValues={initialValues}
@@ -92,7 +93,7 @@ const BatchAddCandidateModal: FC<Props> = ({
           <>
             {isFetching(status) ? (
               <Stack justifyContent="center">
-                <LoadingSpinner size={30} />
+                <LoadingSpinner size={25} />
               </Stack>
             ) : (
               <Stack direction="row" marginTop="0.5rem" spacing={2}>
@@ -143,15 +144,16 @@ const BatchAddCandidateModal: FC<Props> = ({
               >
                 Return
               </Button>
-              <Button
+              <LoadingButton
                 id="batch-add-candidate-button"
                 size="small"
                 variant="contained"
                 onClick={formik.submitForm}
                 disabled={formik.isSubmitting || isFetching(status)}
+                loading={formik.isSubmitting}
               >
                 Add
-              </Button>
+              </LoadingButton>
             </Stack>
           </>
         )}

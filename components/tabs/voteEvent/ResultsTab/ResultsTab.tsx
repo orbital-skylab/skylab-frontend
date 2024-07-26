@@ -122,7 +122,9 @@ const ResultsTab: FC<Props> = ({ voteEvent, mutate }) => {
               variant="contained"
               onClick={() => setOpenPublishResultsModal(true)}
             >
-              Publish Results
+              {voteEvent.resultsFilter.areResultsPublished
+                ? "Unpublish Results"
+                : "Publish Results"}
             </Button>
           </div>
           <div style={{ gridColumn: 2, textAlign: "center" }}>

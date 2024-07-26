@@ -6,6 +6,7 @@ import { VoteEvent } from "@/types/voteEvents";
 import { Button, Stack } from "@mui/material";
 import { Dispatch, FC, SetStateAction } from "react";
 import Modal from "../Modal";
+import { LoadingButton } from "@mui/lab";
 
 type Props = {
   voteEvent: VoteEvent;
@@ -71,16 +72,17 @@ const DeleteVoteEventModal: FC<Props> = ({
         >
           Cancel
         </Button>
-        <Button
+        <LoadingButton
           id="delete-vote-event-confirm-button"
           size="small"
           onClick={handleDeleteVoteEvent}
           variant="contained"
           color="error"
           disabled={isCalling(deleteVoteEvent.status)}
+          loading={isCalling(deleteVoteEvent.status)}
         >
           Delete
-        </Button>
+        </LoadingButton>
       </Stack>
     </Modal>
   );

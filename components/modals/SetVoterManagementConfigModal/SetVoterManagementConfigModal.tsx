@@ -3,6 +3,7 @@ import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 import { CALL_STATUS, isCalling } from "@/hooks/useApiCall";
 import { EditVoteEventResponse } from "@/types/api";
 import { VoteEvent } from "@/types/voteEvents";
+import { LoadingButton } from "@mui/lab";
 import { Button, Stack } from "@mui/material";
 import { Dispatch, FC, SetStateAction } from "react";
 
@@ -64,16 +65,17 @@ const SetVoterManagementConfigModal: FC<Props> = ({
         >
           Cancel
         </Button>
-        <Button
+        <LoadingButton
           id="set-voter-management-config-modal-confirm-button"
           size="small"
           variant="contained"
           color="error"
           onClick={handleConfirm}
           disabled={isCalling(setVoterManagement.status)}
+          loading={isCalling(setVoterManagement.status)}
         >
           Confirm
-        </Button>
+        </LoadingButton>
       </Stack>
     </Modal>
   );

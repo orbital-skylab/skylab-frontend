@@ -61,7 +61,7 @@ const VoterManagementConfigModal: FC<Props> = ({
 
   const setVoterManagement = useApiCall({
     method: HTTP_METHOD.PUT,
-    endpoint: `/vote-events/${voteEvent.id}/voter-management`,
+    endpoint: `/vote-events/${voteEvent.id}`,
     onSuccess: ({ voteEvent }: EditVoteEventResponse) => {
       mutate(() => {
         return {

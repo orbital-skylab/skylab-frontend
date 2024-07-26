@@ -74,7 +74,7 @@ const RoleWeightsModal: FC<Props> = ({ voteEvent, open, setOpen, mutate }) => {
 
     try {
       await editWeightsFilter.call(processedValues);
-      setSuccess(`Successfully updated role weights for vote event`);
+      setSuccess(`Successfully updated role weights`);
       setOpen(false);
     } catch (error) {
       setError(error);

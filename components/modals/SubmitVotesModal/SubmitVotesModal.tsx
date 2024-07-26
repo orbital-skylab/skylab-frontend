@@ -8,6 +8,7 @@ import {
   HTTP_METHOD,
   SubmitVotesResponse,
 } from "@/types/api";
+import { LoadingButton } from "@mui/lab";
 import { Button, Stack } from "@mui/material";
 import { Dispatch, FC, SetStateAction } from "react";
 
@@ -44,9 +45,6 @@ const SubmitVotesModal: FC<Props> = ({
       });
       setSuccess("Submitted successfully");
       handleCloseModal();
-    },
-    onError: () => {
-      setError("Something went wrong while submitting votes");
     },
   });
 
@@ -93,15 +91,16 @@ const SubmitVotesModal: FC<Props> = ({
         >
           return
         </Button>
-        <Button
+        <LoadingButton
           id="submit-votes-button"
           size="small"
           onClick={handleSubmit}
           variant="contained"
           disabled={isCalling(submitVotes.status)}
+          loading={isCalling(submitVotes.status)}
         >
           Submit
-        </Button>
+        </LoadingButton>
       </Stack>
     </Modal>
   );

@@ -4,7 +4,7 @@ import useFetch, { Mutate } from "@/hooks/useFetch";
 import { GetVoteEventResponse, GetVoteEventVotesResponse } from "@/types/api";
 import { VoteEvent } from "@/types/voteEvents";
 import { Button, Stack, Typography } from "@mui/material";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 type Props = {
   voteEvent: VoteEvent;
@@ -19,6 +19,7 @@ const VoteConfigTab: FC<Props> = ({ voteEvent, mutate }) => {
     data: votesData,
     status,
     mutate: mutateVotes,
+    refetch,
   } = useFetch<GetVoteEventVotesResponse>({
     endpoint: `/vote-events/${voteEvent.id}/votes/all`,
     enabled: isVoteConfigSet,
@@ -34,9 +35,15 @@ const VoteConfigTab: FC<Props> = ({ voteEvent, mutate }) => {
       variant="contained"
       onClick={handleOpenVoteConfigModal}
     >
-      Set Vote Config
+      Vote Config
     </Button>
   );
+
+  useEffect(() => {
+    if (!votesData && isVoteConfigSet) {
+      refetch();
+    }
+  }, [votesData, isVoteConfigSet, refetch]);
 
   return (
     <>

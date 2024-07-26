@@ -6,6 +6,7 @@ import { Button, Stack } from "@mui/material";
 import { Mutate } from "@/hooks/useFetch";
 import { Dispatch, FC, SetStateAction } from "react";
 import Modal from "../Modal";
+import { LoadingButton } from "@mui/lab";
 
 type Props = {
   externalVoter: ExternalVoter;
@@ -68,16 +69,17 @@ const DeleteExternalVoterModal: FC<Props> = ({
         >
           Cancel
         </Button>
-        <Button
+        <LoadingButton
           id="delete-external-voter-confirm-button"
           size="small"
           onClick={handleDeleteExternalVoter}
           variant="contained"
           color="error"
           disabled={isCalling(DeleteExternalVoter.status)}
+          loading={isCalling(DeleteExternalVoter.status)}
         >
           Delete
-        </Button>
+        </LoadingButton>
       </Stack>
     </Modal>
   );

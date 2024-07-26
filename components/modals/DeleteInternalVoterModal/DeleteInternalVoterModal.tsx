@@ -6,6 +6,7 @@ import { Button, Stack } from "@mui/material";
 import { Mutate } from "@/hooks/useFetch";
 import { Dispatch, FC, SetStateAction } from "react";
 import Modal from "../Modal";
+import { LoadingButton } from "@mui/lab";
 
 type Props = {
   voteEventId: number;
@@ -70,16 +71,17 @@ const DeleteInternalVoterModal: FC<Props> = ({
         >
           Cancel
         </Button>
-        <Button
+        <LoadingButton
           id="delete-internal-voter-confirm-button"
           size="small"
           onClick={handleDeleteInternalVoter}
           variant="contained"
           color="error"
           disabled={isCalling(DeleteInternalVoter.status)}
+          loading={isCalling(DeleteInternalVoter.status)}
         >
           Delete
-        </Button>
+        </LoadingButton>
       </Stack>
     </Modal>
   );

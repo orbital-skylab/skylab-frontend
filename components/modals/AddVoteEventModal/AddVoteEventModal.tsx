@@ -13,6 +13,7 @@ import {
   GetVoteEventsResponse,
   HTTP_METHOD,
 } from "@/types/api";
+import { LoadingButton } from "@mui/lab";
 import { Button, Stack } from "@mui/material";
 import { Formik, FormikHelpers } from "formik";
 import { Dispatch, FC, SetStateAction } from "react";
@@ -130,15 +131,16 @@ const AddVoteEventModal: FC<Props> = ({ open, setOpen, mutate }) => {
                 >
                   Cancel{" "}
                 </Button>
-                <Button
+                <LoadingButton
                   id="add-vote-event-button"
                   size="small"
                   variant="contained"
                   onClick={formik.submitForm}
                   disabled={formik.isSubmitting}
+                  loading={formik.isSubmitting}
                 >
                   Add
-                </Button>
+                </LoadingButton>
               </Stack>
             </>
           )}

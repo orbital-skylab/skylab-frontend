@@ -13,7 +13,8 @@ import {
   HTTP_METHOD,
 } from "@/types/api";
 import { VoteEvent } from "@/types/voteEvents";
-import { Button, Stack } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import { Stack } from "@mui/material";
 import { Formik } from "formik";
 import { FC } from "react";
 import * as Yup from "yup";
@@ -45,9 +46,6 @@ const GeneralSettingsTab: FC<Props> = ({ voteEvent, mutate }) => {
         };
       });
       setSuccess("Vote event edited successfully");
-    },
-    onError: () => {
-      setError("Something went wrong while editing the vote event");
     },
   });
 
@@ -106,15 +104,17 @@ const GeneralSettingsTab: FC<Props> = ({ voteEvent, mutate }) => {
             size="small"
             formik={formik}
           />
-          <Button
+          <LoadingButton
             id="edit-vote-event-general-settings-button"
             variant="contained"
             sx={{ width: "fit-content" }}
             type="submit"
             onClick={formik.submitForm}
+            disabled={formik.isSubmitting}
+            loading={formik.isSubmitting}
           >
-            Edit vote event
-          </Button>
+            Save
+          </LoadingButton>
         </Stack>
       )}
     </Formik>

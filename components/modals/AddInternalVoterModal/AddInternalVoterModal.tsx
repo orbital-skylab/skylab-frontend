@@ -9,6 +9,7 @@ import {
   GetInternalVotersResponse,
   HTTP_METHOD,
 } from "@/types/api";
+import { LoadingButton } from "@mui/lab";
 import { Button, Stack } from "@mui/material";
 import { Formik } from "formik";
 import { Dispatch, FC, SetStateAction } from "react";
@@ -68,7 +69,7 @@ const AddInternalVoterModal: FC<Props> = ({
       open={open}
       handleClose={handleCloseModal}
       title="Add By Email"
-      subheader={`Enter an email to add the following user as an internal voter.`}
+      subheader={`Enter an email to add a user as an internal voter.`}
     >
       <Formik
         initialValues={initialValues}
@@ -97,15 +98,16 @@ const AddInternalVoterModal: FC<Props> = ({
               >
                 Return
               </Button>
-              <Button
+              <LoadingButton
                 id="add-internal-voter-button"
                 size="small"
                 variant="contained"
                 onClick={formik.submitForm}
                 disabled={formik.isSubmitting}
+                loading={formik.isSubmitting}
               >
                 Add
-              </Button>
+              </LoadingButton>
             </Stack>
           </>
         )}

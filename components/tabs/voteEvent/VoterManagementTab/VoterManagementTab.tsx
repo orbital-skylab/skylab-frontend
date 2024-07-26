@@ -75,7 +75,7 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
       variant="contained"
       onClick={handleOpenVoterManagementConfig}
     >
-      Set Management Config
+      Voter Management Config
     </Button>
   );
 
@@ -90,64 +90,79 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
       />
       {voterManagementSet ? (
         <Stack flexGrow={1}>
-          <Stack
-            direction="row"
-            spacing={1}
-            justifyContent="space-between"
-            sx={{ marginBottom: "1rem", marginTop: "1rem" }}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr",
+              alignItems: "center",
+            }}
           >
-            {voterManagementConfigButton}
-            {internalOnly && (
-              <Typography variant="h5" id="internal-voters-header">
-                Internal Voters
-              </Typography>
-            )}
-            {externalOnly && (
-              <Typography variant="h5" id="external-voters-header">
-                External Voters
-              </Typography>
-            )}
-            {bothInternalAndExternal && (
-              <Tabs
-                id="voter-list-tabs"
-                value={selectedList}
-                onChange={handleTabChange}
-                aria-label="voter-list-tabs"
-                centered
-                scrollButtons="auto"
-                allowScrollButtonsMobile
-                sx={{
-                  [`& .${tabsClasses.scrollButtons}`]: { color: "primary" },
-                  marginY: { xs: 2, md: 0 },
-                }}
-              >
-                {Object.values(LIST_TYPES).map((type) => {
-                  return (
-                    <Tab
-                      id={`${type.split(" ")[0].toLowerCase()}-tab`}
-                      key={type}
-                      value={type}
-                      label={type}
-                    />
-                  );
-                })}
-              </Tabs>
-            )}
-            {selectedList === LIST_TYPES.INTERNAL_VOTERS && (
-              <AddInternalVoterMenu
-                voteEventId={voteEventId}
-                voterManagement={voterManagement}
-                mutateInternalVoters={mutateInternalVoters}
-                mutateVoteEvent={mutate}
-              />
-            )}
-            {selectedList === LIST_TYPES.EXTERNAL_VOTERS && (
-              <AddExternalVoterMenu
-                voteEventId={voteEventId}
-                mutate={mutateExternalVoters}
-              />
-            )}
-          </Stack>
+            <div
+              style={{ gridColumn: 1, display: "flex", justifyContent: "left" }}
+            >
+              {voterManagementConfigButton}
+            </div>
+            <div style={{ gridColumn: 2, textAlign: "center" }}>
+              {internalOnly && (
+                <Typography variant="h5" id="internal-voters-header">
+                  Internal Voters
+                </Typography>
+              )}
+              {externalOnly && (
+                <Typography variant="h5" id="external-voters-header">
+                  External Voters
+                </Typography>
+              )}
+              {bothInternalAndExternal && (
+                <Tabs
+                  id="voter-list-tabs"
+                  value={selectedList}
+                  onChange={handleTabChange}
+                  aria-label="voter-list-tabs"
+                  centered
+                  scrollButtons="auto"
+                  allowScrollButtonsMobile
+                  sx={{
+                    [`& .${tabsClasses.scrollButtons}`]: { color: "primary" },
+                    marginY: { xs: 2, md: 0 },
+                  }}
+                >
+                  {Object.values(LIST_TYPES).map((type) => {
+                    return (
+                      <Tab
+                        id={`${type.split(" ")[0].toLowerCase()}-tab`}
+                        key={type}
+                        value={type}
+                        label={type}
+                      />
+                    );
+                  })}
+                </Tabs>
+              )}
+            </div>
+            <div
+              style={{
+                gridColumn: 3,
+                display: "flex",
+                justifyContent: "right",
+              }}
+            >
+              {selectedList === LIST_TYPES.INTERNAL_VOTERS && (
+                <AddInternalVoterMenu
+                  voteEventId={voteEventId}
+                  voterManagement={voterManagement}
+                  mutateInternalVoters={mutateInternalVoters}
+                  mutateVoteEvent={mutate}
+                />
+              )}
+              {selectedList === LIST_TYPES.EXTERNAL_VOTERS && (
+                <AddExternalVoterMenu
+                  voteEventId={voteEventId}
+                  mutate={mutateExternalVoters}
+                />
+              )}
+            </div>
+          </div>
           {internalOnly && (
             <InternalVoterTable
               voteEventId={voteEventId}

@@ -9,6 +9,7 @@ import {
   GetExternalVotersResponse,
   HTTP_METHOD,
 } from "@/types/api";
+import { LoadingButton } from "@mui/lab";
 import { Button, Stack } from "@mui/material";
 import { Formik } from "formik";
 import { Dispatch, FC, SetStateAction } from "react";
@@ -97,15 +98,16 @@ const AddExternalVoterModal: FC<Props> = ({
               >
                 Return
               </Button>
-              <Button
+              <LoadingButton
                 id="add-external-voter-button"
                 size="small"
                 variant="contained"
                 onClick={formik.submitForm}
                 disabled={formik.isSubmitting}
+                loading={formik.isSubmitting}
               >
                 Add
-              </Button>
+              </LoadingButton>
             </Stack>
           </>
         )}

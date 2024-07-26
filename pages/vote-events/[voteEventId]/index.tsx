@@ -113,7 +113,7 @@ const VotingPage: NextPage = () => {
       loadingText="Loading vote event..."
     >
       <NoDataWrapper
-        noDataCondition={typeof voteEventId !== "string" || !voteEventData}
+        noDataCondition={!voteEventData}
         fallback={<NoneFound title="No such vote event found!" message="" />}
       >
         <NoDataWrapper

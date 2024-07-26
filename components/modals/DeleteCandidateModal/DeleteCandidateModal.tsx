@@ -6,6 +6,7 @@ import { Project } from "@/types/projects";
 import { Button, Stack } from "@mui/material";
 import { Dispatch, FC, SetStateAction } from "react";
 import Modal from "../Modal";
+import { LoadingButton } from "@mui/lab";
 
 type Props = {
   voteEventId: number;
@@ -70,16 +71,17 @@ const DeleteCandidateModal: FC<Props> = ({
         >
           Cancel
         </Button>
-        <Button
+        <LoadingButton
           id="delete-candidate-confirm-button"
           size="small"
           onClick={handleDeleteCandidate}
           variant="contained"
           color="error"
           disabled={isCalling(DeleteCandidate.status)}
+          loading={isCalling(DeleteCandidate.status)}
         >
           Delete
-        </Button>
+        </LoadingButton>
       </Stack>
     </Modal>
   );

@@ -101,7 +101,7 @@ describe("<AddCandidateModal />", () => {
     cy.get("@setOpenSpy").should("not.be.called");
     cy.get("@mutateSpy").should("not.be.called");
     cy.get("@handleCloseMenuSpy").should("not.be.called");
-    cy.contains("Project ID must be a number").should("exist");
+    cy.contains("Project ID must be an integer").should("exist");
   });
 
   it("should have a functioning return button", () => {

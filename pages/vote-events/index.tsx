@@ -48,8 +48,7 @@ const VoteEvents: NextPage = () => {
         >
           <NoDataWrapper
             noDataCondition={Boolean(
-              (data && data.voteEvents === undefined) ||
-                data?.voteEvents.length === 0
+              !data || !data.voteEvents || data.voteEvents.length === 0
             )}
             fallback={<NoneFound title="" message="No vote events found" />}
           >
