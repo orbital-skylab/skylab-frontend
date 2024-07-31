@@ -43,7 +43,7 @@ describe("<DeleteExternalVoterModal />", () => {
     cy.get("#delete-external-voter-confirm-button").should("not.exist");
   });
 
-  it("should delete external voter on confirmation", () => {
+  it("should delete external voter on confirmation and close the modal", () => {
     // Mount the component
     mount(
       <DeleteExternalVoterModal

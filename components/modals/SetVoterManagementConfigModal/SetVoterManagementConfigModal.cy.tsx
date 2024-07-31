@@ -55,7 +55,7 @@ describe("<SetVoterManagementConfigModal />", () => {
     );
   });
 
-  it("should call setVoterManagement on confirmation", () => {
+  it("should set voter management on confirmation", () => {
     // Mount the component
     mount(
       <SetVoterManagementConfigModal
@@ -74,8 +74,7 @@ describe("<SetVoterManagementConfigModal />", () => {
     cy.get("@setVoterManagementSpy").should("be.calledOnce");
   });
 
-  // TODO: Test return button
-  it("should call setOpen and setOpenPrevious on cancel", () => {
+  it("should have a functioning cancel button", () => {
     // Mount the component
     mount(
       <SetVoterManagementConfigModal

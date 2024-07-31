@@ -66,7 +66,7 @@ describe("<DeleteVoteModal />", () => {
     cy.get("#delete-vote-confirm-button").should("not.exist");
   });
 
-  it("should delete vote on confirmation", () => {
+  it("should delete vote on confirmation and close the modal", () => {
     // Mount the component
     mount(
       <DeleteVoteModal

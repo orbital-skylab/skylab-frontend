@@ -90,7 +90,7 @@ describe("<BatchAddCandidateModal />", () => {
     cy.get("@handleCloseMenuSpy").should("be.calledOnce");
   });
 
-  it("should not submit form with invalid data", () => {
+  it("should not submit form with empty fields", () => {
     // Mount the component
     mount(
       <BatchAddCandidateModal

@@ -74,7 +74,7 @@ describe("<AddCandidateModal />", () => {
     cy.get("@handleCloseMenuSpy").should("be.calledOnce");
   });
 
-  it("should not submit form with invalid data", () => {
+  it("should not submit form with empty fields", () => {
     // Mount the component
     mount(
       <AddCandidateModal
@@ -93,6 +93,19 @@ describe("<AddCandidateModal />", () => {
     cy.get("@mutateSpy").should("not.be.called");
     cy.get("@handleCloseMenuSpy").should("not.be.called");
     cy.contains("This field is required").should("exist");
+  });
+
+  it("should not submit form with invalid project id", () => {
+    // Mount the component
+    mount(
+      <AddCandidateModal
+        voteEventId={voteEventId}
+        open={true}
+        handleCloseMenu={handleCloseMenuSpy}
+        setOpen={setOpenSpy}
+        mutate={mutateSpy}
+      />
+    );
 
     // Submit form with invalid project id
     cy.get("#project-id-input").type("invalid-project-id");

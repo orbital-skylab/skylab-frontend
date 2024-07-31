@@ -163,7 +163,7 @@ describe("<VoterManagementTab />", () => {
     cy.contains(internalVoters[0].email).should("be.visible");
   });
 
-  it("should render the component with correct UI elements if voter management as external list only", () => {
+  it("should render the component with correct UI elements if voter management has external list only", () => {
     const setVoterManagement = {
       ...voterManagement,
       hasExternalList: true,

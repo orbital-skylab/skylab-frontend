@@ -129,7 +129,7 @@ describe("<VoterManagementConfigModal />", () => {
     cy.get("@mutateSpy").should("be.calledOnce");
   });
 
-  it("should hide and display additional option base on what is selected", () => {
+  it("should hide and display additional options base on what is selected", () => {
     // Mount the component
     mount(
       <VoterManagementConfigModal

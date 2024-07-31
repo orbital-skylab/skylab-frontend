@@ -79,7 +79,7 @@ describe("<AddExternalVoterModal />", () => {
     cy.get("@handleCloseMenuSpy").should("be.calledOnce");
   });
 
-  it("should not submit form with invalid data", () => {
+  it("should not submit form with empty voter id field", () => {
     // Mount the component
     mount(
       <AddExternalVoterModal

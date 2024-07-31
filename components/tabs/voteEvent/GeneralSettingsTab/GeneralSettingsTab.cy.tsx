@@ -48,7 +48,7 @@ describe("<GeneralSettingsTab />", () => {
     cy.get("@mutateSpy").should("not.be.called");
   });
 
-  it("should show validation errors if end time is not greater than start time", () => {
+  it("", () => {
     mount(<GeneralSettingsTab voteEvent={voteEvent} mutate={mutateSpy} />);
 
     // Fill the form with invalid input
@@ -65,7 +65,7 @@ describe("<GeneralSettingsTab />", () => {
     cy.get("@mutateSpy").should("not.be.called");
   });
 
-  it("should submit form and trigger API call on valid input", () => {
+  it("", () => {
     const mutateSpy = cy.spy().as("mutateSpy");
     mount(<GeneralSettingsTab voteEvent={voteEvent} mutate={mutateSpy} />);
 

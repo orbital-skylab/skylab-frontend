@@ -63,7 +63,7 @@ describe("<DeleteInternalVoterModal />", () => {
     cy.get("#delete-internal-voter-confirm-button").should("not.exist");
   });
 
-  it("should delete internal voter on confirmation", () => {
+  it("should delete internal voter on confirmation and close the modal", () => {
     // Mount the component
     mount(
       <DeleteInternalVoterModal
