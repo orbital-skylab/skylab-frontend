@@ -141,7 +141,7 @@ describe("Testing vote event results tab", () => {
     unPublishResults(voteEventId);
   });
 
-  it("should be able to show or hide deifferent result columns", () => {
+  it("should be able to show or hide different result columns", () => {
     cy.get("#publish-results-modal-button").click();
     cy.get("#show-rank-checkbox").uncheck();
     cy.get("#show-votes-checkbox").uncheck();
