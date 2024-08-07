@@ -1,21 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
-import SetVoterManagementConfigModal from "./SetVoterManagementConfigModal";
 import { mount } from "cypress/react18";
-import { DEFAULT_RESULTS_FILTER } from "@/helpers/voteEvent";
+import SetVoterManagementConfigModal from "./SetVoterManagementConfigModal";
 
 describe("<SetVoterManagementConfigModal />", () => {
   let setOpenSpy: any;
   let setOpenPreviousSpy: any;
   let setVoterManagementSpy: any;
-  const voteEvent = {
-    id: 1,
-    title: "Test Vote Event Title",
-    startTime: "2022-01-01T00:00:00.000Z",
-    endTime: "2022-03-01T23:59:59.000Z",
-    resultsFilter: DEFAULT_RESULTS_FILTER,
+  const voterManagement = {
+    hasInternalList: true,
+    hasExternalList: true,
+    isRegistrationOpen: true,
   };
-  const processedValues = { voteEvent: voteEvent };
+  const processedValues = { voterManagement };
 
   beforeEach(() => {
     setOpenSpy = cy.spy().as("setOpenSpy");

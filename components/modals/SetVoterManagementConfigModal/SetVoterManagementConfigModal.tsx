@@ -2,23 +2,29 @@ import Modal from "@/components/modals/Modal";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 import { CALL_STATUS, isCalling } from "@/hooks/useApiCall";
 import { EditVoteEventResponse } from "@/types/api";
-import { VoteEvent } from "@/types/voteEvents";
+import { VoterManagement } from "@/types/voteEvents";
 import { LoadingButton } from "@mui/lab";
 import { Button, Stack } from "@mui/material";
 import { Dispatch, FC, SetStateAction } from "react";
 
 type Props = {
   open: boolean;
-  processedValues: { voteEvent: VoteEvent };
+  processedValues: {
+    voterManagement: VoterManagement & {
+      copyInternalVoteEventId?: number;
+      copyExternalVoteEventId?: number;
+    };
+  };
   setOpen: Dispatch<SetStateAction<boolean>>;
   setOpenPrevious: Dispatch<SetStateAction<boolean>>;
   setVoterManagement: {
     status: CALL_STATUS;
     setEndpoint: (endpoint: string) => void;
-    call: ({
-      voteEvent,
-    }: {
-      voteEvent: VoteEvent;
+    call: (processedValues: {
+      voterManagement: VoterManagement & {
+        copyInternalVoteEventId?: number;
+        copyExternalVoteEventId?: number;
+      };
     }) => Promise<EditVoteEventResponse>;
   };
 };

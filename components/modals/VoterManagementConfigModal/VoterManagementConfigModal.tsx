@@ -47,8 +47,13 @@ const VoterManagementConfigModal: FC<Props> = ({
   const { isRegistrationOpen, ...values } = voterManagement;
   const [isSetVoterManagementOpen, setIsSetVoterManagementOpen] =
     useState(false);
-  const [voteEventData, setVoteEventData] = useState<{ voteEvent: VoteEvent }>({
-    voteEvent,
+  const [formValues, setFormValues] = useState<{
+    voterManagement: VoterManagement & {
+      copyInternalVoteEventId?: number;
+      copyExternalVoteEventId?: number;
+    };
+  }>({
+    voterManagement,
   });
 
   const handleOpenSetVoterManagement = () => {
@@ -61,7 +66,7 @@ const VoterManagementConfigModal: FC<Props> = ({
 
   const setVoterManagement = useApiCall({
     method: HTTP_METHOD.PUT,
-    endpoint: `/vote-events/${voteEvent.id}`,
+    endpoint: `/vote-events/${voteEvent.id}/voter-management`,
     onSuccess: ({ voteEvent }: EditVoteEventResponse) => {
       mutate(() => {
         return {
@@ -83,18 +88,23 @@ const VoterManagementConfigModal: FC<Props> = ({
 
   const handleSubmit = async (values: EditVoterManagementFormValuesType) => {
     const processedValues = {
-      voteEvent: {
-        ...voteEvent,
-        voterManagement: {
-          hasInternalList: values.hasInternalList || false,
-          hasExternalList: values.hasExternalList || false,
-          isRegistrationOpen,
-        },
+      voterManagement: {
+        hasInternalList: values.hasInternalList || false,
+        hasExternalList: values.hasExternalList || false,
+        copyInternalVoteEventId:
+          values.copyInternalVoteEventId === ""
+            ? undefined
+            : values.copyInternalVoteEventId,
+        copyExternalVoteEventId:
+          values.copyExternalVoteEventId === ""
+            ? undefined
+            : values.copyExternalVoteEventId,
+        isRegistrationOpen,
       },
     };
 
     if (voteEvent.voterManagement) {
-      setVoteEventData(processedValues);
+      setFormValues(processedValues);
       handleOpenSetVoterManagement();
       setOpen(false);
       return;
@@ -115,7 +125,7 @@ const VoterManagementConfigModal: FC<Props> = ({
     <>
       <SetVoterManagementConfigModal
         open={isSetVoterManagementOpen}
-        processedValues={voteEventData}
+        processedValues={formValues}
         setOpen={setIsSetVoterManagementOpen}
         setOpenPrevious={setOpen}
         setVoterManagement={setVoterManagement}
