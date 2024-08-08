@@ -1,0 +1,2 @@
+import BatchAddInternalVotersForm from "@/components/csvForms/BatchAddInternalVotersForm/BatchAddInternalVotersForm";
+export default BatchAddInternalVotersForm;
