@@ -8,6 +8,7 @@ import {
   HTTP_METHOD,
 } from "@/types/api";
 import { AppRegistration, Close } from "@mui/icons-material";
+import { LoadingButton } from "@mui/lab";
 import { Button, Stack } from "@mui/material";
 import { Dispatch, FC, SetStateAction } from "react";
 
@@ -75,8 +76,8 @@ const InternalVoterRegistrationModal: FC<Props> = ({
       title="Registration"
       subheader={
         isRegistrationOpen
-          ? "Close the registration for the vote event."
-          : "Open the registration which allows users to register themselves as an internal voter."
+          ? "Close registration for the vote event."
+          : "Open registration and allow users to register themselves as an internal voter."
       }
     >
       <Stack direction="row" justifyContent="space-between" marginTop="0.5rem">
@@ -88,12 +89,13 @@ const InternalVoterRegistrationModal: FC<Props> = ({
         >
           Return
         </Button>
-        <Button
+        <LoadingButton
           id={`${isRegistrationOpen ? "close" : "open"}-registration-button`}
           size="small"
           variant="contained"
           onClick={handleToggleRegistration}
           disabled={isCalling(toggleRegistration.status)}
+          loading={isCalling(toggleRegistration.status)}
         >
           {isRegistrationOpen ? (
             <>
@@ -109,7 +111,7 @@ const InternalVoterRegistrationModal: FC<Props> = ({
               Open Registration
             </>
           )}
-        </Button>
+        </LoadingButton>
       </Stack>
     </Modal>
   );
