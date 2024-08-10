@@ -6,10 +6,13 @@ export interface AuthProviderProps {
 
 export interface IAuth {
   user: User | undefined;
+  isExternalVoter: boolean;
   isLoading: boolean;
   isPreviewMode: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  externalVoterSignIn: (voterId: string) => Promise<void>;
+  externalVoterSignOut: () => Promise<void>;
   resetPassword: ({
     email,
     origin,

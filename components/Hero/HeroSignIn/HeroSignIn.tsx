@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 // Components
 import TextInput from "@/components/formikFormControllers/TextInput";
 import { Box, Stack, Typography, Button } from "@mui/material";
@@ -11,6 +11,7 @@ import { Formik, FormikHelpers } from "formik";
 import useAuth from "@/contexts/useAuth";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 import { ERRORS } from "@/helpers/errors";
+import ExternalVoterSignInForm from "@/components/forms/ExternalVoterSignInForm";
 
 export const LANDING_SIGN_IN_ID = "landingSignIn";
 
@@ -20,8 +21,11 @@ interface SignInFormValuesType {
 }
 
 const HeroSignIn: FC = () => {
-  const { user, signIn } = useAuth();
+  const { user, isExternalVoter, signIn } = useAuth();
   const { setSuccess, setError } = useSnackbarAlert();
+
+  const [isExternalVoterSignIn, setIsExternalVoterSignIn] =
+    useState<boolean>(false);
 
   const initialValues: SignInFormValuesType = {
     email: "",
@@ -45,65 +49,85 @@ const HeroSignIn: FC = () => {
 
   return (
     <>
-      {!user ? (
+      {!user && !isExternalVoter ? (
         <Box sx={{ width: "100%" }} id={LANDING_SIGN_IN_ID}>
-          <Formik
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-            validationSchema={signInValidationSchema}
-          >
-            {(formik) => (
-              <form id="sign-in-form" onSubmit={formik.handleSubmit}>
-                <Stack gap="1rem" width="100%">
-                  <Box>
-                    <Typography variant="caption">
-                      Involved in Orbital?
-                    </Typography>
-                    <Typography variant="h6" fontWeight={600}>
-                      Sign In Here!
-                    </Typography>
-                  </Box>
-                  <TextInput
-                    label="Email"
-                    id="sign-in-email-input"
-                    type="email"
-                    name="email"
-                    formik={formik}
-                  />
-                  <TextInput
-                    label="Password"
-                    id="sign-in-password-input"
-                    type="password"
-                    name="password"
-                    formik={formik}
-                  />
-                  <Button
-                    id="sign-in-button"
-                    variant="contained"
-                    disabled={formik.isSubmitting}
-                    type="submit"
-                  >
-                    Sign In
-                  </Button>
-                  <Link href={PAGES.RESET_PASSWORD} passHref>
-                    <Typography
-                      variant="subtitle2"
-                      sx={{
-                        "&:hover": {
-                          color: "secondary.main",
-                          textDecoration: "underline",
-                          cursor: "pointer",
-                          transitionDuration: "150ms",
-                        },
-                      }}
+          {isExternalVoterSignIn ? (
+            <ExternalVoterSignInForm />
+          ) : (
+            <Formik
+              initialValues={initialValues}
+              onSubmit={handleSubmit}
+              validationSchema={signInValidationSchema}
+            >
+              {(formik) => (
+                <form id="sign-in-form" onSubmit={formik.handleSubmit}>
+                  <Stack gap="1rem" width="100%">
+                    <Box>
+                      <Typography variant="caption">
+                        Involved in Orbital?
+                      </Typography>
+                      <Typography variant="h6" fontWeight={600}>
+                        Sign In Here!
+                      </Typography>
+                    </Box>
+                    <TextInput
+                      label="Email"
+                      id="sign-in-email-input"
+                      type="email"
+                      name="email"
+                      formik={formik}
+                    />
+                    <TextInput
+                      label="Password"
+                      id="sign-in-password-input"
+                      type="password"
+                      name="password"
+                      formik={formik}
+                    />
+                    <Button
+                      id="sign-in-button"
+                      variant="contained"
+                      disabled={formik.isSubmitting}
+                      type="submit"
                     >
-                      Forgot your password?
-                    </Typography>
-                  </Link>
-                </Stack>
-              </form>
-            )}
-          </Formik>
+                      Sign In
+                    </Button>
+                    <Link href={PAGES.RESET_PASSWORD} passHref>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{
+                          "&:hover": {
+                            color: "secondary.main",
+                            textDecoration: "underline",
+                            cursor: "pointer",
+                            transitionDuration: "150ms",
+                          },
+                        }}
+                      >
+                        Forgot your password?
+                      </Typography>
+                    </Link>
+                  </Stack>
+                </form>
+              )}
+            </Formik>
+          )}
+          <Typography
+            onClick={() => setIsExternalVoterSignIn((prev) => !prev)}
+            variant="subtitle2"
+            sx={{
+              "&:hover": {
+                color: "secondary.main",
+                textDecoration: "underline",
+                cursor: "pointer",
+                transitionDuration: "150ms",
+              },
+            }}
+          >
+            {`Sign in as ${
+              isExternalVoterSignIn ? "a user" : "an external voter"
+            }`}
+          </Typography>
         </Box>
       ) : null}
     </>
