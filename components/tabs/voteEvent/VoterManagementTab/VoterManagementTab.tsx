@@ -51,6 +51,7 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
     mutate: mutateInternalVoters,
   } = useFetch<GetInternalVotersResponse>({
     endpoint: `/vote-events/${voteEventId}/voter-management/internal-voters`,
+    enabled: internalOnly || bothInternalAndExternal,
   });
 
   const {
@@ -59,7 +60,21 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
     mutate: mutateExternalVoters,
   } = useFetch<GetExternalVotersResponse>({
     endpoint: `/vote-events/${voteEventId}/voter-management/external-voters`,
+    enabled: externalOnly || bothInternalAndExternal,
   });
+
+  const clearVoters = () => {
+    mutateInternalVoters(() => {
+      return {
+        internalVoters: [],
+      };
+    });
+    mutateExternalVoters(() => {
+      return {
+        externalVoters: [],
+      };
+    });
+  };
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: LIST_TYPES) => {
     setSelectedList(newValue);
@@ -87,6 +102,7 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
         open={isVoterManagementConfigOpen}
         setOpen={setIsVoterManagementConfigOpen}
         mutate={mutate}
+        clearVoters={clearVoters}
       />
       {voterManagementSet ? (
         <Stack flexGrow={1}>

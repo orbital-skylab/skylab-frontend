@@ -23,8 +23,6 @@ const AddInternalVoterMenuFactory = {
     mutateInternalVoters: Mutate<GetInternalVotersResponse>,
     mutateVoteEvent: Mutate<GetVoteEventResponse>
   ) => {
-    const { isRegistrationOpen } = voterManagement;
-
     const menuItems = [
       <AddInternalVoterModalItem
         key={"add-internal-voter-modal-item"}
@@ -41,7 +39,7 @@ const AddInternalVoterMenuFactory = {
       <InternalVoterRegistrationModalItem
         key={"internal-voter-registration-modal-item"}
         voteEventId={voteEventId}
-        isRegistrationOpen={isRegistrationOpen}
+        voterManagement={voterManagement}
         handleCloseMenu={handleCloseMenu}
         mutateVoteEvent={mutateVoteEvent}
       />,

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { mount } from "cypress/react18";
-import AddInternalVoterModalItem from "./AddInternalVoterModalItem";
+import ImportInternalVoterCsvModalItem from "./ImportInternalVoterCsvModalItem";
 
-describe("<AddInternalVoterModalItem />", () => {
+describe("<ImportInternalVoterCsvModalItem />", () => {
   let handleCloseMenuSpy: any;
   let mutateInternalVotersSpy: any;
   const voteEventId = 1;
@@ -15,7 +15,7 @@ describe("<AddInternalVoterModalItem />", () => {
   it("should open the modal when menu item is clicked", () => {
     // Mount the component
     mount(
-      <AddInternalVoterModalItem
+      <ImportInternalVoterCsvModalItem
         voteEventId={voteEventId}
         handleCloseMenu={handleCloseMenuSpy}
         mutateInternalVoters={mutateInternalVotersSpy}
@@ -23,9 +23,9 @@ describe("<AddInternalVoterModalItem />", () => {
     );
 
     // Click on the menu item
-    cy.contains("Add Internal Voter").click();
+    cy.contains("Import CSV").click();
 
     // Assert that the modal is opened
-    cy.get("body").should("contain", "Add By Email");
+    cy.get("#import-internal-voter-csv-modal").should("be.visible");
   });
 });

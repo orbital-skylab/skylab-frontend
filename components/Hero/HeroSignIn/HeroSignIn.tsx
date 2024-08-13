@@ -113,6 +113,7 @@ const HeroSignIn: FC = () => {
             </Formik>
           )}
           <Typography
+            id="sign-in-toggle"
             onClick={() => setIsExternalVoterSignIn((prev) => !prev)}
             variant="subtitle2"
             sx={{

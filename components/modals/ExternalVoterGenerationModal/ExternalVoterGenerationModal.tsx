@@ -57,7 +57,6 @@ const ExternalVoterGenerationModal: FC<Props> = ({
         length: parseInt(values.voterIdLength),
       });
 
-      handleCloseMenu();
       handleCloseModal();
     } catch (error) {
       setError(error);
@@ -65,15 +64,17 @@ const ExternalVoterGenerationModal: FC<Props> = ({
   };
 
   const handleCloseModal = () => {
+    handleCloseMenu();
     setOpen(false);
   };
 
   return (
     <Modal
+      id="external-voter-generation-modal"
       open={open}
       handleClose={handleCloseModal}
       title="Generate Voter IDs"
-      subheader="Enter the amount and length of the voter IDs you want to generate."
+      subheader="Enter the amount (from 1 to 1000) and length (from 5 to 20) of the voter IDs you want to generate."
     >
       <Formik
         initialValues={initialValues}
@@ -132,13 +133,15 @@ export default ExternalVoterGenerationModal;
 
 const generateVoterIdsFormValidationSchema = Yup.object().shape({
   voterIdAmount: Yup.number()
+    .typeError("Amount of voter IDs must be an integer.")
     .required("Amount of voter IDs is required.")
     .min(1, "Amount of voter IDs must be at least 1.")
     .max(1000, "Amount of voter IDs cannot exceed 1000.")
     .integer("Amount of voter IDs must be an integer."),
   voterIdLength: Yup.number()
+    .typeError("Length of voter IDs must be an integer.")
     .required("Length of voter IDs is required.")
-    .min(1, "Length of voter IDs must be at least 5.")
+    .min(5, "Length of voter IDs must be at least 5.")
     .max(20, "Length of voter IDs cannot exceed 20.")
     .integer("Length of voter IDs must be an integer."),
 });

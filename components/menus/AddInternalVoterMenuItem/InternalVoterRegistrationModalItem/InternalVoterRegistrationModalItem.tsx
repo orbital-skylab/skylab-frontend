@@ -1,19 +1,20 @@
 import InternalVoterRegistrationModal from "@/components/modals/InternalVoterRegistrationModal";
 import { Mutate } from "@/hooks/useFetch";
 import { GetVoteEventResponse } from "@/types/api";
+import { VoterManagement } from "@/types/voteEvents";
 import { MenuItem } from "@mui/material";
 import { FC, useState } from "react";
 
 type Props = {
   voteEventId: number;
-  isRegistrationOpen: boolean;
+  voterManagement: VoterManagement;
   handleCloseMenu: () => void;
   mutateVoteEvent: Mutate<GetVoteEventResponse>;
 };
 
 const InternalVoterRegistrationModalItem: FC<Props> = ({
   voteEventId,
-  isRegistrationOpen,
+  voterManagement,
   handleCloseMenu,
   mutateVoteEvent,
 }) => {
@@ -27,7 +28,7 @@ const InternalVoterRegistrationModalItem: FC<Props> = ({
     <>
       <InternalVoterRegistrationModal
         voteEventId={voteEventId}
-        isRegistrationOpen={isRegistrationOpen}
+        voterManagement={voterManagement}
         open={isModalOpen}
         handleCloseMenu={handleCloseMenu}
         setOpen={setIsModalOpen}

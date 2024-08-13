@@ -150,6 +150,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
 
     setIsExternalVoter(false);
+    router.push(PAGES.LANDING);
   };
 
   const resetPassword = async ({

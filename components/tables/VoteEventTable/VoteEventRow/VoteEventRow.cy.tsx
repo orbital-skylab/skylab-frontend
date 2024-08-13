@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { mount } from "cypress/react18";
 import VoteEventRow from "./VoteEventRow";
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
 import { DISPLAY_TYPES } from "@/types/voteEvents";
 import { DEFAULT_RESULTS_FILTER } from "@/helpers/voteEvent";
+import { AuthContext } from "@/contexts/useAuth";
 
 describe("<VoteEventRow />", () => {
   let mutateSpy: any;
@@ -27,6 +29,38 @@ describe("<VoteEventRow />", () => {
     resultsFilter: DEFAULT_RESULTS_FILTER,
   };
 
+  const user = {
+    id: 1,
+    name: "John Doe",
+    email: "john.doe@example.com",
+    profilePicUrl: "https://example.com/profile-pic.jpg",
+    githubUrl: "https://github.com/johndoe",
+    linkedinUrl: "https://linkedin.com/in/johndoe",
+    personalSiteUrl: "https://johndoe.com",
+    selfIntro: "Hello, I'm John Doe!",
+    administrator: {
+      userId: 1,
+      id: 1,
+      startDate: "2022-06-01T08:00:00Z",
+      endDate: "2024-06-01T08:00:00Z",
+    },
+  };
+
+  const mockValues = {
+    user: user,
+    isExternalVoter: false,
+    isLoading: false,
+    isPreviewMode: false,
+    signIn: async () => {},
+    signOut: async () => {},
+    externalVoterSignIn: async () => {},
+    externalVoterSignOut: async () => {},
+    resetPassword: async () => {},
+    changePassword: async () => {},
+    previewSiteAs: () => {},
+    stopPreview: () => {},
+  };
+
   beforeEach(() => {
     mutateSpy = cy.spy().as("mutateSpy");
   });
@@ -42,7 +76,11 @@ describe("<VoteEventRow />", () => {
   };
 
   it("should render the in progress vote event row", () => {
-    mount(<VoteEventRow voteEvent={voteEvent} mutate={mutateSpy} />);
+    mount(
+      <AuthContext.Provider value={mockValues}>
+        <VoteEventRow voteEvent={voteEvent} mutate={mutateSpy} />
+      </AuthContext.Provider>
+    );
 
     assertCommonElements(voteEvent.startTime, voteEvent.endTime);
 
@@ -56,10 +94,12 @@ describe("<VoteEventRow />", () => {
 
   it("should render the incomplete vote event row", () => {
     mount(
-      <VoteEventRow
-        voteEvent={{ ...voteEvent, voteConfig: undefined }}
-        mutate={mutateSpy}
-      />
+      <AuthContext.Provider value={mockValues}>
+        <VoteEventRow
+          voteEvent={{ ...voteEvent, voteConfig: undefined }}
+          mutate={mutateSpy}
+        />
+      </AuthContext.Provider>
     );
 
     assertCommonElements(voteEvent.startTime, voteEvent.endTime);
@@ -70,10 +110,12 @@ describe("<VoteEventRow />", () => {
 
   it("should render the upcoming vote event row", () => {
     mount(
-      <VoteEventRow
-        voteEvent={{ ...voteEvent, startTime: "2094-06-01T08:00:00Z" }}
-        mutate={mutateSpy}
-      />
+      <AuthContext.Provider value={mockValues}>
+        <VoteEventRow
+          voteEvent={{ ...voteEvent, startTime: "2094-06-01T08:00:00Z" }}
+          mutate={mutateSpy}
+        />
+      </AuthContext.Provider>
     );
 
     assertCommonElements("2094-06-01T08:00:00Z", voteEvent.endTime);
@@ -84,10 +126,12 @@ describe("<VoteEventRow />", () => {
 
   it("should render the completed vote event row", () => {
     mount(
-      <VoteEventRow
-        voteEvent={{ ...voteEvent, endTime: "2014-06-01T08:00:00Z" }}
-        mutate={mutateSpy}
-      />
+      <AuthContext.Provider value={mockValues}>
+        <VoteEventRow
+          voteEvent={{ ...voteEvent, endTime: "2014-06-01T08:00:00Z" }}
+          mutate={mutateSpy}
+        />
+      </AuthContext.Provider>
     );
 
     assertCommonElements(voteEvent.startTime, "2014-06-01T08:00:00Z");
@@ -97,7 +141,11 @@ describe("<VoteEventRow />", () => {
   });
 
   it("should have an edit button with link", () => {
-    mount(<VoteEventRow voteEvent={voteEvent} mutate={mutateSpy} />);
+    mount(
+      <AuthContext.Provider value={mockValues}>
+        <VoteEventRow voteEvent={voteEvent} mutate={mutateSpy} />
+      </AuthContext.Provider>
+    );
 
     cy.get(`#edit-vote-event-${voteEvent.id}-button`).should(
       "have.attr",
@@ -108,16 +156,18 @@ describe("<VoteEventRow />", () => {
 
   it("should have a results button with link if results are published", () => {
     mount(
-      <VoteEventRow
-        voteEvent={{
-          ...voteEvent,
-          resultsFilter: {
-            ...DEFAULT_RESULTS_FILTER,
-            areResultsPublished: true,
-          },
-        }}
-        mutate={mutateSpy}
-      />
+      <AuthContext.Provider value={mockValues}>
+        <VoteEventRow
+          voteEvent={{
+            ...voteEvent,
+            resultsFilter: {
+              ...DEFAULT_RESULTS_FILTER,
+              areResultsPublished: true,
+            },
+          }}
+          mutate={mutateSpy}
+        />
+      </AuthContext.Provider>
     );
 
     cy.get(`#vote-event-${voteEvent.id}-results-button`).should(
@@ -127,8 +177,51 @@ describe("<VoteEventRow />", () => {
     );
   });
 
+  it("should have a register button if registration is open", () => {
+    mount(
+      <AuthContext.Provider value={mockValues}>
+        <VoteEventRow
+          voteEvent={{
+            ...voteEvent,
+            voterManagement: {
+              ...voteEvent.voterManagement,
+              isRegistrationOpen: true,
+            },
+          }}
+          mutate={mutateSpy}
+        />
+      </AuthContext.Provider>
+    );
+
+    cy.get(`#register-vote-event-${voteEvent.id}-button`).should("be.visible");
+    cy.get(`#vote-event-${voteEvent.id}-results-button`).should("not.exist");
+    cy.get(`#vote-event-${voteEvent.id}-vote-button`).should("not.exist");
+    cy.get(`#register-vote-event-${voteEvent.id}-button`).click();
+    cy.get("#register-for-vote-event-modal").should("be.visible");
+  });
+
+  it("should not have edit and delete buttons if the user is not an admin", () => {
+    mount(
+      <AuthContext.Provider
+        value={{
+          ...mockValues,
+          user: { ...mockValues.user, administrator: undefined },
+        }}
+      >
+        <VoteEventRow voteEvent={voteEvent} mutate={mutateSpy} />
+      </AuthContext.Provider>
+    );
+
+    cy.get(`#edit-vote-event-${voteEvent.id}-button`).should("not.exist");
+    cy.get(`#delete-vote-event-${voteEvent.id}-button`).should("not.exist");
+  });
+
   it("should open the delete modal when the delete button is clicked", () => {
-    mount(<VoteEventRow voteEvent={voteEvent} mutate={mutateSpy} />);
+    mount(
+      <AuthContext.Provider value={mockValues}>
+        <VoteEventRow voteEvent={voteEvent} mutate={mutateSpy} />
+      </AuthContext.Provider>
+    );
 
     cy.get(`#delete-vote-event-${voteEvent.id}-button`).click();
 

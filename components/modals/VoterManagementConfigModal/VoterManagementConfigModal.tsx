@@ -34,6 +34,7 @@ type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   mutate: Mutate<GetVoteEventResponse>;
+  clearVoters: () => void;
 };
 
 const VoterManagementConfigModal: FC<Props> = ({
@@ -42,6 +43,7 @@ const VoterManagementConfigModal: FC<Props> = ({
   open,
   setOpen,
   mutate,
+  clearVoters,
 }) => {
   const { setSuccess, setError } = useSnackbarAlert();
   const { isRegistrationOpen, ...values } = voterManagement;
@@ -75,6 +77,9 @@ const VoterManagementConfigModal: FC<Props> = ({
           },
         };
       });
+      if (voteEvent.voterManagement) {
+        clearVoters();
+      }
       setSuccess("You have successfully edited the voter management config!");
       setOpen(false);
     },

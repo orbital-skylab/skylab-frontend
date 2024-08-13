@@ -1,31 +1,31 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { mount } from "cypress/react18";
-import AddInternalVoterModalItem from "./AddInternalVoterModalItem";
+import ExternalVoterGenerationModalItem from "./ExternalVoterGenerationModalItem";
 
-describe("<AddInternalVoterModalItem />", () => {
+describe("<ExternalVoterGenerationModalItem />", () => {
   let handleCloseMenuSpy: any;
-  let mutateInternalVotersSpy: any;
+  let mutateExternalVotersSpy: any;
   const voteEventId = 1;
 
   beforeEach(() => {
     handleCloseMenuSpy = cy.spy().as("handleCloseMenuSpy");
-    mutateInternalVotersSpy = cy.spy().as("mutateInternalVotersSpy");
+    mutateExternalVotersSpy = cy.spy().as("mutateExternalVotersSpy");
   });
 
   it("should open the modal when menu item is clicked", () => {
     // Mount the component
     mount(
-      <AddInternalVoterModalItem
+      <ExternalVoterGenerationModalItem
         voteEventId={voteEventId}
         handleCloseMenu={handleCloseMenuSpy}
-        mutateInternalVoters={mutateInternalVotersSpy}
+        mutateExternalVoters={mutateExternalVotersSpy}
       />
     );
 
     // Click on the menu item
-    cy.contains("Add Internal Voter").click();
+    cy.contains("Generate Voter IDs").click();
 
     // Assert that the modal is opened
-    cy.get("body").should("contain", "Add By Email");
+    cy.get("#external-voter-generation-modal").should("be.visible");
   });
 });

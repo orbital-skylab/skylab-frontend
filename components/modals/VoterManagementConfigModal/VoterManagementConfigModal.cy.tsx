@@ -6,6 +6,7 @@ import VoterManagementConfigModal from "./VoterManagementConfigModal";
 describe("<VoterManagementConfigModal />", () => {
   let setOpenSpy: any;
   let mutateSpy: any;
+  let clearVotersSpy: any;
   const voterManagement = {
     isRegistrationOpen: false,
     hasInternalList: false,
@@ -22,6 +23,7 @@ describe("<VoterManagementConfigModal />", () => {
   beforeEach(() => {
     setOpenSpy = cy.spy().as("setOpenSpy");
     mutateSpy = cy.spy().as("mutateSpy");
+    clearVotersSpy = cy.spy().as("clearVotersSpy");
   });
 
   it("should render opened modal", () => {
@@ -33,6 +35,7 @@ describe("<VoterManagementConfigModal />", () => {
         open={true}
         setOpen={setOpenSpy}
         mutate={mutateSpy}
+        clearVoters={clearVotersSpy}
       />
     );
 
@@ -51,6 +54,7 @@ describe("<VoterManagementConfigModal />", () => {
         open={false}
         setOpen={setOpenSpy}
         mutate={mutateSpy}
+        clearVoters={clearVotersSpy}
       />
     );
 
@@ -77,6 +81,7 @@ describe("<VoterManagementConfigModal />", () => {
         open={true}
         setOpen={setOpenSpy}
         mutate={mutateSpy}
+        clearVoters={clearVotersSpy}
       />
     );
 
@@ -100,6 +105,7 @@ describe("<VoterManagementConfigModal />", () => {
     cy.get("@myRequest").should("not.have.been.called");
     cy.get("@mutateSpy").should("not.have.been.called");
     cy.get("@setOpenSpy").should("be.calledOnce");
+    cy.get("@clearVotersSpy").should("not.have.been.called");
   });
 
   it("should handle form submission if voter management has not been configured before", () => {
@@ -111,11 +117,12 @@ describe("<VoterManagementConfigModal />", () => {
         open={true}
         setOpen={setOpenSpy}
         mutate={mutateSpy}
+        clearVoters={clearVotersSpy}
       />
     );
 
     // Intercept PUT request
-    cy.intercept("PUT", `/api/vote-events/${voteEvent.id}`, {
+    cy.intercept("PUT", `/api/vote-events/${voteEvent.id}/voter-management`, {
       statusCode: 200,
       body: {},
     }).as("setVoterManagement");
@@ -127,6 +134,7 @@ describe("<VoterManagementConfigModal />", () => {
 
     cy.get("@setOpenSpy").should("be.calledOnce");
     cy.get("@mutateSpy").should("be.calledOnce");
+    cy.get("@clearVotersSpy").should("be.calledOnce");
   });
 
   it("should hide and display additional options base on what is selected", () => {
@@ -138,6 +146,7 @@ describe("<VoterManagementConfigModal />", () => {
         open={true}
         setOpen={setOpenSpy}
         mutate={mutateSpy}
+        clearVoters={clearVotersSpy}
       />
     );
 
@@ -162,6 +171,7 @@ describe("<VoterManagementConfigModal />", () => {
         open={true}
         setOpen={setOpenSpy}
         mutate={mutateSpy}
+        clearVoters={clearVotersSpy}
       />
     );
 
@@ -170,5 +180,6 @@ describe("<VoterManagementConfigModal />", () => {
 
     cy.get("@setOpenSpy").should("be.calledOnce");
     cy.get("@mutateSpy").should("not.have.been.called");
+    cy.get("@clearVotersSpy").should("not.have.been.called");
   });
 });

@@ -52,14 +52,9 @@ const ImportInternalVoterCsvModal: FC<Props> = ({
       const processedValues = processBatchAddInternalVotersData(
         addInternalVotersData
       );
-      const { message } = await batchAddInternalVoters.call(processedValues);
-      if (message?.length > 0) {
-        setError(`The following rows were not successfully added:\n${message}`);
-      } else {
-        setSuccess("Successfully added the internal voters!");
-        handleCloseModal();
-        handleCloseMenu();
-      }
+      await batchAddInternalVoters.call(processedValues);
+      setSuccess("Successfully added the internal voters!");
+      handleCloseModal();
     } catch (error) {
       setError(error);
     }
@@ -70,11 +65,13 @@ const ImportInternalVoterCsvModal: FC<Props> = ({
   };
 
   const handleCloseModal = () => {
+    handleCloseMenu();
     setOpen(false);
   };
 
   return (
     <Modal
+      id="import-internal-voter-csv-modal"
       open={open}
       handleClose={handleCloseModal}
       title="Import CSV"
@@ -107,7 +104,7 @@ const ImportInternalVoterCsvModal: FC<Props> = ({
           />
         </Box>
       </Stack>
-      <Stack direction="row" justifyContent="space-between" marginTop="0.5rem">
+      <Stack direction="row" justifyContent="left" marginTop="0.5rem">
         <Button
           id="import-internal-voter-csv-return-button"
           size="small"

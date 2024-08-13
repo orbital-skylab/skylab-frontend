@@ -52,14 +52,9 @@ const ImportExternalVoterCsvModal: FC<Props> = ({
       const processedValues = processBatchAddExternalVotersData(
         addExternalVotersData
       );
-      const { message } = await batchAddExternalVoters.call(processedValues);
-      if (message?.length > 0) {
-        setError(`The following rows were not successfully added:\n${message}`);
-      } else {
-        setSuccess("Successfully added the external voters!");
-        handleCloseModal();
-        handleCloseMenu();
-      }
+      await batchAddExternalVoters.call(processedValues);
+      setSuccess("Successfully added the external voters!");
+      handleCloseModal();
     } catch (error) {
       setError(error);
     }
@@ -70,11 +65,13 @@ const ImportExternalVoterCsvModal: FC<Props> = ({
   };
 
   const handleCloseModal = () => {
+    handleCloseMenu();
     setOpen(false);
   };
 
   return (
     <Modal
+      id="import-external-voter-csv-modal"
       open={open}
       handleClose={handleCloseModal}
       title="Import CSV"

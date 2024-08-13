@@ -7,6 +7,7 @@ import {
   GetVoteEventResponse,
   HTTP_METHOD,
 } from "@/types/api";
+import { VoterManagement } from "@/types/voteEvents";
 import { AppRegistration, Close } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import { Button, Stack } from "@mui/material";
@@ -14,7 +15,7 @@ import { Dispatch, FC, SetStateAction } from "react";
 
 type Props = {
   voteEventId: number;
-  isRegistrationOpen: boolean;
+  voterManagement: VoterManagement;
   open: boolean;
   handleCloseMenu: () => void;
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -23,13 +24,15 @@ type Props = {
 
 const InternalVoterRegistrationModal: FC<Props> = ({
   voteEventId,
-  isRegistrationOpen,
+  voterManagement,
   open,
   handleCloseMenu,
   setOpen,
   mutate,
 }) => {
   const { setSuccess, setError } = useSnackbarAlert();
+
+  const isRegistrationOpen = voterManagement.isRegistrationOpen;
 
   const toggleRegistration = useApiCall({
     method: HTTP_METHOD.PUT,
@@ -50,15 +53,17 @@ const InternalVoterRegistrationModal: FC<Props> = ({
       await toggleRegistration.call({
         voteEvent: {
           voterManagement: {
+            ...voterManagement,
             isRegistrationOpen: !isRegistrationOpen,
           },
         },
       });
       setSuccess(
         `You have successfully ${
-          isRegistrationOpen ? "closed" : "opened"
-        } then registration!`
+          isRegistrationOpen ? "close" : "open"
+        } registration!`
       );
+      handleCloseModal();
     } catch (error) {
       setError(error);
     }
@@ -71,6 +76,7 @@ const InternalVoterRegistrationModal: FC<Props> = ({
 
   return (
     <Modal
+      id="internal-voter-registration-modal"
       open={open}
       handleClose={handleCloseModal}
       title="Registration"
