@@ -1,5 +1,4 @@
 import Modal from "@/components/modals/Modal";
-import useAuth from "@/contexts/useAuth";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 import useApiCall, { isCalling } from "@/hooks/useApiCall";
 import { Mutate } from "@/hooks/useFetch";
@@ -28,7 +27,6 @@ const SubmitVotesModal: FC<Props> = ({
   mutate,
 }) => {
   const { setSuccess, setError } = useSnackbarAlert();
-  const { user } = useAuth();
 
   const projectIds = Object.entries(selectedCandidates)
     .filter(([, isSelected]) => isSelected)
@@ -50,17 +48,7 @@ const SubmitVotesModal: FC<Props> = ({
 
   const handleSubmit = async () => {
     try {
-      await submitVotes.call(
-        user
-          ? {
-              userId: user.id,
-              projectIds,
-            }
-          : {
-              externalVoterId: "not used yet",
-              projectIds,
-            }
-      );
+      await submitVotes.call({ projectIds });
     } catch (error) {
       setError(error);
     }

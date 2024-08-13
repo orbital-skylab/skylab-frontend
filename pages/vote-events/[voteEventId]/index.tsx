@@ -3,7 +3,6 @@ import Body from "@/components/layout/Body";
 import SubmitVotesModal from "@/components/modals/SubmitVotesModal";
 import VoteCandidateTable from "@/components/tables/VoteCandidateTable";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
-import useAuth from "@/contexts/useAuth";
 import { shuffleArray } from "@/helpers/array";
 import { getVoteEventStatus } from "@/helpers/voteEvent";
 import useFetch, { FETCH_STATUS, isFetching } from "@/hooks/useFetch";
@@ -43,7 +42,6 @@ const candidateDisplayFactory = {
 
 const VotingPage: NextPage = () => {
   const router = useRouter();
-  const { user } = useAuth();
   const { voteEventId } = router.query;
   const [selectedCandidates, setSelectedCandidates] = useState<{
     [key: number]: boolean;
@@ -63,8 +61,8 @@ const VotingPage: NextPage = () => {
     status: fetchVotesStatus,
     mutate: mutateVotes,
   } = useFetch<GetVotesResponse>({
-    endpoint: `/vote-events/${voteEventId}/votes?userId=${user?.id}`,
-    enabled: !!voteEventId && !!user?.id,
+    endpoint: `/vote-events/${voteEventId}/votes`,
+    enabled: !!voteEventId,
     onFetch: (data) => {
       const selectedCandidates = data.votes.reduce((acc, vote) => {
         acc[vote.projectId] = true;

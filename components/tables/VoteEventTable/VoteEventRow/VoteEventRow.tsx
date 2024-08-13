@@ -1,9 +1,13 @@
 import DeleteVoteEventModal from "@/components/modals/DeleteVoteEventModal";
+import RegisterForVoteEventModal from "@/components/modals/RegisterForVoteEventModal";
+import useAuth from "@/contexts/useAuth";
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
+import { userHasRole } from "@/helpers/roles";
 import { getVoteEventStatus } from "@/helpers/voteEvent";
 import { Mutate } from "@/hooks/useFetch";
 import { BASE_TRANSITION } from "@/styles/constants";
 import { GetVoteEventsResponse } from "@/types/api";
+import { ROLES } from "@/types/roles";
 import { VOTE_EVENT_STATUS, VoteEvent } from "@/types/voteEvents";
 import {
   Button,
@@ -30,14 +34,31 @@ const statusColorMap = {
 
 const VoteEventRow: FC<Props> = ({ voteEvent, mutate }) => {
   const [isDeleteVoteEventOpen, setIsDeleteVoteEventOpen] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
+  const { user } = useAuth();
 
   const voteEventStatus = getVoteEventStatus(voteEvent);
   const statusColor = statusColorMap[voteEventStatus];
+
+  const isRegistrationOpen =
+    voteEvent.voterManagement?.isRegistrationOpen ?? false;
   const areResultsPublished =
     voteEvent.resultsFilter?.areResultsPublished ?? false;
   const isVotingInProgress = voteEventStatus === VOTE_EVENT_STATUS.IN_PROGRESS;
   const hasVoteEventStarted =
     isVotingInProgress || voteEventStatus === VOTE_EVENT_STATUS.COMPLETED;
+  const hasVoteEventEnded = voteEventStatus === VOTE_EVENT_STATUS.COMPLETED;
+
+  const showRegisterButton = isRegistrationOpen && !hasVoteEventEnded;
+  const showVoteButton = isVotingInProgress && !isRegistrationOpen;
+  const showResultsButton =
+    areResultsPublished && hasVoteEventStarted && !isRegistrationOpen;
+  const showEditButton = userHasRole(user, ROLES.ADMINISTRATORS);
+  const showDeleteButton = showEditButton;
+
+  const handleOpenRegisterModal = () => {
+    setIsRegistering(true);
+  };
 
   const handleOpenDeleteModal = () => {
     setIsDeleteVoteEventOpen(true);
@@ -45,6 +66,12 @@ const VoteEventRow: FC<Props> = ({ voteEvent, mutate }) => {
 
   return (
     <>
+      <RegisterForVoteEventModal
+        voteEvent={voteEvent}
+        open={isRegistering}
+        setOpen={setIsRegistering}
+        mutate={mutate}
+      />
       <DeleteVoteEventModal
         voteEvent={voteEvent}
         open={isDeleteVoteEventOpen}
@@ -67,7 +94,17 @@ const VoteEventRow: FC<Props> = ({ voteEvent, mutate }) => {
         </TableCell>
         <TableCell align="right">
           <Stack direction="row" justifyContent="end" spacing="0.5rem">
-            {isVotingInProgress && (
+            {showRegisterButton && (
+              <Tooltip title="Register for this event" placement="top">
+                <Button
+                  id={`register-vote-event-${voteEvent.id}-button`}
+                  onClick={handleOpenRegisterModal}
+                >
+                  Register
+                </Button>
+              </Tooltip>
+            )}
+            {showVoteButton && (
               <Link href={`/vote-events/${voteEvent.id}`} passHref>
                 <Tooltip title="Vote in this event" placement="top">
                   <Button id={`vote-event-${voteEvent.id}-vote-button`}>
@@ -76,7 +113,7 @@ const VoteEventRow: FC<Props> = ({ voteEvent, mutate }) => {
                 </Tooltip>
               </Link>
             )}
-            {areResultsPublished && hasVoteEventStarted && (
+            {showResultsButton && (
               <Link href={`/vote-events/${voteEvent.id}/results`} passHref>
                 <Tooltip title="View results" placement="top">
                   <Button id={`vote-event-${voteEvent.id}-results-button`}>
@@ -85,23 +122,32 @@ const VoteEventRow: FC<Props> = ({ voteEvent, mutate }) => {
                 </Tooltip>
               </Link>
             )}
-            <Link href={`/vote-events/${voteEvent.id}/edit`} passHref>
-              <Tooltip title="Edit vote event" placement="top">
-                <Button id={`edit-vote-event-${voteEvent.id}-button`}>
-                  Edit
+            {showEditButton && (
+              <Link href={`/vote-events/${voteEvent.id}/edit`} passHref>
+                <Tooltip title="Edit vote event" placement="top">
+                  <Button id={`edit-vote-event-${voteEvent.id}-button`}>
+                    Edit
+                  </Button>
+                </Tooltip>
+              </Link>
+            )}
+            {showDeleteButton && (
+              <Tooltip title="Delete the vote event" placement="top">
+                <Button
+                  id={`delete-vote-event-${voteEvent.id}-button`}
+                  onClick={handleOpenDeleteModal}
+                  sx={{
+                    transition: BASE_TRANSITION,
+                    "&:hover": {
+                      backgroundColor: "error.main",
+                      color: "white",
+                    },
+                  }}
+                >
+                  Delete
                 </Button>
               </Tooltip>
-            </Link>
-            <Button
-              id={`delete-vote-event-${voteEvent.id}-button`}
-              onClick={handleOpenDeleteModal}
-              sx={{
-                transition: BASE_TRANSITION,
-                "&:hover": { backgroundColor: "error.main", color: "white" },
-              }}
-            >
-              Delete
-            </Button>
+            )}
           </Stack>
         </TableCell>
       </TableRow>

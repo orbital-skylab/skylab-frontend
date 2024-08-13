@@ -4,9 +4,12 @@ import AddVoteEventModal from "@/components/modals/AddVoteEventModal/AddVoteEven
 import VoteEventTable from "@/components/tables/VoteEventTable";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
+import useAuth from "@/contexts/useAuth";
 import { PAGES } from "@/helpers/navigation";
+import { userHasRole } from "@/helpers/roles";
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import { GetVoteEventsResponse } from "@/types/api";
+import { ROLES } from "@/types/roles";
 import { Add } from "@mui/icons-material";
 import { Button, Stack } from "@mui/material";
 import { NextPage } from "next";
@@ -14,9 +17,12 @@ import { useState } from "react";
 
 const VoteEvents: NextPage = () => {
   const [isAddVoteEventOpen, setIsAddVoteEventOpen] = useState(false);
+  const { user } = useAuth();
   const { data, status, mutate } = useFetch<GetVoteEventsResponse>({
     endpoint: PAGES.VOTE_EVENTS,
   });
+
+  const isAdministrator = userHasRole(user, ROLES.ADMINISTRATORS);
 
   const handleOpenAddVoteEventModal = () => {
     setIsAddVoteEventOpen(true);
@@ -30,17 +36,19 @@ const VoteEvents: NextPage = () => {
         mutate={mutate}
       />
       <Body>
-        <Stack direction="row" justifyContent="end" spacing="0.5rem">
-          <Button
-            id="add-vote-event-modal-button"
-            variant="outlined"
-            size="small"
-            onClick={handleOpenAddVoteEventModal}
-          >
-            <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
-            New Vote Event
-          </Button>
-        </Stack>
+        {isAdministrator && (
+          <Stack direction="row" justifyContent="end" spacing="0.5rem">
+            <Button
+              id="add-vote-event-modal-button"
+              variant="outlined"
+              size="small"
+              onClick={handleOpenAddVoteEventModal}
+            >
+              <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
+              New Vote Event
+            </Button>
+          </Stack>
+        )}
         <LoadingWrapper
           isLoading={isFetching(status)}
           loadingText="Loading vote events..."

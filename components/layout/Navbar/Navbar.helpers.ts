@@ -7,6 +7,13 @@ import { User } from "@/types/users";
 import { NextRouter } from "next/router";
 import { NavbarOption, NAVBAR_ACTIONS } from "./Navbar.types";
 
+const allUserRoles = [
+  ROLES.STUDENTS,
+  ROLES.ADVISERS,
+  ROLES.MENTORS,
+  ROLES.ADMINISTRATORS,
+];
+
 /**
  * Options to render in the navigation bar
  */
@@ -21,18 +28,14 @@ export const NAVBAR_OPTIONS: NavbarOption[] = [
     label: "Announcements",
     id: "nav-announcements",
     route: PAGES.ANNOUNCEMENTS,
+    authorizedRoles: allUserRoles,
     currentPageRegExp: /^\/announcements$/,
   },
   {
     label: "Dashboard",
     id: "nav-dashboard",
     action: NAVBAR_ACTIONS.ROUTE_TO_DASHBOARD,
-    authorizedRoles: [
-      ROLES.STUDENTS,
-      ROLES.ADVISERS,
-      ROLES.MENTORS,
-      ROLES.ADMINISTRATORS,
-    ],
+    authorizedRoles: allUserRoles,
     currentPageRegExp: /dashboard/,
   },
   {
@@ -45,6 +48,7 @@ export const NAVBAR_OPTIONS: NavbarOption[] = [
     label: "Staff",
     id: "nav-staff",
     route: PAGES.STAFF,
+    authorizedRoles: allUserRoles,
     currentPageRegExp: /staff/,
   },
   {
@@ -65,6 +69,7 @@ export const NAVBAR_OPTIONS: NavbarOption[] = [
     label: "Profile",
     id: "nav-profile",
     action: NAVBAR_ACTIONS.ROUTE_TO_PROFILE,
+    authorizedRoles: allUserRoles,
     currentPageRegExp: /users\/[0-9]*/,
   },
   {
