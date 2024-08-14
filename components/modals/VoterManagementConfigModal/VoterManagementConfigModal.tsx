@@ -34,7 +34,7 @@ type Props = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   mutate: Mutate<GetVoteEventResponse>;
-  clearVoters: () => void;
+  fetchVoters: (internal: boolean, external: boolean) => void;
 };
 
 const VoterManagementConfigModal: FC<Props> = ({
@@ -43,7 +43,7 @@ const VoterManagementConfigModal: FC<Props> = ({
   open,
   setOpen,
   mutate,
-  clearVoters,
+  fetchVoters,
 }) => {
   const { setSuccess, setError } = useSnackbarAlert();
   const { isRegistrationOpen, ...values } = voterManagement;
@@ -70,6 +70,9 @@ const VoterManagementConfigModal: FC<Props> = ({
     method: HTTP_METHOD.PUT,
     endpoint: `/vote-events/${voteEvent.id}/voter-management`,
     onSuccess: ({ voteEvent }: EditVoteEventResponse) => {
+      const { voterManagement } = voteEvent;
+      if (!voterManagement) return;
+
       mutate(() => {
         return {
           voteEvent: {
@@ -77,9 +80,10 @@ const VoterManagementConfigModal: FC<Props> = ({
           },
         };
       });
-      if (voteEvent.voterManagement) {
-        clearVoters();
-      }
+      fetchVoters(
+        voterManagement.hasInternalList,
+        voterManagement.hasExternalList
+      );
       setSuccess("You have successfully edited the voter management config!");
       setOpen(false);
     },
@@ -173,8 +177,8 @@ const VoterManagementConfigModal: FC<Props> = ({
                       options={
                         allVoteEventData?.voteEvents
                           ? allVoteEventData.voteEvents
-                              .filter((voteEvent) => {
-                                return voteEvent.id !== voteEvent.id;
+                              .filter((ve) => {
+                                return ve.id !== voteEvent.id;
                               })
                               .map((voteEvent) => {
                                 return {
@@ -208,8 +212,8 @@ const VoterManagementConfigModal: FC<Props> = ({
                       options={
                         allVoteEventData?.voteEvents
                           ? allVoteEventData.voteEvents
-                              .filter((voteEvent) => {
-                                return voteEvent.id !== voteEvent.id;
+                              .filter((ve) => {
+                                return ve.id !== voteEvent.id;
                               })
                               .map((voteEvent) => {
                                 return {
