@@ -99,7 +99,7 @@ const BatchAddForm: FC<Props> = ({
             );
           } else {
             setSuccessfulParseStatus(
-              `${results.data.length} project${
+              `${results.data.length} row${
                 results.data.length !== 1 ? "s" : ""
               } successfully detected. Ready to add them?`
             );

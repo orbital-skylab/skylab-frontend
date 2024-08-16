@@ -100,4 +100,40 @@ describe("Testing vote events page", () => {
       .contains("Vote event by vote event page e2e")
       .should("not.exist");
   });
+
+  it("Should display all vote events for admins", () => {
+    cy.get("tbody").find("tr").should("have.length", 10);
+
+    // admins can see incomplete vote events
+    cy.contains("Incomplete").should("be.visible");
+
+    // admins do not need to register for vote events
+    cy.contains("Register").should("not.exist");
+  });
+
+  it("Should display all vote events for internal voters", () => {
+    cy.get("#nav-sign-out").click();
+    cy.login("student@skylab.com", "Password123");
+    cy.visit("http://localhost:3000/vote-events");
+    cy.get("tbody").find("tr").should("have.length", 4);
+
+    // cannot see incomplete vote events
+    cy.contains("Incomplete").should("not.exist");
+
+    // Can register for vote events
+    cy.contains("Register").should("be.visible");
+  });
+
+  it("Should display all vote events for external voters", () => {
+    cy.get("#nav-sign-out").click();
+    cy.externalVoterLogin("externalId123");
+    cy.visit("http://localhost:3000/vote-events");
+    cy.get("tbody").find("tr").should("have.length", 3);
+
+    // cannot see incomplete vote events
+    cy.contains("Incomplete").should("not.exist");
+
+    // cannot register for vote events
+    cy.contains("Register").should("not.exist");
+  });
 });

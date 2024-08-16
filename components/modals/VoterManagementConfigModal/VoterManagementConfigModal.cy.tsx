@@ -20,10 +20,29 @@ describe("<VoterManagementConfigModal />", () => {
     resultsFilter: DEFAULT_RESULTS_FILTER,
   };
 
+  const voteEvents = [
+    {
+      ...voteEvent,
+      id: 2,
+    },
+    {
+      ...voteEvent,
+      id: 3,
+    },
+    { ...voteEvent, id: 4 },
+  ];
+
   beforeEach(() => {
     setOpenSpy = cy.spy().as("setOpenSpy");
     mutateSpy = cy.spy().as("mutateSpy");
     fetchVotersSpy = cy.spy().as("fetchVotersSpy");
+
+    cy.intercept("GET", `/api/vote-events`, {
+      statusCode: 200,
+      body: {
+        voteEvents: voteEvents,
+      },
+    }).as("voteEventsRequest");
   });
 
   it("should render opened modal", () => {
@@ -124,7 +143,16 @@ describe("<VoterManagementConfigModal />", () => {
     // Intercept PUT request
     cy.intercept("PUT", `/api/vote-events/${voteEvent.id}/voter-management`, {
       statusCode: 200,
-      body: {},
+      body: {
+        voteEvent: {
+          ...voteEvent,
+          voterManagement: {
+            ...voterManagement,
+            hasInternalList: true,
+            hasExternalList: true,
+          },
+        },
+      },
     }).as("setVoterManagement");
 
     // Click the save button
@@ -132,9 +160,9 @@ describe("<VoterManagementConfigModal />", () => {
 
     cy.wait("@setVoterManagement");
 
-    cy.get("@setOpenSpy").should("be.calledOnce");
     cy.get("@mutateSpy").should("be.calledOnce");
     cy.get("@fetchVotersSpy").should("be.calledOnce");
+    cy.get("@setOpenSpy").should("be.calledOnce");
   });
 
   it("should hide and display additional options base on what is selected", () => {
@@ -160,6 +188,38 @@ describe("<VoterManagementConfigModal />", () => {
 
     cy.get("#external-list-checkbox").click();
     cy.get("#copy-external-voters-dropdown").should("exist");
+  });
+
+  it("should display the correct copy vote event options", () => {
+    const verifyOptions = () => {
+      cy.get("ul").children().eq(0).contains("2 - Test Vote Event Title");
+      cy.get("ul").children().eq(1).contains("3 - Test Vote Event Title");
+      cy.get("ul")
+        .children()
+        .eq(2)
+        .contains("4 - Test Vote Event Title")
+        .click();
+    };
+
+    // Mount the component
+    mount(
+      <VoterManagementConfigModal
+        voteEvent={voteEvent}
+        voterManagement={voterManagement}
+        open={true}
+        setOpen={setOpenSpy}
+        mutate={mutateSpy}
+        fetchVoters={fetchVotersSpy}
+      />
+    );
+
+    cy.get("#internal-list-checkbox").click();
+    cy.get("#copy-internal-voters-dropdown").click();
+    verifyOptions();
+
+    cy.get("#external-list-checkbox").click();
+    cy.get("#copy-external-voters-dropdown").click();
+    verifyOptions();
   });
 
   it("should have a working cancel button", () => {

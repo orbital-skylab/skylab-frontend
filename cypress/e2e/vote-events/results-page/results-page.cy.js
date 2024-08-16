@@ -20,6 +20,7 @@ describe("Testing vote event results page", () => {
   const notYetStartedVoteEventId = 1; // vote event that has not started
   const nonPublishedVoteEventId = 6; // vote event with results but not published
   const noResultsVoteEventId = 5; // vote event with no results (published)
+  const noVoterVoteEvent = 10; // vote event with no voters
   const nonExistenceVoteEventId = 9999999999; // vote event that does not exist
   before(() => {
     cy.login("admin@skylab.com", "Password123");
@@ -69,5 +70,20 @@ describe("Testing vote event results page", () => {
   it("Should display a message if the vote event results are not published", () => {
     navigateToResultsPage(nonPublishedVoteEventId);
     assertError("Results Not published!");
+  });
+
+  it("Should not be accessible to non voters", () => {
+    cy.get("#nav-sign-out").click();
+    cy.visit(`http://localhost:3000/vote-events/${noVoterVoteEvent}`);
+    cy.contains("No such vote event found!").should("be.visible");
+
+    cy.login("student@skylab.com", "Password123");
+    cy.visit(`http://localhost:3000/vote-events/${noVoterVoteEvent}`);
+    cy.contains("No such vote event found!").should("be.visible");
+    cy.get("#nav-sign-out").click();
+
+    cy.externalVoterLogin("externalId123");
+    cy.visit(`http://localhost:3000/vote-events/${noVoterVoteEvent}`);
+    cy.contains("No such vote event found!").should("be.visible");
   });
 });

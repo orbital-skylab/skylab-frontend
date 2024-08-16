@@ -88,7 +88,7 @@ context("Actions", () => {
 
     cy.contains(
       "div",
-      "1 project successfully detected. Ready to add them?"
+      "1 row successfully detected. Ready to add them?"
     ).should("exist");
 
     cy.get("#upload-csv-button").click();

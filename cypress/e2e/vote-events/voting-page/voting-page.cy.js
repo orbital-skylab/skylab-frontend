@@ -15,6 +15,7 @@ describe("Testing voting page", () => {
   const notYetStartedVoteEventId = 7; // vote event that has not started
   const inCompleteVoteEvent = 1; // vote event without vote config
   const completedVoteEvent = 9; // vote event that has ended
+  const noVoterVoteEvent = 10; // vote event with no voters
   const nonExistenceVoteEventId = 9999999999; // vote event that does not exist
   let voteEvent = {};
   let votes = [];
@@ -148,5 +149,20 @@ describe("Testing voting page", () => {
     // voting has ended
     cy.visit(`http://localhost:3000/vote-events/${completedVoteEvent}`);
     assertError("Vote event is not open!");
+  });
+
+  it("Should not be accessible to non voters", () => {
+    cy.get("#nav-sign-out").click();
+    cy.visit(`http://localhost:3000/vote-events/${noVoterVoteEvent}`);
+    cy.contains("No such vote event found!").should("be.visible");
+
+    cy.login("student@skylab.com", "Password123");
+    cy.visit(`http://localhost:3000/vote-events/${noVoterVoteEvent}`);
+    cy.contains("No such vote event found!").should("be.visible");
+    cy.get("#nav-sign-out").click();
+
+    cy.externalVoterLogin("externalId123");
+    cy.visit(`http://localhost:3000/vote-events/${noVoterVoteEvent}`);
+    cy.contains("No such vote event found!").should("be.visible");
   });
 });

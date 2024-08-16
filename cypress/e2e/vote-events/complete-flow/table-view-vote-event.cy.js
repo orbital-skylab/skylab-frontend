@@ -59,6 +59,7 @@ describe("Testing table view candidate display voting process", () => {
     cy.get("#external-list-checkbox").check();
     cy.get("#confirm-edit-voter-management-config-button").click();
     cy.get("#success-alert").should("be.visible");
+    cy.contains("No internal voters found").should("be.visible");
 
     voterEmails.forEach((email) => {
       cy.get("#add-internal-voter-menu-button").click();

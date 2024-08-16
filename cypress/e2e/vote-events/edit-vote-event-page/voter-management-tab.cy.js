@@ -21,6 +21,15 @@ describe("Testing vote event voter management tab", () => {
     cy.get(`#voter-management-tab`).click();
   };
 
+  const confirmEditConfig = () => {
+    cy.get("#edit-voter-management-config-modal").should("not.exist");
+    cy.get("#confirm-set-voter-management-config-modal").should("be.visible");
+    cy.get("#set-voter-management-config-modal-confirm-button").click();
+
+    cy.get("#success-alert").should("be.visible");
+    cy.get("#confirm-set-voter-management-config-modal").should("not.exist");
+  };
+
   before(() => {
     cy.login("admin@skylab.com", "Password123");
   });
@@ -108,16 +117,163 @@ describe("Testing vote event voter management tab", () => {
     });
   });
 
+  it("Should be able to import internal voters by CSV", () => {
+    cy.get("#add-internal-voter-menu-button").click();
+    cy.get("#add-internal-voter-menu").should("be.visible");
+
+    cy.contains("Import CSV").click();
+    cy.get("#import-internal-voter-csv-modal").should("be.visible");
+
+    cy.get("#upload-csv-drag-area").selectFile(
+      {
+        contents: Cypress.Buffer.from(
+          "Email\nadmin@skylab.com\nmentor@skylab.com"
+        ),
+        fileName: "emails.csv",
+      },
+      {
+        action: "drag-drop",
+      }
+    );
+
+    cy.contains(
+      "div",
+      "2 rows successfully detected. Ready to add them?"
+    ).should("be.visible");
+
+    cy.get("#upload-csv-button").click();
+    cy.get("#success-alert").should("be.visible");
+    cy.get("#import-internal-voter-csv-modal").should("not.exist");
+    cy.get("#add-internal-voter-menu").should("not.exist");
+
+    cy.contains("admin@skylab.com").should("be.visible");
+    cy.contains("mentor@skylab.com").should("be.visible");
+  });
+
+  it("Should be able to open registration and let internal voters register", () => {
+    navigateToTab(internalVoterOnlyVoteEventId);
+    cy.get("#add-internal-voter-menu-button").click();
+    cy.get("#add-internal-voter-menu").should("be.visible");
+
+    cy.contains("Registration").click();
+    cy.get("#internal-voter-registration-modal").should("be.visible");
+
+    cy.get("#open-registration-button").click();
+    cy.get("#success-alert").should("be.visible");
+
+    cy.get("#nav-sign-out").click();
+
+    // internal voter registers
+    cy.login("adviser@skylab.com", "Password123");
+    cy.visit(`http://localhost:3000/vote-events`);
+    cy.get(
+      `#register-vote-event-${internalVoterOnlyVoteEventId}-button`
+    ).click();
+    cy.get("#register-for-vote-event-modal").should("be.visible");
+    cy.get("#register-for-vote-event-confirm-button").click();
+
+    cy.get("#success-alert").should("be.visible");
+    cy.get(
+      `#register-vote-event-${internalVoterOnlyVoteEventId}-button`
+    ).should("not.exist");
+
+    cy.get("#nav-sign-out").click();
+
+    // check that internal voter is added
+    cy.login("admin@skylab.com", "Password123");
+    navigateToTab(internalVoterOnlyVoteEventId);
+    cy.contains("adviser@skylab.com").should("be.visible");
+
+    // close registration
+    cy.get("#add-internal-voter-menu-button").click();
+    cy.contains("Registration").click();
+    cy.get("#close-registration-button").click();
+    cy.get("#success-alert").should("be.visible");
+  });
+
+  it("Should be able to import external voters by CSV", () => {
+    cy.get("#external-tab").click();
+    cy.get("#add-external-voter-menu-button").click();
+    cy.get("#add-external-voter-menu").should("be.visible");
+
+    cy.contains("Import CSV").click();
+    cy.get("#import-external-voter-csv-modal").should("be.visible");
+
+    cy.get("#upload-csv-drag-area").selectFile(
+      {
+        contents: Cypress.Buffer.from(
+          "Voter ID\nexternal-voter-id-2\nexternal-voter-id-3"
+        ),
+        fileName: "voter-ids.csv",
+      },
+      {
+        action: "drag-drop",
+      }
+    );
+
+    cy.contains(
+      "div",
+      "2 rows successfully detected. Ready to add them?"
+    ).should("be.visible");
+
+    cy.get("#upload-csv-button").click();
+    cy.get("#success-alert").should("be.visible");
+    cy.get("#import-external-voter-csv-modal").should("not.exist");
+    cy.get("#add-external-voter-menu").should("not.exist");
+
+    cy.contains("external-voter-id-2").should("be.visible");
+    cy.contains("external-voter-id-3").should("be.visible");
+  });
+
+  it("Should be able to automatically generate external voter IDs", () => {
+    cy.get("#external-tab").click();
+    cy.get("#add-external-voter-menu-button").click();
+    cy.get("#add-external-voter-menu").should("be.visible");
+
+    cy.contains("Generate Voter IDs").click();
+    cy.get("#external-voter-generation-modal").should("be.visible");
+
+    cy.get("#voter-id-amount-input").type("5");
+    cy.get("#voter-id-length-input").type("6");
+    cy.get("#generate-voter-ids-button").click();
+
+    cy.get("#success-alert").should("be.visible");
+    cy.get("#generate-external-voter-ids-modal").should("not.exist");
+    cy.get("#add-external-voter-menu").should("not.exist");
+
+    cy.get("#external-voter-table")
+      .find("tbody")
+      .children()
+      .should("have.length", 7);
+  });
+
+  it("Should be able to copy internal and external voters from another vote event", () => {
+    cy.get("#open-voter-management-config-button").click();
+    cy.get("#external-list-checkbox").check();
+    cy.get("#internal-list-checkbox").check();
+
+    cy.get("#copy-internal-voters-dropdown").click();
+    cy.get(`#${voteEventWithVotersId}-option`).click();
+    cy.get("#copy-external-voters-dropdown").click();
+    cy.get(`#${voteEventWithVotersId}-option`).click();
+
+    cy.get("#confirm-edit-voter-management-config-button").click();
+    confirmEditConfig();
+
+    // check if voters are copied
+    cy.get("#internal-voter-table")
+      .find("tbody")
+      .children()
+      .should("have.length", 603); // change length to number of seeded users
+
+    cy.get("#external-tab").click();
+    cy.get("#external-voter-table")
+      .find("tbody")
+      .children()
+      .should("have.length", 1);
+  });
+
   it("Should be able to edit existing voter management config", () => {
-    const confirmEditConfig = () => {
-      cy.get("#edit-voter-management-config-modal").should("not.exist");
-      cy.get("#confirm-set-voter-management-config-modal").should("be.visible");
-      cy.get("#set-voter-management-config-modal-confirm-button").click();
-
-      cy.get("#success-alert").should("be.visible");
-      cy.get("#confirm-set-voter-management-config-modal").should("not.exist");
-    };
-
     cy.get("#open-voter-management-config-button").click();
     cy.get("#external-list-checkbox").check();
     cy.get("#internal-list-checkbox").uncheck();
@@ -137,9 +293,11 @@ describe("Testing vote event voter management tab", () => {
     cy.get("#confirm-edit-voter-management-config-button").click();
     confirmEditConfig();
     cy.get("#voter-list-tabs").should("be.visible");
+    cy.get("#internal-tab").click();
     cy.contains("No internal voters found").should("be.visible");
   });
 
+  // student gets added to internal voters
   it("Should be able to add internal voters by email", () => {
     cy.get("#add-internal-voter-menu-button").click();
     cy.get("#add-internal-voter-menu").should("be.visible");
@@ -171,6 +329,36 @@ describe("Testing vote event voter management tab", () => {
       .should("contain", "Student");
   });
 
+  it("Should not be able to add internal voter with a non existent email", () => {
+    cy.get("#add-internal-voter-menu-button").click();
+    cy.get("#add-internal-voter-menu").should("be.visible");
+
+    cy.contains("Add Internal Voter").click();
+    cy.get("#add-internal-voter-modal").should("be.visible");
+
+    cy.get("#email-input").type("nonexistent@email.com");
+    cy.get("#add-internal-voter-button").click();
+
+    cy.get("#error-alert").contains("User does not exist").should("be.visible");
+    cy.get("#add-internal-voter-modal").should("be.visible");
+  });
+
+  it("Should not be able to add internal voter with a duplicate email", () => {
+    cy.get("#add-internal-voter-menu-button").click();
+    cy.get("#add-internal-voter-menu").should("be.visible");
+
+    cy.contains("Add Internal Voter").click();
+    cy.get("#add-internal-voter-modal").should("be.visible");
+
+    cy.get("#email-input").type("student@skylab.com");
+    cy.get("#add-internal-voter-button").click();
+
+    cy.get("#error-alert")
+      .contains("User is already part of the vote event")
+      .should("be.visible");
+    cy.get("#add-internal-voter-modal").should("be.visible");
+  });
+
   it("Should be able to add external voter ID", () => {
     cy.get("#external-tab").click();
     cy.get("#add-external-voter-menu-button").click();
@@ -186,6 +374,23 @@ describe("Testing vote event voter management tab", () => {
     cy.get("#add-external-voter-modal").should("not.exist");
     cy.get("#add-external-voter-menu").should("not.exist");
     cy.contains("external-voter-id").should("be.visible");
+  });
+
+  it("Should not be able to add external voter with a duplicate ID", () => {
+    cy.get("#external-tab").click();
+    cy.get("#add-external-voter-menu-button").click();
+    cy.get("#add-external-voter-menu").should("be.visible");
+
+    cy.contains("Add External Voter").click();
+    cy.get("#add-external-voter-modal").should("be.visible");
+
+    cy.get("#voterId-input").type("external-voter-id");
+    cy.get("#add-external-voter-button").click();
+
+    cy.get("#error-alert")
+      .contains("External voter is already part of the vote event")
+      .should("be.visible");
+    cy.get("#add-external-voter-modal").should("be.visible");
   });
 
   it("Should be able to delete an internal voter", () => {
@@ -208,6 +413,4 @@ describe("Testing vote event voter management tab", () => {
     cy.get("#delete-external-voter-modal").should("not.exist");
     cy.contains("No external voters found").should("be.visible");
   });
-
-  // TODO: edge cases with database like non-existing emails and duplicate voters
 });
