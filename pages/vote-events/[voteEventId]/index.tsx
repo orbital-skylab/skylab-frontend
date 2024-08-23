@@ -1,4 +1,6 @@
 import NoneFound from "@/components/emptyStates/NoneFound";
+import VotingForm from "@/components/forms/VotingForm";
+import VotingGalleryGrid from "@/components/grids";
 import Body from "@/components/layout/Body";
 import SubmitVotesModal from "@/components/modals/SubmitVotesModal";
 import VoteCandidateTable from "@/components/tables/VoteCandidateTable";
@@ -12,7 +14,11 @@ import {
   GetVotesResponse,
 } from "@/types/api";
 import { Project } from "@/types/projects";
-import { VOTE_EVENT_STATUS } from "@/types/voteEvents";
+import {
+  DISPLAY_TYPES,
+  VOTE_EVENT_STATUS,
+  VoteEvent,
+} from "@/types/voteEvents";
 import { Button, Stack, Typography } from "@mui/material";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -20,6 +26,7 @@ import { Dispatch, SetStateAction, useMemo, useState } from "react";
 
 const candidateDisplayFactory = {
   generateItems: (
+    voteConfig: VoteEvent["voteConfig"],
     candidates: Project[],
     selectedCandidates: { [key: number]: boolean },
     status: FETCH_STATUS,
@@ -29,14 +36,31 @@ const candidateDisplayFactory = {
       }>
     >
   ) => {
-    return (
-      <VoteCandidateTable
-        selectedCandidates={selectedCandidates}
-        candidates={candidates}
-        status={status}
-        setSelectedCandidates={setSelectedCandidates}
-      />
-    );
+    if (!voteConfig) {
+      return null;
+    }
+
+    if (voteConfig.displayType === DISPLAY_TYPES.GALLERY) {
+      return (
+        <VotingGalleryGrid
+          selectedCandidates={selectedCandidates}
+          candidates={candidates}
+          status={status}
+          setSelectedCandidates={setSelectedCandidates}
+        />
+      );
+    } else if (voteConfig.displayType === DISPLAY_TYPES.TABLE) {
+      return (
+        <VoteCandidateTable
+          selectedCandidates={selectedCandidates}
+          candidates={candidates}
+          status={status}
+          setSelectedCandidates={setSelectedCandidates}
+        />
+      );
+    } else {
+      return <VotingForm setSelectedCandidates={setSelectedCandidates} />;
+    }
   },
 };
 
@@ -120,72 +144,80 @@ const VotingPage: NextPage = () => {
           }
           fallback={<NoneFound title="Vote event is not open!" message="" />}
         >
-          <Typography id="vote-event-title" align="center" variant="h4">
-            {voteEventData?.voteEvent.title}
-          </Typography>
-          {alreadyVoted ? (
-            <Stack spacing={1}>
-              <Typography
-                align="center"
-                variant="h6"
-                sx={{ marginTop: "1rem" }}
-              >
-                Votes Submitted
-              </Typography>
-              <Typography align="center">
-                You have voted for the following project IDs:
-              </Typography>
-              <Typography align="center">
-                {votes.map((vote) => vote.projectId).join(", ")}
-              </Typography>
-            </Stack>
-          ) : (
-            <>
-              <SubmitVotesModal
-                voteEventId={parseInt(voteEventId as string)}
-                selectedCandidates={selectedCandidates}
-                open={openSubmitVotesModal}
-                setOpen={setOpenSubmitVotesModal}
-                mutate={mutateVotes}
-              />
-              <Typography sx={{ marginY: "2rem" }}>
-                {voteConfig?.instructions || ""}
-              </Typography>
-              <Stack direction="row" justifyContent="space-between">
-                <Typography variant="h6">
-                  Vote for a maximum of {voteConfig?.maxVotes}, and minimum of{" "}
-                  {voteConfig?.minVotes} projects.
-                </Typography>
-                <Typography variant="h6">Votes cast: {voteCount}</Typography>
-              </Stack>
-              {candidateDisplayFactory.generateItems(
-                candidates,
-                selectedCandidates,
-                fetchcandidatesStatus,
-                setSelectedCandidates
-              )}
-              <Stack>
-                <Button
-                  id="submit-votes-modal-button"
-                  onClick={handleOpenSubmitVotesModal}
-                  variant="contained"
-                  color="secondary"
-                  disabled={
-                    !voteConfig ||
-                    voteCount < voteConfig.minVotes ||
-                    voteCount > voteConfig.maxVotes
-                  }
-                  sx={{
-                    position: "fixed",
-                    bottom: "2rem",
-                    right: "2rem",
-                  }}
+          <NoDataWrapper
+            noDataCondition={voteConfig === undefined}
+            fallback={
+              <NoneFound title="Vote event config not set!" message="" />
+            }
+          >
+            <Typography id="vote-event-title" align="center" variant="h4">
+              {voteEventData?.voteEvent.title}
+            </Typography>
+            {alreadyVoted ? (
+              <Stack spacing={1}>
+                <Typography
+                  align="center"
+                  variant="h6"
+                  sx={{ marginTop: "1rem" }}
                 >
-                  Submit
-                </Button>
+                  Votes Submitted
+                </Typography>
+                <Typography align="center">
+                  You have voted for the following project IDs:
+                </Typography>
+                <Typography align="center">
+                  {votes.map((vote) => vote.projectId).join(", ")}
+                </Typography>
               </Stack>
-            </>
-          )}
+            ) : (
+              <>
+                <SubmitVotesModal
+                  voteEventId={parseInt(voteEventId as string)}
+                  selectedCandidates={selectedCandidates}
+                  open={openSubmitVotesModal}
+                  setOpen={setOpenSubmitVotesModal}
+                  mutate={mutateVotes}
+                />
+                <Typography sx={{ marginY: "2rem" }}>
+                  {voteConfig?.instructions || ""}
+                </Typography>
+                <Stack direction="row" justifyContent="space-between">
+                  <Typography variant="h6">
+                    Vote for a maximum of {voteConfig?.maxVotes}, and minimum of{" "}
+                    {voteConfig?.minVotes} projects.
+                  </Typography>
+                  <Typography variant="h6">Votes cast: {voteCount}</Typography>
+                </Stack>
+                {candidateDisplayFactory.generateItems(
+                  voteConfig,
+                  candidates,
+                  selectedCandidates,
+                  fetchcandidatesStatus,
+                  setSelectedCandidates
+                )}
+                <Stack>
+                  <Button
+                    id="submit-votes-modal-button"
+                    onClick={handleOpenSubmitVotesModal}
+                    variant="contained"
+                    color="secondary"
+                    disabled={
+                      !voteConfig ||
+                      voteCount < voteConfig.minVotes ||
+                      voteCount > voteConfig.maxVotes
+                    }
+                    sx={{
+                      position: "fixed",
+                      bottom: "2rem",
+                      right: "2rem",
+                    }}
+                  >
+                    Submit
+                  </Button>
+                </Stack>
+              </>
+            )}
+          </NoDataWrapper>
         </NoDataWrapper>
       </NoDataWrapper>
     </Body>
