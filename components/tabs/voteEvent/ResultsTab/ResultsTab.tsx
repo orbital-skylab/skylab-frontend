@@ -118,13 +118,11 @@ const ResultsTab: FC<Props> = ({ voteEvent, mutate }) => {
             style={{ gridColumn: 1, display: "flex", justifyContent: "left" }}
           >
             <Button
-              id="publish-results-modal-button"
+              id="role-weights-modal-button"
               variant="contained"
-              onClick={() => setOpenPublishResultsModal(true)}
+              onClick={() => setOpenRoleWeightsModal(true)}
             >
-              {voteEvent.resultsFilter.areResultsPublished
-                ? "Unpublish Results"
-                : "Publish Results"}
+              Role Weights
             </Button>
           </div>
           <div style={{ gridColumn: 2, textAlign: "center" }}>
@@ -136,11 +134,13 @@ const ResultsTab: FC<Props> = ({ voteEvent, mutate }) => {
             style={{ gridColumn: 3, display: "flex", justifyContent: "right" }}
           >
             <Button
-              id="role-weights-modal-button"
+              id="publish-results-modal-button"
               variant="contained"
-              onClick={() => setOpenRoleWeightsModal(true)}
+              onClick={() => setOpenPublishResultsModal(true)}
             >
-              Role Weights
+              {voteEvent.resultsFilter.areResultsPublished
+                ? "Unpublish Results"
+                : "Publish Results"}
             </Button>
           </div>
         </div>
