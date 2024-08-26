@@ -9,7 +9,9 @@ const navigateToTab = (voteEventId) => {
 };
 
 describe("Testing vote event candidates tab", () => {
+  const candidateId = 1;
   const voteEventId = 1; // vote event with no candidates
+  const voteEventWithOneMinVote = 3; // vote event with a vote config where minimum votes is 1
   let candidate = {};
   let candidatesAdded = [];
 
@@ -58,7 +60,7 @@ describe("Testing vote event candidates tab", () => {
     cy.get("#add-candidate-menu-item-button").click();
     cy.get("#add-candidate-modal").should("be.visible");
 
-    cy.get("#project-id-input").clear().type("1");
+    cy.get("#project-id-input").clear().type(candidateId);
     cy.get("#add-candidate-button").click();
 
     cy.wait("@addCandidate").then(() => {
@@ -145,5 +147,35 @@ describe("Testing vote event candidates tab", () => {
     cy.get("tbody")
       .find("tr")
       .should("have.length", candidatesAdded.length - 1);
+  });
+
+  it("Should not be able to delete a candidate if total number of candidates is less than or equal to minimum votes", () => {
+    cy.intercept(
+      "POST",
+      `/api/vote-events/${voteEventWithOneMinVote}/candidates`,
+      (req) => {
+        delete req.headers["if-none-match"];
+        req.continue((res) => {
+          candidate = res.body.candidate;
+        });
+      }
+    ).as("addCandidate");
+
+    navigateToTab(voteEventWithOneMinVote);
+    cy.get("#add-candidate-menu-button").click();
+    cy.get("#add-candidate-menu-item-button").click();
+    cy.get("#project-id-input").clear().type(candidateId);
+    cy.get("#add-candidate-button").click();
+    cy.wait("@addCandidate");
+
+    cy.get(`#delete-candidate-${candidateId}-button`).click();
+    cy.get("#delete-candidate-confirm-button").click();
+
+    cy.get("#error-alert").should("be.visible");
+    cy.contains(
+      "Cannot remove candidate from vote event as number of candidates will be less than minimum votes"
+    ).should("be.visible");
+
+    cy.get("#delete-candidate-cancel-button").click();
   });
 });

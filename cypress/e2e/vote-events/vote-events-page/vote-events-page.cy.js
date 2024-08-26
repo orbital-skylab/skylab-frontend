@@ -102,7 +102,7 @@ describe("Testing vote events page", () => {
   });
 
   it("Should display all vote events for admins", () => {
-    cy.get("tbody").find("tr").should("have.length", 10);
+    cy.get("tbody").find("tr").should("have.length", 12);
 
     // admins can see incomplete vote events
     cy.contains("Incomplete").should("be.visible");
@@ -115,7 +115,7 @@ describe("Testing vote events page", () => {
     cy.get("#nav-sign-out").click();
     cy.login("student@skylab.com", "Password123");
     cy.visit("http://localhost:3000/vote-events");
-    cy.get("tbody").find("tr").should("have.length", 4);
+    cy.get("tbody").find("tr").should("have.length", 6); // update base on seed data
 
     // cannot see incomplete vote events
     cy.contains("Incomplete").should("not.exist");
@@ -128,7 +128,7 @@ describe("Testing vote events page", () => {
     cy.get("#nav-sign-out").click();
     cy.externalVoterLogin("externalId123");
     cy.visit("http://localhost:3000/vote-events");
-    cy.get("tbody").find("tr").should("have.length", 3);
+    cy.get("tbody").find("tr").should("have.length", 5); // update base on seed data
 
     // cannot see incomplete vote events
     cy.contains("Incomplete").should("not.exist");

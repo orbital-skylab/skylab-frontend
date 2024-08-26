@@ -17,7 +17,7 @@ const VotingForm: FC<Props> = ({ setSelectedCandidates }: Props) => {
     const candidateIds = input
       .split(",")
       .map((id) => id.trim())
-      .filter((id) => Number.isInteger(Number(id)))
+      .filter((id) => id.length > 0 && Number.isInteger(Number(id)))
       .map((id) => parseInt(id));
 
     setSelectedCandidates(
@@ -29,7 +29,7 @@ const VotingForm: FC<Props> = ({ setSelectedCandidates }: Props) => {
   };
 
   return (
-    <Stack spacing={2} flexGrow={1}>
+    <Stack spacing={2} flexGrow={1} marginTop={2}>
       <Typography id="voting-form-description">
         Enter project ids separated by commas to vote for them. (e.g. 4033,
         4034, 4035)

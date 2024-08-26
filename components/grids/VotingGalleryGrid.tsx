@@ -26,21 +26,23 @@ const VotingGalleryGrid: FC<Props> = ({
         noDataCondition={candidates === undefined || candidates.length === 0}
         fallback={<NoneFound message="No candidates found" />}
       >
-        <Grid id="voting-gallery-grid" container spacing={{ xs: 2, md: 4 }}>
-          {candidates
-            ? candidates.map((candidate) => {
-                return (
-                  <Grid item key={candidate.id} xs={12 / 2} md={12 / 4}>
-                    <VotingCard
-                      isSelected={!!selectedCandidates[candidate.id]}
-                      candidate={candidate}
-                      setSelectedCandidates={setSelectedCandidates}
-                    />
-                  </Grid>
-                );
-              })
-            : null}
-        </Grid>
+        <div style={{ marginTop: "2rem" }}>
+          <Grid id="voting-gallery-grid" container spacing={{ xs: 2, md: 4 }}>
+            {candidates
+              ? candidates.map((candidate) => {
+                  return (
+                    <Grid item key={candidate.id} xs={12 / 2} md={12 / 4}>
+                      <VotingCard
+                        isSelected={!!selectedCandidates[candidate.id]}
+                        candidate={candidate}
+                        setSelectedCandidates={setSelectedCandidates}
+                      />
+                    </Grid>
+                  );
+                })
+              : null}
+          </Grid>
+        </div>
       </NoDataWrapper>
     </LoadingWrapper>
   );

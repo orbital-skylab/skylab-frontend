@@ -10,8 +10,45 @@ const navigateToVotingPage = (voteEventId) => {
   cy.get("#vote-event-title").should("be.visible");
 };
 
+const assertVotingPageCommonElements = (voteConfig) => {
+  cy.contains(voteConfig?.instructions).should("be.visible");
+  cy.contains(
+    `Vote for a maximum of ${voteConfig?.maxVotes}, and minimum of ${voteConfig?.minVotes} projects.`
+  ).should("be.visible");
+  cy.contains("Votes cast: 0").should("be.visible");
+};
+
+const voteForCandidate = (candidateId) => {
+  cy.contains("Votes cast: 1").should("be.visible");
+
+  cy.get("#submit-votes-modal-button").click();
+  cy.get("#submit-votes-modal").should("be.visible");
+  cy.contains(`${candidateId}`).should("be.visible");
+  cy.get("#submit-votes-button").click();
+
+  cy.get("#success-alert").should("be.visible");
+  cy.get("#submit-votes-modal").should("not.exist");
+  cy.contains("Votes Submitted").should("be.visible");
+  cy.contains(`${candidateId}`).should("be.visible");
+};
+
+const voteForCandidateBySelection = (candidateId) => {
+  cy.get(`#candidate-${candidateId}-vote-button`).click();
+  cy.get(`#candidate-${candidateId}-vote-button`).should("contain", "Voted");
+
+  voteForCandidate(candidateId);
+};
+
+const voteForCandidateByInput = (candidateId) => {
+  cy.get("#votes-input").type(`${candidateId}`);
+
+  voteForCandidate(candidateId);
+};
+
 describe("Testing voting page", () => {
-  const voteEventId = 5; // vote event to vote in (has candidates but no votes)
+  const voteEventId = 5; // table view vote event to vote in (has candidates but no votes)
+  const galleryViewVoteEventId = 11; // gallery view vote event to vote in (has candidates but no votes)
+  const noDisplayVoteEventId = 12; // no display vote event to vote in (has candidates but no votes)
   const notYetStartedVoteEventId = 7; // vote event that has not started
   const inCompleteVoteEvent = 1; // vote event without vote config
   const completedVoteEvent = 9; // vote event that has ended
@@ -67,34 +104,47 @@ describe("Testing voting page", () => {
     navigateToVotingPage(voteEventId);
 
     const voteConfig = voteEvent.voteConfig;
-    cy.contains(voteConfig?.instructions).should("be.visible");
-    cy.contains(
-      `Vote for a maximum of ${voteConfig?.maxVotes}, and minimum of ${voteConfig?.minVotes} projects.`
-    ).should("be.visible");
-    cy.contains("Votes cast: 0").should("be.visible");
-    cy.get("#candidates-table").should("be.visible");
+    assertVotingPageCommonElements(voteConfig);
+
     cy.get("tbody").find("tr").should("have.length", candidates.length);
+  });
+
+  it("Should display the vote event details and candidates in gallery view", () => {
+    navigateToVotingPage(galleryViewVoteEventId);
+
+    const voteConfig = voteEvent.voteConfig;
+    assertVotingPageCommonElements(voteConfig);
+
+    cy.get("#voting-gallery-grid")
+      .children()
+      .should("have.length", candidates.length);
+  });
+
+  it("Should display the vote event details and candidates in no display view", () => {
+    navigateToVotingPage(noDisplayVoteEventId);
+
+    const voteConfig = voteEvent.voteConfig;
+    assertVotingPageCommonElements(voteConfig);
+
+    cy.get("#votes-input").should("be.visible");
   });
 
   it("Should be able to vote for a candidate in table view", () => {
     navigateToVotingPage(voteEventId);
 
-    cy.get(`#candidate-${candidates[0].id}-vote-button`).click();
-    cy.contains("Votes cast: 1").should("be.visible");
-    cy.get(`#candidate-${candidates[0].id}-vote-button`).should(
-      "contain",
-      "Voted"
-    );
+    voteForCandidateBySelection(candidates[0].id);
+  });
 
-    cy.get("#submit-votes-modal-button").click();
-    cy.get("#submit-votes-modal").should("be.visible");
-    cy.contains(`${candidates[0].id}`).should("be.visible");
-    cy.get("#submit-votes-button").click();
+  it("Should be able to vote for a candidate in gallery view", () => {
+    navigateToVotingPage(galleryViewVoteEventId);
 
-    cy.get("#success-alert").should("be.visible");
-    cy.get("#submit-votes-modal").should("not.exist");
-    cy.contains("Votes Submitted").should("be.visible");
-    cy.contains(`${candidates[0].id}`).should("be.visible");
+    voteForCandidateBySelection(candidates[0].id);
+  });
+
+  it("Should be able to vote for a candidate in no display view", () => {
+    navigateToVotingPage(noDisplayVoteEventId);
+
+    voteForCandidateByInput(candidates[0].id);
   });
 
   it("Should display submitted votes if the user has already voted", () => {
@@ -152,17 +202,19 @@ describe("Testing voting page", () => {
   });
 
   it("Should not be accessible to non voters", () => {
+    const assertNoVoteEvent = (voteEvent) => {
+      cy.visit(`http://localhost:3000/vote-events/${voteEvent}`);
+      cy.contains("No such vote event found!").should("be.visible");
+    };
+
     cy.get("#nav-sign-out").click();
-    cy.visit(`http://localhost:3000/vote-events/${noVoterVoteEvent}`);
-    cy.contains("No such vote event found!").should("be.visible");
+    assertNoVoteEvent(noVoterVoteEvent);
 
     cy.login("student@skylab.com", "Password123");
-    cy.visit(`http://localhost:3000/vote-events/${noVoterVoteEvent}`);
-    cy.contains("No such vote event found!").should("be.visible");
+    assertNoVoteEvent(noVoterVoteEvent);
     cy.get("#nav-sign-out").click();
 
     cy.externalVoterLogin("externalId123");
-    cy.visit(`http://localhost:3000/vote-events/${noVoterVoteEvent}`);
-    cy.contains("No such vote event found!").should("be.visible");
+    assertNoVoteEvent(noVoterVoteEvent);
   });
 });

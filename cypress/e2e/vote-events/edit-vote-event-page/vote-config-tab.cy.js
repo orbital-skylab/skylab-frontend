@@ -63,31 +63,39 @@ describe("Testing vote event vote config tab", () => {
         endTime: new Date("2022-12-12T12:00").toISOString(),
       },
     }).then((response) => {
-      voteEvent = response.body.voteEvent;
-      navigateToVoteConfigTab(voteEvent.id);
-
-      cy.get("#vote-config-modal-button").click();
-      cy.get("#vote-config-modal").should("be.visible");
-
-      cy.get("#display-type-dropdown").click();
-      cy.get(`#Table-option`).click();
-
-      cy.get("#min-votes-input").clear().type(1);
-      cy.get("#max-votes-input").clear().type(2);
-      cy.get("#random-order-checkbox").uncheck();
-      cy.get("#instructions-input").clear().type("Test instructions");
-      cy.get("#save-vote-config-button").click();
-
-      cy.get("#success-alert").should("be.visible");
-      cy.get("#vote-config-modal").should("not.exist");
-      cy.get("#votes-header").should("be.visible");
-      cy.contains("No votes found").should("be.visible");
-      cy.get("#votes-table").should("not.exist");
-
       cy.request(
-        "DELETE",
-        `http://localhost:4000/api/vote-events/${voteEvent.id}`
-      );
+        "POST",
+        `http://localhost:4000/api/vote-events/${response.body.voteEvent.id}/candidates`,
+        {
+          projectId: 1,
+        }
+      ).then(() => {
+        voteEvent = response.body.voteEvent;
+        navigateToVoteConfigTab(voteEvent.id);
+
+        cy.get("#vote-config-modal-button").click();
+        cy.get("#vote-config-modal").should("be.visible");
+
+        cy.get("#display-type-dropdown").click();
+        cy.get(`#Table-option`).click();
+
+        cy.get("#min-votes-input").clear().type(1);
+        cy.get("#max-votes-input").clear().type(2);
+        cy.get("#random-order-checkbox").uncheck();
+        cy.get("#instructions-input").clear().type("Test instructions");
+        cy.get("#save-vote-config-button").click();
+
+        cy.get("#success-alert").should("be.visible");
+        cy.get("#vote-config-modal").should("not.exist");
+        cy.get("#votes-header").should("be.visible");
+        cy.contains("No votes found").should("be.visible");
+        cy.get("#votes-table").should("not.exist");
+
+        cy.request(
+          "DELETE",
+          `http://localhost:4000/api/vote-events/${voteEvent.id}`
+        );
+      });
     });
   });
 
@@ -124,6 +132,38 @@ describe("Testing vote event vote config tab", () => {
       "have.value",
       "Test instructions edited"
     );
+  });
+
+  it("Should not be able to set min votes greater then number of candidates", () => {
+    cy.request("POST", "http://localhost:4000/api/vote-events", {
+      voteEvent: {
+        title: "Vote config tab test vote event",
+        startTime: new Date("2022-12-11T12:00").toISOString(),
+        endTime: new Date("2022-12-12T12:00").toISOString(),
+      },
+    }).then((response) => {
+      navigateToVoteConfigTab(response.body.voteEvent.id);
+
+      cy.get("#vote-config-modal-button").click();
+      cy.get("#display-type-dropdown").click();
+      cy.get(`#Table-option`).click();
+
+      cy.get("#min-votes-input").clear().type(1);
+      cy.get("#max-votes-input").clear().type(2);
+      cy.get("#random-order-checkbox").uncheck();
+      cy.get("#instructions-input").clear().type("Test instructions");
+      cy.get("#save-vote-config-button").click();
+
+      cy.get("#error-alert").should("be.visible");
+      cy.contains(
+        "Minimum votes cannot be greater than the number of candidates"
+      ).should("be.visible");
+
+      cy.request(
+        "DELETE",
+        `http://localhost:4000/api/vote-events/${response.body.voteEvent.id}`
+      );
+    });
   });
 
   it("Should be able to delete a vote", () => {
