@@ -38,6 +38,16 @@ jobs:
       # - name: Unit Tests
       #   run: npx jest
 
+      # Create .env.local file
+      - name: Create .env.local file
+        run: echo "NEXT_PUBLIC_BASE_DEV_API_URL=http://localhost:4000/api" > .env.local
+
+      # Run Cypress Component Tests
+      - name: Component Tests
+        uses: cypress-io/github-action@v6
+        with:
+          component: true
+
     # Deploy:
     #   needs: [Lint-Build-Test]
     #   runs-on: ubuntu-latest
