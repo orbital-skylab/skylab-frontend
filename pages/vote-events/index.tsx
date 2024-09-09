@@ -1,6 +1,7 @@
 import NoneFound from "@/components/emptyStates/NoneFound";
 import Body from "@/components/layout/Body";
 import AddVoteEventModal from "@/components/modals/AddVoteEventModal/AddVoteEventModal";
+import SearchInput from "@/components/search/SearchInput";
 import VoteEventTable from "@/components/tables/VoteEventTable";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
@@ -17,6 +18,7 @@ import { useState } from "react";
 
 const VoteEvents: NextPage = () => {
   const [isAddVoteEventOpen, setIsAddVoteEventOpen] = useState(false);
+  const [searchText, setSearchText] = useState("");
   const { user } = useAuth();
   const { data, status, mutate } = useFetch<GetVoteEventsResponse>({
     endpoint: PAGES.VOTE_EVENTS,
@@ -27,6 +29,15 @@ const VoteEvents: NextPage = () => {
   const handleOpenAddVoteEventModal = () => {
     setIsAddVoteEventOpen(true);
   };
+
+  const handleSearchChange = (searchText: string) => {
+    setSearchText(searchText);
+  };
+
+  const filteredVoteEvents =
+    data?.voteEvents.filter((event) =>
+      event.title.toLowerCase().includes(searchText.toLowerCase())
+    ) || [];
 
   return (
     <>
@@ -54,14 +65,19 @@ const VoteEvents: NextPage = () => {
           loadingText="Loading vote events..."
           fullScreen
         >
+          <SearchInput
+            id="search-vote-events"
+            label="Search vote events"
+            onChange={handleSearchChange}
+          />
           <NoDataWrapper
             noDataCondition={Boolean(
-              !data || !data.voteEvents || data.voteEvents.length === 0
+              !data || !data.voteEvents || filteredVoteEvents.length === 0
             )}
             fallback={<NoneFound title="" message="No vote events found" />}
           >
             {data && (
-              <VoteEventTable voteEvents={data.voteEvents} mutate={mutate} />
+              <VoteEventTable voteEvents={filteredVoteEvents} mutate={mutate} />
             )}
           </NoDataWrapper>
         </LoadingWrapper>

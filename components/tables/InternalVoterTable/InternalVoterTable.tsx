@@ -6,8 +6,9 @@ import { GetInternalVotersResponse } from "@/types/api";
 
 import Table from "@/components/tables/Table";
 import { User } from "@/types/users";
-import { FC } from "react";
+import { FC, useState } from "react";
 import InternalVoterRow from "./InternalVoterRow";
+import SearchInput from "@/components/search/SearchInput";
 
 type Props = {
   voteEventId: number;
@@ -29,7 +30,19 @@ const InternalVoterTable: FC<Props> = ({
   status,
   mutate,
 }) => {
-  const internalVoterRows = internalVoters.map((internalVoter) => (
+  const [searchText, setSearchText] = useState("");
+
+  const handleSearchChange = (searchText: string) => {
+    setSearchText(searchText);
+  };
+
+  const filteredInternalVoters = internalVoters.filter(
+    (internalVoter) =>
+      internalVoter.email.toLowerCase().includes(searchText.toLowerCase()) ||
+      internalVoter.name.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+  const internalVoterRows = filteredInternalVoters.map((internalVoter) => (
     <InternalVoterRow
       key={internalVoter.id}
       voteEventId={voteEventId}
@@ -39,18 +52,25 @@ const InternalVoterTable: FC<Props> = ({
   ));
 
   return (
-    <LoadingWrapper isLoading={isFetching(status)}>
-      <NoDataWrapper
-        noDataCondition={internalVoters.length === 0}
-        fallback={<NoneFound title="" message="No internal voters found" />}
-      >
-        <Table
-          id="internal-voter-table"
-          headings={columnHeadings}
-          rows={internalVoterRows}
-        />
-      </NoDataWrapper>
-    </LoadingWrapper>
+    <>
+      <SearchInput
+        id="search-internal-voters"
+        label="Search name or email"
+        onChange={handleSearchChange}
+      />
+      <LoadingWrapper isLoading={isFetching(status)}>
+        <NoDataWrapper
+          noDataCondition={internalVoters.length === 0}
+          fallback={<NoneFound title="" message="No internal voters found" />}
+        >
+          <Table
+            id="internal-voter-table"
+            headings={columnHeadings}
+            rows={internalVoterRows}
+          />
+        </NoDataWrapper>
+      </LoadingWrapper>
+    </>
   );
 };
 export default InternalVoterTable;

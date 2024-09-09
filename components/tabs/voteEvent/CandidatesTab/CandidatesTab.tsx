@@ -1,15 +1,17 @@
 import AddCandidateMenu from "@/components/menus/AddCandidateMenu";
+import SearchInput from "@/components/search/SearchInput";
 import CandidateTable from "@/components/tables/CandidateTable";
 import useFetch from "@/hooks/useFetch";
 import { GetCandidatesResponse } from "@/types/api";
 import { Stack, Typography } from "@mui/material";
-import { FC } from "react";
+import { FC, useState } from "react";
 
 type Props = {
   voteEventId: number;
 };
 
 const CandidatesTab: FC<Props> = ({ voteEventId }) => {
+  const [searchText, setSearchText] = useState("");
   const {
     data: candidatesData,
     status,
@@ -18,6 +20,17 @@ const CandidatesTab: FC<Props> = ({ voteEventId }) => {
     endpoint: `/vote-events/${voteEventId}/candidates`,
     enabled: !!voteEventId,
   });
+
+  const handleSearchChange = (searchText: string) => {
+    setSearchText(searchText);
+  };
+
+  const filteredCandidates =
+    candidatesData?.candidates.filter(
+      (candidate) =>
+        candidate.name.toLowerCase().includes(searchText.toLowerCase()) ||
+        candidate.id.toString().includes(searchText)
+    ) || [];
 
   return (
     <Stack flexGrow={1}>
@@ -39,8 +52,13 @@ const CandidatesTab: FC<Props> = ({ voteEventId }) => {
           <AddCandidateMenu voteEventId={voteEventId} mutate={mutate} />
         </div>
       </div>
+      <SearchInput
+        id="search-candidates"
+        label="Search name or ID"
+        onChange={handleSearchChange}
+      />
       <CandidateTable
-        candidates={candidatesData?.candidates || []}
+        candidates={filteredCandidates}
         status={status}
         voteEventId={voteEventId}
         mutate={mutate}

@@ -6,7 +6,8 @@ import { FETCH_STATUS, isFetching } from "@/hooks/useFetch";
 import ResultRow from "@/components/tables/ResultsTable/ResultRow/ResultRow";
 import Table from "@/components/tables/Table";
 import { VoteEventResult } from "@/types/voteEvents";
-import { FC } from "react";
+import { FC, useState } from "react";
+import SearchInput from "@/components/search/SearchInput";
 
 type Props = {
   results: VoteEventResult[];
@@ -55,20 +56,43 @@ const resultsFactory = {
 };
 
 const ResultsTable: FC<Props> = ({ results, status }) => {
+  const [searchText, setSearchText] = useState("");
+
+  const handleSearchChange = (searchText: string) => {
+    setSearchText(searchText);
+  };
+
+  const filteredResults = results.filter(
+    (result) =>
+      result.project.name.toLowerCase().includes(searchText.toLowerCase()) ||
+      result.project.id.toString().includes(searchText)
+  );
+
   const { columnHeadings, resultRows } =
     results.length > 0
-      ? resultsFactory.generate(results)
+      ? resultsFactory.generate(filteredResults)
       : { columnHeadings: [], resultRows: [] };
 
   return (
-    <LoadingWrapper isLoading={isFetching(status)}>
-      <NoDataWrapper
-        noDataCondition={results.length === 0}
-        fallback={<NoneFound title="" message="No results found" />}
-      >
-        <Table id="results-table" headings={columnHeadings} rows={resultRows} />
-      </NoDataWrapper>
-    </LoadingWrapper>
+    <>
+      <SearchInput
+        id="search-results"
+        label="Search name or ID"
+        onChange={handleSearchChange}
+      />
+      <LoadingWrapper isLoading={isFetching(status)}>
+        <NoDataWrapper
+          noDataCondition={results.length === 0}
+          fallback={<NoneFound title="" message="No results found" />}
+        >
+          <Table
+            id="results-table"
+            headings={columnHeadings}
+            rows={resultRows}
+          />
+        </NoDataWrapper>
+      </LoadingWrapper>
+    </>
   );
 };
 export default ResultsTable;

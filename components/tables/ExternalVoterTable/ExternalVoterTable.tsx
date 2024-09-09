@@ -5,8 +5,9 @@ import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import { FETCH_STATUS, Mutate, isFetching } from "@/hooks/useFetch";
 import { GetExternalVotersResponse } from "@/types/api";
 import { ExternalVoter } from "@/types/voteEvents";
-import { FC } from "react";
+import { FC, useState } from "react";
 import ExternalVoterRow from "./ExternalVoterRow";
+import SearchInput from "@/components/search/SearchInput";
 
 type Props = {
   externalVoters: ExternalVoter[];
@@ -20,7 +21,19 @@ const columnHeadings: { heading: string; align: "left" | "right" }[] = [
 ];
 
 const ExternalVoterTable: FC<Props> = ({ externalVoters, status, mutate }) => {
-  const externalVoterRows = externalVoters.map((externalVoter) => (
+  const [searchText, setSearchText] = useState("");
+
+  const handleSearchChange = (searchText: string) => {
+    setSearchText(searchText);
+  };
+
+  const filteredExternalVoters = externalVoters.filter(
+    (externalVoter) =>
+      externalVoter.id.toString().includes(searchText) ||
+      externalVoter.id.toString().includes(searchText)
+  );
+
+  const externalVoterRows = filteredExternalVoters.map((externalVoter) => (
     <ExternalVoterRow
       key={externalVoter.id}
       externalVoter={externalVoter}
@@ -29,18 +42,25 @@ const ExternalVoterTable: FC<Props> = ({ externalVoters, status, mutate }) => {
   ));
 
   return (
-    <LoadingWrapper isLoading={isFetching(status)}>
-      <NoDataWrapper
-        noDataCondition={externalVoters.length === 0}
-        fallback={<NoneFound title="" message="No external voters found" />}
-      >
-        <Table
-          id="external-voter-table"
-          headings={columnHeadings}
-          rows={externalVoterRows}
-        />
-      </NoDataWrapper>
-    </LoadingWrapper>
+    <>
+      <SearchInput
+        id="search-external-voters"
+        label="Search voter ID"
+        onChange={handleSearchChange}
+      />
+      <LoadingWrapper isLoading={isFetching(status)}>
+        <NoDataWrapper
+          noDataCondition={externalVoters.length === 0}
+          fallback={<NoneFound title="" message="No external voters found" />}
+        >
+          <Table
+            id="external-voter-table"
+            headings={columnHeadings}
+            rows={externalVoterRows}
+          />
+        </NoDataWrapper>
+      </LoadingWrapper>
+    </>
   );
 };
 export default ExternalVoterTable;

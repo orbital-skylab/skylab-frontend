@@ -3,6 +3,7 @@ import VotingForm from "@/components/forms/VotingForm";
 import VotingGalleryGrid from "@/components/grids";
 import Body from "@/components/layout/Body";
 import SubmitVotesModal from "@/components/modals/SubmitVotesModal";
+import SearchInput from "@/components/search/SearchInput";
 import VoteCandidateTable from "@/components/tables/VoteCandidateTable";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import { shuffleArray } from "@/helpers/array";
@@ -71,6 +72,7 @@ const VotingPage: NextPage = () => {
     [key: number]: boolean;
   }>({});
   const [openSubmitVotesModal, setOpenSubmitVotesModal] = useState(false);
+  const [searchText, setSearchText] = useState("");
 
   const voteCount = Object.values(selectedCandidates).filter(Boolean).length;
 
@@ -107,6 +109,10 @@ const VotingPage: NextPage = () => {
     setOpenSubmitVotesModal(true);
   };
 
+  const handleSearchChange = (searchText: string) => {
+    setSearchText(searchText);
+  };
+
   const votes = votesData?.votes;
   const voteConfig = voteEventData?.voteEvent.voteConfig;
   const alreadyVoted = votes && votes.length > 0;
@@ -126,6 +132,12 @@ const VotingPage: NextPage = () => {
       ? shuffleArray(candidatesArray)
       : candidatesArray;
   }, [candidatesData, voteConfig]);
+
+  const filteredCandidates = candidates.filter(
+    (candidate) =>
+      candidate.name.toLowerCase().includes(searchText.toLowerCase()) ||
+      candidate.id.toString().includes(searchText)
+  );
 
   return (
     <Body
@@ -188,9 +200,16 @@ const VotingPage: NextPage = () => {
                   </Typography>
                   <Typography variant="h6">Votes cast: {voteCount}</Typography>
                 </Stack>
+                {voteConfig?.displayType !== DISPLAY_TYPES.NONE && (
+                  <SearchInput
+                    id="search-candidates"
+                    label="Search name or ID"
+                    onChange={handleSearchChange}
+                  />
+                )}
                 {candidateDisplayFactory.generateItems(
                   voteConfig,
-                  candidates,
+                  filteredCandidates,
                   selectedCandidates,
                   fetchcandidatesStatus,
                   setSelectedCandidates

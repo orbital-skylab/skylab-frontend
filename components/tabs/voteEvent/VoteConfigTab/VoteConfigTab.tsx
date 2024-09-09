@@ -1,4 +1,5 @@
 import VoteConfigModal from "@/components/modals/VoteConfigModal";
+import SearchInput from "@/components/search/SearchInput";
 import VotesTable from "@/components/tables/VotesTable";
 import useFetch, { Mutate } from "@/hooks/useFetch";
 import { GetVoteEventResponse, GetVoteEventVotesResponse } from "@/types/api";
@@ -13,6 +14,7 @@ type Props = {
 
 const VoteConfigTab: FC<Props> = ({ voteEvent, mutate }) => {
   const [openVoteConfigModal, setOpenVoteConfigModal] = useState(false);
+  const [searchText, setSearchText] = useState("");
   const isVoteConfigSet = !!voteEvent.voteConfig;
 
   const {
@@ -28,6 +30,22 @@ const VoteConfigTab: FC<Props> = ({ voteEvent, mutate }) => {
   const handleOpenVoteConfigModal = () => {
     setOpenVoteConfigModal(true);
   };
+
+  const handleSearchChange = (searchText: string) => {
+    setSearchText(searchText);
+  };
+
+  // Filter votes by voter or project ID
+  const filteredVotes =
+    votesData?.votes.filter(
+      (vote) =>
+        (vote.userId
+          ? vote.userId.toString().includes(searchText)
+          : vote.externalVoterId
+              ?.toLowerCase()
+              .includes(searchText.toLowerCase())) ||
+        vote.projectId.toString().includes(searchText)
+    ) || [];
 
   const voteConfigButton = (
     <Button
@@ -73,8 +91,13 @@ const VoteConfigTab: FC<Props> = ({ voteEvent, mutate }) => {
               </Typography>
             </div>
           </div>
+          <SearchInput
+            id="search-votes"
+            label="Search voter or project ID"
+            onChange={handleSearchChange}
+          />
           <VotesTable
-            votes={votesData?.votes || []}
+            votes={filteredVotes}
             status={status}
             voteEventId={voteEvent.id}
             mutate={mutateVotes}
