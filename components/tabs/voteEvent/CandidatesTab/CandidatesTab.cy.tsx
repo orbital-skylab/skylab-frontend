@@ -33,4 +33,22 @@ describe("<CandidatesTab />", () => {
     // Check if Add Candidate menu button is rendered
     cy.get("#add-candidate-menu-button").should("be.visible");
   });
+
+  it("should filter candidates based on search text", () => {
+    mount(<CandidatesTab voteEventId={voteEventId} />);
+
+    // Check if candidates table is rendered
+    cy.wait("@candidatesRequest");
+    cy.get("#candidates-table").should("be.visible");
+
+    // Search for a candidate
+    const searchText = candidates[0].name;
+    cy.get("#search-candidates").type(searchText);
+
+    // Check if correct number of rows are rendered
+    cy.get("tbody").find("tr").should("have.length", 1);
+
+    // Check if correct candidate is rendered
+    cy.get("tbody").find("tr").contains(searchText);
+  });
 });

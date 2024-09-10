@@ -97,6 +97,9 @@ describe("<VoteConfigTab />", () => {
     cy.wait("@votesRequest");
     cy.get("#votes-table").should("be.visible");
 
+    // Check if search input is rendered
+    cy.get("#search-votes").should("be.visible");
+
     // Check if vote config button is rendered
     cy.get("#vote-config-modal-button").should("be.visible");
   });
@@ -134,5 +137,34 @@ describe("<VoteConfigTab />", () => {
 
     // Check if the modal is open
     cy.contains("Vote Config").should("be.visible");
+  });
+
+  it("should filter votes by voter or project ID", () => {
+    // Mount the component
+    mount(
+      <VoteConfigTab
+        voteEvent={{
+          ...voteEvent,
+          voteConfig: {
+            displayType: DISPLAY_TYPES.TABLE,
+            minVotes: 2,
+            maxVotes: 3,
+            instructions: "vote instructions",
+            isRandomOrder: true,
+          },
+        }}
+        mutate={mutateSpy}
+      />
+    );
+
+    // Check if votes table is rendered
+    cy.wait("@votesRequest");
+    cy.get("#votes-table").should("be.visible");
+
+    // Type in the search input
+    cy.get("#search-votes").type("1");
+
+    // Check if the filtered votes are displayed
+    cy.get("#votes-table").contains("Project 1");
   });
 });

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import VotingForm from "@/components/forms/VotingForm";
+import VotingForm from "../VotingForm";
 import { mount } from "cypress/react18";
+import React from "react";
 
 describe("<VotingForm />", () => {
   let setSelectedCandidatesSpy: any;

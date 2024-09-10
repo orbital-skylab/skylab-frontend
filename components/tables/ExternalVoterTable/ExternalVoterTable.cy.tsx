@@ -24,6 +24,8 @@ describe("<ExternalVoterTable />", () => {
       />
     );
 
+    cy.get("#search-external-voters").should("exist");
+
     // Check column headings
     cy.get("thead").contains("Voter ID").should("be.visible");
     cy.get("thead").contains("Actions").should("be.visible");
@@ -57,5 +59,23 @@ describe("<ExternalVoterTable />", () => {
     );
 
     cy.contains("No external voters found").should("be.visible");
+  });
+
+  it("should filter external voters based on search text", () => {
+    mount(
+      <ExternalVoterTable
+        externalVoters={externalVoters}
+        status={FETCH_STATUS.FETCHED}
+        mutate={mutateSpy}
+      />
+    );
+
+    // Search for a voter
+    const searchText = externalVoters[0].id;
+    cy.get("#search-external-voters").type(searchText);
+
+    // Check if correct number of rows are rendered
+    cy.get("tbody").find("tr").should("have.length", 1);
+    cy.get("tbody").find("tr").contains(searchText);
   });
 });

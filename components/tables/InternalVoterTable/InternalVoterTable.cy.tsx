@@ -84,6 +84,8 @@ describe("<InternalVoterTable />", () => {
       />
     );
 
+    cy.get("#search-internal-voters").should("exist");
+
     // Check column headings
     cy.get("thead").contains("Email").should("be.visible");
     cy.get("thead").contains("Name").should("be.visible");
@@ -125,5 +127,22 @@ describe("<InternalVoterTable />", () => {
     );
 
     cy.contains("No internal voters found").should("be.visible");
+  });
+
+  it("should filter internal voters based on search text", () => {
+    mount(
+      <InternalVoterTable
+        voteEventId={voteEventId}
+        internalVoters={internalVoters}
+        status={FETCH_STATUS.FETCHED}
+        mutate={mutateSpy}
+      />
+    );
+
+    const searchText = internalVoters[0].name;
+    cy.get("#search-internal-voters").type(searchText);
+
+    cy.get("tbody").find("tr").should("have.length", 1);
+    cy.get("tbody").contains(searchText).should("be.visible");
   });
 });

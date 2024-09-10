@@ -57,6 +57,9 @@ describe("<ResultsTable />", () => {
   it("should render the vote event table with correct headings and rows", () => {
     mount(<ResultsTable results={results} status={FETCH_STATUS.FETCHED} />);
 
+    // check if search input is rendered
+    cy.get("#search-results").should("be.visible");
+
     // Check column headings
     cy.get("thead").find("th").should("have.length", 6);
     cy.get("thead").contains("Rank").should("be.visible");
@@ -76,6 +79,20 @@ describe("<ResultsTable />", () => {
       cy.get("tbody").contains(result.points).should("be.visible");
       cy.get("tbody").contains(result.percentage).should("be.visible");
     });
+  });
+
+  it("should filter results based on search text", () => {
+    mount(<ResultsTable results={results} status={FETCH_STATUS.FETCHED} />);
+
+    // Search for a result
+    const searchText = results[0].project.name;
+    cy.get("#search-results").type(searchText);
+
+    // Check if correct number of rows are rendered
+    cy.get("tbody").find("tr").should("have.length", 1);
+
+    // Check if correct result is rendered
+    cy.get("tbody").find("tr").contains(searchText);
   });
 
   it("should be loading when data is being fetched", () => {
