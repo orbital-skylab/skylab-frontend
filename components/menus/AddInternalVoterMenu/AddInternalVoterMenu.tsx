@@ -1,6 +1,4 @@
-import AddInternalVoterModalItem from "@/components/menus/AddInternalVoterMenuItem/AddInternalVoterModalItem/AddInternalVoterModalItem";
-import ImportInternalVoterCsvModalItem from "@/components/menus/AddInternalVoterMenuItem/ImportInternalVoterCsvModalItem";
-import InternalVoterRegistrationModalItem from "@/components/menus/AddInternalVoterMenuItem/InternalVoterRegistrationModalItem";
+import { AddInternalVoterMenuFactory } from "@/components/menus/AddInternalVoterMenu/AddInternalVoterMenuFactory";
 import { Mutate } from "@/hooks/useFetch";
 import { GetInternalVotersResponse, GetVoteEventResponse } from "@/types/api";
 import { VoterManagement } from "@/types/voteEvents";
@@ -13,40 +11,6 @@ type Props = {
   voterManagement: VoterManagement;
   mutateInternalVoters: Mutate<GetInternalVotersResponse>;
   mutateVoteEvent: Mutate<GetVoteEventResponse>;
-};
-
-const AddInternalVoterMenuFactory = {
-  generateItems: (
-    voteEventId: number,
-    voterManagement: VoterManagement,
-    handleCloseMenu: () => void,
-    mutateInternalVoters: Mutate<GetInternalVotersResponse>,
-    mutateVoteEvent: Mutate<GetVoteEventResponse>
-  ) => {
-    const menuItems = [
-      <AddInternalVoterModalItem
-        key={"add-internal-voter-modal-item"}
-        voteEventId={voteEventId}
-        handleCloseMenu={handleCloseMenu}
-        mutateInternalVoters={mutateInternalVoters}
-      />,
-      <ImportInternalVoterCsvModalItem
-        key={"import-internal-voter-csv-modal-item"}
-        voteEventId={voteEventId}
-        handleCloseMenu={handleCloseMenu}
-        mutateInternalVoters={mutateInternalVoters}
-      />,
-      <InternalVoterRegistrationModalItem
-        key={"internal-voter-registration-modal-item"}
-        voteEventId={voteEventId}
-        voterManagement={voterManagement}
-        handleCloseMenu={handleCloseMenu}
-        mutateVoteEvent={mutateVoteEvent}
-      />,
-    ];
-
-    return menuItems;
-  },
 };
 
 const AddInternalVoterMenu: FC<Props> = ({
@@ -82,13 +46,13 @@ const AddInternalVoterMenu: FC<Props> = ({
         anchorEl={anchorEl}
         onClose={handleClose}
       >
-        {AddInternalVoterMenuFactory.generateItems(
+        {AddInternalVoterMenuFactory.generateItems({
           voteEventId,
           voterManagement,
-          handleClose,
+          handleCloseMenu: handleClose,
           mutateInternalVoters,
-          mutateVoteEvent
-        )}
+          mutateVoteEvent,
+        })}
       </Menu>
     </>
   );

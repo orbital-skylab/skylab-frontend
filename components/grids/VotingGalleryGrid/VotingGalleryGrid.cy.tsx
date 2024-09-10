@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import VotingGalleryGrid from "@/components/grids/VotingGalleryGrid";
-import { FETCH_STATUS } from "@/hooks/useFetch";
-import { Project } from "@/types/projects";
+
+import VotingGalleryGrid from "../VotingGalleryGrid";
+import { FETCH_STATUS } from "../../../hooks/useFetch";
+import { Project } from "../../../types/projects";
 import { mount } from "cypress/react18";
+import React from "react";
 
 describe("<VotingGalleryGrid />", () => {
   const multiplier = 5;

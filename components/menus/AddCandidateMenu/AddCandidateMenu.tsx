@@ -1,5 +1,4 @@
-import AddCandidateMenuItem from "@/components/menus/AddCandidateMenu/AddCandidateMenuItem";
-import BatchAddCandidateMenuItem from "@/components/menus/AddCandidateMenu/BatchAddCandidateMenuItem";
+import { AddCandidateMenuFactory } from "@/components/menus/AddCandidateMenu/AddCandidateMenuFactory";
 import { Mutate } from "@/hooks/useFetch";
 import { GetCandidatesResponse } from "@/types/api";
 import { KeyboardArrowDown } from "@mui/icons-material";
@@ -9,31 +8,6 @@ import { FC, MouseEvent, useState } from "react";
 type Props = {
   voteEventId: number;
   mutate: Mutate<GetCandidatesResponse>;
-};
-
-const AddCandidateMenuFactory = {
-  generateItems: (
-    voteEventId: number,
-    handleCloseMenu: () => void,
-    mutateCandidates: Mutate<GetCandidatesResponse>
-  ) => {
-    const menuItems = [
-      <AddCandidateMenuItem
-        key={"add-candidate-menu-item"}
-        voteEventId={voteEventId}
-        handleCloseMenu={handleCloseMenu}
-        mutateCandidates={mutateCandidates}
-      />,
-      <BatchAddCandidateMenuItem
-        key={"batch-add-candidate-menu-item"}
-        voteEventId={voteEventId}
-        handleCloseMenu={handleCloseMenu}
-        mutateCandidates={mutateCandidates}
-      />,
-    ];
-
-    return menuItems;
-  },
 };
 
 const AddCandidateMenu: FC<Props> = ({ voteEventId, mutate }) => {
@@ -64,11 +38,11 @@ const AddCandidateMenu: FC<Props> = ({ voteEventId, mutate }) => {
         anchorEl={anchorEl}
         onClose={handleClose}
       >
-        {AddCandidateMenuFactory.generateItems(
+        {AddCandidateMenuFactory.generateItems({
           voteEventId,
-          handleClose,
-          mutate
-        )}
+          handleCloseMenu: handleClose,
+          mutateCandidates: mutate,
+        })}
       </Menu>
     </>
   );

@@ -1,69 +1,22 @@
+import { CandidateDisplayFactory } from "@/components/candidateDisplays/CandidateDisplayFactory";
 import NoneFound from "@/components/emptyStates/NoneFound";
-import VotingForm from "@/components/forms/VotingForm";
-import VotingGalleryGrid from "@/components/grids";
 import Body from "@/components/layout/Body";
 import SubmitVotesModal from "@/components/modals/SubmitVotesModal";
 import SearchInput from "@/components/search/SearchInput";
-import VoteCandidateTable from "@/components/tables/VoteCandidateTable";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import { shuffleArray } from "@/helpers/array";
 import { getVoteEventStatus } from "@/helpers/voteEvent";
-import useFetch, { FETCH_STATUS, isFetching } from "@/hooks/useFetch";
+import useFetch, { isFetching } from "@/hooks/useFetch";
 import {
   GetCandidatesResponse,
   GetVoteEventResponse,
   GetVotesResponse,
 } from "@/types/api";
-import { Project } from "@/types/projects";
-import {
-  DISPLAY_TYPES,
-  VOTE_EVENT_STATUS,
-  VoteEvent,
-} from "@/types/voteEvents";
+import { DISPLAY_TYPES, VOTE_EVENT_STATUS } from "@/types/voteEvents";
 import { Button, Stack, Typography } from "@mui/material";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
-
-const candidateDisplayFactory = {
-  generateItems: (
-    voteConfig: VoteEvent["voteConfig"],
-    candidates: Project[],
-    selectedCandidates: { [key: number]: boolean },
-    status: FETCH_STATUS,
-    setSelectedCandidates: Dispatch<
-      SetStateAction<{
-        [key: number]: boolean;
-      }>
-    >
-  ) => {
-    if (!voteConfig) {
-      return null;
-    }
-
-    if (voteConfig.displayType === DISPLAY_TYPES.GALLERY) {
-      return (
-        <VotingGalleryGrid
-          selectedCandidates={selectedCandidates}
-          candidates={candidates}
-          status={status}
-          setSelectedCandidates={setSelectedCandidates}
-        />
-      );
-    } else if (voteConfig.displayType === DISPLAY_TYPES.TABLE) {
-      return (
-        <VoteCandidateTable
-          selectedCandidates={selectedCandidates}
-          candidates={candidates}
-          status={status}
-          setSelectedCandidates={setSelectedCandidates}
-        />
-      );
-    } else {
-      return <VotingForm setSelectedCandidates={setSelectedCandidates} />;
-    }
-  },
-};
+import { useMemo, useState } from "react";
 
 const VotingPage: NextPage = () => {
   const router = useRouter();
@@ -207,13 +160,14 @@ const VotingPage: NextPage = () => {
                     onChange={handleSearchChange}
                   />
                 )}
-                {candidateDisplayFactory.generateItems(
-                  voteConfig,
-                  filteredCandidates,
-                  selectedCandidates,
-                  fetchcandidatesStatus,
-                  setSelectedCandidates
-                )}
+                {voteConfig &&
+                  CandidateDisplayFactory.generateItems({
+                    candidates: filteredCandidates,
+                    selectedCandidates,
+                    status: fetchcandidatesStatus,
+                    setSelectedCandidates,
+                    voteConfig,
+                  })}
                 <Stack>
                   <Button
                     id="submit-votes-modal-button"

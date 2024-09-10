@@ -1,6 +1,4 @@
-import AddExternalVoterModalItem from "@/components/menus/AddExternalVoterMenuItem/AddExternalVoterModalItem.tsx";
-import ExternalVoterGenerationModalItem from "@/components/menus/AddExternalVoterMenuItem/ExternalVoterGenerationModalItem";
-import ImportExternalVoterCsvModalItem from "@/components/menus/AddExternalVoterMenuItem/ImportExternalVoterCsvModalItem.tsx";
+import { AddExternalVoterMenuFactory } from "@/components/menus/AddExternalVoterMenu/AddExternalVoterMenuFactory";
 import { Mutate } from "@/hooks/useFetch";
 import { GetExternalVotersResponse } from "@/types/api";
 import { KeyboardArrowDown } from "@mui/icons-material";
@@ -10,37 +8,6 @@ import { FC, MouseEvent, useState } from "react";
 type Props = {
   voteEventId: number;
   mutate: Mutate<GetExternalVotersResponse>;
-};
-
-const AddExternalVoterMenuFactory = {
-  generateItems: (
-    voteEventId: number,
-    handleCloseMenu: () => void,
-    mutateExternalVoters: Mutate<GetExternalVotersResponse>
-  ) => {
-    const menuItems = [
-      <AddExternalVoterModalItem
-        key={"add-external-voter-modal-item"}
-        voteEventId={voteEventId}
-        handleCloseMenu={handleCloseMenu}
-        mutateExternalVoters={mutateExternalVoters}
-      />,
-      <ImportExternalVoterCsvModalItem
-        key={"import-external-voter-csv-modal-item"}
-        voteEventId={voteEventId}
-        handleCloseMenu={handleCloseMenu}
-        mutateExternalVoters={mutateExternalVoters}
-      />,
-      <ExternalVoterGenerationModalItem
-        key={"external-voter-generation-modal-item"}
-        voteEventId={voteEventId}
-        handleCloseMenu={handleCloseMenu}
-        mutateExternalVoters={mutateExternalVoters}
-      />,
-    ];
-
-    return menuItems;
-  },
 };
 
 const AddExternalVoterMenu: FC<Props> = ({ voteEventId, mutate }) => {
@@ -71,11 +38,11 @@ const AddExternalVoterMenu: FC<Props> = ({ voteEventId, mutate }) => {
         anchorEl={anchorEl}
         onClose={handleClose}
       >
-        {AddExternalVoterMenuFactory.generateItems(
+        {AddExternalVoterMenuFactory.generateItems({
           voteEventId,
-          handleClose,
-          mutate
-        )}
+          handleCloseMenu: handleClose,
+          mutateExternalVoters: mutate,
+        })}
       </Menu>
     </>
   );

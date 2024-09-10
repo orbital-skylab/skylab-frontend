@@ -1,2 +1,0 @@
-import ImportExternalVoterCsvModalItem from "@/components/menus/AddExternalVoterMenuItem/ImportExternalVoterCsvModalItem.tsx/ImportExternalVoterCsvModalItem";
-export default ImportExternalVoterCsvModalItem;
