@@ -3,6 +3,7 @@ import AddInternalVoterMenu from "@/components/menus/AddInternalVoterMenu";
 import VoterManagementConfigModal from "@/components/modals/VoterManagementConfigModal";
 import ExternalVoterTable from "@/components/tables/ExternalVoterTable";
 import InternalVoterTable from "@/components/tables/InternalVoterTable";
+import { DEFAULT_REGISTRATION_PERIOD } from "@/helpers/voteEvent";
 import useFetch, { Mutate } from "@/hooks/useFetch";
 import {
   GetExternalVotersResponse,
@@ -28,7 +29,7 @@ type Props = {
 const PRE_SET_VOTER_MANAGEMENT = {
   hasInternalList: false,
   hasExternalList: false,
-  isRegistrationOpen: false,
+  ...DEFAULT_REGISTRATION_PERIOD,
 };
 
 const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {

@@ -40,7 +40,8 @@ export type VoteEvent = {
 export type VoterManagement = {
   hasInternalList: boolean;
   hasExternalList: boolean;
-  isRegistrationOpen: boolean;
+  registrationStartTime: string;
+  registrationEndTime: string;
 };
 
 export type VoteConfig = {

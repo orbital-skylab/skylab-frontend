@@ -22,7 +22,7 @@ import Modal from "../Modal";
 
 export type EditVoterManagementFormValuesType = Omit<
   VoterManagement,
-  "isRegistrationOpen"
+  "registrationStartTime" | "registrationEndTime"
 > & {
   copyInternalVoteEventId: number | "";
   copyExternalVoteEventId: number | "";
@@ -46,7 +46,8 @@ const VoterManagementConfigModal: FC<Props> = ({
   fetchVoters,
 }) => {
   const { setSuccess, setError } = useSnackbarAlert();
-  const { isRegistrationOpen, ...values } = voterManagement;
+  const { registrationStartTime, registrationEndTime, ...values } =
+    voterManagement;
   const [isSetVoterManagementOpen, setIsSetVoterManagementOpen] =
     useState(false);
   const [formValues, setFormValues] = useState<{
@@ -108,7 +109,8 @@ const VoterManagementConfigModal: FC<Props> = ({
           values.copyExternalVoteEventId === ""
             ? undefined
             : values.copyExternalVoteEventId,
-        isRegistrationOpen,
+        registrationStartTime,
+        registrationEndTime,
       },
     };
 

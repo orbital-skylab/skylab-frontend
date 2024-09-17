@@ -4,7 +4,10 @@ import { mount } from "cypress/react18";
 import VoteEventRow from "./VoteEventRow";
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
 import { DISPLAY_TYPES } from "@/types/voteEvents";
-import { DEFAULT_RESULTS_FILTER } from "@/helpers/voteEvent";
+import {
+  DEFAULT_REGISTRATION_PERIOD,
+  DEFAULT_RESULTS_FILTER,
+} from "@/helpers/voteEvent";
 import { AuthContext } from "@/contexts/useAuth";
 
 describe("<VoteEventRow />", () => {
@@ -15,9 +18,9 @@ describe("<VoteEventRow />", () => {
     startTime: "2014-06-01T08:00:00Z",
     endTime: "2094-06-02T08:00:00Z",
     voterManagement: {
-      isRegistrationOpen: false,
       hasInternalList: true,
       hasExternalList: false,
+      ...DEFAULT_REGISTRATION_PERIOD,
     },
     voteConfig: {
       minVotes: 1,
@@ -185,7 +188,14 @@ describe("<VoteEventRow />", () => {
             ...voteEvent,
             voterManagement: {
               ...voteEvent.voterManagement,
-              isRegistrationOpen: true,
+              // yesterday
+              registrationStartTime: new Date(
+                new Date().setDate(new Date().getDate() - 1)
+              ).toISOString(),
+              // tomorrow
+              registrationEndTime: new Date(
+                new Date().setDate(new Date().getDate() + 1)
+              ).toISOString(),
             },
           }}
           mutate={mutateSpy}

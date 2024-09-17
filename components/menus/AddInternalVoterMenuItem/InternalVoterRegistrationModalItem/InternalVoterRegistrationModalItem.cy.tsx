@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { mount } from "cypress/react18";
 import InternalVoterRegistrationModalItem from "./InternalVoterRegistrationModalItem";
+import { DEFAULT_REGISTRATION_PERIOD } from "@/helpers/voteEvent";
 
 describe("<InternalVoterRegistrationModalItem />", () => {
   let handleCloseMenuSpy: any;
@@ -9,7 +10,7 @@ describe("<InternalVoterRegistrationModalItem />", () => {
   const voterManagement = {
     hasInternalList: true,
     hasExternalList: false,
-    isRegistrationOpen: false,
+    ...DEFAULT_REGISTRATION_PERIOD,
   };
 
   beforeEach(() => {

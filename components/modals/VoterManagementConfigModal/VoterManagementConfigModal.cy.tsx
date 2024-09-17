@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DEFAULT_RESULTS_FILTER } from "@/helpers/voteEvent";
+import {
+  DEFAULT_REGISTRATION_PERIOD,
+  DEFAULT_RESULTS_FILTER,
+} from "@/helpers/voteEvent";
 import { mount } from "cypress/react18";
 import VoterManagementConfigModal from "./VoterManagementConfigModal";
 
@@ -8,9 +11,9 @@ describe("<VoterManagementConfigModal />", () => {
   let mutateSpy: any;
   let fetchVotersSpy: any;
   const voterManagement = {
-    isRegistrationOpen: false,
     hasInternalList: false,
     hasExternalList: false,
+    ...DEFAULT_REGISTRATION_PERIOD,
   };
   const voteEvent = {
     id: 1,

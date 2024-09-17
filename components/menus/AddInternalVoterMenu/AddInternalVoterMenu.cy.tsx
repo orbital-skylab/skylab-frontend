@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { mount } from "cypress/react18";
 import AddInternalVoterMenu from "./AddInternalVoterMenu";
+import { DEFAULT_REGISTRATION_PERIOD } from "@/helpers/voteEvent";
 
 describe("<AddInternalVoterMenu />", () => {
   let mutateVoteEventSpy: any;
   let mutateInternalVotersSpy: any;
   const voteEventId = 1;
   const voterManagement = {
-    isRegistrationOpen: false,
     hasInternalList: true,
     hasExternalList: false,
+    ...DEFAULT_REGISTRATION_PERIOD,
   };
 
   beforeEach(() => {

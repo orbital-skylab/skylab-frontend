@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { mount } from "cypress/react18";
 import VoterManagementTab from "./VoterManagementTab";
-import { DEFAULT_RESULTS_FILTER } from "@/helpers/voteEvent";
+import {
+  DEFAULT_REGISTRATION_PERIOD,
+  DEFAULT_RESULTS_FILTER,
+} from "@/helpers/voteEvent";
 
 describe("<VoterManagementTab />", () => {
   let mutateSpy: any;
@@ -13,9 +16,9 @@ describe("<VoterManagementTab />", () => {
     resultsFilter: DEFAULT_RESULTS_FILTER,
   };
   const voterManagement = {
-    isRegistrationOpen: false,
     hasInternalList: false,
     hasExternalList: false,
+    ...DEFAULT_REGISTRATION_PERIOD,
   };
 
   const internalVoters = [

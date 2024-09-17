@@ -3,7 +3,10 @@ import RegisterForVoteEventModal from "@/components/modals/RegisterForVoteEventM
 import useAuth from "@/contexts/useAuth";
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
 import { userHasRole } from "@/helpers/roles";
-import { getVoteEventStatus } from "@/helpers/voteEvent";
+import {
+  checkIfRegistrationIsOpen,
+  getVoteEventStatus,
+} from "@/helpers/voteEvent";
 import { Mutate } from "@/hooks/useFetch";
 import { BASE_TRANSITION } from "@/styles/constants";
 import { GetVoteEventsResponse } from "@/types/api";
@@ -39,9 +42,10 @@ const VoteEventRow: FC<Props> = ({ voteEvent, mutate }) => {
 
   const voteEventStatus = getVoteEventStatus(voteEvent);
   const statusColor = statusColorMap[voteEventStatus];
+  const voterManagement = voteEvent.voterManagement;
 
   const isRegistrationOpen =
-    voteEvent.voterManagement?.isRegistrationOpen ?? false;
+    voterManagement && checkIfRegistrationIsOpen(voterManagement);
   const areResultsPublished =
     voteEvent.resultsFilter?.areResultsPublished ?? false;
   const isVotingInProgress = voteEventStatus === VOTE_EVENT_STATUS.IN_PROGRESS;

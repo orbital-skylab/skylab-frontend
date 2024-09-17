@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { DEFAULT_REGISTRATION_PERIOD } from "@/helpers/voteEvent";
 import { mount } from "cypress/react18";
 import InternalVoterRegistrationModal from "./InternalVoterRegistrationModal";
 
@@ -10,7 +11,7 @@ describe("<InternalVoterRegistrationModal />", () => {
   const voterManagement = {
     hasInternalList: true,
     hasExternalList: false,
-    isRegistrationOpen: false,
+    ...DEFAULT_REGISTRATION_PERIOD,
   };
 
   beforeEach(() => {
@@ -56,7 +57,7 @@ describe("<InternalVoterRegistrationModal />", () => {
     cy.get("#registration-return-button").should("not.exist");
   });
 
-  it("should open registration", () => {
+  it("should be able to set registration period", () => {
     // Mount the component
     mount(
       <InternalVoterRegistrationModal
@@ -69,9 +70,21 @@ describe("<InternalVoterRegistrationModal />", () => {
       />
     );
 
-    // open registration
-    cy.get("#open-registration-button").click();
+    cy.get("#registration-start-time").should(
+      "have.value",
+      voterManagement.registrationStartTime
+    );
+    cy.get("#registration-end-time").should(
+      "have.value",
+      voterManagement.registrationEndTime
+    );
 
+    // set new start time
+    cy.get("#registration-start-time").clear().type("2022-01-01T00:00");
+    // set new end time
+    cy.get("#registration-end-time").clear().type("2022-02-01T00:00");
+
+    cy.get("#save-registration-period-button").click();
     cy.wait("@toggleRegistration");
 
     cy.get("@mutateSpy").should("be.calledOnce");
@@ -79,15 +92,12 @@ describe("<InternalVoterRegistrationModal />", () => {
     cy.get("@handleCloseMenuSpy").should("be.calledOnce");
   });
 
-  it("should close registration", () => {
+  it("should not save if start time is greater than end time", () => {
     // Mount the component
     mount(
       <InternalVoterRegistrationModal
         voteEventId={voteEventId}
-        voterManagement={{
-          ...voterManagement,
-          isRegistrationOpen: true,
-        }}
+        voterManagement={voterManagement}
         open={true}
         handleCloseMenu={handleCloseMenuSpy}
         setOpen={setOpenSpy}
@@ -95,14 +105,14 @@ describe("<InternalVoterRegistrationModal />", () => {
       />
     );
 
-    // close registration
-    cy.get("#close-registration-button").click();
+    // set end time to be less than start time
+    cy.get("#registration-start-time").clear().type("2022-03-01T00:00");
+    cy.get("#registration-end-time").clear().type("2022-01-01T00:00");
+    cy.get("#save-registration-period-button").click();
 
-    cy.wait("@toggleRegistration");
-
-    cy.get("@mutateSpy").should("be.calledOnce");
-    cy.get("@setOpenSpy").should("be.calledOnce");
-    cy.get("@handleCloseMenuSpy").should("be.calledOnce");
+    cy.get("@mutateSpy").should("not.be.called");
+    cy.get("@setOpenSpy").should("not.be.called");
+    cy.contains("End time must be greater than start time").should("exist");
   });
 
   it("should have a functioning return button", () => {

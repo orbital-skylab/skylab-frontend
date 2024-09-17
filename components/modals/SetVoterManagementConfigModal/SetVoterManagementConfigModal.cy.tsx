@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { mount } from "cypress/react18";
 import SetVoterManagementConfigModal from "./SetVoterManagementConfigModal";
+import { DEFAULT_REGISTRATION_PERIOD } from "@/helpers/voteEvent";
 
 describe("<SetVoterManagementConfigModal />", () => {
   let setOpenSpy: any;
@@ -9,7 +10,7 @@ describe("<SetVoterManagementConfigModal />", () => {
   const voterManagement = {
     hasInternalList: true,
     hasExternalList: true,
-    isRegistrationOpen: true,
+    ...DEFAULT_REGISTRATION_PERIOD,
   };
   const processedValues = { voterManagement };
 

@@ -2,7 +2,13 @@ import {
   ResultsFilter,
   VOTE_EVENT_STATUS,
   VoteEvent,
+  VoterManagement,
 } from "@/types/voteEvents";
+
+export const DEFAULT_REGISTRATION_PERIOD = {
+  registrationStartTime: "",
+  registrationEndTime: "",
+};
 
 export const DEFAULT_RESULTS_FILTER: ResultsFilter = {
   areResultsPublished: false,
@@ -16,6 +22,22 @@ export const DEFAULT_RESULTS_FILTER: ResultsFilter = {
   mentorWeight: 1,
   adviserWeight: 1,
   administratorWeight: 1,
+};
+
+export const checkIfRegistrationIsOpen = (
+  voterManagement: VoterManagement
+): boolean => {
+  const { registrationStartTime, registrationEndTime } = voterManagement;
+
+  if (registrationStartTime === "" || registrationEndTime === "") {
+    return false;
+  }
+
+  const now = new Date();
+  const startTime = new Date(registrationStartTime);
+  const endTime = new Date(registrationEndTime);
+
+  return now >= startTime && now <= endTime;
 };
 
 /**
