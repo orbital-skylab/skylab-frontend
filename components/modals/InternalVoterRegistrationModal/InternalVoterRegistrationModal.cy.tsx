@@ -70,19 +70,19 @@ describe("<InternalVoterRegistrationModal />", () => {
       />
     );
 
-    cy.get("#registration-start-time").should(
+    cy.get("#registration-start-time-input").should(
       "have.value",
       voterManagement.registrationStartTime
     );
-    cy.get("#registration-end-time").should(
+    cy.get("#registration-end-time-input").should(
       "have.value",
       voterManagement.registrationEndTime
     );
 
     // set new start time
-    cy.get("#registration-start-time").clear().type("2022-01-01T00:00");
+    cy.get("#registration-start-time-input").clear().type("2022-01-01T00:00");
     // set new end time
-    cy.get("#registration-end-time").clear().type("2022-02-01T00:00");
+    cy.get("#registration-end-time-input").clear().type("2022-02-01T00:00");
 
     cy.get("#save-registration-period-button").click();
     cy.wait("@toggleRegistration");
@@ -106,8 +106,8 @@ describe("<InternalVoterRegistrationModal />", () => {
     );
 
     // set end time to be less than start time
-    cy.get("#registration-start-time").clear().type("2022-03-01T00:00");
-    cy.get("#registration-end-time").clear().type("2022-01-01T00:00");
+    cy.get("#registration-start-time-input").clear().type("2022-03-01T00:00");
+    cy.get("#registration-end-time-input").clear().type("2022-01-01T00:00");
     cy.get("#save-registration-period-button").click();
 
     cy.get("@mutateSpy").should("not.be.called");
