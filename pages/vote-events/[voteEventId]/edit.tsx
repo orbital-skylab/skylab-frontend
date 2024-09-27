@@ -10,7 +10,14 @@ import useFetch, { isFetching } from "@/hooks/useFetch";
 import { GetVoteEventResponse } from "@/types/api";
 import { ROLES } from "@/types/roles";
 import { VOTE_EVENT_TABS } from "@/types/voteEvents";
-import { Box, Tab, Tabs, tabsClasses } from "@mui/material";
+import {
+  Box,
+  Tab,
+  Tabs,
+  tabsClasses,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -18,6 +25,8 @@ import { useState } from "react";
 const EditVoteEvent: NextPage = () => {
   const router = useRouter();
   const { voteEventId } = router.query;
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const [selectedTab, setSelectedTab] = useState<VOTE_EVENT_TABS>(
     VOTE_EVENT_TABS.GENERAL_SETTINGS
@@ -52,23 +61,25 @@ const EditVoteEvent: NextPage = () => {
                 bgcolor: "background.paper",
                 display: "flex",
                 marginTop: "1rem",
+                flexDirection: { xs: "column", md: "row" },
               }}
             >
               <Tabs
                 id="vote-event-tabs"
                 value={selectedTab}
                 onChange={handleTabChange}
-                orientation="vertical"
+                orientation={isSmallScreen ? "horizontal" : "vertical"}
                 aria-label="vote-event-tabs"
                 scrollButtons="auto"
                 allowScrollButtonsMobile
                 variant="scrollable"
                 sx={{
                   [`& .${tabsClasses.scrollButtons}`]: { color: "primary" },
-                  marginRight: "1rem",
+                  marginRight: { xs: 0, md: "1rem" },
                   borderRight: 1,
                   borderColor: "divider",
                   minWidth: "190px",
+                  marginBottom: { xs: "1rem", md: 0 },
                 }}
               >
                 {Object.values(VOTE_EVENT_TABS).map((tab) => {
@@ -82,27 +93,35 @@ const EditVoteEvent: NextPage = () => {
                   );
                 })}
               </Tabs>
-              {selectedTab === VOTE_EVENT_TABS.GENERAL_SETTINGS && (
-                <GeneralSettingsTab
-                  voteEvent={data.voteEvent}
-                  mutate={mutate}
-                />
-              )}
-              {selectedTab === VOTE_EVENT_TABS.VOTER_MANAGEMENT && (
-                <VoterManagementTab
-                  voteEvent={data.voteEvent}
-                  mutate={mutate}
-                />
-              )}
-              {selectedTab === VOTE_EVENT_TABS.CANDIDATES && (
-                <CandidatesTab voteEventId={data.voteEvent.id} />
-              )}
-              {selectedTab === VOTE_EVENT_TABS.VOTE_CONFIG && (
-                <VoteConfigTab voteEvent={data.voteEvent} mutate={mutate} />
-              )}
-              {selectedTab === VOTE_EVENT_TABS.RESULTS && (
-                <ResultsTab voteEvent={data.voteEvent} mutate={mutate} />
-              )}
+              <Box
+                sx={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                {selectedTab === VOTE_EVENT_TABS.GENERAL_SETTINGS && (
+                  <GeneralSettingsTab
+                    voteEvent={data.voteEvent}
+                    mutate={mutate}
+                  />
+                )}
+                {selectedTab === VOTE_EVENT_TABS.VOTER_MANAGEMENT && (
+                  <VoterManagementTab
+                    voteEvent={data.voteEvent}
+                    mutate={mutate}
+                  />
+                )}
+                {selectedTab === VOTE_EVENT_TABS.CANDIDATES && (
+                  <CandidatesTab voteEventId={data.voteEvent.id} />
+                )}
+                {selectedTab === VOTE_EVENT_TABS.VOTE_CONFIG && (
+                  <VoteConfigTab voteEvent={data.voteEvent} mutate={mutate} />
+                )}
+                {selectedTab === VOTE_EVENT_TABS.RESULTS && (
+                  <ResultsTab voteEvent={data.voteEvent} mutate={mutate} />
+                )}
+              </Box>
             </Box>
           </>
         )}

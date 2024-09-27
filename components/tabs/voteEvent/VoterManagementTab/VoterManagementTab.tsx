@@ -12,7 +12,9 @@ import {
 } from "@/types/api";
 import { LIST_TYPES, VoteEvent } from "@/types/voteEvents";
 import {
+  Box,
   Button,
+  Grid,
   Stack,
   Tab,
   Tabs,
@@ -105,19 +107,26 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
       />
       {voterManagementSet ? (
         <Stack flexGrow={1}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr 1fr",
-              alignItems: "center",
-            }}
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+            justifyContent="space-between"
+            direction={{ xs: "column", md: "row" }}
           >
-            <div
-              style={{ gridColumn: 1, display: "flex", justifyContent: "left" }}
+            <Grid
+              item
+              xs={12}
+              md={4}
+              display="flex"
+              justifyContent={{
+                xs: "center",
+                md: "left",
+              }}
             >
               {voterManagementConfigButton}
-            </div>
-            <div style={{ gridColumn: 2, textAlign: "center" }}>
+            </Grid>
+            <Grid item xs={12} md={4} display="flex" justifyContent="center">
               {internalOnly && (
                 <Typography variant="h5" id="internal-voters-header">
                   Internal Voters
@@ -142,24 +151,25 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
                     marginY: { xs: 2, md: 0 },
                   }}
                 >
-                  {Object.values(LIST_TYPES).map((type) => {
-                    return (
-                      <Tab
-                        id={`${type.split(" ")[0].toLowerCase()}-tab`}
-                        key={type}
-                        value={type}
-                        label={type}
-                      />
-                    );
-                  })}
+                  {Object.values(LIST_TYPES).map((type) => (
+                    <Tab
+                      id={`${type.split(" ")[0].toLowerCase()}-tab`}
+                      key={type}
+                      value={type}
+                      label={type}
+                    />
+                  ))}
                 </Tabs>
               )}
-            </div>
-            <div
-              style={{
-                gridColumn: 3,
-                display: "flex",
-                justifyContent: "right",
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              md={4}
+              display="flex"
+              justifyContent={{
+                xs: "center",
+                md: "right",
               }}
             >
               {selectedList === LIST_TYPES.INTERNAL_VOTERS && (
@@ -176,56 +186,57 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
                   mutate={mutateExternalVoters}
                 />
               )}
-            </div>
-          </div>
-          {internalOnly && (
-            <InternalVoterTable
-              voteEventId={voteEventId}
-              internalVoters={internalVotersData?.internalVoters || []}
-              status={internalStatus}
-              mutate={mutateInternalVoters}
-            />
-          )}
-          {externalOnly && (
-            <ExternalVoterTable
-              externalVoters={externalVotersData?.externalVoters || []}
-              status={externalStatus}
-              mutate={mutateExternalVoters}
-            />
-          )}
-          {bothInternalAndExternal && (
-            <>
-              {selectedList === LIST_TYPES.INTERNAL_VOTERS && (
-                <InternalVoterTable
-                  voteEventId={voteEventId}
-                  internalVoters={internalVotersData?.internalVoters || []}
-                  status={internalStatus}
-                  mutate={mutateInternalVoters}
-                />
-              )}
-              {selectedList === LIST_TYPES.EXTERNAL_VOTERS && (
-                <ExternalVoterTable
-                  externalVoters={externalVotersData?.externalVoters || []}
-                  status={externalStatus}
-                  mutate={mutateExternalVoters}
-                />
-              )}
-            </>
-          )}
+            </Grid>
+          </Grid>
+          <Box mt={2}>
+            {internalOnly && (
+              <InternalVoterTable
+                voteEventId={voteEventId}
+                internalVoters={internalVotersData?.internalVoters || []}
+                status={internalStatus}
+                mutate={mutateInternalVoters}
+              />
+            )}
+            {externalOnly && (
+              <ExternalVoterTable
+                externalVoters={externalVotersData?.externalVoters || []}
+                status={externalStatus}
+                mutate={mutateExternalVoters}
+              />
+            )}
+            {bothInternalAndExternal && (
+              <>
+                {selectedList === LIST_TYPES.INTERNAL_VOTERS && (
+                  <InternalVoterTable
+                    voteEventId={voteEventId}
+                    internalVoters={internalVotersData?.internalVoters || []}
+                    status={internalStatus}
+                    mutate={mutateInternalVoters}
+                  />
+                )}
+                {selectedList === LIST_TYPES.EXTERNAL_VOTERS && (
+                  <ExternalVoterTable
+                    externalVoters={externalVotersData?.externalVoters || []}
+                    status={externalStatus}
+                    mutate={mutateExternalVoters}
+                  />
+                )}
+              </>
+            )}
+          </Box>
         </Stack>
       ) : (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-          }}
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          width="100%"
         >
           {voterManagementConfigButton}
-        </div>
+        </Box>
       )}
     </>
   );
 };
+
 export default VoterManagementTab;

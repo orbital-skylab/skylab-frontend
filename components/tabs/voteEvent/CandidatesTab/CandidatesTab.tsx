@@ -3,7 +3,7 @@ import SearchInput from "@/components/search/SearchInput";
 import CandidateTable from "@/components/tables/CandidateTable";
 import useFetch from "@/hooks/useFetch";
 import { GetCandidatesResponse } from "@/types/api";
-import { Stack, Typography } from "@mui/material";
+import { Stack, Typography, Grid } from "@mui/material";
 import { FC, useState } from "react";
 
 type Props = {
@@ -33,25 +33,30 @@ const CandidatesTab: FC<Props> = ({ voteEventId }) => {
     ) || [];
 
   return (
-    <Stack flexGrow={1}>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          alignItems: "center",
-        }}
+    <Stack flexGrow={1} spacing={2}>
+      <Grid
+        container
+        spacing={2}
+        alignItems="center"
+        justifyContent="space-between"
       >
-        <div style={{ gridColumn: 2, textAlign: "center" }}>
+        <Grid item xs={0} md={4} />
+        <Grid item xs={12} md={4} textAlign="center">
           <Typography variant="h5" id="candidates-header">
             Candidates
           </Typography>
-        </div>
-        <div
-          style={{ gridColumn: 3, display: "flex", justifyContent: "right" }}
+        </Grid>
+
+        <Grid
+          item
+          xs={12}
+          md={4}
+          display="flex"
+          justifyContent={{ xs: "center", md: "flex-end" }}
         >
           <AddCandidateMenu voteEventId={voteEventId} mutate={mutate} />
-        </div>
-      </div>
+        </Grid>
+      </Grid>
       <SearchInput
         id="search-candidates"
         label="Search name or ID"
@@ -66,4 +71,5 @@ const CandidatesTab: FC<Props> = ({ voteEventId }) => {
     </Stack>
   );
 };
+
 export default CandidatesTab;

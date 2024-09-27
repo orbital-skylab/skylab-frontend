@@ -115,7 +115,12 @@ const VotingPage: NextPage = () => {
               <NoneFound title="Vote event config not set!" message="" />
             }
           >
-            <Typography id="vote-event-title" align="center" variant="h4">
+            <Typography
+              id="vote-event-title"
+              align="center"
+              variant="h4"
+              sx={{ fontSize: { xs: "1.5rem", sm: "2rem" } }}
+            >
               {voteEventData?.voteEvent.title}
             </Typography>
             {alreadyVoted ? (
@@ -123,14 +128,23 @@ const VotingPage: NextPage = () => {
                 <Typography
                   align="center"
                   variant="h6"
-                  sx={{ marginTop: "1rem" }}
+                  sx={{
+                    marginTop: "1rem",
+                    fontSize: { xs: "1rem", sm: "1.5rem" },
+                  }}
                 >
                   Votes Submitted
                 </Typography>
-                <Typography align="center">
+                <Typography
+                  align="center"
+                  sx={{ fontSize: { xs: "0.875rem", sm: "1rem" } }}
+                >
                   You have voted for the following project IDs:
                 </Typography>
-                <Typography align="center">
+                <Typography
+                  align="center"
+                  sx={{ fontSize: { xs: "0.875rem", sm: "1rem" } }}
+                >
                   {votes.map((vote) => vote.projectId).join(", ")}
                 </Typography>
               </Stack>
@@ -143,15 +157,33 @@ const VotingPage: NextPage = () => {
                   setOpen={setOpenSubmitVotesModal}
                   mutate={mutateVotes}
                 />
-                <Typography sx={{ marginY: "2rem" }}>
+                <Typography
+                  sx={{
+                    marginY: "1rem",
+                    fontSize: { xs: "0.875rem", sm: "1rem" },
+                  }}
+                >
                   {voteConfig?.instructions || ""}
                 </Typography>
-                <Stack direction="row" justifyContent="space-between">
-                  <Typography variant="h6">
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  flexWrap="wrap"
+                  marginBottom={1}
+                >
+                  <Typography
+                    variant="h6"
+                    sx={{ fontSize: { xs: "1rem", sm: "1.5rem" } }}
+                  >
                     Vote for a maximum of {voteConfig?.maxVotes}, and minimum of{" "}
                     {voteConfig?.minVotes} projects.
                   </Typography>
-                  <Typography variant="h6">Votes cast: {voteCount}</Typography>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontSize: { xs: "1rem", sm: "1.5rem" } }}
+                  >
+                    Votes cast: {voteCount}
+                  </Typography>
                 </Stack>
                 {voteConfig?.displayType !== DISPLAY_TYPES.NONE && (
                   <SearchInput
@@ -168,7 +200,7 @@ const VotingPage: NextPage = () => {
                     setSelectedCandidates,
                     voteConfig,
                   })}
-                <Stack>
+                <Stack spacing={2}>
                   <Button
                     id="submit-votes-modal-button"
                     onClick={handleOpenSubmitVotesModal}
@@ -183,6 +215,7 @@ const VotingPage: NextPage = () => {
                       position: "fixed",
                       bottom: "2rem",
                       right: "2rem",
+                      fontSize: { xs: "0.875rem", sm: "1rem" },
                     }}
                   >
                     Submit
@@ -196,4 +229,5 @@ const VotingPage: NextPage = () => {
     </Body>
   );
 };
+
 export default VotingPage;

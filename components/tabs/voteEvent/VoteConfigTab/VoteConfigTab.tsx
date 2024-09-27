@@ -4,7 +4,7 @@ import VotesTable from "@/components/tables/VotesTable";
 import useFetch, { Mutate } from "@/hooks/useFetch";
 import { GetVoteEventResponse, GetVoteEventVotesResponse } from "@/types/api";
 import { VoteEvent } from "@/types/voteEvents";
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Stack, Typography, Grid } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 
 type Props = {
@@ -72,25 +72,31 @@ const VoteConfigTab: FC<Props> = ({ voteEvent, mutate }) => {
         mutate={mutate}
       />
       {isVoteConfigSet ? (
-        <Stack flexGrow={1}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr 1fr",
-              alignItems: "center",
-            }}
+        <Stack flexGrow={1} spacing={2}>
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+            justifyContent="space-between"
           >
-            <div
-              style={{ gridColumn: 1, display: "flex", justifyContent: "left" }}
+            <Grid
+              item
+              xs={12}
+              md={4}
+              display="flex"
+              justifyContent={{ xs: "center", md: "flex-start" }}
             >
               {voteConfigButton}
-            </div>
-            <div style={{ gridColumn: 2, textAlign: "center" }}>
+            </Grid>
+
+            {/* Votes Header */}
+            <Grid item xs={12} md={4} textAlign="center">
               <Typography variant="h5" id="votes-header">
                 Votes
               </Typography>
-            </div>
-          </div>
+            </Grid>
+            <Grid item xs={0} md={4} />
+          </Grid>
           <SearchInput
             id="search-votes"
             label="Search voter or project ID"
@@ -118,4 +124,5 @@ const VoteConfigTab: FC<Props> = ({ voteEvent, mutate }) => {
     </>
   );
 };
+
 export default VoteConfigTab;

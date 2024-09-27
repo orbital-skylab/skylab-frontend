@@ -8,6 +8,7 @@ import { ExternalVoter } from "@/types/voteEvents";
 import { FC, useState } from "react";
 import ExternalVoterRow from "./ExternalVoterRow";
 import SearchInput from "@/components/search/SearchInput";
+import { Stack } from "@mui/material";
 
 type Props = {
   externalVoters: ExternalVoter[];
@@ -42,7 +43,7 @@ const ExternalVoterTable: FC<Props> = ({ externalVoters, status, mutate }) => {
   ));
 
   return (
-    <>
+    <Stack flexGrow={1}>
       <SearchInput
         id="search-external-voters"
         label="Search voter ID"
@@ -60,7 +61,7 @@ const ExternalVoterTable: FC<Props> = ({ externalVoters, status, mutate }) => {
           />
         </NoDataWrapper>
       </LoadingWrapper>
-    </>
+    </Stack>
   );
 };
 export default ExternalVoterTable;

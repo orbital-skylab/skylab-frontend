@@ -51,12 +51,18 @@ const VoterManagementConfigModal: FC<Props> = ({
   const [isSetVoterManagementOpen, setIsSetVoterManagementOpen] =
     useState(false);
   const [formValues, setFormValues] = useState<{
-    voterManagement: VoterManagement & {
+    voterManagement: {
+      hasInternalList: boolean;
+      hasExternalList: boolean;
       copyInternalVoteEventId?: number;
       copyExternalVoteEventId?: number;
+      registrationStartTime?: string | null;
+      registrationEndTime?: string | null;
     };
   }>({
-    voterManagement,
+    voterManagement: {
+      ...voterManagement,
+    },
   });
 
   const handleOpenSetVoterManagement = () => {
@@ -109,8 +115,10 @@ const VoterManagementConfigModal: FC<Props> = ({
           values.copyExternalVoteEventId === ""
             ? undefined
             : values.copyExternalVoteEventId,
-        registrationStartTime,
-        registrationEndTime,
+        registrationStartTime:
+          registrationStartTime === "" ? null : registrationStartTime,
+        registrationEndTime:
+          registrationEndTime === "" ? null : registrationEndTime,
       },
     };
 

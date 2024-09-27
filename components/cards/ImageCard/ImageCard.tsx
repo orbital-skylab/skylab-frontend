@@ -65,7 +65,7 @@ const ImageCard: FC<Props> = ({
             fontWeight={600}
             sx={{
               paddingX: "1.5rem",
-              whiteSpace: "nowrap",
+              whiteSpace: "normal", // Allow text to wrap
               overflow: "hidden",
               textOverflow: "ellipsis",
               cursor: "pointer",
@@ -74,6 +74,8 @@ const ImageCard: FC<Props> = ({
                 textDecoration: "underline",
                 color: "secondary.main",
               },
+              // Responsive font size
+              fontSize: { xs: "1rem", sm: "1.2rem", md: "1.4rem" },
             }}
           >
             {title}
@@ -83,9 +85,10 @@ const ImageCard: FC<Props> = ({
               width: "100%",
               aspectRatio: A4_ASPECT_RATIO,
               display: "flex",
-              justifyContent: "center",
+              justifyContent: "bottom",
               overflow: "hidden",
               borderRadius: "0.5rem",
+              marginTop: "auto",
             }}
           >
             <Box
@@ -94,16 +97,13 @@ const ImageCard: FC<Props> = ({
               alt={imgAlt}
               sx={{
                 width: "100%",
+                height: "100%",
                 objectFit: "cover",
               }}
             />
           </Box>
           {extraContent}
-          <Stack
-            direction={{ xs: "column-reverse", md: "row" }}
-            gap="0.5rem"
-            sx={{ marginTop: "auto" }}
-          >
+          <Stack direction={{ xs: "column-reverse", md: "row" }} gap="0.5rem">
             {actionButton}
           </Stack>
         </Stack>

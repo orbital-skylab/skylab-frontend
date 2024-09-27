@@ -28,23 +28,20 @@ const VotingGalleryGrid: FC<Props> = ({
       >
         <div style={{ marginTop: "2rem" }}>
           <Grid id="voting-gallery-grid" container spacing={{ xs: 2, md: 4 }}>
-            {candidates
-              ? candidates.map((candidate) => {
-                  return (
-                    <Grid item key={candidate.id} xs={12 / 2} md={12 / 4}>
-                      <VotingCard
-                        isSelected={!!selectedCandidates[candidate.id]}
-                        candidate={candidate}
-                        setSelectedCandidates={setSelectedCandidates}
-                      />
-                    </Grid>
-                  );
-                })
-              : null}
+            {candidates?.map((candidate) => (
+              <Grid item key={candidate.id} xs={12} sm={6} md={3}>
+                <VotingCard
+                  isSelected={!!selectedCandidates[candidate.id]}
+                  candidate={candidate}
+                  setSelectedCandidates={setSelectedCandidates}
+                />
+              </Grid>
+            ))}
           </Grid>
         </div>
       </NoDataWrapper>
     </LoadingWrapper>
   );
 };
+
 export default VotingGalleryGrid;

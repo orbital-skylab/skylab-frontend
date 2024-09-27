@@ -12,7 +12,7 @@ import {
   VoteEvent,
   VoteEventResult,
 } from "@/types/voteEvents";
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Grid, Stack, Typography } from "@mui/material";
 import { FC, useState } from "react";
 
 type Props = {
@@ -106,16 +106,25 @@ const ResultsTab: FC<Props> = ({ voteEvent, mutate }) => {
         setOpen={setOpenRoleWeightsModal}
         mutate={mutate}
       />
-      <Stack flexGrow={1}>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
-            alignItems: "center",
-          }}
+      <Stack flexGrow={1} spacing={2}>
+        <Grid
+          container
+          spacing={2}
+          alignItems="center"
+          justifyContent="space-between"
         >
-          <div
-            style={{ gridColumn: 1, display: "flex", justifyContent: "left" }}
+          <Grid item xs={12} md={4} textAlign="center" order={{ xs: 1, md: 2 }}>
+            <Typography variant="h5" id="results-header">
+              Results
+            </Typography>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            md={4}
+            display="flex"
+            justifyContent={{ xs: "center", md: "flex-start" }}
+            order={{ xs: 2, md: 1 }}
           >
             <Button
               id="role-weights-modal-button"
@@ -124,14 +133,14 @@ const ResultsTab: FC<Props> = ({ voteEvent, mutate }) => {
             >
               Role Weights
             </Button>
-          </div>
-          <div style={{ gridColumn: 2, textAlign: "center" }}>
-            <Typography variant="h5" id="results-header">
-              Results
-            </Typography>
-          </div>
-          <div
-            style={{ gridColumn: 3, display: "flex", justifyContent: "right" }}
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            md={4}
+            display="flex"
+            justifyContent={{ xs: "center", md: "flex-end" }}
+            order={{ xs: 3, md: 3 }}
           >
             <Button
               id="publish-results-modal-button"
@@ -142,11 +151,13 @@ const ResultsTab: FC<Props> = ({ voteEvent, mutate }) => {
                 ? "Unpublish Results"
                 : "Publish Results"}
             </Button>
-          </div>
-        </div>
+          </Grid>
+        </Grid>
+
         <ResultsTable results={results} status={status} />
       </Stack>
     </>
   );
 };
+
 export default ResultsTab;

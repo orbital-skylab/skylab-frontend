@@ -48,7 +48,12 @@ const VoteEvents: NextPage = () => {
       />
       <Body>
         {isAdministrator && (
-          <Stack direction="row" justifyContent="end" spacing="0.5rem">
+          <Stack
+            direction="row"
+            justifyContent="end"
+            spacing="0.5rem"
+            marginBottom="1rem"
+          >
             <Button
               id="add-vote-event-modal-button"
               variant="outlined"

@@ -9,6 +9,7 @@ import { User } from "@/types/users";
 import { FC, useState } from "react";
 import InternalVoterRow from "./InternalVoterRow";
 import SearchInput from "@/components/search/SearchInput";
+import { Stack } from "@mui/material";
 
 type Props = {
   voteEventId: number;
@@ -52,7 +53,7 @@ const InternalVoterTable: FC<Props> = ({
   ));
 
   return (
-    <>
+    <Stack flexGrow={1}>
       <SearchInput
         id="search-internal-voters"
         label="Search name or email"
@@ -70,7 +71,7 @@ const InternalVoterTable: FC<Props> = ({
           />
         </NoDataWrapper>
       </LoadingWrapper>
-    </>
+    </Stack>
   );
 };
 export default InternalVoterTable;

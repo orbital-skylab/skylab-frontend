@@ -55,8 +55,13 @@ const ResultsPage: NextPage = () => {
             noDataCondition={!areResultsAvailable}
             fallback={<NoneFound title="Results Not published!" message="" />}
           >
-            <Typography align="center" variant="h4" id="results-header">
-              {voteEventData?.voteEvent.title}
+            <Typography
+              align="center"
+              variant="h4"
+              id="results-header"
+              marginBottom={1}
+            >
+              Results for {voteEventData?.voteEvent.title}
             </Typography>
             <ResultsTable
               results={resultsData?.results || []}
