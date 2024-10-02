@@ -11,6 +11,7 @@ type Props = {
   selectedCandidates: { [key: number]: boolean };
   candidates: Project[];
   status: FETCH_STATUS;
+  isDisabled: boolean;
   setSelectedCandidates: Dispatch<SetStateAction<{ [key: number]: boolean }>>;
 };
 
@@ -24,6 +25,7 @@ const VoteCandidateTable: FC<Props> = ({
   selectedCandidates,
   candidates,
   status,
+  isDisabled,
   setSelectedCandidates,
 }) => {
   const voteCandidateRows = candidates.map((candidate) => (
@@ -31,6 +33,7 @@ const VoteCandidateTable: FC<Props> = ({
       key={candidate.id}
       candidate={candidate}
       isSelected={!!selectedCandidates[candidate.id]}
+      isDisabled={isDisabled}
       setSelectedCandidates={setSelectedCandidates}
     />
   ));

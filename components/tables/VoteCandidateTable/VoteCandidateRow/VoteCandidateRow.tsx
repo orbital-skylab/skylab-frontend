@@ -5,12 +5,14 @@ import { Dispatch, FC, SetStateAction } from "react";
 type Props = {
   candidate: Project;
   isSelected: boolean;
+  isDisabled: boolean;
   setSelectedCandidates: Dispatch<SetStateAction<{ [key: number]: boolean }>>;
 };
 
 const VoteCandidateRow: FC<Props> = ({
   candidate,
   isSelected,
+  isDisabled,
   setSelectedCandidates,
 }) => {
   const handleToggleSelected = () => {
@@ -32,6 +34,7 @@ const VoteCandidateRow: FC<Props> = ({
               variant={isSelected ? "outlined" : "contained"}
               onClick={handleToggleSelected}
               size="small"
+              disabled={isDisabled && !isSelected}
             >
               {isSelected ? "Voted" : "Vote"}
             </Button>

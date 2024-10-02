@@ -11,6 +11,7 @@ type Props = {
   selectedCandidates: { [key: number]: boolean };
   candidates: Project[];
   status: FETCH_STATUS;
+  isDisabled: boolean;
   setSelectedCandidates: Dispatch<SetStateAction<{ [key: number]: boolean }>>;
 };
 
@@ -18,6 +19,7 @@ const VotingGalleryGrid: FC<Props> = ({
   selectedCandidates,
   candidates,
   status,
+  isDisabled,
   setSelectedCandidates,
 }: Props) => {
   return (
@@ -33,6 +35,7 @@ const VotingGalleryGrid: FC<Props> = ({
                 <VotingCard
                   isSelected={!!selectedCandidates[candidate.id]}
                   candidate={candidate}
+                  isDisabled={isDisabled}
                   setSelectedCandidates={setSelectedCandidates}
                 />
               </Grid>

@@ -17,6 +17,7 @@ const candidateDisplayConfig: FactoryConfig = {
         selectedCandidates: baseProps.selectedCandidates,
         status: baseProps.status,
         setSelectedCandidates: baseProps.setSelectedCandidates,
+        isDisabled: baseProps.isDisabled,
       }),
       condition: (baseProps) =>
         baseProps.voteConfig.displayType === DISPLAY_TYPES.GALLERY,
@@ -29,6 +30,7 @@ const candidateDisplayConfig: FactoryConfig = {
         selectedCandidates: baseProps.selectedCandidates,
         status: baseProps.status,
         setSelectedCandidates: baseProps.setSelectedCandidates,
+        isDisabled: baseProps.isDisabled,
       }),
       condition: (baseProps) =>
         baseProps.voteConfig.displayType === DISPLAY_TYPES.TABLE,
@@ -37,6 +39,7 @@ const candidateDisplayConfig: FactoryConfig = {
       Component: VotingForm,
       key: "voting-form",
       getProps: (baseProps) => ({
+        candidates: baseProps.candidates,
         setSelectedCandidates: baseProps.setSelectedCandidates,
       }),
       condition: (baseProps) =>

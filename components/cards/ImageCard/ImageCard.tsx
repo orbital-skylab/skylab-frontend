@@ -89,6 +89,10 @@ const ImageCard: FC<Props> = ({
               overflow: "hidden",
               borderRadius: "0.5rem",
               marginTop: "auto",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              window.open(imageSrc ?? noImageAvailableSrc, "_blank");
             }}
           >
             <Box

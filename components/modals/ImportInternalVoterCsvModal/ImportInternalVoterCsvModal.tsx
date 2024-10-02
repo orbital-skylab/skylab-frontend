@@ -92,7 +92,7 @@ const ImportInternalVoterCsvModal: FC<Props> = ({
           />
         </Box>
         <Box>
-          <Typography fontSize="1.5rem" fontWeight="bold">
+          <Typography fontWeight="bold">
             Unsure of what to include in the CSV file?
           </Typography>
           <CsvPreviewCard

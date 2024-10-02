@@ -12,11 +12,12 @@ import {
 } from "@/types/api";
 import { DISPLAY_TYPES, VoteEvent } from "@/types/voteEvents";
 import { LoadingButton } from "@mui/lab";
-import { Button, Stack } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import { Formik } from "formik";
 import { Dispatch, FC, SetStateAction } from "react";
 import * as Yup from "yup";
 import Modal from "../Modal";
+import { DISPLAY_OPTIONS } from "@/components/candidateDisplays/CandidateDisplays.helper";
 
 type EditVoteConfigFormValues = {
   displayType: DISPLAY_TYPES | "";
@@ -107,22 +108,33 @@ const VoteConfigModal: FC<Props> = ({ voteEvent, open, setOpen, mutate }) => {
                 name="displayType"
                 formik={formik}
                 size="small"
+                info="Candidate display types determine how candidates are displayed to voters."
                 options={Object.values(DISPLAY_TYPES).map((displayType) => ({
                   label: displayType,
                   value: displayType,
                 }))}
               />
+              {formik.values.displayType && (
+                <Typography
+                  variant="body2"
+                  color="textSecondary"
+                  maxWidth={350}
+                  paddingBottom={2}
+                >
+                  {DISPLAY_OPTIONS[formik.values.displayType].description}
+                </Typography>
+              )}
               <TextInput
                 id="min-votes-input"
                 name="minVotes"
-                label="Minimum number of votes"
+                label="Minimum votes per voter"
                 size="small"
                 formik={formik}
               />
               <TextInput
                 id="max-votes-input"
                 name="maxVotes"
-                label="Maximum number of votes"
+                label="Maximum votes per voter"
                 size="small"
                 formik={formik}
               />

@@ -154,9 +154,8 @@ const VoterManagementConfigModal: FC<Props> = ({
         open={open}
         handleClose={handleCloseModal}
         title={`Edit Voter Management`}
-        subheader="Select the lists below based on the type of voters you want 
-        for this vote event. Internal voters are those with a Skylab account 
-        while external voters are those that are given a voter ID to vote"
+        subheader="Select the the type of voters you want 
+        for this vote event. You can choose to copy voters from another event."
       >
         <Formik
           initialValues={initialValues}
@@ -168,8 +167,9 @@ const VoterManagementConfigModal: FC<Props> = ({
               <Stack direction="column" spacing="1rem">
                 <Checkbox
                   id="internal-list-checkbox"
-                  label="Internal voter List"
+                  label="Internal voters"
                   name="hasInternalList"
+                  info="Allows your vote event to have internal voters. Internal voters are those with a Skylab account."
                   formik={formik}
                 />
                 {formik.values.hasInternalList && (
@@ -203,8 +203,9 @@ const VoterManagementConfigModal: FC<Props> = ({
                 )}
                 <Checkbox
                   id="external-list-checkbox"
-                  label="External voter List"
+                  label="External voters"
                   name="hasExternalList"
+                  info="Allows your vote event to have external voters. External voters are those that are given a voter ID to vote."
                   formik={formik}
                 />
                 {formik.values.hasExternalList && (

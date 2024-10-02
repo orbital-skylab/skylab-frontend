@@ -7,14 +7,16 @@ import {
   HTTP_METHOD,
   SubmitVotesResponse,
 } from "@/types/api";
+import { Project } from "@/types/projects";
 import { LoadingButton } from "@mui/lab";
-import { Button, Stack } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { Dispatch, FC, SetStateAction } from "react";
 
 type Props = {
   voteEventId: number;
   selectedCandidates: { [key: number]: boolean };
   open: boolean;
+  candidates: Project[];
   setOpen: Dispatch<SetStateAction<boolean>>;
   mutate: Mutate<GetVotesResponse>;
 };
@@ -23,6 +25,7 @@ const SubmitVotesModal: FC<Props> = ({
   voteEventId,
   selectedCandidates,
   open,
+  candidates,
   setOpen,
   mutate,
 }) => {
@@ -64,12 +67,20 @@ const SubmitVotesModal: FC<Props> = ({
       open={open}
       handleClose={handleCloseModal}
       title={`Submit Votes`}
-      subheader={`Total votes: ${
-        projectIds.length
-      }\nYou have voted for the following project IDs: ${projectIds.join(
-        ", "
-      )}`}
+      subheader={`Total votes: ${projectIds.length}\nYou have voted for the following projects:`}
     >
+      <Stack marginBottom={2}>
+        {projectIds.map((projectId) => (
+          <Box key={projectId}>
+            <Typography>
+              {projectId +
+                " - " +
+                (candidates.find((candidate) => candidate.id === projectId)
+                  ?.name || "")}
+            </Typography>
+          </Box>
+        ))}
+      </Stack>
       <Stack spacing={2} direction="row" justifyContent="space-between">
         <Button
           id="submit-votes-return-button"

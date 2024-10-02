@@ -2,8 +2,8 @@ import TextInput from "@/components/formikFormControllers/TextInput";
 import { editGeneralSettingsValidationSchema as addVoteEventValidationSchema } from "@/components/tabs/voteEvent/GeneralSettingsTab/GeneralSettingsTab";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 import {
+  addOneDayToISOString,
   dateTimeLocalInputToIsoDate,
-  getTodayAtTimeIso,
   isoDateToDateTimeLocalInput,
 } from "@/helpers/dates";
 import useApiCall from "@/hooks/useApiCall";
@@ -16,6 +16,7 @@ import {
 import { LoadingButton } from "@mui/lab";
 import { Button, Stack } from "@mui/material";
 import { Formik, FormikHelpers } from "formik";
+import { useRouter } from "next/router";
 import { Dispatch, FC, SetStateAction } from "react";
 import Modal from "../Modal";
 
@@ -33,6 +34,7 @@ type Props = {
 
 const AddVoteEventModal: FC<Props> = ({ open, setOpen, mutate }) => {
   const { setSuccess, setError } = useSnackbarAlert();
+  const router = useRouter();
 
   const addVoteEvent = useApiCall({
     method: HTTP_METHOD.POST,
@@ -42,13 +44,18 @@ const AddVoteEventModal: FC<Props> = ({ open, setOpen, mutate }) => {
         const newVoteEvents = [voteEvent, ...data.voteEvents];
         return { voteEvents: newVoteEvents };
       });
+
+      router.push(`/vote-events/${voteEvent.id}/edit`);
     },
   });
 
   const initialValues: AddVoteEventFormValuesType = {
     title: "",
-    startTime: isoDateToDateTimeLocalInput(getTodayAtTimeIso(23, 59)),
-    endTime: isoDateToDateTimeLocalInput(getTodayAtTimeIso(23, 59)),
+    startTime: isoDateToDateTimeLocalInput(new Date().toISOString()),
+    // set end time one day after start time
+    endTime: isoDateToDateTimeLocalInput(
+      addOneDayToISOString(new Date().toISOString())
+    ),
   };
 
   const handleSubmit = async (

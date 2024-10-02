@@ -10,6 +10,7 @@ type Props<FormValuesType> = {
   multiline?: boolean;
   minRows?: number;
   size?: "medium" | "small";
+  disabled?: boolean;
 };
 
 function TextInput<FormValuesType>({
@@ -21,6 +22,7 @@ function TextInput<FormValuesType>({
   multiline = false,
   minRows = 3,
   size = "medium",
+  disabled = false,
 }: Props<FormValuesType>) {
   const { values, errors, handleChange, handleBlur, touched } = formik;
 
@@ -42,6 +44,7 @@ function TextInput<FormValuesType>({
         shrink: type === "datetime-local" ? true : undefined,
       }}
       id={id}
+      disabled={disabled}
     />
   );
 }

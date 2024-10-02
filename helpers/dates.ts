@@ -87,6 +87,18 @@ export const getTodayAtTimeIso = (hours: number, minutes = 0) => {
 };
 
 /**
+ * Adds one day to the given ISO string date and returns the new date as an ISO string.
+ *
+ * @param isoString - The ISO string representation of the date to which one day will be added.
+ * @returns The new date as an ISO string after adding one day.
+ */
+export const addOneDayToISOString = (isoString: string) => {
+  const date = new Date(isoString);
+  date.setDate(date.getDate() + 1);
+  return date.toISOString();
+};
+
+/**
  * Returns whether the provided date is in the future.
  */
 export const isFuture = (date: string) => {

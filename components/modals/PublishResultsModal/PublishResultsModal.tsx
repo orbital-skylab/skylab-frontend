@@ -100,7 +100,7 @@ const PublishResultsModal: FC<Props> = ({
       handleClose={handleCloseModal}
       title={`Publish Results`}
       subheader="Publishing results will make them visible to voters of this vote event. 
-      By default, project ID and name are displayed. For display limit, use 0 to display all."
+      By default, project ID and name are displayed."
     >
       <Formik
         initialValues={initialValues}
@@ -113,32 +113,37 @@ const PublishResultsModal: FC<Props> = ({
               <TextInput
                 id="display-limit-input"
                 name="displayLimit"
-                label="Display Limit"
+                label="Display Limit (0 to display all)"
                 size="small"
+                disabled={resultsFilter.areResultsPublished}
                 formik={formik}
               />
               <Checkbox
                 id="show-rank-checkbox"
                 label="Show Rank"
                 name="showRank"
+                disabled={resultsFilter.areResultsPublished}
                 formik={formik}
               />
               <Checkbox
                 id="show-votes-checkbox"
                 label="Show Number of Votes"
                 name="showVotes"
+                disabled={resultsFilter.areResultsPublished}
                 formik={formik}
               />
               <Checkbox
                 id="show-points-checkbox"
                 label="Show Points"
                 name="showPoints"
+                disabled={resultsFilter.areResultsPublished}
                 formik={formik}
               />
               <Checkbox
                 id="show-percentage-checkbox"
                 label="Show Points Percentage"
                 name="showPercentage"
+                disabled={resultsFilter.areResultsPublished}
                 formik={formik}
               />
             </Stack>

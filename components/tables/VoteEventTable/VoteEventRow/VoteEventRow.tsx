@@ -35,6 +35,22 @@ const statusColorMap = {
   [VOTE_EVENT_STATUS.COMPLETED]: "#9E9E9E",
 };
 
+const getStatusInfo = (voteEvent: VoteEvent) => {
+  const status = getVoteEventStatus(voteEvent);
+
+  if (status === VOTE_EVENT_STATUS.INCOMPLETE) {
+    return `
+    ${!voteEvent.voterManagement ? "Voter management not set." : ""} 
+    ${!voteEvent.voteConfig ? "Vote config not set." : ""}`;
+  } else if (status === VOTE_EVENT_STATUS.UPCOMING) {
+    return "Event has not started yet.";
+  } else if (status === VOTE_EVENT_STATUS.IN_PROGRESS) {
+    return "Event is in progress.";
+  } else {
+    return "Event has ended.";
+  }
+};
+
 const VoteEventRow: FC<Props> = ({ voteEvent, mutate }) => {
   const [isDeleteVoteEventOpen, setIsDeleteVoteEventOpen] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
@@ -89,12 +105,14 @@ const VoteEventRow: FC<Props> = ({ voteEvent, mutate }) => {
         </TableCell>
         <TableCell>{isoDateToLocaleDateWithTime(voteEvent.endTime)}</TableCell>
         <TableCell>
-          <Chip
-            label={voteEventStatus}
-            sx={{
-              backgroundColor: statusColor,
-            }}
-          />
+          <Tooltip title={getStatusInfo(voteEvent)} placement="top">
+            <Chip
+              label={voteEventStatus}
+              sx={{
+                backgroundColor: statusColor,
+              }}
+            />
+          </Tooltip>
         </TableCell>
         <TableCell align="right">
           <Stack direction="row" justifyContent="end" spacing="0.5rem">

@@ -10,7 +10,7 @@ import {
 } from "@/types/api";
 import { VoteEvent } from "@/types/voteEvents";
 import { LoadingButton } from "@mui/lab";
-import { Button, Stack } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import { Formik } from "formik";
 import { Dispatch, FC, SetStateAction } from "react";
 import * as Yup from "yup";
@@ -91,9 +91,12 @@ const RoleWeightsModal: FC<Props> = ({ voteEvent, open, setOpen, mutate }) => {
       open={open}
       handleClose={handleCloseModal}
       title={`Role Weights`}
-      subheader={`Points per vote = weight * vote\nIf a user has multiple roles, the highest priority role in order of Administrator, 
+      subheader={`If a user has multiple roles, the highest priority role in order of Administrator, 
       Mentor, Advisor and Student will be assigned. External voters will be assigned the Public role.`}
     >
+      <Typography marginBottom={2}>
+        <strong>Points per vote = weight * vote</strong>
+      </Typography>
       <Formik
         initialValues={initialValues}
         onSubmit={handleSubmit}

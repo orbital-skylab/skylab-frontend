@@ -83,7 +83,7 @@ const VotingPage: NextPage = () => {
 
     return voteConfig.isRandomOrder
       ? shuffleArray(candidatesArray)
-      : candidatesArray;
+      : candidatesArray.sort((a, b) => a.id - b.id);
   }, [candidatesData, voteConfig]);
 
   const filteredCandidates = candidates.filter(
@@ -147,6 +147,22 @@ const VotingPage: NextPage = () => {
                 >
                   {votes.map((vote) => vote.projectId).join(", ")}
                 </Typography>
+                {voteEventData?.voteEvent.resultsFilter.areResultsPublished && (
+                  <Button
+                    id="view-results-button"
+                    onClick={() =>
+                      router.push(`/vote-events/${voteEventId}/results`)
+                    }
+                    variant="contained"
+                    sx={{
+                      fontSize: { xs: "0.875rem", sm: "1rem" },
+                      width: "auto",
+                      alignSelf: "center",
+                    }}
+                  >
+                    View Results
+                  </Button>
+                )}
               </Stack>
             ) : (
               <>
@@ -155,6 +171,7 @@ const VotingPage: NextPage = () => {
                   selectedCandidates={selectedCandidates}
                   open={openSubmitVotesModal}
                   setOpen={setOpenSubmitVotesModal}
+                  candidates={candidates}
                   mutate={mutateVotes}
                 />
                 <Typography
@@ -169,20 +186,17 @@ const VotingPage: NextPage = () => {
                   direction="row"
                   justifyContent="space-between"
                   flexWrap="wrap"
-                  marginBottom={1}
+                  marginBottom={2}
                 >
                   <Typography
                     variant="h6"
-                    sx={{ fontSize: { xs: "1rem", sm: "1.5rem" } }}
+                    sx={{
+                      fontSize: { xs: "0.875rem", sm: "1rem" },
+                      fontWeight: "bold",
+                    }}
                   >
                     Vote for a maximum of {voteConfig?.maxVotes}, and minimum of{" "}
                     {voteConfig?.minVotes} projects.
-                  </Typography>
-                  <Typography
-                    variant="h6"
-                    sx={{ fontSize: { xs: "1rem", sm: "1.5rem" } }}
-                  >
-                    Votes cast: {voteCount}
                   </Typography>
                 </Stack>
                 {voteConfig?.displayType !== DISPLAY_TYPES.NONE && (
@@ -198,29 +212,33 @@ const VotingPage: NextPage = () => {
                     selectedCandidates,
                     status: fetchcandidatesStatus,
                     setSelectedCandidates,
+                    isDisabled: voteCount >= voteConfig.maxVotes,
                     voteConfig,
                   })}
-                <Stack spacing={2}>
-                  <Button
-                    id="submit-votes-modal-button"
-                    onClick={handleOpenSubmitVotesModal}
-                    variant="contained"
-                    color="secondary"
-                    disabled={
-                      !voteConfig ||
-                      voteCount < voteConfig.minVotes ||
-                      voteCount > voteConfig.maxVotes
-                    }
-                    sx={{
-                      position: "fixed",
-                      bottom: "2rem",
-                      right: "2rem",
-                      fontSize: { xs: "0.875rem", sm: "1rem" },
-                    }}
-                  >
-                    Submit
-                  </Button>
-                </Stack>
+                {voteConfig && (
+                  <Stack spacing={2}>
+                    <Button
+                      id="submit-votes-modal-button"
+                      onClick={handleOpenSubmitVotesModal}
+                      variant="contained"
+                      color="secondary"
+                      disabled={
+                        voteCount < voteConfig.minVotes ||
+                        voteCount > voteConfig.maxVotes
+                      }
+                      sx={{
+                        position: "fixed",
+                        bottom: { xs: "1rem", sm: "2rem" },
+                        right: { xs: "1rem", sm: "2rem" },
+                        fontSize: { xs: "0.875rem", sm: "1rem" },
+                      }}
+                    >
+                      {voteCount < voteConfig.minVotes
+                        ? `Votes: ${voteCount}/${voteConfig.maxVotes} (Minimum: ${voteConfig.minVotes} Required)`
+                        : `Submit Votes: ${voteCount}/${voteConfig.maxVotes} (Max: ${voteConfig.maxVotes} Allowed)`}
+                    </Button>
+                  </Stack>
+                )}
               </>
             )}
           </NoDataWrapper>
