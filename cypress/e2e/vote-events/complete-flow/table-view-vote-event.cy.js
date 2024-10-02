@@ -44,12 +44,13 @@ describe("Testing table view candidate display voting process", () => {
     cy.get("#add-vote-event-start-time-input").type("2023-12-11T12:00");
     cy.get("#add-vote-event-end-time-input").type("2100-12-12T12:00");
     cy.get("#add-vote-event-button").click();
+
     cy.get("#success-alert").should("be.visible");
+    cy.location("pathname").should("include", `/edit`);
     cy.contains(title).should("be.visible");
   });
 
   it("Should be able to set voter management config and add voters to the vote event", () => {
-    cy.get(`#edit-vote-event-${voteEvent.id}-button`).click();
     cy.get("#voter-management-tab").click();
 
     cy.get("#open-voter-management-config-button").click();

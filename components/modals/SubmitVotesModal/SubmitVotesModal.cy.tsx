@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
-import SubmitVotesModal from "./SubmitVotesModal";
+import { Project } from "@/types/projects";
 import { mount } from "cypress/react18";
+import SubmitVotesModal from "./SubmitVotesModal";
 
 describe("<SubmitVotesModal />", () => {
   let setOpenSpy: any;
   let mutateSpy: any;
+  let candidates: Project[];
   const voteEventId = 1;
 
   // Mock internalVoter object
@@ -21,6 +22,10 @@ describe("<SubmitVotesModal />", () => {
   beforeEach(() => {
     setOpenSpy = cy.spy().as("setOpenSpy");
     mutateSpy = cy.spy().as("mutateSpy");
+
+    cy.fixture("projects").then((projects) => {
+      candidates = Object.values(projects);
+    });
   });
 
   it("should render opened modal", () => {
@@ -31,19 +36,29 @@ describe("<SubmitVotesModal />", () => {
         selectedCandidates={selectedCandidates}
         open={true}
         setOpen={setOpenSpy}
+        candidates={candidates}
         mutate={mutateSpy}
       />
     );
 
     cy.get("#submit-votes-modal")
       .contains(
-        `Total votes: ${
-          projectIds.length
-        } You have voted for the following project IDs: ${projectIds.join(
-          ", "
-        )}`
+        `Total votes: ${projectIds.length} You have voted for the following projects:`
       )
       .should("be.visible");
+    Object.entries(selectedCandidates).forEach(([projectId, isSelected]) => {
+      if (isSelected) {
+        cy.get("#submit-votes-modal")
+          .contains(
+            projectId +
+              " - " +
+              candidates.find(
+                (candidate) => candidate.id === parseInt(projectId)
+              )?.name
+          )
+          .should("be.visible");
+      }
+    });
     cy.get("#submit-votes-button").should("be.visible");
   });
 
@@ -55,6 +70,7 @@ describe("<SubmitVotesModal />", () => {
         selectedCandidates={selectedCandidates}
         open={false}
         setOpen={setOpenSpy}
+        candidates={candidates}
         mutate={mutateSpy}
       />
     );
@@ -69,6 +85,7 @@ describe("<SubmitVotesModal />", () => {
         voteEventId={voteEventId}
         selectedCandidates={selectedCandidates}
         open={true}
+        candidates={candidates}
         setOpen={setOpenSpy}
         mutate={mutateSpy}
       />
@@ -97,6 +114,7 @@ describe("<SubmitVotesModal />", () => {
         voteEventId={voteEventId}
         selectedCandidates={selectedCandidates}
         open={true}
+        candidates={candidates}
         setOpen={setOpenSpy}
         mutate={mutateSpy}
       />

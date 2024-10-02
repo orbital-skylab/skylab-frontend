@@ -48,7 +48,9 @@ describe("Testing vote events page", () => {
     cy.get("#add-vote-event-start-time-input").type("2022-12-11T12:00");
     cy.get("#add-vote-event-end-time-input").type("2022-12-12T12:00");
     cy.get("#add-vote-event-button").click();
+
     cy.get("#success-alert").should("be.visible");
+    cy.location("pathname").should("include", `/edit`);
   });
 
   it("Should display vote events", () => {

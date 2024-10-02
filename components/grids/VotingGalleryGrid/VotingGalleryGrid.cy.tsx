@@ -31,6 +31,7 @@ describe("<VotingGalleryGrid />", () => {
         selectedCandidates={{}}
         status={FETCH_STATUS.FETCHED}
         candidates={candidates}
+        isDisabled={false}
         setSelectedCandidates={setSelectedCandidatesSpy}
       />
     );
@@ -55,6 +56,7 @@ describe("<VotingGalleryGrid />", () => {
         }}
         status={FETCH_STATUS.FETCHED}
         candidates={candidates}
+        isDisabled={false}
         setSelectedCandidates={setSelectedCandidatesSpy}
       />
     );
@@ -78,6 +80,7 @@ describe("<VotingGalleryGrid />", () => {
         selectedCandidates={{}}
         status={FETCH_STATUS.FETCHING}
         candidates={candidates}
+        isDisabled={false}
         setSelectedCandidates={setSelectedCandidatesSpy}
       />
     );
@@ -91,6 +94,7 @@ describe("<VotingGalleryGrid />", () => {
         selectedCandidates={{}}
         status={FETCH_STATUS.FETCHED}
         candidates={[]}
+        isDisabled={false}
         setSelectedCandidates={setSelectedCandidatesSpy}
       />
     );

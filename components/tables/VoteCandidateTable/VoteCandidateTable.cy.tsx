@@ -26,6 +26,7 @@ describe("<VoteCandidateTable />", () => {
         selectedCandidates={selectedCandidates}
         candidates={candidates}
         status={FETCH_STATUS.FETCHED}
+        isDisabled={false}
         setSelectedCandidates={setSelectedCandidatesSpy}
       />
     );
@@ -52,6 +53,7 @@ describe("<VoteCandidateTable />", () => {
         selectedCandidates={{}}
         candidates={[]}
         status={FETCH_STATUS.FETCHING}
+        isDisabled={false}
         setSelectedCandidates={setSelectedCandidatesSpy}
       />
     );
@@ -65,6 +67,7 @@ describe("<VoteCandidateTable />", () => {
         selectedCandidates={{}}
         candidates={[]}
         status={FETCH_STATUS.FETCHED}
+        isDisabled={false}
         setSelectedCandidates={setSelectedCandidatesSpy}
       />
     );

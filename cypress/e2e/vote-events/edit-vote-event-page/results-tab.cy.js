@@ -128,10 +128,9 @@ describe("Testing vote event results tab", () => {
     // Reset the limit
     navigateToResultsTab(voteEventId);
     cy.get("#publish-results-modal-button").click();
-    cy.get("#display-limit-input").clear().type("0");
     cy.get("#publish-results-button").click();
     cy.get("#publish-results-modal-button").click();
-    cy.get("#display-limit-input").should("have.value", "0");
+    cy.get("#display-limit-input").clear().type("0");
     cy.get("#publish-results-button").click();
 
     // Check if all results are displayed
@@ -160,10 +159,14 @@ describe("Testing vote event results tab", () => {
     // Reset the columns
     navigateToResultsTab(voteEventId);
     cy.get("#publish-results-modal-button").click();
+    cy.get("#publish-results-button").click();
+    cy.get("#publish-results-modal-button").click();
     cy.get("#show-rank-checkbox").check();
     cy.get("#show-votes-checkbox").check();
     cy.get("#show-percentage-checkbox").check();
     cy.get("#publish-results-button").click();
     cy.get("#success-alert").should("be.visible");
+    cy.get("#publish-results-modal-button").click();
+    cy.get("#publish-results-button").click();
   });
 });

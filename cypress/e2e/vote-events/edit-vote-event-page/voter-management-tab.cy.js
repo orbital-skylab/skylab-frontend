@@ -158,7 +158,12 @@ describe("Testing vote event voter management tab", () => {
     cy.contains("Registration").click();
     cy.get("#internal-voter-registration-modal").should("be.visible");
 
-    cy.get("#open-registration-button").click();
+    // set new start time
+    cy.get("#registration-start-time-input").clear().type("2022-01-01T00:00");
+    // set new end time
+    cy.get("#registration-end-time-input").clear().type("2027-02-01T00:00");
+
+    cy.get("#save-registration-period-button").click();
     cy.get("#success-alert").should("be.visible");
 
     cy.get("#nav-sign-out").click();
@@ -187,7 +192,12 @@ describe("Testing vote event voter management tab", () => {
     // close registration
     cy.get("#add-internal-voter-menu-button").click();
     cy.contains("Registration").click();
-    cy.get("#close-registration-button").click();
+    // set new start time
+    cy.get("#registration-start-time-input").clear().type("2022-01-01T00:00");
+    // set new end time
+    cy.get("#registration-end-time-input").clear().type("2022-02-01T00:00");
+
+    cy.get("#save-registration-period-button").click();
     cy.get("#success-alert").should("be.visible");
   });
 

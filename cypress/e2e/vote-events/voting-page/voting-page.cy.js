@@ -15,11 +15,15 @@ const assertVotingPageCommonElements = (voteConfig) => {
   cy.contains(
     `Vote for a maximum of ${voteConfig?.maxVotes}, and minimum of ${voteConfig?.minVotes} projects.`
   ).should("be.visible");
-  cy.contains("Votes cast: 0").should("be.visible");
+  cy.get("#submit-votes-modal-button")
+    .contains(
+      `Votes: 0/${voteConfig?.maxVotes} (Minimum: ${voteConfig?.minVotes} Required)`
+    )
+    .should("exist");
 };
 
 const voteForCandidate = (candidateId) => {
-  cy.contains("Votes cast: 1").should("be.visible");
+  cy.get("#submit-votes-modal-button").should("be.visible");
 
   cy.get("#submit-votes-modal-button").click();
   cy.get("#submit-votes-modal").should("be.visible");

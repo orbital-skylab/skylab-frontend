@@ -50,8 +50,6 @@ describe("<AddVoteEventModal />", () => {
 
     cy.wait("@addVoteEvent");
 
-    cy.get("@setOpenSpy").should("be.calledOnce");
-    cy.get("@setOpenSpy").should("be.calledWith", false);
     cy.get("@mutateSpy").should("be.calledOnce");
   });
 

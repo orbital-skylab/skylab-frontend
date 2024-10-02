@@ -19,6 +19,7 @@ describe("<VoteCandidateRow />", () => {
       <VoteCandidateRow
         candidate={candidate}
         isSelected={true}
+        isDisabled={false}
         setSelectedCandidates={setSelectedCandidatesSpy}
       />
     );
@@ -35,6 +36,7 @@ describe("<VoteCandidateRow />", () => {
       <VoteCandidateRow
         candidate={candidate}
         isSelected={false}
+        isDisabled={false}
         setSelectedCandidates={setSelectedCandidatesSpy}
       />
     );

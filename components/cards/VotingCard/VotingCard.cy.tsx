@@ -20,6 +20,7 @@ describe("<VotingCard />", () => {
       <VotingCard
         isSelected={false}
         candidate={candidate}
+        isDisabled={false}
         setSelectedCandidates={setSelectedCandidatesSpy}
       />
     );
@@ -38,6 +39,7 @@ describe("<VotingCard />", () => {
       <VotingCard
         isSelected={false}
         candidate={candidate}
+        isDisabled={false}
         setSelectedCandidates={setSelectedCandidatesSpy}
       />
     );
@@ -52,6 +54,7 @@ describe("<VotingCard />", () => {
       <VotingCard
         isSelected={true}
         candidate={candidate}
+        isDisabled={false}
         setSelectedCandidates={setSelectedCandidatesSpy}
       />
     );
@@ -66,6 +69,7 @@ describe("<VotingCard />", () => {
       <VotingCard
         isSelected={false}
         candidate={candidate}
+        isDisabled={false}
         setSelectedCandidates={setSelectedCandidatesSpy}
       />
     );
