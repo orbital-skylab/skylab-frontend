@@ -34,13 +34,17 @@ const ExternalVoterTable: FC<Props> = ({ externalVoters, status, mutate }) => {
       externalVoter.id.toString().includes(searchText)
   );
 
-  const externalVoterRows = filteredExternalVoters.map((externalVoter) => (
-    <ExternalVoterRow
-      key={externalVoter.id}
-      externalVoter={externalVoter}
-      mutate={mutate}
-    />
-  ));
+  const externalVoterRows = filteredExternalVoters
+    .sort((externalVoterA, externalVoterB) =>
+      externalVoterA.id.localeCompare(externalVoterB.id)
+    )
+    .map((externalVoter) => (
+      <ExternalVoterRow
+        key={externalVoter.id}
+        externalVoter={externalVoter}
+        mutate={mutate}
+      />
+    ));
 
   return (
     <Stack flexGrow={1}>

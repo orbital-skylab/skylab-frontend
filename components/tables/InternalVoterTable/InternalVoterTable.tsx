@@ -43,14 +43,18 @@ const InternalVoterTable: FC<Props> = ({
       internalVoter.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  const internalVoterRows = filteredInternalVoters.map((internalVoter) => (
-    <InternalVoterRow
-      key={internalVoter.id}
-      voteEventId={voteEventId}
-      internalVoter={internalVoter}
-      mutate={mutate}
-    />
-  ));
+  const internalVoterRows = filteredInternalVoters
+    .sort((internalVoterA, internalVoterB) =>
+      internalVoterA.email.localeCompare(internalVoterB.email)
+    )
+    .map((internalVoter) => (
+      <InternalVoterRow
+        key={internalVoter.id}
+        voteEventId={voteEventId}
+        internalVoter={internalVoter}
+        mutate={mutate}
+      />
+    ));
 
   return (
     <Stack flexGrow={1}>

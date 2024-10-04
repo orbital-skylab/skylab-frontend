@@ -116,9 +116,13 @@ const VoterManagementConfigModal: FC<Props> = ({
             ? undefined
             : values.copyExternalVoteEventId,
         registrationStartTime:
-          registrationStartTime === "" ? null : registrationStartTime,
+          registrationStartTime === "" || !values.hasInternalList
+            ? null
+            : registrationStartTime,
         registrationEndTime:
-          registrationEndTime === "" ? null : registrationEndTime,
+          registrationEndTime === "" || !values.hasInternalList
+            ? null
+            : registrationEndTime,
       },
     };
 

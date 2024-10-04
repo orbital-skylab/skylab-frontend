@@ -1,4 +1,5 @@
 import NoneFound from "@/components/emptyStates/NoneFound";
+import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
 import Body from "@/components/layout/Body";
 import AddVoteEventModal from "@/components/modals/AddVoteEventModal/AddVoteEventModal";
 import SearchInput from "@/components/search/SearchInput";
@@ -47,6 +48,7 @@ const VoteEvents: NextPage = () => {
         mutate={mutate}
       />
       <Body>
+        <AutoBreadcrumbs />
         {isAdministrator && (
           <Stack
             direction="row"

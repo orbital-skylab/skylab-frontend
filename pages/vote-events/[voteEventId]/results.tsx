@@ -1,4 +1,6 @@
+import GoBackButton from "@/components/buttons/GoBackButton";
 import NoneFound from "@/components/emptyStates/NoneFound";
+import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
 import Body from "@/components/layout/Body";
 import ResultsTable from "@/components/tables/ResultsTable";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
@@ -41,6 +43,8 @@ const ResultsPage: NextPage = () => {
       }
       loadingText="Loading results..."
     >
+      <AutoBreadcrumbs />
+      <GoBackButton id="go-back-button" />
       <NoDataWrapper
         noDataCondition={!voteEventData}
         fallback={<NoneFound title="No such vote event found!" message="" />}
