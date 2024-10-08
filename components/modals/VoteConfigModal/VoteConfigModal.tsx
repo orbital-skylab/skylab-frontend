@@ -108,7 +108,7 @@ const VoteConfigModal: FC<Props> = ({ voteEvent, open, setOpen, mutate }) => {
                 name="displayType"
                 formik={formik}
                 size="small"
-                info="Candidate display types determine how candidates are displayed to voters."
+                info="Candidate display types determine how candidates are displayed to voters. Select an option to find out what it does."
                 options={Object.values(DISPLAY_TYPES).map((displayType) => ({
                   label: displayType,
                   value: displayType,

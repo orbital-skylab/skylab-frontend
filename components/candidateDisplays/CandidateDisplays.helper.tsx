@@ -13,7 +13,7 @@ export const DISPLAY_OPTIONS: Record<DISPLAY_TYPES, DisplayOption> = {
   [DISPLAY_TYPES.NONE]: {
     component: VotingForm,
     description:
-      "No candidates will be displayed. Voters will have to enter the candidate ids into a textbox.",
+      "No candidates will be displayed. Voters will have to enter the project ids (separated by commas) into a textbox to vote.",
   },
   [DISPLAY_TYPES.TABLE]: {
     component: VoteCandidateTable,

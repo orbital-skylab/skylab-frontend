@@ -1,3 +1,4 @@
+import GoBackButton from "@/components/buttons/GoBackButton";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import Body from "@/components/layout/Body";
 import CandidatesTab from "@/components/tabs/voteEvent/CandidatesTab";
@@ -50,6 +51,7 @@ const EditVoteEvent: NextPage = () => {
       loadingText="Loading edit vote event..."
       authorizedRoles={[ROLES.ADMINISTRATORS]}
     >
+      <GoBackButton id="go-back-button" />
       <NoDataWrapper
         noDataCondition={!data || !data.voteEvent}
         fallback={<NoneFound message="No such vote event found" />}

@@ -1,7 +1,6 @@
 import GoBackButton from "@/components/buttons/GoBackButton";
 import { CandidateDisplayFactory } from "@/components/candidateDisplays/CandidateDisplayFactory";
 import NoneFound from "@/components/emptyStates/NoneFound";
-import AutoBreadcrumbs from "@/components/layout/AutoBreadcrumbs";
 import Body from "@/components/layout/Body";
 import SubmitVotesModal from "@/components/modals/SubmitVotesModal";
 import SearchInput from "@/components/search/SearchInput";
@@ -101,7 +100,6 @@ const VotingPage: NextPage = () => {
       }
       loadingText="Loading vote event..."
     >
-      <AutoBreadcrumbs />
       <GoBackButton id="go-back-button" />
       <NoDataWrapper
         noDataCondition={!voteEventData}
