@@ -27,7 +27,7 @@ describe("<VotingCard />", () => {
 
     cy.get(`#${candidate.id}-candidate-card`).should("be.visible");
     cy.contains(candidate.id).should("be.visible");
-    cy.contains(candidate.teamName).should("be.visible");
+    cy.contains(candidate.name).should("be.visible");
 
     // assert image
     cy.get("img").should("have.attr", "src", candidate.posterUrl);
