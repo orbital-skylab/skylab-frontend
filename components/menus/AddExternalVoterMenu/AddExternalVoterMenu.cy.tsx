@@ -20,7 +20,7 @@ describe("<AddExternalVoterMenu />", () => {
 
     // Assert that the menu is opened
     cy.get("#add-external-voter-menu").should("be.visible");
-    cy.contains("Add External Voter").should("be.visible");
+    cy.contains("Add Voter ID").should("be.visible");
     cy.contains("Import CSV").should("be.visible");
     cy.contains("Generate Voter IDs").should("be.visible");
   });

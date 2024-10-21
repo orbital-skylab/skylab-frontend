@@ -33,8 +33,7 @@ describe("<AddInternalVoterMenu />", () => {
 
     // Assert that the menu is opened
     cy.get("#add-internal-voter-menu").should("be.visible");
-    cy.contains("Add Internal Voter").should("be.visible");
+    cy.contains("Add By Email").should("be.visible");
     cy.contains("Import CSV").should("be.visible");
-    cy.contains("Registration").should("be.visible");
   });
 });

@@ -31,7 +31,7 @@ const AddCandidateMenuItem: FC<Props> = ({
         mutate={mutateCandidates}
       />
       <MenuItem id="add-candidate-menu-item-button" onClick={handleOpenModal}>
-        Add Candidate
+        Add By Project ID
       </MenuItem>
     </>
   );

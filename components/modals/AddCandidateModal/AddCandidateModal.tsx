@@ -70,7 +70,7 @@ const AddCandidateModal: FC<Props> = ({
       id="add-candidate-modal"
       open={open}
       handleClose={handleCloseModal}
-      title="Add Candidate"
+      title="Add Candidate By Project ID"
       subheader={`Enter the project ID of the project you want to add as a candidate.`}
     >
       <Formik

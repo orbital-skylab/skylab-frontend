@@ -23,7 +23,7 @@ describe("<AddCandidateMenuItem />", () => {
     );
 
     // Click on the menu item
-    cy.contains("Add Candidate").click();
+    cy.contains("Add By Project ID").click();
 
     // Assert that the modal is opened
     cy.get("#add-candidate-button").should("exist");

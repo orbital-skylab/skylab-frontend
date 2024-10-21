@@ -42,7 +42,7 @@ describe("<VotingGalleryGrid />", () => {
     candidates.forEach((candidate) => {
       cy.get(`#${candidate.id}-candidate-card`).should("be.visible");
       cy.contains(candidate.id).should("be.visible");
-      cy.contains(candidate.teamName).should("be.visible");
+      cy.contains(candidate.name).should("be.visible");
     });
   });
 

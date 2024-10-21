@@ -32,7 +32,7 @@ const AddInternalVoterModalItem: FC<Props> = ({
         mutate={mutateInternalVoters}
       />
       <MenuItem onClick={handleOpenAddInternalVoterModal}>
-        Add Internal Voter
+        Add By Email
       </MenuItem>
     </div>
   );

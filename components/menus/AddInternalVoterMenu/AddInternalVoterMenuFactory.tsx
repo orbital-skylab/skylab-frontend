@@ -1,6 +1,5 @@
 import AddInternalVoterModalItem from "@/components/menus/AddInternalVoterMenuItem/AddInternalVoterModalItem";
 import ImportInternalVoterCsvModalItem from "@/components/menus/AddInternalVoterMenuItem/ImportInternalVoterCsvModalItem";
-import InternalVoterRegistrationModalItem from "@/components/menus/AddInternalVoterMenuItem/InternalVoterRegistrationModalItem";
 import {
   createDynamicComponentFactory,
   FactoryConfig,
@@ -24,16 +23,6 @@ export const internalVoterMenuConfig: FactoryConfig = {
         voteEventId: baseProps.voteEventId,
         handleCloseMenu: baseProps.handleCloseMenu,
         mutateInternalVoters: baseProps.mutateInternalVoters,
-      }),
-    },
-    {
-      Component: InternalVoterRegistrationModalItem,
-      key: "internal-voter-registration",
-      getProps: (baseProps) => ({
-        voteEventId: baseProps.voteEventId,
-        voterManagement: baseProps.voterManagement,
-        handleCloseMenu: baseProps.handleCloseMenu,
-        mutateVoteEvent: baseProps.mutateVoteEvent,
       }),
     },
   ],

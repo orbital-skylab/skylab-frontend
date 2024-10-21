@@ -30,7 +30,7 @@ const AddExternalVoterModalItem: FC<Props> = ({
         setOpen={setIsModalOpen}
         mutate={mutateExternalVoters}
       />
-      <MenuItem onClick={handleOpenModal}>Add External Voter</MenuItem>
+      <MenuItem onClick={handleOpenModal}>Add Voter ID</MenuItem>
     </div>
   );
 };

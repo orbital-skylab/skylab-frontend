@@ -210,7 +210,7 @@ describe("<VoterManagementTab />", () => {
     cy.get("#open-voter-management-config-button").click();
 
     // Check if modal is opened
-    cy.contains("Edit Voter Management").should("be.visible");
+    cy.get("#edit-voter-management-config-modal").should("be.visible");
   });
 
   it("should switch between internal and external voters when tabs are clicked", () => {

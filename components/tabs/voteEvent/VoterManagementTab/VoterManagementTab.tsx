@@ -1,5 +1,6 @@
 import AddExternalVoterMenu from "@/components/menus/AddExternalVoterMenu";
 import AddInternalVoterMenu from "@/components/menus/AddInternalVoterMenu";
+import InternalVoterRegistrationModal from "@/components/modals/InternalVoterRegistrationModal";
 import VoterManagementConfigModal from "@/components/modals/VoterManagementConfigModal";
 import ExternalVoterTable from "@/components/tables/ExternalVoterTable";
 import InternalVoterTable from "@/components/tables/InternalVoterTable";
@@ -47,6 +48,7 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
   );
   const [isVoterManagementConfigOpen, setIsVoterManagementConfigOpen] =
     useState(false);
+  const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
 
   const {
     data: internalVotersData,
@@ -72,9 +74,14 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
     if (internal) {
       refetchInternalVoters();
     }
+
     if (external) {
       refetchExternalVoters();
     }
+
+    setSelectedList(
+      internal ? LIST_TYPES.INTERNAL_VOTERS : LIST_TYPES.EXTERNAL_VOTERS
+    );
   };
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: LIST_TYPES) => {
@@ -105,6 +112,14 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
         mutate={mutate}
         fetchVoters={fetchVoters}
       />
+      <InternalVoterRegistrationModal
+        voteEventId={voteEventId}
+        voterManagement={voterManagement}
+        open={isRegistrationModalOpen}
+        handleCloseMenu={() => setIsRegistrationModalOpen(false)}
+        setOpen={setIsRegistrationModalOpen}
+        mutate={mutate}
+      />
       {voterManagementSet ? (
         <Stack flexGrow={1}>
           <Grid
@@ -123,8 +138,19 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
                 xs: "center",
                 md: "left",
               }}
+              direction={{ xs: "column", md: "row" }}
+              gap={1}
             >
               {voterManagementConfigButton}
+              {selectedList === LIST_TYPES.INTERNAL_VOTERS && (
+                <Button
+                  id="open-registration-modal-button"
+                  variant="contained"
+                  onClick={() => setIsRegistrationModalOpen(true)}
+                >
+                  Self Registration
+                </Button>
+              )}
             </Grid>
             <Grid item xs={12} md={4} display="flex" justifyContent="center">
               {internalOnly && (

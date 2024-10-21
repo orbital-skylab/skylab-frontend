@@ -1,2 +1,0 @@
-import InternalVoterRegistrationModalItem from "@/components/menus/AddInternalVoterMenuItem/InternalVoterRegistrationModalItem/InternalVoterRegistrationModalItem";
-export default InternalVoterRegistrationModalItem;

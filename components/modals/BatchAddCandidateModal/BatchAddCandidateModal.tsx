@@ -82,7 +82,7 @@ const BatchAddCandidateModal: FC<Props> = ({
       handleClose={handleCloseModal}
       title="Batch Add Candidate"
       subheader={`Batch add projects from a specific cohort and achievement level as candidates. 
-        This will perform a union of selected candidates and existing candidates.`}
+        This will perform a union of new candidates and existing candidates.`}
     >
       <Formik
         initialValues={initialValues}
