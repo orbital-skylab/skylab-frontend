@@ -73,8 +73,7 @@ const VoteEventRow: FC<Props> = ({ voteEvent, mutate }) => {
   const showVoteButton = isVotingInProgress && !isRegistrationOpen;
   const showResultsButton =
     areResultsPublished && hasVoteEventStarted && !isRegistrationOpen;
-  const showEditButton = userHasRole(user, ROLES.ADMINISTRATORS);
-  const showDeleteButton = showEditButton;
+  const isAdmin = userHasRole(user, ROLES.ADMINISTRATORS);
 
   const handleOpenRegisterModal = () => {
     setIsRegistering(true);
@@ -115,7 +114,7 @@ const VoteEventRow: FC<Props> = ({ voteEvent, mutate }) => {
           </Tooltip>
         </TableCell>
         <TableCell align="right">
-          <Stack direction="row" justifyContent="end" spacing="0.5rem">
+          <Stack direction="row" justifyContent="right" spacing="0.5rem">
             {showRegisterButton && (
               <Tooltip title="Register for this event" placement="top">
                 <Button
@@ -137,23 +136,34 @@ const VoteEventRow: FC<Props> = ({ voteEvent, mutate }) => {
             )}
             {showResultsButton && (
               <Link href={`/vote-events/${voteEvent.id}/results`} passHref>
-                <Tooltip title="View results" placement="top">
+                <Tooltip
+                  title="View public results of the vote event"
+                  placement="top"
+                >
                   <Button id={`vote-event-${voteEvent.id}-results-button`}>
-                    Results
+                    View Results
                   </Button>
                 </Tooltip>
               </Link>
             )}
-            {showEditButton && (
+          </Stack>
+        </TableCell>
+
+        {isAdmin && (
+          <TableCell align="right">
+            <Stack direction="row" justifyContent="end" spacing="0.5rem">
               <Link href={`/vote-events/${voteEvent.id}/edit`} passHref>
-                <Tooltip title="Edit vote event" placement="top">
+                <Tooltip
+                  title="Manage the vote event
+                "
+                  placement="top"
+                >
                   <Button id={`edit-vote-event-${voteEvent.id}-button`}>
-                    Edit
+                    Manage
                   </Button>
                 </Tooltip>
               </Link>
-            )}
-            {showDeleteButton && (
+
               <Tooltip title="Delete the vote event" placement="top">
                 <Button
                   id={`delete-vote-event-${voteEvent.id}-button`}
@@ -169,9 +179,9 @@ const VoteEventRow: FC<Props> = ({ voteEvent, mutate }) => {
                   Delete
                 </Button>
               </Tooltip>
-            )}
-          </Stack>
-        </TableCell>
+            </Stack>
+          </TableCell>
+        )}
       </TableRow>
     </>
   );

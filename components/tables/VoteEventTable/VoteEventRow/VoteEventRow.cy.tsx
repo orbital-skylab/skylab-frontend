@@ -70,7 +70,7 @@ describe("<VoteEventRow />", () => {
 
   const assertCommonElements = (startTime: string, endTime: string) => {
     cy.get("tr").should("be.visible");
-    cy.get("td").should("have.length", 5);
+    cy.get("td").should("have.length", 6);
     cy.contains("Sample Vote Event").should("be.visible");
     cy.contains(isoDateToLocaleDateWithTime(startTime)).should("be.visible");
     cy.contains(isoDateToLocaleDateWithTime(endTime)).should("be.visible");

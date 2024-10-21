@@ -1,10 +1,13 @@
 import Table from "@/components/tables/Table";
+import useAuth from "@/contexts/useAuth";
+import { userHasRole } from "@/helpers/roles";
+import { getVoteEventStatus } from "@/helpers/voteEvent";
 import { Mutate } from "@/hooks/useFetch";
 import { GetVoteEventsResponse } from "@/types/api";
+import { ROLES } from "@/types/roles";
 import { VOTE_EVENT_STATUS, VoteEvent } from "@/types/voteEvents";
 import { FC } from "react";
 import VoteEventRow from "./VoteEventRow";
-import { getVoteEventStatus } from "@/helpers/voteEvent";
 
 type Props = {
   voteEvents: VoteEvent[] | undefined;
@@ -16,10 +19,18 @@ const columnHeadings: { heading: string; align: "left" | "right" }[] = [
   { heading: "Start Time", align: "left" },
   { heading: "End Time", align: "left" },
   { heading: "Status", align: "left" },
-  { heading: "Actions", align: "right" },
+  { heading: "Voter Actions", align: "right" },
+];
+
+const adminColumnHeadings: { heading: string; align: "left" | "right" }[] = [
+  ...columnHeadings,
+  { heading: "Admin Actions", align: "right" },
 ];
 
 const sortVoteEvents = (voteEvents: VoteEvent[]) => {
+  // Sort by title first
+  voteEvents.sort((a, b) => a.title.localeCompare(b.title));
+
   return voteEvents.sort((a, b) => {
     const statusA = getVoteEventStatus(a);
     const statusB = getVoteEventStatus(b);
@@ -46,7 +57,10 @@ const sortVoteEvents = (voteEvents: VoteEvent[]) => {
 };
 
 const VoteEventTable: FC<Props> = ({ voteEvents = [], mutate }) => {
+  const { user } = useAuth();
+
   const sortedVoteEvents = sortVoteEvents(voteEvents);
+  const isAdmin = userHasRole(user, ROLES.ADMINISTRATORS);
 
   const voteEventRows = sortedVoteEvents.map((voteEvent) => (
     <VoteEventRow key={voteEvent.id} voteEvent={voteEvent} mutate={mutate} />
@@ -55,7 +69,7 @@ const VoteEventTable: FC<Props> = ({ voteEvents = [], mutate }) => {
   return (
     <Table
       id="vote-events-table"
-      headings={columnHeadings}
+      headings={isAdmin ? adminColumnHeadings : columnHeadings}
       rows={voteEventRows}
     />
   );
