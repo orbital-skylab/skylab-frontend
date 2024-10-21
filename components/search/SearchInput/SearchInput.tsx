@@ -1,4 +1,5 @@
-import { TextField } from "@mui/material";
+import { Search } from "@mui/icons-material";
+import { InputAdornment, TextField } from "@mui/material";
 import { FC, useState } from "react";
 
 type Props = {
@@ -22,6 +23,13 @@ const SearchInput: FC<Props> = ({ id, label, onChange }) => {
       value={searchTextInput}
       onChange={handleSearchInputChange}
       size="small"
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <Search fontSize="small" />
+          </InputAdornment>
+        ),
+      }}
     />
   );
 };

@@ -2,7 +2,7 @@ import { AddInternalVoterMenuFactory } from "@/components/menus/AddInternalVoter
 import { Mutate } from "@/hooks/useFetch";
 import { GetInternalVotersResponse, GetVoteEventResponse } from "@/types/api";
 import { VoterManagement } from "@/types/voteEvents";
-import { KeyboardArrowDown } from "@mui/icons-material";
+import { Add, KeyboardArrowDown } from "@mui/icons-material";
 import { Button, Menu } from "@mui/material";
 import { FC, MouseEvent, useState } from "react";
 
@@ -38,13 +38,22 @@ const AddInternalVoterMenu: FC<Props> = ({
         onClick={handleOpen}
         endIcon={<KeyboardArrowDown />}
       >
-        Add Voters
+        <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
+        Add Internal Voters
       </Button>
       <Menu
         id="add-internal-voter-menu"
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
       >
         {AddInternalVoterMenuFactory.generateItems({
           voteEventId,

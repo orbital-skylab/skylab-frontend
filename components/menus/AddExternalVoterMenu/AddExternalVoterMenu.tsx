@@ -1,7 +1,7 @@
 import { AddExternalVoterMenuFactory } from "@/components/menus/AddExternalVoterMenu/AddExternalVoterMenuFactory";
 import { Mutate } from "@/hooks/useFetch";
 import { GetExternalVotersResponse } from "@/types/api";
-import { KeyboardArrowDown } from "@mui/icons-material";
+import { Add, KeyboardArrowDown } from "@mui/icons-material";
 import { Button, Menu } from "@mui/material";
 import { FC, MouseEvent, useState } from "react";
 
@@ -30,13 +30,22 @@ const AddExternalVoterMenu: FC<Props> = ({ voteEventId, mutate }) => {
         onClick={handleOpen}
         endIcon={<KeyboardArrowDown />}
       >
-        Add Voters
+        <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
+        Add External Voters
       </Button>
       <Menu
         id="add-external-voter-menu"
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
       >
         {AddExternalVoterMenuFactory.generateItems({
           voteEventId,

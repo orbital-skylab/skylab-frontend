@@ -1,7 +1,7 @@
 import { AddCandidateMenuFactory } from "@/components/menus/AddCandidateMenu/AddCandidateMenuFactory";
 import { Mutate } from "@/hooks/useFetch";
 import { GetCandidatesResponse } from "@/types/api";
-import { KeyboardArrowDown } from "@mui/icons-material";
+import { Add, KeyboardArrowDown } from "@mui/icons-material";
 import { Button, Menu } from "@mui/material";
 import { FC, MouseEvent, useState } from "react";
 
@@ -30,6 +30,7 @@ const AddCandidateMenu: FC<Props> = ({ voteEventId, mutate }) => {
         onClick={handleOpen}
         endIcon={<KeyboardArrowDown />}
       >
+        <Add fontSize="small" sx={{ marginRight: "0.2rem" }} />
         Add Candidates
       </Button>
       <Menu
@@ -37,6 +38,14 @@ const AddCandidateMenu: FC<Props> = ({ voteEventId, mutate }) => {
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
       >
         {AddCandidateMenuFactory.generateItems({
           voteEventId,
