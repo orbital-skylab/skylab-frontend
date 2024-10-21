@@ -152,10 +152,7 @@ describe("Testing vote event voter management tab", () => {
 
   it("Should be able to open registration and let internal voters register", () => {
     navigateToTab(internalVoterOnlyVoteEventId);
-    cy.get("#add-internal-voter-menu-button").click();
-    cy.get("#add-internal-voter-menu").should("be.visible");
-
-    cy.contains("Registration").click();
+    cy.get("#open-registration-modal-button").click();
     cy.get("#internal-voter-registration-modal").should("be.visible");
 
     // set new start time
@@ -190,8 +187,7 @@ describe("Testing vote event voter management tab", () => {
     cy.contains("adviser@skylab.com").should("be.visible");
 
     // close registration
-    cy.get("#add-internal-voter-menu-button").click();
-    cy.contains("Registration").click();
+    cy.get("#open-registration-modal-button").click();
     // set new start time
     cy.get("#registration-start-time-input").clear().type("2022-01-01T00:00");
     // set new end time
@@ -312,7 +308,7 @@ describe("Testing vote event voter management tab", () => {
     cy.get("#add-internal-voter-menu-button").click();
     cy.get("#add-internal-voter-menu").should("be.visible");
 
-    cy.contains("Add Internal Voter").click();
+    cy.contains("Add By Email").click();
     cy.get("#add-internal-voter-modal").should("be.visible");
 
     cy.get("#email-input").type("student@skylab.com");
@@ -343,7 +339,7 @@ describe("Testing vote event voter management tab", () => {
     cy.get("#add-internal-voter-menu-button").click();
     cy.get("#add-internal-voter-menu").should("be.visible");
 
-    cy.contains("Add Internal Voter").click();
+    cy.contains("Add By Email").click();
     cy.get("#add-internal-voter-modal").should("be.visible");
 
     cy.get("#email-input").type("nonexistent@email.com");
@@ -357,7 +353,7 @@ describe("Testing vote event voter management tab", () => {
     cy.get("#add-internal-voter-menu-button").click();
     cy.get("#add-internal-voter-menu").should("be.visible");
 
-    cy.contains("Add Internal Voter").click();
+    cy.contains("Add By Email").click();
     cy.get("#add-internal-voter-modal").should("be.visible");
 
     cy.get("#email-input").type("student@skylab.com");
@@ -374,7 +370,7 @@ describe("Testing vote event voter management tab", () => {
     cy.get("#add-external-voter-menu-button").click();
     cy.get("#add-external-voter-menu").should("be.visible");
 
-    cy.contains("Add External Voter").click();
+    cy.contains("Add Voter ID").click();
     cy.get("#add-external-voter-modal").should("be.visible");
 
     cy.get("#voterId-input").type("external-voter-id");
@@ -391,7 +387,7 @@ describe("Testing vote event voter management tab", () => {
     cy.get("#add-external-voter-menu-button").click();
     cy.get("#add-external-voter-menu").should("be.visible");
 
-    cy.contains("Add External Voter").click();
+    cy.contains("Add Voter ID").click();
     cy.get("#add-external-voter-modal").should("be.visible");
 
     cy.get("#voterId-input").type("external-voter-id");

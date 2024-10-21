@@ -56,7 +56,7 @@ describe("Testing vote events page", () => {
   it("Should display vote events", () => {
     cy.get("#vote-events-table").should("be.visible");
 
-    cy.get("thead").find("th").should("have.length", 5);
+    cy.get("thead").find("th").should("have.length", 6);
     cy.get("thead").find("th").eq(0).should("contain", "Title");
     cy.get("thead").find("th").eq(1).should("contain", "Start Time");
     cy.get("thead").find("th").eq(2).should("contain", "End Time");

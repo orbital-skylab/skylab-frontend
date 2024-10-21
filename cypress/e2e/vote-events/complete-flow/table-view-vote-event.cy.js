@@ -66,7 +66,7 @@ describe("Testing table view candidate display voting process", () => {
       cy.get("#add-internal-voter-menu-button").click();
       cy.get("#add-internal-voter-menu").should("be.visible");
 
-      cy.contains("Add Internal Voter").click();
+      cy.contains("Add By Email").click();
       cy.get("#add-internal-voter-modal").should("be.visible");
 
       cy.get("#email-input").type(email);
@@ -82,7 +82,7 @@ describe("Testing table view candidate display voting process", () => {
     cy.get("#add-external-voter-menu-button").click();
     cy.get("#add-external-voter-menu").should("be.visible");
 
-    cy.contains("Add External Voter").click();
+    cy.contains("Add Voter ID").click();
     cy.get("#add-external-voter-modal").should("be.visible");
 
     cy.get("#voterId-input").type("qwerty123");
