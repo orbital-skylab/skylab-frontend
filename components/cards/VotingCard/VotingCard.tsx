@@ -27,9 +27,10 @@ const VotingCard: FC<Props> = ({
     <ImageCard
       id={`${candidate.id}-candidate-card`}
       idDisplay={candidate.id.toString()}
-      title={candidate.teamName}
+      title={candidate.name}
       imageSrc={candidate.posterUrl}
       imgAlt={`${candidate.name} Poster`}
+      hoverEffect={false}
       actionButton={
         <Button
           id={`candidate-${candidate.id}-vote-button`}
