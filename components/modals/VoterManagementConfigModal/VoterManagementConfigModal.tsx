@@ -24,8 +24,8 @@ export type EditVoterManagementFormValuesType = Omit<
   VoterManagement,
   "registrationStartTime" | "registrationEndTime"
 > & {
-  copyInternalVoteEventId: number | "";
-  copyExternalVoteEventId: number | "";
+  copyInternalVoteEventId: number;
+  copyExternalVoteEventId: number;
 };
 
 type Props = {
@@ -91,14 +91,14 @@ const VoterManagementConfigModal: FC<Props> = ({
         voterManagement.hasInternalList,
         voterManagement.hasExternalList
       );
-      setSuccess("You have successfully edited the voter management config!");
+      setSuccess("You have successfully set the voter management config!");
       setOpen(false);
     },
   });
 
   const initialValues: EditVoterManagementFormValuesType = {
-    copyInternalVoteEventId: "",
-    copyExternalVoteEventId: "",
+    copyInternalVoteEventId: -1,
+    copyExternalVoteEventId: -1,
     ...values,
   };
 
@@ -108,11 +108,11 @@ const VoterManagementConfigModal: FC<Props> = ({
         hasInternalList: values.hasInternalList || false,
         hasExternalList: values.hasExternalList || false,
         copyInternalVoteEventId:
-          values.copyInternalVoteEventId === ""
+          values.copyInternalVoteEventId === -1
             ? undefined
             : values.copyInternalVoteEventId,
         copyExternalVoteEventId:
-          values.copyExternalVoteEventId === ""
+          values.copyExternalVoteEventId === -1
             ? undefined
             : values.copyExternalVoteEventId,
         registrationStartTime:
@@ -157,7 +157,7 @@ const VoterManagementConfigModal: FC<Props> = ({
         id="edit-voter-management-config-modal"
         open={open}
         handleClose={handleCloseModal}
-        title={`Edit Voter Management`}
+        title={`Voter Management Config`}
         subheader="Select the the type of voters you want 
         for this vote event. You can choose to copy voters from another event."
       >
@@ -190,17 +190,29 @@ const VoterManagementConfigModal: FC<Props> = ({
                       formik={formik}
                       options={
                         allVoteEventData?.voteEvents
-                          ? allVoteEventData.voteEvents
-                              .filter((ve) => {
-                                return ve.id !== voteEvent.id;
-                              })
-                              .map((voteEvent) => {
-                                return {
-                                  label: `${voteEvent.id} - ${voteEvent.title}`,
-                                  value: voteEvent.id,
-                                };
-                              })
-                          : []
+                          ? [
+                              {
+                                label: "None",
+                                value: -1,
+                              },
+                            ].concat(
+                              allVoteEventData.voteEvents
+                                .filter((ve) => {
+                                  return ve.id !== voteEvent.id;
+                                })
+                                .map((voteEvent) => {
+                                  return {
+                                    label: `${voteEvent.id} - ${voteEvent.title}`,
+                                    value: voteEvent.id,
+                                  };
+                                })
+                            )
+                          : [
+                              {
+                                label: "None",
+                                value: -1,
+                              },
+                            ]
                       }
                     />
                   </LoadingWrapper>
@@ -226,17 +238,29 @@ const VoterManagementConfigModal: FC<Props> = ({
                       formik={formik}
                       options={
                         allVoteEventData?.voteEvents
-                          ? allVoteEventData.voteEvents
-                              .filter((ve) => {
-                                return ve.id !== voteEvent.id;
-                              })
-                              .map((voteEvent) => {
-                                return {
-                                  label: `${voteEvent.id} - ${voteEvent.title}`,
-                                  value: voteEvent.id,
-                                };
-                              })
-                          : []
+                          ? [
+                              {
+                                label: "None",
+                                value: -1,
+                              },
+                            ].concat(
+                              allVoteEventData.voteEvents
+                                .filter((ve) => {
+                                  return ve.id !== voteEvent.id;
+                                })
+                                .map((voteEvent) => {
+                                  return {
+                                    label: `${voteEvent.id} - ${voteEvent.title}`,
+                                    value: voteEvent.id,
+                                  };
+                                })
+                            )
+                          : [
+                              {
+                                label: "None",
+                                value: -1,
+                              },
+                            ]
                       }
                     />
                   </LoadingWrapper>

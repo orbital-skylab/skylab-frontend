@@ -195,11 +195,12 @@ describe("<VoterManagementConfigModal />", () => {
 
   it("should display the correct copy vote event options", () => {
     const verifyOptions = () => {
-      cy.get("ul").children().eq(0).contains("2 - Test Vote Event Title");
-      cy.get("ul").children().eq(1).contains("3 - Test Vote Event Title");
+      cy.get("ul").children().eq(0).contains("None");
+      cy.get("ul").children().eq(1).contains("2 - Test Vote Event Title");
+      cy.get("ul").children().eq(2).contains("3 - Test Vote Event Title");
       cy.get("ul")
         .children()
-        .eq(2)
+        .eq(3)
         .contains("4 - Test Vote Event Title")
         .click();
     };
