@@ -14,7 +14,7 @@ import {
   GetVotesResponse,
 } from "@/types/api";
 import { DISPLAY_TYPES, VOTE_EVENT_STATUS } from "@/types/voteEvents";
-import { Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
@@ -93,6 +93,11 @@ const VotingPage: NextPage = () => {
       candidate.id.toString().includes(searchText)
   );
 
+  const isSubmitDisabled =
+    !voteConfig ||
+    voteCount < voteConfig.minVotes ||
+    voteCount > voteConfig.maxVotes;
+
   return (
     <Body
       isLoading={
@@ -141,29 +146,42 @@ const VotingPage: NextPage = () => {
                   align="center"
                   sx={{ fontSize: { xs: "0.875rem", sm: "1rem" } }}
                 >
-                  You have voted for the following project IDs:
+                  You have voted for the following projects:
                 </Typography>
-                <Typography
-                  align="center"
-                  sx={{ fontSize: { xs: "0.875rem", sm: "1rem" } }}
-                >
-                  {votes.map((vote) => vote.projectId).join(", ")}
-                </Typography>
+                <Stack display="flex" alignItems="center">
+                  {Object.entries(selectedCandidates)
+                    .filter(([, isSelected]) => isSelected)
+                    .map(([projectId]) => parseInt(projectId))
+                    .map((projectId) => (
+                      <Box key={projectId}>
+                        <Typography>
+                          {projectId +
+                            " - " +
+                            (candidates.find(
+                              (candidate) => candidate.id === projectId
+                            )?.name || "")}
+                        </Typography>
+                      </Box>
+                    ))}
+                </Stack>
                 {voteEventData?.voteEvent.resultsFilter.areResultsPublished && (
-                  <Button
-                    id="view-results-button"
-                    onClick={() =>
-                      router.push(`/vote-events/${voteEventId}/results`)
-                    }
-                    variant="contained"
-                    sx={{
-                      fontSize: { xs: "0.875rem", sm: "1rem" },
-                      width: "auto",
-                      alignSelf: "center",
-                    }}
-                  >
-                    View Results
-                  </Button>
+                  <>
+                    <Box height="1rem" />
+                    <Button
+                      id="view-results-button"
+                      onClick={() =>
+                        router.push(`/vote-events/${voteEventId}/results`)
+                      }
+                      variant="contained"
+                      sx={{
+                        fontSize: { xs: "0.875rem", sm: "1rem" },
+                        width: "auto",
+                        alignSelf: "center",
+                      }}
+                    >
+                      View Results
+                    </Button>
+                  </>
                 )}
               </Stack>
             ) : (
@@ -217,6 +235,7 @@ const VotingPage: NextPage = () => {
                     isDisabled: voteCount >= voteConfig.maxVotes,
                     voteConfig,
                   })}
+                <Box height="1rem" />
                 {voteConfig && (
                   <Stack spacing={2}>
                     <Button
@@ -224,15 +243,16 @@ const VotingPage: NextPage = () => {
                       onClick={handleOpenSubmitVotesModal}
                       variant="contained"
                       color="secondary"
-                      disabled={
-                        voteCount < voteConfig.minVotes ||
-                        voteCount > voteConfig.maxVotes
-                      }
+                      disabled={isSubmitDisabled}
                       sx={{
                         position: "fixed",
                         bottom: { xs: "1rem", sm: "2rem" },
                         right: { xs: "1rem", sm: "2rem" },
                         fontSize: { xs: "0.875rem", sm: "1rem" },
+                        "&.Mui-disabled": {
+                          background: "#a5a5a5",
+                          color: "#404040",
+                        },
                       }}
                     >
                       {voteCount < voteConfig.minVotes
