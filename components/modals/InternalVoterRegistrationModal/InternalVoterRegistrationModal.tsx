@@ -97,7 +97,7 @@ const InternalVoterRegistrationModal: FC<Props> = ({
       id="internal-voter-registration-modal"
       open={open}
       handleClose={handleCloseModal}
-      title="Self Registration"
+      title="Set Registration"
       subheader={
         "Set the registration period for internal voters to register for this vote event. They will be added to the list of internal voters automatically whent they register."
       }
