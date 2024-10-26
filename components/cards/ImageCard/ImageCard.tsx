@@ -91,7 +91,7 @@ const ImageCard: FC<Props> = ({
           >
             {title}
           </Typography>
-          <Tooltip title="Click to view full image in new tab">
+          <Tooltip title="Click to view full image in new tab" placement="top">
             <Box
               sx={{
                 width: "100%",
