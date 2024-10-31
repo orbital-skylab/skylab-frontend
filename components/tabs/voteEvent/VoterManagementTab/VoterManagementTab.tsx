@@ -138,19 +138,8 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
                 xs: "center",
                 md: "left",
               }}
-              direction={{ xs: "column", md: "row" }}
-              gap={1}
             >
               {voterManagementConfigButton}
-              {selectedList === LIST_TYPES.INTERNAL_VOTERS && (
-                <Button
-                  id="open-registration-modal-button"
-                  variant="contained"
-                  onClick={() => setIsRegistrationModalOpen(true)}
-                >
-                  Self Registration
-                </Button>
-              )}
             </Grid>
             <Grid item xs={12} md={4} display="flex" justifyContent="center">
               {internalOnly && (
@@ -197,14 +186,25 @@ const VoterManagementTab: FC<Props> = ({ voteEvent, mutate }) => {
                 xs: "center",
                 md: "right",
               }}
+              direction={{ xs: "column", md: "row" }}
+              gap={1}
             >
               {selectedList === LIST_TYPES.INTERNAL_VOTERS && (
-                <AddInternalVoterMenu
-                  voteEventId={voteEventId}
-                  voterManagement={voterManagement}
-                  mutateInternalVoters={mutateInternalVoters}
-                  mutateVoteEvent={mutate}
-                />
+                <>
+                  <Button
+                    id="open-registration-modal-button"
+                    variant="outlined"
+                    onClick={() => setIsRegistrationModalOpen(true)}
+                  >
+                    Set Registration
+                  </Button>
+                  <AddInternalVoterMenu
+                    voteEventId={voteEventId}
+                    voterManagement={voterManagement}
+                    mutateInternalVoters={mutateInternalVoters}
+                    mutateVoteEvent={mutate}
+                  />
+                </>
               )}
               {selectedList === LIST_TYPES.EXTERNAL_VOTERS && (
                 <AddExternalVoterMenu

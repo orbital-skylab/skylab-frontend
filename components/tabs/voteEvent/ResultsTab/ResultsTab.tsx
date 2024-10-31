@@ -144,7 +144,7 @@ const ResultsTab: FC<Props> = ({ voteEvent, mutate }) => {
           >
             <Button
               id="publish-results-modal-button"
-              variant="contained"
+              variant="outlined"
               onClick={() => setOpenPublishResultsModal(true)}
             >
               {voteEvent.resultsFilter.areResultsPublished
