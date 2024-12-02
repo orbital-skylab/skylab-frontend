@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FC } from "react";
 
-interface MenuItemConfig {
+interface ComponentConfig {
   Component: FC<any>;
   key: string;
   getProps: (baseProps: any) => any;
@@ -9,14 +9,15 @@ interface MenuItemConfig {
 }
 
 export interface FactoryConfig {
-  items: MenuItemConfig[];
+  items: ComponentConfig[];
 }
 
 export const createDynamicComponentFactory = (config: FactoryConfig) => ({
   generateItems: (baseProps: any) => {
     return config.items
       .filter(
-        (itemConfig) => !itemConfig.condition || itemConfig.condition(baseProps)
+        (componentConfig) =>
+          !componentConfig.condition || componentConfig.condition(baseProps)
       )
       .map(({ Component, key, getProps }) => (
         <Component key={key} {...getProps(baseProps)} />
