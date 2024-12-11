@@ -2,6 +2,7 @@ import { defineConfig } from "cypress";
 
 module.exports = defineConfig({
   video: false,
+
   // watchForFileChanges: false,
   e2e: {
     baseUrl: "http://localhost:4000/api",
@@ -16,5 +17,12 @@ module.exports = defineConfig({
       return config;
     },
     testIsolation: false,
+  },
+
+  component: {
+    devServer: {
+      framework: "next",
+      bundler: "webpack",
+    },
   },
 });

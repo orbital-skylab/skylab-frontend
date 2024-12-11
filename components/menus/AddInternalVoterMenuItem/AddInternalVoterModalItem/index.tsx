@@ -1,0 +1,2 @@
+import AddInternalVoterModalItem from "@/components/menus/AddInternalVoterMenuItem/AddInternalVoterModalItem/AddInternalVoterModalItem";
+export default AddInternalVoterModalItem;

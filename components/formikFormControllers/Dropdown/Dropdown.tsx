@@ -1,4 +1,4 @@
-import { ArrowDropDown } from "@mui/icons-material";
+import { ArrowDropDown, Info } from "@mui/icons-material";
 import {
   Autocomplete,
   FormControl,
@@ -6,7 +6,9 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Stack,
   TextField,
+  Tooltip,
 } from "@mui/material";
 import { FormikProps } from "formik";
 import { useState } from "react";
@@ -22,6 +24,8 @@ type Props<FormValuesType> = {
   isDisabled?: boolean;
   className?: string;
   id?: string;
+  info?: string;
+  style?: React.CSSProperties;
 };
 
 function Dropdown<FormValuesType>({
@@ -34,6 +38,8 @@ function Dropdown<FormValuesType>({
   isDisabled = false,
   className,
   id,
+  info,
+  style = {},
 }: Props<FormValuesType>) {
   /** For combobox */
   const [inputValue, setInputValue] = useState("");
@@ -111,9 +117,10 @@ function Dropdown<FormValuesType>({
   }
 
   return (
-    <>
-      <FormControl>
+    <Stack direction="row" alignItems="center" gap={1}>
+      <FormControl size={size} fullWidth>
         <InputLabel>{label}</InputLabel>
+
         <Select
           id={id}
           className={className}
@@ -125,6 +132,7 @@ function Dropdown<FormValuesType>({
           MenuProps={{ disableScrollLock: true }}
           size={size}
           disabled={isDisabled}
+          style={style}
         >
           {options.map(({ value, label }) => (
             <MenuItem id={`${value}-option`} key={value} value={value}>
@@ -136,7 +144,12 @@ function Dropdown<FormValuesType>({
           <FormHelperText error>{errors[name]}</FormHelperText>
         ) : null}
       </FormControl>
-    </>
+      {info && (
+        <Tooltip title={info}>
+          <Info />
+        </Tooltip>
+      )}
+    </Stack>
   );
 }
 export default Dropdown;

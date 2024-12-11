@@ -5,12 +5,14 @@ import Link from "next/link";
 import { FC } from "react";
 
 type Props = {
+  title?: string;
   message: string;
   showReturnHome?: boolean;
   actionPrompt?: React.ReactNode;
 };
 
 const NoneFound: FC<Props> = ({
+  title = "Oops!",
   message,
   showReturnHome = false,
   actionPrompt,
@@ -28,7 +30,7 @@ const NoneFound: FC<Props> = ({
         }}
       >
         <Typography variant="h5" fontWeight={600}>
-          Oops!
+          {title}
         </Typography>
         <Typography variant="subtitle1">{message}</Typography>
         {showReturnHome ? (

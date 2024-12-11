@@ -47,8 +47,8 @@ const Modal: FC<Props> = ({
         <Card
           sx={{
             ...ABSOLUTE_CENTER,
-            minWidth: "400px",
-            maxWidth: "600px",
+            minWidth: { xs: "90%", sm: "400px" },
+            maxWidth: { xs: "100%", sm: "600px" },
             maxHeight: FULL_HEIGHT_MINUS_PADDING,
             overflowY: "auto",
             ...sx,

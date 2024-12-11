@@ -40,6 +40,7 @@ import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 // Constants
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
 import { GetProjectsResponse } from "@/types/api";
+import SearchInput from "@/components/search/SearchInput";
 
 const LIMIT = 16;
 
@@ -48,7 +49,6 @@ const Projects: NextPage = () => {
     LEVELS_OF_ACHIEVEMENT.ARTEMIS
   );
   const [page, setPage] = useState(0);
-  const [searchTextInput, setSearchTextInput] = useState(""); // The input value
   const [querySearch, setQuerySearch] = useState(""); // The debounced input value for searching
   const {
     currentCohortYear,
@@ -99,9 +99,8 @@ const Projects: NextPage = () => {
     []
   );
 
-  const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchTextInput(e.target.value);
-    debouncedSetQuerySearch(e.target.value);
+  const handleSearchInputChange = (searchText: string) => {
+    debouncedSetQuerySearch(searchText);
   };
 
   const handleCohortYearChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -139,12 +138,10 @@ const Projects: NextPage = () => {
             width="100%"
             mb={{ md: "0.5rem" }}
           >
-            <TextField
+            <SearchInput
               id="project-search-input"
               label="Search"
-              value={searchTextInput}
               onChange={handleSearchInputChange}
-              size="small"
             />
             <TextField
               id="project-cohort-select"

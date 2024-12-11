@@ -1,0 +1,41 @@
+{
+  "mockProject1": {
+    "id": 1,
+    "name": "Project 1",
+    "adviserId": 1,
+    "mentorId": 1,
+    "achievement": "Artermis",
+    "cohortYear": 2024,
+    "proposalPdf": "https://www.google.com",
+    "posterUrl": "https://loremflickr.com/640/480",
+    "videoUrl": "https://www.youtube.com/watch?v=6n3pFFPSlW4",
+    "teamName": "Team 1",
+    "hasDropped": false
+  },
+  "mockProject2": {
+    "id": 2,
+    "name": "Project 2",
+    "adviserId": 2,
+    "mentorId": 2,
+    "achievement": "Apollo",
+    "cohortYear": 2024,
+    "proposalPdf": "https://www.google.com",
+    "posterUrl": "https://loremflickr.com/640/480",
+    "videoUrl": "https://www.youtube.com/watch?v=6n3pFFPSlW4",
+    "teamName": "Team 2",
+    "hasDropped": false
+  },
+  "mockProject3": {
+    "id": 3,
+    "name": "Project 3",
+    "adviserId": 3,
+    "mentorId": 3,
+    "achievement": "Vostok",
+    "cohortYear": 2023,
+    "proposalPdf": "https://www.google.com",
+    "posterUrl": "https://loremflickr.com/640/480",
+    "videoUrl": "https://www.youtube.com/watch?v=6n3pFFPSlW4",
+    "teamName": "Team 3",
+    "hasDropped": false
+  }
+}

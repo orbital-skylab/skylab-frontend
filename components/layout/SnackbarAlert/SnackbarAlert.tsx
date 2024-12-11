@@ -1,5 +1,5 @@
 import { AlertType } from "./SnackbarAlert.types";
-import { Alert, Snackbar } from "@mui/material";
+import { Alert, Portal, Snackbar } from "@mui/material";
 import { FC } from "react";
 
 type Props = {
@@ -9,16 +9,18 @@ type Props = {
 
 const SnackbarAlert: FC<Props> = ({ alert, handleClose }) => {
   return (
-    <Snackbar
-      id={`${alert.severity}-alert`}
-      open={alert.message !== ""}
-      onClose={handleClose}
-      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-    >
-      <Alert severity={alert.severity} style={{ whiteSpace: "pre-wrap" }}>
-        {alert.message}
-      </Alert>
-    </Snackbar>
+    <Portal>
+      <Snackbar
+        id={`${alert.severity}-alert`}
+        open={alert.message !== ""}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert severity={alert.severity} style={{ whiteSpace: "pre-wrap" }}>
+          {alert.message}
+        </Alert>
+      </Snackbar>
+    </Portal>
   );
 };
 export default SnackbarAlert;

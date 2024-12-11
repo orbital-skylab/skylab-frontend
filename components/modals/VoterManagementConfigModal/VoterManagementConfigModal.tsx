@@ -1,0 +1,314 @@
+import Checkbox from "@/components/formikFormControllers/Checkbox";
+import Dropdown from "@/components/formikFormControllers/Dropdown";
+import SetVoterManagementConfigModal from "@/components/modals/SetVoterManagementConfigModal";
+import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
+import { PAGES } from "@/helpers/navigation";
+import useApiCall from "@/hooks/useApiCall";
+import useFetch, { Mutate, isFetching } from "@/hooks/useFetch";
+import {
+  EditVoteEventResponse,
+  GetVoteEventResponse,
+  GetVoteEventsResponse,
+  HTTP_METHOD,
+} from "@/types/api";
+import { VoteEvent, VoterManagement } from "@/types/voteEvents";
+import { LoadingButton } from "@mui/lab";
+import { Button, Stack } from "@mui/material";
+import { Formik } from "formik";
+import { Dispatch, FC, SetStateAction, useState } from "react";
+import * as Yup from "yup";
+import Modal from "../Modal";
+
+export type EditVoterManagementFormValuesType = Omit<
+  VoterManagement,
+  "registrationStartTime" | "registrationEndTime"
+> & {
+  copyInternalVoteEventId: number;
+  copyExternalVoteEventId: number;
+};
+
+type Props = {
+  voteEvent: VoteEvent;
+  voterManagement: VoterManagement;
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+  mutate: Mutate<GetVoteEventResponse>;
+  fetchVoters: (internal: boolean, external: boolean) => void;
+};
+
+const VoterManagementConfigModal: FC<Props> = ({
+  voteEvent,
+  voterManagement,
+  open,
+  setOpen,
+  mutate,
+  fetchVoters,
+}) => {
+  const { setSuccess, setError } = useSnackbarAlert();
+  const { registrationStartTime, registrationEndTime, ...values } =
+    voterManagement;
+  const [isSetVoterManagementOpen, setIsSetVoterManagementOpen] =
+    useState(false);
+  const [formValues, setFormValues] = useState<{
+    voterManagement: {
+      hasInternalList: boolean;
+      hasExternalList: boolean;
+      copyInternalVoteEventId?: number;
+      copyExternalVoteEventId?: number;
+      registrationStartTime?: string | null;
+      registrationEndTime?: string | null;
+    };
+  }>({
+    voterManagement: {
+      ...voterManagement,
+    },
+  });
+
+  const handleOpenSetVoterManagement = () => {
+    setIsSetVoterManagementOpen(true);
+  };
+
+  const { data: allVoteEventData, status } = useFetch<GetVoteEventsResponse>({
+    endpoint: PAGES.VOTE_EVENTS,
+  });
+
+  const setVoterManagement = useApiCall({
+    method: HTTP_METHOD.PUT,
+    endpoint: `/vote-events/${voteEvent.id}/voter-management`,
+    onSuccess: ({ voteEvent }: EditVoteEventResponse) => {
+      const { voterManagement } = voteEvent;
+      if (!voterManagement) return;
+
+      mutate(() => {
+        return {
+          voteEvent: {
+            ...voteEvent,
+          },
+        };
+      });
+      fetchVoters(
+        voterManagement.hasInternalList,
+        voterManagement.hasExternalList
+      );
+      setSuccess("You have successfully set the voter management config!");
+      setOpen(false);
+    },
+  });
+
+  const initialValues: EditVoterManagementFormValuesType = {
+    copyInternalVoteEventId: -1,
+    copyExternalVoteEventId: -1,
+    ...values,
+  };
+
+  const handleSubmit = async (values: EditVoterManagementFormValuesType) => {
+    const processedValues = {
+      voterManagement: {
+        hasInternalList: values.hasInternalList || false,
+        hasExternalList: values.hasExternalList || false,
+        copyInternalVoteEventId:
+          values.copyInternalVoteEventId === -1
+            ? undefined
+            : values.copyInternalVoteEventId,
+        copyExternalVoteEventId:
+          values.copyExternalVoteEventId === -1
+            ? undefined
+            : values.copyExternalVoteEventId,
+        registrationStartTime:
+          registrationStartTime === "" || !values.hasInternalList
+            ? null
+            : registrationStartTime,
+        registrationEndTime:
+          registrationEndTime === "" || !values.hasInternalList
+            ? null
+            : registrationEndTime,
+      },
+    };
+
+    if (voteEvent.voterManagement) {
+      setFormValues(processedValues);
+      handleOpenSetVoterManagement();
+      setOpen(false);
+      return;
+    }
+
+    try {
+      await setVoterManagement.call(processedValues);
+    } catch (error) {
+      setError(error);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setOpen(false);
+  };
+
+  return (
+    <>
+      <SetVoterManagementConfigModal
+        open={isSetVoterManagementOpen}
+        processedValues={formValues}
+        setOpen={setIsSetVoterManagementOpen}
+        setOpenPrevious={setOpen}
+        setVoterManagement={setVoterManagement}
+      />
+      <Modal
+        id="edit-voter-management-config-modal"
+        open={open}
+        handleClose={handleCloseModal}
+        title={`Voter Management Config`}
+        subheader="Select the the type of voters you want 
+        for this vote event. You can choose to copy voters from another event."
+      >
+        <Formik
+          initialValues={initialValues}
+          onSubmit={handleSubmit}
+          validationSchema={editVoterManagementValidationSchema}
+        >
+          {(formik) => (
+            <>
+              <Stack direction="column" spacing="1rem">
+                <Checkbox
+                  id="internal-list-checkbox"
+                  label="Internal voters"
+                  name="hasInternalList"
+                  info="Allows your vote event to have internal voters. Internal voters are those with a Skylab account."
+                  formik={formik}
+                />
+                {formik.values.hasInternalList && (
+                  <LoadingWrapper
+                    isLoading={
+                      allVoteEventData === undefined && isFetching(status)
+                    }
+                    loadingText="Loading vote events"
+                  >
+                    <Dropdown
+                      id="copy-internal-voters-dropdown"
+                      label="Copy internal voters from another event"
+                      name="copyInternalVoteEventId"
+                      formik={formik}
+                      options={
+                        allVoteEventData?.voteEvents
+                          ? [
+                              {
+                                label: "None",
+                                value: -1,
+                              },
+                            ].concat(
+                              allVoteEventData.voteEvents
+                                .filter((ve) => {
+                                  return ve.id !== voteEvent.id;
+                                })
+                                .map((voteEvent) => {
+                                  return {
+                                    label: `${voteEvent.id} - ${voteEvent.title}`,
+                                    value: voteEvent.id,
+                                  };
+                                })
+                            )
+                          : [
+                              {
+                                label: "None",
+                                value: -1,
+                              },
+                            ]
+                      }
+                    />
+                  </LoadingWrapper>
+                )}
+                <Checkbox
+                  id="external-list-checkbox"
+                  label="External voters"
+                  name="hasExternalList"
+                  info="Allows your vote event to have external voters. External voters are those that are given a voter ID to vote."
+                  formik={formik}
+                />
+                {formik.values.hasExternalList && (
+                  <LoadingWrapper
+                    isLoading={
+                      allVoteEventData === undefined && isFetching(status)
+                    }
+                    loadingText="Loading vote events"
+                  >
+                    <Dropdown
+                      id="copy-external-voters-dropdown"
+                      label="Copy external voters from another event"
+                      name="copyExternalVoteEventId"
+                      formik={formik}
+                      options={
+                        allVoteEventData?.voteEvents
+                          ? [
+                              {
+                                label: "None",
+                                value: -1,
+                              },
+                            ].concat(
+                              allVoteEventData.voteEvents
+                                .filter((ve) => {
+                                  return ve.id !== voteEvent.id;
+                                })
+                                .map((voteEvent) => {
+                                  return {
+                                    label: `${voteEvent.id} - ${voteEvent.title}`,
+                                    value: voteEvent.id,
+                                  };
+                                })
+                            )
+                          : [
+                              {
+                                label: "None",
+                                value: -1,
+                              },
+                            ]
+                      }
+                    />
+                  </LoadingWrapper>
+                )}
+              </Stack>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                marginTop="2rem"
+              >
+                <Button
+                  id="cancel-edit-voter-management-config-button"
+                  size="small"
+                  onClick={handleCloseModal}
+                >
+                  Cancel
+                </Button>
+
+                <LoadingButton
+                  id="confirm-edit-voter-management-config-button"
+                  size="small"
+                  variant="contained"
+                  onClick={formik.submitForm}
+                  disabled={formik.isSubmitting}
+                  loading={formik.isSubmitting}
+                >
+                  Save
+                </LoadingButton>
+              </Stack>
+            </>
+          )}
+        </Formik>
+      </Modal>
+    </>
+  );
+};
+export default VoterManagementConfigModal;
+
+const editVoterManagementValidationSchema = Yup.object().shape(
+  {
+    internalList: Yup.bool().when("externalList", {
+      is: false,
+      then: Yup.bool().oneOf([true], "At least one list is required"),
+    }),
+    externalList: Yup.bool().when("internalList", {
+      is: false,
+      then: Yup.bool().oneOf([true], "At least one list is required"),
+    }),
+  },
+  [["externalList", "internalList"]]
+);

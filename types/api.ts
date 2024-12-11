@@ -13,6 +13,7 @@ import {
 } from "./roles";
 import { Answer, PossibleSubmission, Submission } from "./submissions";
 import { LeanUser, User, UserMetadata } from "./users";
+import { ExternalVoter, Vote, VoteEvent, VoteEventResult } from "./voteEvents";
 
 export enum HTTP_METHOD {
   GET = "GET",
@@ -296,6 +297,80 @@ export type GetAnnouncementReadPercentageResponse = {
     totalUserCount: number;
     percentage: number;
   };
+};
+
+/**
+ * Vote Event Endpoints
+ */
+export type GetVoteEventResponse = {
+  voteEvent: VoteEvent;
+};
+
+export type GetVoteEventsResponse = {
+  voteEvents: VoteEvent[];
+};
+
+export type CreateVoteEventResponse = {
+  voteEvent: VoteEvent;
+};
+
+export type EditVoteEventResponse = {
+  voteEvent: VoteEvent;
+};
+
+/**
+ * Internal voter Endpoints
+ */
+export type GetInternalVotersResponse = {
+  internalVoters: User[];
+};
+
+export type CreateInternalVoterResponse = {
+  internalVoter: User;
+};
+
+/**
+ * External voter Endpoints
+ */
+export type GetExternalVotersResponse = {
+  externalVoters: ExternalVoter[];
+};
+
+export type CreateExternalVoterResponse = {
+  externalVoter: ExternalVoter;
+};
+
+/**
+ * Candaidate Endpoints
+ */
+export type GetCandidatesResponse = {
+  candidates: Project[];
+};
+
+export type CreateCandidateResponse = {
+  candidate: Project;
+};
+
+/**
+ * Vote Endpoints
+ */
+export type GetVotesResponse = {
+  votes: {
+    projectId: number;
+  }[];
+};
+
+export type GetVoteEventVotesResponse = {
+  votes: Vote[];
+};
+
+export type SubmitVotesResponse = GetVotesResponse;
+
+/**
+ * Results Endpoints
+ */
+export type GetVoteEventResultsResponse = {
+  results: VoteEventResult[];
 };
 
 /**

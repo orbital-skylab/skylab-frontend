@@ -24,11 +24,18 @@ import { generateOnClickGenerator } from "./Navbar.helpers";
 
 const Navbar: FC = () => {
   const router = useRouter();
-  const { user, signOut } = useAuth();
+  const {
+    user,
+    isExternalVoter,
+    signOut: userSignOut,
+    externalVoterSignOut,
+  } = useAuth();
   const trigger = useScrollTrigger({ threshold: 0 });
 
+  const signOut = user ? userSignOut : externalVoterSignOut;
+
   const renderNavigationButtons = () => {
-    if (user) {
+    if (user || isExternalVoter) {
       return (
         <>
           <NavbarButtonsMobile

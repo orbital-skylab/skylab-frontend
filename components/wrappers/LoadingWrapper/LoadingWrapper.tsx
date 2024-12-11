@@ -19,6 +19,7 @@ const LoadingWrapper: FC<Props> = ({
   if (isLoading) {
     return (
       <Box
+        id="loading-wrapper"
         sx={{
           height: fullScreen ? FULL_HEIGHT_MINUS_NAV : "auto",
           display: "flex",
