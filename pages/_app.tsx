@@ -10,6 +10,7 @@ import { AuthProvider } from "@/contexts/useAuth";
 import { CohortProvider } from "@/contexts/useCohort";
 import { SnackbarAlertProvider } from "@/contexts/useSnackbarAlert";
 // Styling
+import "../styles/globals.css"; // Adjust path if needed
 import "../styles/globals.scss";
 import { theme } from "@/styles/muiTheme";
 import "react-quill/dist/quill.snow.css";
