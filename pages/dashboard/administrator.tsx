@@ -4,6 +4,7 @@ import React, {
   useMemo,
   useRef,
   useState,
+  useEffect,
 } from "react";
 // Components
 import Body from "@/components/layout/Body";
@@ -15,6 +16,8 @@ import {
   Tabs,
   tabsClasses,
   Typography,
+  MenuItem,
+  TextField,
 } from "@mui/material";
 import { TabContext, TabPanel } from "@mui/lab";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
@@ -43,6 +46,7 @@ import useInfiniteFetch, {
   createBottomOfPageRef,
 } from "@/hooks/useInfiniteFetch";
 import { transformTabNameIntoId } from "@/helpers/dashboard";
+import { Cohort } from "@/types/cohorts";
 
 enum TAB {
   SUBMISSIONS = "All Teams' Milestone Submissions",
@@ -52,7 +56,10 @@ enum TAB {
 const LIMIT = 50;
 
 const AdministratorDashboard: NextPage = () => {
-  const { currentCohortYear } = useCohort();
+  const { cohorts, currentCohortYear } = useCohort();
+  const [selectedCohortYear, setSelectedCohortYear] = useState<
+    Cohort["academicYear"] | ""
+  >("");
   const [selectedTab, setSelectedTab] = useState<TAB>(TAB.SUBMISSIONS);
   /** States for viewing all teams' milestone submissions and infinite scrolling */
   const [selectedMilestoneDeadline, setSelectedMilestoneDeadline] =
@@ -61,21 +68,23 @@ const AdministratorDashboard: NextPage = () => {
     SUBMISSION_STATUS.ALL
   );
   const [page, setPage] = useState(0);
+  const [viewHasDropped, setViewHasDropped] = useState(false);
   const [searchTextInput, setSearchTextInput] = useState(""); // The input value
   const [querySearch, setQuerySearch] = useState(""); // The debounced input value for searching
 
   /** Fetching deadlines where type === Milestone */
   const { data: deadlinesResponse, status: fetchDeadlinesStatus } =
     useFetch<GetDeadlinesResponse>({
-      endpoint: `/deadlines?cohortYear=${currentCohortYear}`,
-      enabled: Boolean(currentCohortYear),
+      endpoint: `/deadlines?cohortYear=${selectedCohortYear}`,
+      enabled: Boolean(selectedCohortYear),
       requiresAuthorization: true,
       onFetch: (response) => {
         const deadline = response.deadlines.find(
           (deadline) => deadline.type === DEADLINE_TYPE.MILESTONE
         );
+
         if (deadline) {
-          setSelectedMilestoneDeadline(deadline);
+          setSelectedMilestoneDeadline(null);
         }
       },
     });
@@ -87,22 +96,27 @@ const AdministratorDashboard: NextPage = () => {
   /** Infinite fetching of all teams milestone submissions */
   const memoQueryParams = useMemo(
     () => ({
-      cohortYear: currentCohortYear,
-      deadlineId: selectedMilestoneDeadline?.id,
+      cohortYear: selectedCohortYear,
+      deadlineId: selectedMilestoneDeadline
+        ? selectedMilestoneDeadline.id
+        : undefined,
       search: querySearch,
       limit: LIMIT,
       submissionStatus:
         selectedSubmissionStatus === SUBMISSION_STATUS.ALL
           ? undefined
           : selectedSubmissionStatus,
+      dropped: viewHasDropped,
     }),
     [
-      currentCohortYear,
-      selectedMilestoneDeadline?.id,
+      selectedCohortYear,
+      selectedMilestoneDeadline,
       querySearch,
       selectedSubmissionStatus,
+      viewHasDropped,
     ]
   );
+
   const {
     data: allTeamsMilestones,
     status: fetchAllTeamsMilestonesStatus,
@@ -116,12 +130,12 @@ const AdministratorDashboard: NextPage = () => {
     requiresAuthorization: true,
     page,
     responseToData: (response) => response.submissions,
-    enabled: Boolean(currentCohortYear) && Boolean(selectedMilestoneDeadline),
+    enabled: Boolean(selectedCohortYear),
   });
 
   const { data: projectsResponse } = useFetch<GetProjectsResponse>({
-    endpoint: `/projects/lean?cohortYear=${currentCohortYear}`,
-    enabled: Boolean(currentCohortYear),
+    endpoint: `/projects/lean?cohortYear=${selectedCohortYear}`,
+    enabled: Boolean(selectedCohortYear),
     requiresAuthorization: true,
   });
 
@@ -160,7 +174,11 @@ const AdministratorDashboard: NextPage = () => {
   const handleSelectedMilestoneDeadlineChange = (
     e: ChangeEvent<HTMLInputElement>
   ) => {
-    setSelectedMilestoneDeadline(JSON.parse(e.target.value) as Deadline);
+    const newValue = e.target.value;
+    setSelectedMilestoneDeadline(
+      newValue !== "0" ? (JSON.parse(newValue) as Deadline) : null
+    );
+    setPage(0);
   };
 
   const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -170,7 +188,25 @@ const AdministratorDashboard: NextPage = () => {
 
   const handleSubmissionStatusChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSelectedSubmissionStatus(e.target.value as SUBMISSION_STATUS);
+    setPage(0);
   };
+
+  const handleCohortYearChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSelectedCohortYear(Number(e.target.value) as Cohort["academicYear"]);
+    setPage(0);
+  };
+
+  const handleToggleViewDropped = () => {
+    setViewHasDropped(!viewHasDropped);
+    setPage(0);
+  };
+
+  useEffect(() => {
+    if (currentCohortYear) {
+      setSelectedCohortYear(currentCohortYear);
+      setPage(0);
+    }
+  }, [currentCohortYear]);
 
   return (
     <Body authorizedRoles={[ROLES.ADMINISTRATORS]}>
@@ -201,48 +237,112 @@ const AdministratorDashboard: NextPage = () => {
 
         <TabPanel value={TAB.SUBMISSIONS}>
           <LoadingWrapper isLoading={isFetching(fetchDeadlinesStatus)}>
-            <NoDataWrapper
-              noDataCondition={
-                !milestoneDeadlines.length || !selectedMilestoneDeadline
-              }
-              fallback={
-                <NoneFound message="No milestone deadlines found. Create one now!" />
-              }
-            >
-              {selectedMilestoneDeadline && (
-                <>
-                  <ActionRow
-                    selectedMilestoneDeadline={selectedMilestoneDeadline}
-                    handleSelectedMilestoneDeadlineChange={
-                      handleSelectedMilestoneDeadlineChange
-                    }
-                    selectedSubmissionStatus={selectedSubmissionStatus}
-                    handleSubmissionStatusChange={handleSubmissionStatusChange}
-                    searchTextInput={searchTextInput}
-                    handleSearchInputChange={handleSearchInputChange}
-                    milestoneDeadlines={milestoneDeadlines}
-                  />
-                  <AllTeamsMilestoneTable
-                    deadline={selectedMilestoneDeadline}
-                    submissions={allTeamsMilestones}
-                  />
-                  <div ref={bottomOfPageRef} />
-                  <Box
-                    sx={{
-                      display: "grid",
-                      placeItems: "center",
-                      height: "100px",
-                    }}
-                  >
-                    {isFetching(fetchAllTeamsMilestonesStatus) ? (
-                      <LoadingSpinner size={50} />
-                    ) : !hasMore ? (
-                      <Typography>No more submissions found</Typography>
-                    ) : null}
-                  </Box>
-                </>
-              )}
-            </NoDataWrapper>
+            <Stack gap="0.75rem">
+              <TextField
+                id="project-cohort-select"
+                name="cohort"
+                label="Cohort"
+                value={selectedCohortYear}
+                onChange={handleCohortYearChange}
+                select
+                size="small"
+                sx={{ width: "auto", minWidth: "120", alignSelf: "start" }}
+              >
+                {cohorts &&
+                  cohorts.map(({ academicYear }) => (
+                    <MenuItem
+                      id={`${academicYear}-projects-option`}
+                      key={academicYear}
+                      value={academicYear}
+                    >
+                      {academicYear}
+                    </MenuItem>
+                  ))}
+              </TextField>
+
+              <NoDataWrapper
+                noDataCondition={!milestoneDeadlines.length}
+                fallback={
+                  <NoneFound message="No milestone deadlines found. Create one now!" />
+                }
+              >
+                {selectedMilestoneDeadline !== null ? (
+                  <>
+                    <ActionRow
+                      selectedMilestoneDeadline={selectedMilestoneDeadline}
+                      handleSelectedMilestoneDeadlineChange={
+                        handleSelectedMilestoneDeadlineChange
+                      }
+                      selectedSubmissionStatus={selectedSubmissionStatus}
+                      handleSubmissionStatusChange={
+                        handleSubmissionStatusChange
+                      }
+                      searchTextInput={searchTextInput}
+                      handleSearchInputChange={handleSearchInputChange}
+                      milestoneDeadlines={milestoneDeadlines}
+                      viewHasDropped={viewHasDropped}
+                      handleToggleViewDropped={handleToggleViewDropped}
+                    />
+                    <AllTeamsMilestoneTable
+                      deadline={selectedMilestoneDeadline}
+                      submissions={allTeamsMilestones}
+                      milestoneDeadlines={milestoneDeadlines}
+                    />
+                    <div ref={bottomOfPageRef} />
+                    <Box
+                      sx={{
+                        display: "grid",
+                        placeItems: "center",
+                        height: "100px",
+                      }}
+                    >
+                      {isFetching(fetchAllTeamsMilestonesStatus) ? (
+                        <LoadingSpinner size={50} />
+                      ) : !hasMore ? (
+                        <Typography>No more submissions found</Typography>
+                      ) : null}
+                    </Box>
+                  </>
+                ) : (
+                  <>
+                    <ActionRow
+                      selectedMilestoneDeadline={null}
+                      handleSelectedMilestoneDeadlineChange={
+                        handleSelectedMilestoneDeadlineChange
+                      }
+                      selectedSubmissionStatus={SUBMISSION_STATUS.ALL}
+                      handleSubmissionStatusChange={
+                        handleSubmissionStatusChange
+                      }
+                      searchTextInput={searchTextInput}
+                      handleSearchInputChange={handleSearchInputChange}
+                      milestoneDeadlines={milestoneDeadlines}
+                      viewHasDropped={viewHasDropped}
+                      handleToggleViewDropped={handleToggleViewDropped}
+                    />
+                    <AllTeamsMilestoneTable
+                      deadline={null}
+                      submissions={allTeamsMilestones}
+                      milestoneDeadlines={milestoneDeadlines}
+                    />
+                    <div ref={bottomOfPageRef} />
+                    <Box
+                      sx={{
+                        display: "grid",
+                        placeItems: "center",
+                        height: "100px",
+                      }}
+                    >
+                      {isFetching(fetchAllTeamsMilestonesStatus) ? (
+                        <LoadingSpinner size={50} />
+                      ) : !hasMore ? (
+                        <Typography>No more submissions found</Typography>
+                      ) : null}
+                    </Box>
+                  </>
+                )}
+              </NoDataWrapper>
+            </Stack>
           </LoadingWrapper>
         </TabPanel>
 

@@ -1,7 +1,6 @@
 import { FC } from "react";
-import Link from "next/link";
 // Components
-import { Box, Button, TableCell, TableRow } from "@mui/material";
+import { Box, Chip, Stack, TableCell, TableRow } from "@mui/material";
 import HoverLink from "@/components/typography/HoverLink";
 import UsersName from "@/components/typography/UsersName";
 // Helpers
@@ -11,24 +10,43 @@ import { PAGES } from "@/helpers/navigation";
 import { PossibleSubmission, STATUS } from "@/types/submissions";
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
 import { Deadline } from "@/types/deadlines";
+import { LEVELS_OF_ACHIEVEMENT } from "@/types/projects";
 
 type Props = {
-  deadline: Deadline;
+  deadline: Deadline | null;
   submission: PossibleSubmission;
+  milestoneDeadlines: Deadline[];
 };
 
-const AllTeamsMilestoneRow: FC<Props> = ({ deadline, submission }) => {
+const AllTeamsMilestoneRow: FC<Props> = ({
+  deadline,
+  submission,
+  milestoneDeadlines,
+}) => {
   const status = generateSubmissionStatus({
     submissionId: submission.id,
     isDraft: false, // You cannot view other's drafts
     updatedAt: submission.updatedAt,
-    dueBy: deadline.dueBy,
+    dueBy: deadline?.dueBy || "",
   });
+
+  const generateSubmissionStatusForSub = (sub: PossibleSubmission) => {
+    const deadline = milestoneDeadlines.find((d) => d.id === sub.deadlineId);
+    return generateSubmissionStatus({
+      submissionId: sub.id,
+      isDraft: false,
+      updatedAt: sub.updatedAt,
+      dueBy: deadline ? deadline.dueBy : "",
+    });
+  };
 
   const generateFromCell = (submission: PossibleSubmission) => {
     if (submission.fromProject) {
       return (
-        <HoverLink href={`${PAGES.PROJECTS}/${submission.fromProject.id}`}>
+        <HoverLink
+          href={`${PAGES.PROJECTS}/${submission.fromProject.id}`}
+          variant="body2"
+        >
           {submission.fromProject.name}
         </HoverLink>
       );
@@ -40,7 +58,8 @@ const AllTeamsMilestoneRow: FC<Props> = ({ deadline, submission }) => {
 
   const generateStatusCell = (
     status: STATUS,
-    updatedAt: string | undefined
+    updatedAt: string | undefined,
+    submissionId: number | undefined
   ) => {
     const dateOn = updatedAt
       ? `on ${isoDateToLocaleDateWithTime(updatedAt)}`
@@ -59,9 +78,15 @@ const AllTeamsMilestoneRow: FC<Props> = ({ deadline, submission }) => {
       }
       case STATUS.SUBMITTED: {
         return (
-          <Box component="span" sx={{ color: "success.main" }}>
-            Submitted {dateOn}
-          </Box>
+          <HoverLink
+            href={`${PAGES.SUBMISSIONS}/${submissionId}`}
+            wrap={true}
+            variant="body2"
+          >
+            <Box component="span" sx={{ color: "success.main" }}>
+              Submitted {dateOn}
+            </Box>
+          </HoverLink>
         );
       }
       case STATUS.SUBMITTED_LATE: {
@@ -77,22 +102,61 @@ const AllTeamsMilestoneRow: FC<Props> = ({ deadline, submission }) => {
     }
   };
 
-  const generateActionCell = (
-    status: STATUS,
-    submissionId: number | undefined
-  ) => {
-    return (
-      <Link href={`${PAGES.SUBMISSIONS}/${submissionId}`} passHref>
-        <Button disabled={status === STATUS.NOT_YET_STARTED}>View</Button>
-      </Link>
-    );
+  const renderTag = () => {
+    if (!submission.fromProject?.achievement) return;
+
+    switch (submission.fromProject?.achievement) {
+      case LEVELS_OF_ACHIEVEMENT.VOSTOK:
+        return (
+          <Chip
+            key={`project ${submission.fromProject?.id}`}
+            label={LEVELS_OF_ACHIEVEMENT.VOSTOK}
+            color="primary"
+            size="small"
+          />
+        );
+      case LEVELS_OF_ACHIEVEMENT.GEMINI:
+        return (
+          <Chip
+            key={`project ${submission.fromProject?.id}`}
+            label={LEVELS_OF_ACHIEVEMENT.GEMINI}
+            color="secondary"
+            size="small"
+          />
+        );
+      case LEVELS_OF_ACHIEVEMENT.APOLLO:
+        return (
+          <Chip
+            key={`project ${submission.fromProject?.id}`}
+            label={LEVELS_OF_ACHIEVEMENT.APOLLO}
+            color="info"
+            size="small"
+          />
+        );
+
+      case LEVELS_OF_ACHIEVEMENT.ARTEMIS:
+        return (
+          <Chip
+            key={`project ${submission.fromProject?.id}`}
+            label={LEVELS_OF_ACHIEVEMENT.ARTEMIS}
+            color="success"
+            size="small"
+          />
+        );
+    }
   };
 
   return (
     <>
       <TableRow>
+        <TableCell>{submission.fromProject?.id}</TableCell>
+        <TableCell>{submission.fromProject?.teamName}</TableCell>
         <TableCell>{generateFromCell(submission)}</TableCell>
-        <TableCell>{submission.fromProject?.achievement}</TableCell>
+        <TableCell className="project-achievement-level-td">
+          <Stack direction="row" spacing="0.25rem">
+            {renderTag()}
+          </Stack>
+        </TableCell>
         <TableCell>
           {submission.fromProject?.students
             ? submission.fromProject?.students.map((student) => (
@@ -116,12 +180,30 @@ const AllTeamsMilestoneRow: FC<Props> = ({ deadline, submission }) => {
             "-"
           )}
         </TableCell>
-        <TableCell>
-          {generateStatusCell(status, submission.updatedAt)}
-        </TableCell>
-        <TableCell align="right">
-          {generateActionCell(status, submission.id)}
-        </TableCell>
+
+        {deadline ? (
+          <>
+            <TableCell>
+              {generateStatusCell(status, submission.updatedAt, submission.id)}
+            </TableCell>
+          </>
+        ) : (
+          ["ms1", "ms2", "ms3"].map((milestone, index) => {
+            const sub = submission.submission?.find(
+              (sub) => sub.deadlineId === index + 1
+            );
+            const status = sub
+              ? generateSubmissionStatusForSub(sub)
+              : STATUS.NOT_YET_STARTED;
+            const updatedAt = sub ? sub.updatedAt : undefined;
+
+            return (
+              <TableCell key={milestone}>
+                {generateStatusCell(status, updatedAt, sub?.id)}
+              </TableCell>
+            );
+          })
+        )}
       </TableRow>
     </>
   );

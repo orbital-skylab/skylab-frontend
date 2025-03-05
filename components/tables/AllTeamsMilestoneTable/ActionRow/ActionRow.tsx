@@ -1,25 +1,35 @@
 import { FC, useState } from "react";
 // Components
-import { MenuItem, Stack, TextField } from "@mui/material";
+import {
+  FormControlLabel,
+  InputAdornment,
+  MenuItem,
+  Stack,
+  Switch,
+  TextField,
+} from "@mui/material";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { CSVDownload } from "react-csv";
 import { LoadingButton } from "@mui/lab";
+import SearchIcon from "@mui/icons-material/Search";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
 // Hooks
-import useCohort from "@/contexts/useCohort";
-import useSnackbarAlert from "@/contexts/useSnackbarAlert";
+// import useCohort from "@/contexts/useCohort";
+// import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Helpers
-import { ApiServiceBuilder } from "@/helpers/api";
+// import { ApiServiceBuilder } from "@/helpers/api";
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
-import { mapData } from "./ActionRow.helpers";
+// import { mapData } from "./ActionRow.helpers";
 // Types
-import {
-  GetAdministratorAllTeamMilestoneSubmissionsResponse,
-  HTTP_METHOD,
-} from "@/types/api";
+// import {
+//   GetAdministratorAllTeamMilestoneSubmissionsResponse,
+//   HTTP_METHOD,
+// } from "@/types/api";
 import { Deadline } from "@/types/deadlines";
 import { SUBMISSION_STATUS } from "@/types/submissions";
 
 type Props = {
-  selectedMilestoneDeadline: Deadline;
+  selectedMilestoneDeadline: Deadline | null;
   handleSelectedMilestoneDeadlineChange: (
     event: React.ChangeEvent<HTMLInputElement>
   ) => void;
@@ -30,6 +40,8 @@ type Props = {
   searchTextInput: string;
   handleSearchInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   milestoneDeadlines: Deadline[];
+  viewHasDropped: boolean;
+  handleToggleViewDropped: () => void;
 };
 
 const ActionRow: FC<Props> = ({
@@ -40,42 +52,69 @@ const ActionRow: FC<Props> = ({
   searchTextInput,
   handleSearchInputChange,
   milestoneDeadlines,
+  viewHasDropped,
+  handleToggleViewDropped,
 }) => {
-  const { currentCohortYear } = useCohort();
-  const { setError } = useSnackbarAlert();
+  // const { currentCohortYear } = useCohort();
+  // const { setError } = useSnackbarAlert();
   const [isExporting, setIsExporting] = useState(false);
+  const [isSendingReminders, setIsSendingReminders] = useState(false);
   const [csvData, setCsvData] = useState<Record<string, string | number>[]>([]);
 
+  // TODO: Implement export CSV
   const exportCsv = async () => {
     setIsExporting(true);
     setCsvData([]);
-    try {
-      const fetchAllTeamsMilestones = new ApiServiceBuilder({
-        method: HTTP_METHOD.GET,
-        endpoint: `/dashboard/administrator/team-submissions`,
-        queryParams: {
-          cohortYear: currentCohortYear,
-          deadlineId: selectedMilestoneDeadline.id,
-          ...(selectedSubmissionStatus === SUBMISSION_STATUS.ALL
-            ? {}
-            : { submissionStatus: selectedSubmissionStatus }),
-        },
-        requiresAuthorization: true,
-      }).build();
-      const res = await fetchAllTeamsMilestones();
-      const data: GetAdministratorAllTeamMilestoneSubmissionsResponse =
-        await res.json();
+    // try {
+    //   const fetchAllTeamsMilestones = new ApiServiceBuilder({
+    //     method: HTTP_METHOD.GET,
+    //     endpoint: `/dashboard/administrator/team-submissions`,
+    //     queryParams: {
+    //       cohortYear: currentCohortYear,
+    //       deadlineId: selectedMilestoneDeadline.id,
+    //       ...(selectedSubmissionStatus === SUBMISSION_STATUS.ALL
+    //         ? {}
+    //         : { submissionStatus: selectedSubmissionStatus }),
+    //     },
+    //     requiresAuthorization: true,
+    //   }).build();
+    //   const res = await fetchAllTeamsMilestones();
+    //   const data: GetAdministratorAllTeamMilestoneSubmissionsResponse =
+    //     await res.json();
 
-      if (!data || !data.submissions) {
-        throw new Error("No team milestone submission data found");
-      }
+    //   if (!data || !data.submissions) {
+    //     throw new Error("No team milestone submission data found");
+    //   }
 
-      const mappedData = mapData(data.submissions, selectedMilestoneDeadline);
-      setCsvData(mappedData);
-    } catch (error) {
-      setError(error);
-    }
+    //   const mappedData = mapData(data.submissions, selectedMilestoneDeadline);
+    //   setCsvData(mappedData);
+    // } catch (error) {
+    //   setError(error);
+    // }
     setIsExporting(false);
+  };
+
+  // TODO: Implement send reminders
+  const sendReminders = async () => {
+    setIsSendingReminders(true);
+    // try {
+    //   const sendReminders = new ApiServiceBuilder({
+    //     method: HTTP_METHOD.POST,
+    //     endpoint: `/dashboard/administrator/team-submissions/reminders`,
+    //     requiresAuthorization: true,
+    //     data: {
+    //       cohortYear: currentCohortYear,
+    //       deadlineId: selectedMilestoneDeadline.id,
+    //       ...(selectedSubmissionStatus === SUBMISSION_STATUS.ALL
+    //         ? {}
+    //         : { submissionStatus: selectedSubmissionStatus }),
+    //     },
+    //   }).build();
+    //   await sendReminders();
+    // } catch (error) {
+    //   setError(error);
+    // }
+    setIsSendingReminders(false);
   };
 
   return (
@@ -83,10 +122,16 @@ const ActionRow: FC<Props> = ({
       <Stack direction="row" gap="0.5rem" alignItems="center">
         <TextField
           label="Milestone"
-          value={JSON.stringify(selectedMilestoneDeadline)}
+          value={
+            selectedMilestoneDeadline
+              ? JSON.stringify(selectedMilestoneDeadline)
+              : "0"
+          }
           onChange={handleSelectedMilestoneDeadlineChange}
           select
+          size="small"
         >
+          <MenuItem value={"0"}>All Milestones</MenuItem>
           {milestoneDeadlines &&
             milestoneDeadlines.map((deadline) => (
               <MenuItem key={deadline.id} value={JSON.stringify(deadline)}>
@@ -95,44 +140,70 @@ const ActionRow: FC<Props> = ({
             ))}
         </TextField>
         <TextField
-          label="Submission Status"
-          value={selectedSubmissionStatus}
-          onChange={handleSubmissionStatusChange}
-          select
-          size="small"
-          sx={{
-            width: "fit-content",
-            marginLeft: "auto",
-          }}
-        >
-          {Object.values(SUBMISSION_STATUS).map((status) => (
-            <MenuItem key={status} value={status}>
-              {status === "All"
-                ? "All Submissions"
-                : status.split("_").join(" ")}
-            </MenuItem>
-          ))}
-        </TextField>
-      </Stack>
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <TextField
-          label="Search"
+          label="Search Project Name"
           value={searchTextInput}
           onChange={handleSearchInputChange}
           size="small"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
         />
+
+        {selectedMilestoneDeadline && (
+          <TextField
+            label="Submission Status"
+            value={selectedSubmissionStatus}
+            onChange={handleSubmissionStatusChange}
+            select
+            size="small"
+            sx={{
+              width: "fit-content",
+            }}
+          >
+            {Object.values(SUBMISSION_STATUS).map((status) => (
+              <MenuItem key={status} value={status}>
+                {status === "All"
+                  ? "All Submissions"
+                  : status.split("_").join(" ")}
+              </MenuItem>
+            ))}
+          </TextField>
+        )}
+
+        <FormControlLabel
+          id="dropped-projects-toggle"
+          value={viewHasDropped}
+          onClick={handleToggleViewDropped}
+          control={<Switch color="secondary" size="small" />}
+          label="View Dropped Teams"
+          labelPlacement="end"
+          sx={{
+            marginLeft: "auto",
+          }}
+        />
+        <LoadingButton
+          variant="outlined"
+          loading={isSendingReminders}
+          onClick={sendReminders}
+          startIcon={<MailOutlineIcon />}
+        >
+          Send Reminders
+        </LoadingButton>
         <LoadingButton
           variant="outlined"
           loading={isExporting}
           onClick={exportCsv}
+          startIcon={<FileDownloadOutlinedIcon />}
         >
           Export CSV
         </LoadingButton>
         {csvData.length ? (
           <CSVDownload
-            filename={`${
-              selectedMilestoneDeadline.name
-            } Submissions ${isoDateToLocaleDateWithTime(
+            filename={`Submissions ${isoDateToLocaleDateWithTime(
               new Date().toISOString()
             )}`}
             data={csvData}

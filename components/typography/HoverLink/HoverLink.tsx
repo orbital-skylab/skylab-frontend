@@ -5,15 +5,27 @@ import { FC } from "react";
 
 type Props = {
   href: string;
+  wrap?: boolean;
+  variant?:
+    | "h1"
+    | "h2"
+    | "h3"
+    | "h4"
+    | "h5"
+    | "h6"
+    | "subtitle1"
+    | "subtitle2"
+    | "body1"
+    | "body2";
 };
 
-const HoverLink: FC<Props> = ({ href, children }) => {
+const HoverLink: FC<Props> = ({ href, wrap, variant, children }) => {
   return (
     <Link href={href} passHref>
       <Typography
-        variant="subtitle1"
+        variant={variant}
         sx={{
-          whiteSpace: "nowrap",
+          whiteSpace: wrap ? undefined : "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
           transition: BASE_TRANSITION,

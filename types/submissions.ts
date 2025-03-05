@@ -18,6 +18,7 @@ export type Submission = {
   toProject?: Project;
   toUser?: User;
   updatedAt: string;
+  deadlineId: number;
 };
 
 /**
@@ -26,6 +27,7 @@ export type Submission = {
  * Used in `SubmissionTable` to render submissions that have yet to be submitted by users
  */
 export type PossibleSubmission = {
+  deadline: Deadline;
   // If the submission does not exist, these two fields do not exist
   id?: number;
   updatedAt?: string;
@@ -33,6 +35,8 @@ export type PossibleSubmission = {
   fromUser?: User;
   toProject?: Project;
   toUser?: User;
+  submission?: Submission[];
+  deadlineId?: number;
 };
 
 export enum STATUS {
