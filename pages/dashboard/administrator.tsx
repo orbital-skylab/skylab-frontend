@@ -27,6 +27,8 @@ import RelationTable from "@/components/tables/RelationTable";
 import ActionButtons from "@/components/tables/RelationTable/ActionButtons";
 import AllTeamsMilestoneTable from "@/components/tables/AllTeamsMilestoneTable";
 import ActionRow from "@/components/tables/AllTeamsMilestoneTable/ActionRow";
+import MilestoneSummary from "@/components/tables/AllTeamsMilestoneTable/MilestoneSummary";
+import EvaluationsTable from "@/components/tables/EvaluationsTable";
 // Hooks
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import useCohort from "@/contexts/useCohort";
@@ -50,6 +52,7 @@ import { Cohort } from "@/types/cohorts";
 
 enum TAB {
   SUBMISSIONS = "All Teams' Milestone Submissions",
+  EVALUATIONS = "All Teams' Evaluations",
   MANAGE_RELATIONSHIPS = "Manage Evaluation Relations",
 }
 
@@ -117,6 +120,29 @@ const AdministratorDashboard: NextPage = () => {
     ]
   );
 
+  /** Infinite fetching of all teams milestone submissions without limit */
+  const memoQueryParamsSummary = useMemo(
+    () => ({
+      cohortYear: selectedCohortYear,
+      deadlineId: selectedMilestoneDeadline
+        ? selectedMilestoneDeadline.id
+        : undefined,
+      search: querySearch,
+      submissionStatus:
+        selectedSubmissionStatus === SUBMISSION_STATUS.ALL
+          ? undefined
+          : selectedSubmissionStatus,
+      dropped: viewHasDropped,
+    }),
+    [
+      selectedCohortYear,
+      selectedMilestoneDeadline,
+      querySearch,
+      selectedSubmissionStatus,
+      viewHasDropped,
+    ]
+  );
+
   const {
     data: allTeamsMilestones,
     status: fetchAllTeamsMilestonesStatus,
@@ -132,6 +158,14 @@ const AdministratorDashboard: NextPage = () => {
     responseToData: (response) => response.submissions,
     enabled: Boolean(selectedCohortYear),
   });
+
+  const { data: allTeamsMilestonesSummary } =
+    useFetch<GetAdministratorAllTeamMilestoneSubmissionsResponse>({
+      endpoint: `/dashboard/administrator/team-submissions`,
+      queryParams: memoQueryParamsSummary,
+      requiresAuthorization: true,
+      enabled: Boolean(selectedCohortYear),
+    });
 
   const { data: projectsResponse } = useFetch<GetProjectsResponse>({
     endpoint: `/projects/lean?cohortYear=${selectedCohortYear}`,
@@ -282,6 +316,12 @@ const AdministratorDashboard: NextPage = () => {
                       milestoneDeadlines={milestoneDeadlines}
                       viewHasDropped={viewHasDropped}
                       handleToggleViewDropped={handleToggleViewDropped}
+                      selectedCohortYear={selectedCohortYear}
+                    />
+                    <MilestoneSummary
+                      deadline={selectedMilestoneDeadline}
+                      submissions={allTeamsMilestonesSummary?.submissions ?? []}
+                      milestoneDeadlines={milestoneDeadlines}
                     />
                     <AllTeamsMilestoneTable
                       deadline={selectedMilestoneDeadline}
@@ -319,6 +359,12 @@ const AdministratorDashboard: NextPage = () => {
                       milestoneDeadlines={milestoneDeadlines}
                       viewHasDropped={viewHasDropped}
                       handleToggleViewDropped={handleToggleViewDropped}
+                      selectedCohortYear={selectedCohortYear}
+                    />
+                    <MilestoneSummary
+                      deadline={selectedMilestoneDeadline}
+                      submissions={allTeamsMilestonesSummary?.submissions ?? []}
+                      milestoneDeadlines={milestoneDeadlines}
                     />
                     <AllTeamsMilestoneTable
                       deadline={null}
@@ -340,6 +386,42 @@ const AdministratorDashboard: NextPage = () => {
                       ) : null}
                     </Box>
                   </>
+                )}
+              </NoDataWrapper>
+            </Stack>
+          </LoadingWrapper>
+        </TabPanel>
+
+        <TabPanel value={TAB.EVALUATIONS}>
+          <LoadingWrapper isLoading={isFetching(fetchRelationsStatus)}>
+            <ActionRow
+              selectedMilestoneDeadline={selectedMilestoneDeadline}
+              handleSelectedMilestoneDeadlineChange={
+                handleSelectedMilestoneDeadlineChange
+              }
+              selectedSubmissionStatus={selectedSubmissionStatus}
+              handleSubmissionStatusChange={handleSubmissionStatusChange}
+              searchTextInput={searchTextInput}
+              handleSearchInputChange={handleSearchInputChange}
+              milestoneDeadlines={milestoneDeadlines}
+              viewHasDropped={viewHasDropped}
+              handleToggleViewDropped={handleToggleViewDropped}
+              selectedCohortYear={selectedCohortYear}
+            />
+            <Stack>
+              <NoDataWrapper
+                noDataCondition={!relationsResponse?.relations.length}
+                fallback={
+                  <NoneFound message="No evaluation relations found." />
+                }
+              >
+                {relationsResponse && relationsResponse.relations && (
+                  <EvaluationsTable
+                    relations={relationsResponse.relations}
+                    mutate={mutateRelations}
+                    projects={projectsResponse?.projects ?? []}
+                    showAdviserColumn
+                  />
                 )}
               </NoDataWrapper>
             </Stack>

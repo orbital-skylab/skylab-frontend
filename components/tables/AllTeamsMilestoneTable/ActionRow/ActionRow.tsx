@@ -13,20 +13,22 @@ import { CSVDownload } from "react-csv";
 import { LoadingButton } from "@mui/lab";
 import SearchIcon from "@mui/icons-material/Search";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import SendReminderModal from "@/components/modals/SendReminderModal";
 // Hooks
-// import useCohort from "@/contexts/useCohort";
-// import useSnackbarAlert from "@/contexts/useSnackbarAlert";
+import useCohort from "@/contexts/useCohort";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Helpers
-// import { ApiServiceBuilder } from "@/helpers/api";
+import { ApiServiceBuilder } from "@/helpers/api";
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
-// import { mapData } from "./ActionRow.helpers";
+import { mapData } from "./ActionRow.helpers";
 // Types
-// import {
-//   GetAdministratorAllTeamMilestoneSubmissionsResponse,
-//   HTTP_METHOD,
-// } from "@/types/api";
+import {
+  GetAdministratorAllTeamMilestoneSubmissionsResponse,
+  HTTP_METHOD,
+} from "@/types/api";
 import { Deadline } from "@/types/deadlines";
 import { SUBMISSION_STATUS } from "@/types/submissions";
+import { Cohort } from "@/types/cohorts";
 
 type Props = {
   selectedMilestoneDeadline: Deadline | null;
@@ -42,6 +44,7 @@ type Props = {
   milestoneDeadlines: Deadline[];
   viewHasDropped: boolean;
   handleToggleViewDropped: () => void;
+  selectedCohortYear: Cohort["academicYear"] | "";
 };
 
 const ActionRow: FC<Props> = ({
@@ -54,67 +57,47 @@ const ActionRow: FC<Props> = ({
   milestoneDeadlines,
   viewHasDropped,
   handleToggleViewDropped,
+  selectedCohortYear,
 }) => {
-  // const { currentCohortYear } = useCohort();
-  // const { setError } = useSnackbarAlert();
+  const { currentCohortYear } = useCohort();
+  const { setError } = useSnackbarAlert();
   const [isExporting, setIsExporting] = useState(false);
-  const [isSendingReminders, setIsSendingReminders] = useState(false);
   const [csvData, setCsvData] = useState<Record<string, string | number>[]>([]);
+  const [open, setOpen] = useState(false);
 
-  // TODO: Implement export CSV
   const exportCsv = async () => {
     setIsExporting(true);
     setCsvData([]);
-    // try {
-    //   const fetchAllTeamsMilestones = new ApiServiceBuilder({
-    //     method: HTTP_METHOD.GET,
-    //     endpoint: `/dashboard/administrator/team-submissions`,
-    //     queryParams: {
-    //       cohortYear: currentCohortYear,
-    //       deadlineId: selectedMilestoneDeadline.id,
-    //       ...(selectedSubmissionStatus === SUBMISSION_STATUS.ALL
-    //         ? {}
-    //         : { submissionStatus: selectedSubmissionStatus }),
-    //     },
-    //     requiresAuthorization: true,
-    //   }).build();
-    //   const res = await fetchAllTeamsMilestones();
-    //   const data: GetAdministratorAllTeamMilestoneSubmissionsResponse =
-    //     await res.json();
+    try {
+      const fetchAllTeamsMilestones = new ApiServiceBuilder({
+        method: HTTP_METHOD.GET,
+        endpoint: `/dashboard/administrator/team-submissions`,
+        queryParams: {
+          cohortYear: currentCohortYear,
+          deadlineId: selectedMilestoneDeadline?.id,
+          dropped: viewHasDropped,
+          ...(selectedSubmissionStatus === SUBMISSION_STATUS.ALL
+            ? {}
+            : { submissionStatus: selectedSubmissionStatus }),
+        },
+        requiresAuthorization: true,
+      }).build();
+      const res = await fetchAllTeamsMilestones();
+      const data: GetAdministratorAllTeamMilestoneSubmissionsResponse =
+        await res.json();
 
-    //   if (!data || !data.submissions) {
-    //     throw new Error("No team milestone submission data found");
-    //   }
-
-    //   const mappedData = mapData(data.submissions, selectedMilestoneDeadline);
-    //   setCsvData(mappedData);
-    // } catch (error) {
-    //   setError(error);
-    // }
+      if (!data || !data.submissions) {
+        throw new Error("No team milestone submission data found");
+      }
+      const csvMilestones = selectedMilestoneDeadline
+        ? [selectedMilestoneDeadline]
+        : milestoneDeadlines;
+      const mappedData = mapData(data.submissions, csvMilestones);
+      setCsvData(mappedData);
+    } catch (error) {
+      setError(error);
+    }
     setIsExporting(false);
-  };
-
-  // TODO: Implement send reminders
-  const sendReminders = async () => {
-    setIsSendingReminders(true);
-    // try {
-    //   const sendReminders = new ApiServiceBuilder({
-    //     method: HTTP_METHOD.POST,
-    //     endpoint: `/dashboard/administrator/team-submissions/reminders`,
-    //     requiresAuthorization: true,
-    //     data: {
-    //       cohortYear: currentCohortYear,
-    //       deadlineId: selectedMilestoneDeadline.id,
-    //       ...(selectedSubmissionStatus === SUBMISSION_STATUS.ALL
-    //         ? {}
-    //         : { submissionStatus: selectedSubmissionStatus }),
-    //     },
-    //   }).build();
-    //   await sendReminders();
-    // } catch (error) {
-    //   setError(error);
-    // }
-    setIsSendingReminders(false);
   };
 
   return (
@@ -187,12 +170,19 @@ const ActionRow: FC<Props> = ({
         />
         <LoadingButton
           variant="outlined"
-          loading={isSendingReminders}
-          onClick={sendReminders}
+          onClick={() => setOpen(true)}
           startIcon={<MailOutlineIcon />}
         >
           Send Reminders
         </LoadingButton>
+
+        <SendReminderModal
+          open={open}
+          setOpen={setOpen}
+          milestoneDeadlines={milestoneDeadlines}
+          selectedCohortYear={selectedCohortYear}
+        />
+
         <LoadingButton
           variant="outlined"
           loading={isExporting}
