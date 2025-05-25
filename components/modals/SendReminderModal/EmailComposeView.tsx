@@ -60,63 +60,61 @@ export default function EmailComposeView({
         </Toolbar>
       </AppBar>
 
-      {
-        <>
-          <Box sx={{ p: 2, backgroundColor: "#fff" }}>
-            <TextField
-              fullWidth
-              label="To"
-              variant="standard"
-              value={`${selectedTeamsCount} teams`}
-              disabled
-              InputProps={{ disableUnderline: true }}
-            />
+      <>
+        <Box sx={{ p: 2, backgroundColor: "#fff" }}>
+          <TextField
+            fullWidth
+            label="To"
+            variant="standard"
+            value={`${selectedTeamsCount} teams`}
+            disabled
+            InputProps={{ disableUnderline: true }}
+          />
 
-            <Divider />
+          <Divider />
 
-            <TextField
-              fullWidth
-              label="Cc"
-              variant="standard"
-              value={ccs}
-              onChange={(e) => setCcs(e.target.value)}
-              placeholder="Comma separated email addresses"
-              sx={{ mt: 1 }}
-              InputProps={{ disableUnderline: true }}
-            />
+          <TextField
+            fullWidth
+            label="Cc"
+            variant="standard"
+            value={ccs}
+            onChange={(e) => setCcs(e.target.value)}
+            placeholder="Comma separated email addresses"
+            sx={{ mt: 1 }}
+            InputProps={{ disableUnderline: true }}
+          />
 
-            <Divider />
+          <Divider />
 
-            <TextField
-              fullWidth
-              label="Subject"
-              variant="standard"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              sx={{ mt: 1 }}
-              InputProps={{ disableUnderline: true }}
-            />
+          <TextField
+            fullWidth
+            label="Subject"
+            variant="standard"
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            sx={{ mt: 1 }}
+            InputProps={{ disableUnderline: true }}
+          />
 
-            <Divider />
-          </Box>
+          <Divider />
+        </Box>
 
-          <Box sx={{ flexGrow: 1, overflow: "auto", p: 2 }}>
-            <TextField
-              fullWidth
-              multiline
-              variant="standard"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Compose email"
-              InputProps={{
-                disableUnderline: true,
-                sx: { fontSize: "14px" },
-              }}
-              sx={{ height: "100%" }}
-            />
-          </Box>
-        </>
-      }
+        <Box sx={{ flexGrow: 1, overflow: "auto", p: 2 }}>
+          <TextField
+            fullWidth
+            multiline
+            variant="standard"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Compose email"
+            InputProps={{
+              disableUnderline: true,
+              sx: { fontSize: "14px" },
+            }}
+            sx={{ height: "100%" }}
+          />
+        </Box>
+      </>
     </Paper>
   );
 }

@@ -41,7 +41,7 @@ const EvaluationsTable: FC<Props> = ({
   const filteredColumnHeadings = columnHeadings.filter(({ heading }) => {
     switch (heading) {
       case "Adviser":
-        return Boolean(showAdviserColumn);
+        return showAdviserColumn;
 
       default:
         return true;
@@ -68,7 +68,7 @@ const EvaluationsTable: FC<Props> = ({
                 relation={relation}
                 mutate={mutate}
                 projects={projects}
-                showAdviserColumn={Boolean(showAdviserColumn)}
+                showAdviserColumn={showAdviserColumn ?? false}
               />
             ))}
           </TableBody>

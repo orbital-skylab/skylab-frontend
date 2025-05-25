@@ -75,8 +75,9 @@ const SendReminderModal: FC<Props> = ({
   selectedCohortYear,
 }) => {
   const [selectedTeams, setSelectedTeams] = useState<number[]>([]);
-  const [selectedMilestoneDeadline, setSelectedMilestoneDeadline] =
-    useState<Deadline>(milestoneDeadlines[0]);
+  const [selectedMilestoneDeadline, setSelectedMilestoneDeadline] = useState<
+    Deadline | undefined
+  >(milestoneDeadlines[0]);
   const [sending, setSending] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -137,12 +138,12 @@ const SendReminderModal: FC<Props> = ({
     subject: string;
     message: string;
   }) => {
-    const sendRemindersdApiService = new ApiServiceBuilder({
+    const sendRemindersApiService = new ApiServiceBuilder({
       method: HTTP_METHOD.POST,
       endpoint: "/dashboard/administrator/send-reminders",
       body: { emails, ccs, subject, message },
     }).build();
-    const sendReminderResponse = await sendRemindersdApiService();
+    const sendReminderResponse = await sendRemindersApiService();
     console.log(sendReminderResponse);
 
     if (!sendReminderResponse.ok) {
@@ -177,6 +178,20 @@ const SendReminderModal: FC<Props> = ({
         .split(",")
         .map((email) => email.trim())
         .filter((email) => email);
+
+      // Validate CC emails
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const invalidCcs = ccList.filter((email) => !emailRegex.test(email));
+      if (invalidCcs.length > 0) {
+        setSnackbarMessage(
+          `Invalid CC email address${
+            invalidCcs.length > 1 ? "es" : ""
+          }: ${invalidCcs.join(", ")}`
+        );
+        setSnackbarOpen(true);
+        setSending(false);
+        return;
+      }
 
       await sendReminders({
         emails,
@@ -345,7 +360,11 @@ const SendReminderModal: FC<Props> = ({
       >
         <Alert
           onClose={handleSnackbarClose}
-          severity="success"
+          severity={
+            snackbarMessage.toLowerCase().includes("success")
+              ? "success"
+              : "error"
+          }
           variant="filled"
           sx={{ width: "100%" }}
         >

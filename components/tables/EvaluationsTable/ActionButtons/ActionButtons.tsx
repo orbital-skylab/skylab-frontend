@@ -21,18 +21,6 @@ const ActionButtons: FC<Props> = ({ projects, mutate }) => {
   const [isDeleteRelationsViaTeamOpen, setIsDeleteRelationsViaTeamOpen] =
     useState(false);
 
-  const handleOpenAddRelationModal = () => {
-    setIsAddRelationOpen(true);
-  };
-
-  const handleOpenAddRelationGroupModal = () => {
-    setIsAddRelationGroupOpen(true);
-  };
-
-  const handleOpenDeleteRelationsViaTeamModal = () => {
-    setIsDeleteRelationsViaTeamOpen(true);
-  };
-
   return (
     <>
       <AddRelationModal
@@ -56,7 +44,7 @@ const ActionButtons: FC<Props> = ({ projects, mutate }) => {
         <Tooltip title="Quickly add relations by creating 'groups'">
           <Button
             id="add-relations-group-button"
-            onClick={handleOpenAddRelationGroupModal}
+            onClick={() => setIsAddRelationGroupOpen(true)}
             variant="outlined"
           >
             <Add sx={{ marginRight: "0.2rem" }} /> Relations via Group
@@ -65,7 +53,7 @@ const ActionButtons: FC<Props> = ({ projects, mutate }) => {
         <Tooltip title="Delete all relations linked to a team">
           <Button
             id="delete-team-relations-button"
-            onClick={handleOpenDeleteRelationsViaTeamModal}
+            onClick={() => setIsDeleteRelationsViaTeamOpen(true)}
             variant="outlined"
           >
             <Delete sx={{ marginRight: "0.2rem" }} /> Relations via Team
@@ -73,7 +61,7 @@ const ActionButtons: FC<Props> = ({ projects, mutate }) => {
         </Tooltip>
         <Button
           id="add-single-relation-button"
-          onClick={handleOpenAddRelationModal}
+          onClick={() => setIsAddRelationOpen(true)}
           variant="outlined"
           sx={{ marginLeft: "auto" }}
         >

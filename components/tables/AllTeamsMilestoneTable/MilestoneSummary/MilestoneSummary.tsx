@@ -17,6 +17,8 @@ const MilestoneSummary: FC<Props> = ({
   submissions,
   milestoneDeadlines,
 }) => {
+  const milestones = deadline ? [deadline] : milestoneDeadlines;
+
   const countStatuses = (milestoneId: number | null) => {
     let submitted = 0,
       submittedLate = 0,
@@ -51,40 +53,51 @@ const MilestoneSummary: FC<Props> = ({
       total = submitted + submittedLate + notSubmitted;
       return { submitted, submittedLate, notSubmitted, total };
     } else {
-      milestoneDeadlines.forEach((milestone) => {
-        if (milestoneId !== null && milestone.id !== milestoneId) return;
+      // Build a lookup: milestoneId -> Set of submission statuses
+      const milestoneSubmissions = new Map<number, { status: STATUS }[]>();
 
-        submissions.forEach((sub) => {
-          if (!sub.submission || sub.submission.length === 0) {
-            notSubmitted++;
-            return;
-          }
-
-          let hasSubmissionForMilestone = false;
-
-          sub.submission.forEach((teamSubmission) => {
-            if (teamSubmission.deadlineId === milestone.id) {
-              hasSubmissionForMilestone = true;
-              const status = generateSubmissionStatus({
-                submissionId: teamSubmission.id,
-                isDraft: false,
-                updatedAt: teamSubmission.updatedAt,
-                dueBy: milestone.dueBy,
-              });
-
-              if (status === STATUS.SUBMITTED) {
-                submitted++;
-              } else if (status === STATUS.SUBMITTED_LATE) {
-                submittedLate++;
-              } else {
-                notSubmitted++;
-              }
-            }
+      submissions.forEach((sub) => {
+        if (!sub.submission || sub.submission.length === 0) {
+          // No submissions at all for this team → mark as missing for all milestones
+          milestoneDeadlines.forEach((m) => {
+            const list = milestoneSubmissions.get(m.id) || [];
+            list.push({ status: STATUS.NOT_YET_STARTED });
+            milestoneSubmissions.set(m.id, list);
           });
+        } else {
+          milestoneDeadlines.forEach((m) => {
+            const subForThisMilestone = sub.submission?.find(
+              (teamSubmission) => teamSubmission.deadlineId === m.id
+            );
+            const list = milestoneSubmissions.get(m.id) || [];
 
-          if (!hasSubmissionForMilestone) {
-            notSubmitted++;
-          }
+            if (subForThisMilestone) {
+              const status = generateSubmissionStatus({
+                submissionId: subForThisMilestone.id,
+                isDraft: false,
+                updatedAt: subForThisMilestone.updatedAt,
+                dueBy: m.dueBy,
+              });
+              list.push({ status });
+            } else {
+              list.push({ status: STATUS.NOT_YET_STARTED });
+            }
+
+            milestoneSubmissions.set(m.id, list);
+          });
+        }
+      });
+
+      const milestonesToCheck = milestoneId
+        ? [milestoneId]
+        : milestoneDeadlines.map((m) => m.id);
+
+      milestonesToCheck.forEach((mId) => {
+        const stats = milestoneSubmissions.get(mId) || [];
+        stats.forEach(({ status }) => {
+          if (status === STATUS.SUBMITTED) submitted++;
+          else if (status === STATUS.SUBMITTED_LATE) submittedLate++;
+          else notSubmitted++;
         });
       });
 
@@ -92,8 +105,6 @@ const MilestoneSummary: FC<Props> = ({
       return { submitted, submittedLate, notSubmitted, total };
     }
   };
-
-  const milestones = deadline ? [deadline] : milestoneDeadlines;
 
   return (
     <Grid container spacing={3}>
