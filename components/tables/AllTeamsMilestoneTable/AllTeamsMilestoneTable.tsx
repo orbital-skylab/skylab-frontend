@@ -15,21 +15,36 @@ import { Deadline } from "@/types/deadlines";
 import { PossibleSubmission } from "@/types/submissions";
 
 type Props = {
-  deadline: Deadline;
+  deadline: Deadline | null;
   submissions: PossibleSubmission[];
+  milestoneDeadlines: Deadline[];
 };
 
-const columnHeadings: { heading: string; align: "left" | "right" }[] = [
-  { heading: "Submitted By", align: "left" },
-  { heading: "Level of Achievement", align: "left" },
-  { heading: "Students", align: "left" },
-  { heading: "Adviser", align: "left" },
-  { heading: "Mentor", align: "left" },
-  { heading: "Status", align: "left" },
-  { heading: "Actions", align: "right" },
-];
+const AllTeamsMilestoneTable: FC<Props> = ({
+  deadline,
+  submissions,
+  milestoneDeadlines,
+}) => {
+  const columnHeadings: { heading: string; align: "left" | "right" }[] = [
+    { heading: "ID", align: "left" },
+    { heading: "Team Name", align: "left" },
+    { heading: "Project Name", align: "left" },
+    { heading: "Level of Achievement", align: "left" },
+    { heading: "Students", align: "left" },
+    { heading: "Adviser", align: "left" },
+    { heading: "Mentor", align: "left" },
+  ];
 
-const AllTeamsMilestoneTable: FC<Props> = ({ deadline, submissions }) => {
+  if (!deadline) {
+    columnHeadings.push(
+      { heading: "MS1", align: "left" },
+      { heading: "MS2", align: "left" },
+      { heading: "MS3", align: "left" }
+    );
+  } else {
+    columnHeadings.push({ heading: "Status", align: "left" });
+  }
+
   const getKey = (deadline: Deadline, submission: PossibleSubmission) => {
     return `${deadline.id}-${submission.id}-${submission.fromProject?.id}-${submission.fromProject?.id}`;
   };
@@ -49,9 +64,10 @@ const AllTeamsMilestoneTable: FC<Props> = ({ deadline, submissions }) => {
         <TableBody>
           {submissions.map((submission) => (
             <AllTeamsMilestoneRow
-              key={getKey(deadline, submission)}
+              key={deadline ? getKey(deadline, submission) : submission.id}
               deadline={deadline}
               submission={submission}
+              milestoneDeadlines={milestoneDeadlines}
             />
           ))}
         </TableBody>
