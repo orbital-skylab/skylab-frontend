@@ -60,7 +60,6 @@ const Navbar: FC = () => {
       color="transparent"
       elevation={trigger ? 4 : 0}
       sx={{
-        backdropFilter: "blur(0.3rem)",
         height: NAVBAR_HEIGHT_REM,
       }}
     >
