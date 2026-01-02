@@ -58,7 +58,6 @@ const Navbar: FC = () => {
       color="transparent"
       variant="outlined"
       sx={{
-        backdropFilter: "blur(0.3rem)",
         height: NAVBAR_HEIGHT_REM,
       }}
     >
