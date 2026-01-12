@@ -12,6 +12,7 @@ export class ApiServiceBuilder {
   private method: HTTP_METHOD;
   private contentType: CONTENT_TYPE;
   private requiresAuthorization: boolean;
+  private stream: boolean;
 
   constructor({
     method = HTTP_METHOD.GET,
@@ -20,6 +21,7 @@ export class ApiServiceBuilder {
     queryParams = {},
     contentType = CONTENT_TYPE.JSON,
     requiresAuthorization = false,
+    stream = false,
   }: {
     method?: HTTP_METHOD;
     endpoint?: string;
@@ -27,6 +29,7 @@ export class ApiServiceBuilder {
     queryParams?: QueryParams;
     contentType?: CONTENT_TYPE;
     requiresAuthorization?: boolean;
+    stream?: boolean;
   } = {}) {
     this.method = method;
     this.endpoint = endpoint;
@@ -34,6 +37,7 @@ export class ApiServiceBuilder {
     this.queryParams = queryParams;
     this.contentType = contentType;
     this.requiresAuthorization = requiresAuthorization;
+    this.stream = stream;
   }
 
   public checkParameters() {
@@ -74,6 +78,11 @@ export class ApiServiceBuilder {
     return this;
   }
 
+  setStream(stream: boolean) {
+    this.stream = stream;
+    return this;
+  }
+
   build() {
     const requestResource = `${API_URL}${this.endpoint}`;
     const requestResourceWithQueryParams =
@@ -102,6 +111,80 @@ export class ApiServiceBuilder {
       return fetch(requestResourceWithQueryParams, requestInit);
     };
     return apiService;
+  }
+}
+
+type SSEHandlers = {
+  onMeta?: (data: any) => void;
+  onMessage?: (chunk: string) => void;
+  onDone?: (data?: any) => void;
+  onError?: (data?: any) => void;
+};
+
+export async function consumeSSEStream(
+  response: Response,
+  handlers: SSEHandlers
+) {
+  if (!response.body) {
+    throw new Error("Response has no body");
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  /* eslint-disable-next-line no-constant-condition */
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+
+    const frames = buffer.split("\n\n");
+    buffer = frames.pop() ?? "";
+
+    for (const frame of frames) {
+      if (!frame.trim()) continue;
+
+      let event = "message";
+      const dataLines: string[] = [];
+
+      for (const line of frame.split("\n")) {
+        if (line.startsWith("event:")) {
+          event = line.slice(6).trim();
+        } else if (line.startsWith("data:")) {
+          dataLines.push(line.slice(5));
+        }
+      }
+
+      const data = dataLines.join("\n");
+
+      try {
+        switch (event) {
+          case "meta":
+            handlers.onMeta?.(JSON.parse(data));
+            break;
+
+          case "done":
+            handlers.onDone?.(JSON.parse(data));
+            break;
+
+          case "error":
+            handlers.onError?.(JSON.parse(data));
+            break;
+
+          case "message":
+            handlers.onMessage?.(data);
+            break;
+
+          default:
+            console.warn(`Unknown SSE event: ${event}`);
+        }
+      } catch (err) {
+        console.error("SSE parse error:", err, { event, data });
+        handlers.onError?.({ message: "Malformed SSE payload" });
+      }
+    }
   }
 }
 

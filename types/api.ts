@@ -1,4 +1,5 @@
 import { Adviser } from "./advisers";
+import { FaqConversation } from "./ai";
 import { Announcement, AnnouncementWithCommentThreads } from "./announcements";
 import { Cohort } from "./cohorts";
 import { Deadline, DeadlineDeliverable, Section } from "./deadlines";
@@ -371,6 +372,16 @@ export type SubmitVotesResponse = GetVotesResponse;
  */
 export type GetVoteEventResultsResponse = {
   results: VoteEventResult[];
+};
+
+/**
+ * AI Endpoints
+ */
+export type GetFaqConversationsResponse = {
+  faqConversations: FaqConversation[];
+};
+export type GetFaqConversationResponse = {
+  faqConversation: FaqConversation;
 };
 
 /**
