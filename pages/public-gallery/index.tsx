@@ -68,7 +68,6 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
       props: {
         projects: [],
       },
-      revalidate: 3600, // Retry after 1 hour on error
     };
   }
 };
