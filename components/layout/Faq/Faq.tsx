@@ -155,38 +155,39 @@ const Faq = ({ children }: FaqLayoutProps) => {
 
             {conversations.map((conv) => {
               const isActive = Number(conversationId) === conv.id;
-              return <Button
-                key={conv.id}
-                variant="text"
-                onClick={() => router.push(`/faq/${conv.id}`)}
-                fullWidth
-                sx={{
-                  justifyContent: "flex-start",
-                  textTransform: "none",
-                  borderRadius: 2,
-                  color: "text.primary",
-                  px: 1.5,
-                  backgroundColor:
-                    isActive ? "#e5e5e5" : "transparent",
+              return (
+                <Button
+                  key={conv.id}
+                  variant="text"
+                  onClick={() => router.push(`/faq/${conv.id}`)}
+                  fullWidth
+                  sx={{
+                    justifyContent: "flex-start",
+                    textTransform: "none",
+                    borderRadius: 2,
+                    color: "text.primary",
+                    px: 1.5,
+                    backgroundColor: isActive ? "#e5e5e5" : "transparent",
 
-                  "&:hover": {
-                    backgroundColor: "#eeeeee",
-                  },
-                }}
-              >
-                <span
-                  style={{
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    width: "100%",
-                    textAlign: "left",
-                    display: "block",
+                    "&:hover": {
+                      backgroundColor: "#eeeeee",
+                    },
                   }}
                 >
-                  {conv.title ?? "Untitled conversation"}
-                </span>
-              </Button>
+                  <span
+                    style={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      width: "100%",
+                      textAlign: "left",
+                      display: "block",
+                    }}
+                  >
+                    {conv.title ?? "Untitled conversation"}
+                  </span>
+                </Button>
+              );
             })}
           </div>
         )}
