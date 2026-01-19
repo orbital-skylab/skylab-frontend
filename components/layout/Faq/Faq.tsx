@@ -15,6 +15,7 @@ const TOP_OFFSET = "4rem";
 
 const Faq = ({ children }: FaqLayoutProps) => {
   const router = useRouter();
+  const { conversationId } = router.query;
 
   const { data, status } = useFetch<GetFaqConversationsResponse>({
     endpoint: `/ai/faq`,
@@ -135,7 +136,7 @@ const Faq = ({ children }: FaqLayoutProps) => {
               padding: "0.75rem",
               display: "flex",
               flexDirection: "column",
-              gap: "0.1rem",
+              gap: "0rem",
             }}
           >
             <h4
@@ -152,8 +153,9 @@ const Faq = ({ children }: FaqLayoutProps) => {
 
             {status === "FETCHING" && <CircularProgress />}
 
-            {conversations.map((conv) => (
-              <Button
+            {conversations.map((conv) => {
+              const isActive = Number(conversationId) === conv.id;
+              return <Button
                 key={conv.id}
                 variant="text"
                 onClick={() => router.push(`/faq/${conv.id}`)}
@@ -164,6 +166,8 @@ const Faq = ({ children }: FaqLayoutProps) => {
                   borderRadius: 2,
                   color: "text.primary",
                   px: 1.5,
+                  backgroundColor:
+                    isActive ? "#e5e5e5" : "transparent",
 
                   "&:hover": {
                     backgroundColor: "#eeeeee",
@@ -183,7 +187,7 @@ const Faq = ({ children }: FaqLayoutProps) => {
                   {conv.title ?? "Untitled conversation"}
                 </span>
               </Button>
-            ))}
+            })}
           </div>
         )}
       </div>

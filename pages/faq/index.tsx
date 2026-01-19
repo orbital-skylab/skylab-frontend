@@ -43,7 +43,7 @@ const Qna = () => {
           gap: "3rem",
           alignItems: "center",
           width: "100%",
-          marginBottom: "8rem",
+          marginBottom: "12rem",
         }}
       >
         {/* Logo + Title */}
@@ -85,7 +85,7 @@ const Qna = () => {
             <Form
               style={{
                 width: "100%",
-                maxWidth: "680px",
+                maxWidth: "800px",
                 borderRadius: 40,
                 padding: "0.9rem 1.15rem",
                 display: "flex",
