@@ -1,14 +1,19 @@
-import { ApiServiceBuilder, consumeSSEStream } from "@/helpers/api";
-import useFetch from "@/hooks/useFetch";
-import { GetFaqConversationsResponse, HTTP_METHOD } from "@/types/api";
-import { Add, AttachFile, KeyboardVoice } from "@mui/icons-material";
+import { ApiServiceBuilder } from "@/helpers/api";
+import { HTTP_METHOD } from "@/types/api";
+import {
+  AddOutlined,
+  ArrowUpwardOutlined,
+  KeyboardVoiceOutlined,
+} from "@mui/icons-material";
 import { Form, Formik } from "formik";
 import { useRouter } from "next/router";
-import React from "react";
-import FaqLayout from "@/components/layout/Faq/Faq";
+import React, { useEffect, useRef } from "react";
+import FaqLayout from "@/components/layout/Faq";
+import { Button, IconButton, TextareaAutosize, Tooltip } from "@mui/material";
 
 const Qna = () => {
   const router = useRouter();
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
   const createNewConversation = async (content: string) => {
     const apiService = new ApiServiceBuilder({
@@ -20,98 +25,149 @@ const Qna = () => {
     }).build();
 
     const response = await apiService();
+    const { conversation } = await response.json();
 
-    await consumeSSEStream(response, {
-      onMeta: ({ conversationId }) => {
-        router.push(
-          `/faq/${conversationId}?draft=${encodeURIComponent(content)}`
-        );
-      },
-    });
+    router.push(`/faq/${conversation.id}?draft=${encodeURIComponent(content)}`);
   };
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   return (
     <FaqLayout>
-      {/* Logo + Title */}
-      <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-        <img
-          src="/skylab-logo.png"
-          alt="Skylab Logo"
-          style={{ width: "100px", margin: "auto" }}
-        />
-
-        <h2 style={{ fontWeight: 700, margin: 0, fontSize: "1.8rem" }}>
-          Ask anything about Orbital
-        </h2>
-        <p style={{ color: "#666", marginTop: "0.25rem" }}>
-          Get answers about milestones, requirements, or programme structure.
-        </p>
-      </div>
-
-      {/* Formik input */}
-      <Formik
-        initialValues={{ content: "" }}
-        onSubmit={async (values, { resetForm, setSubmitting }) => {
-          try {
-            await createNewConversation(values.content);
-            resetForm();
-          } finally {
-            setSubmitting(false);
-          }
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "3rem",
+          alignItems: "center",
+          width: "100%",
+          marginBottom: "8rem",
         }}
       >
-        {({ values, handleChange, isSubmitting }) => (
-          <Form
-            style={{
-              width: "100%",
-              maxWidth: "680px",
-              borderRadius: "12px",
-              padding: "0.9rem 1.2rem",
-              display: "flex",
-              gap: "0.75rem",
-              alignItems: "center",
-              background: "#f2f2f2",
-              boxShadow: "0px 0px 0px 1px #e0e0e0 inset",
-            }}
-          >
-            <AttachFile style={{ fontSize: "1.3rem", opacity: 0.7 }} />
-            <Add style={{ fontSize: "1.4rem", opacity: 0.75 }} />
+        {/* Logo + Title */}
+        <div
+          style={{
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            gap: "0.5rem",
+          }}
+        >
+          <img
+            src="/skylab-logo.png"
+            alt="Skylab Logo"
+            style={{ width: "120px", margin: "auto" }}
+          />
 
-            <input
-              name="content"
-              type="text"
-              placeholder="Ask a question…"
-              value={values.content}
-              onChange={handleChange}
-              disabled={isSubmitting}
+          <h2 style={{ fontWeight: 600, margin: 0, fontSize: "1.7rem" }}>
+            Ask anything about Orbital
+          </h2>
+          <p style={{ color: "#666" }}>
+            Get answers about milestones, requirements, or programme structure.
+          </p>
+        </div>
+
+        {/* Formik input */}
+        <Formik
+          initialValues={{ content: "" }}
+          onSubmit={async (values, { resetForm, setSubmitting }) => {
+            try {
+              await createNewConversation(values.content);
+              resetForm();
+            } finally {
+              setSubmitting(false);
+            }
+          }}
+        >
+          {({ values, handleChange, isSubmitting }) => (
+            <Form
               style={{
-                flexGrow: 1,
-                border: "none",
-                outline: "none",
-                fontSize: "1rem",
-                background: "transparent",
-              }}
-            />
-
-            <KeyboardVoice style={{ fontSize: "1.4rem", opacity: 0.75 }} />
-
-            <button
-              type="submit"
-              disabled={isSubmitting || !values.content.trim()}
-              style={{
-                padding: "6px 14px",
-                border: "1px solid #000",
-                background: "#fff",
-                borderRadius: "6px",
-                cursor: "pointer",
-                fontWeight: 500,
+                width: "100%",
+                maxWidth: "680px",
+                borderRadius: 40,
+                padding: "0.9rem 1.15rem",
+                display: "flex",
+                gap: "0.rem",
+                alignItems: "center",
+                background: "#f5f5f5",
               }}
             >
-              Send
-            </button>
-          </Form>
-        )}
-      </Formik>
+              <Tooltip title="Add attachments">
+                <IconButton>
+                  <AddOutlined />
+                </IconButton>
+              </Tooltip>
+              <TextareaAutosize
+                ref={inputRef}
+                name="content"
+                value={values.content}
+                onChange={handleChange}
+                placeholder="Ask a question"
+                minRows={1}
+                maxRows={6}
+                disabled={isSubmitting}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    if (!isSubmitting && values.content.trim()) {
+                      (
+                        e.currentTarget as HTMLTextAreaElement
+                      ).form?.dispatchEvent(
+                        new Event("submit", { bubbles: true, cancelable: true })
+                      );
+                    }
+                  }
+                }}
+                style={{
+                  flexGrow: 1,
+                  border: "none",
+                  outline: "none",
+                  background: "transparent",
+                  fontSize: "1rem",
+                  lineHeight: 1.4,
+                  resize: "none",
+                  padding: "6px 0",
+                }}
+              />
+
+              <Tooltip title="Voice">
+                <IconButton>
+                  <KeyboardVoiceOutlined />
+                </IconButton>
+              </Tooltip>
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={isSubmitting || !values.content.trim()}
+                sx={{
+                  minWidth: 40,
+                  width: 40,
+                  height: 40,
+                  borderRadius: "50%",
+                  padding: 0,
+                  // enabled
+                  bgcolor: "#000",
+                  color: "#fff",
+
+                  "&:hover": {
+                    bgcolor: "#000",
+                  },
+
+                  // disabled
+                  "&.Mui-disabled": {
+                    bgcolor: "#e0e0e0",
+                    color: "#9e9e9e",
+                  },
+                }}
+              >
+                <ArrowUpwardOutlined />
+              </Button>
+            </Form>
+          )}
+        </Formik>
+      </div>
     </FaqLayout>
   );
 };

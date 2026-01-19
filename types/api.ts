@@ -1,5 +1,5 @@
 import { Adviser } from "./advisers";
-import { FaqConversation } from "./ai";
+import { FaqConversation, FaqMessage } from "./ai";
 import { Announcement, AnnouncementWithCommentThreads } from "./announcements";
 import { Cohort } from "./cohorts";
 import { Deadline, DeadlineDeliverable, Section } from "./deadlines";
@@ -382,6 +382,10 @@ export type GetFaqConversationsResponse = {
 };
 export type GetFaqConversationResponse = {
   faqConversation: FaqConversation;
+};
+export type PostFaqMessageResponse = {
+  userMessage: FaqMessage;
+  assistantMessage: FaqMessage;
 };
 
 /**

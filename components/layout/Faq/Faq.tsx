@@ -1,108 +1,209 @@
 import useFetch from "@/hooks/useFetch";
 import { GetFaqConversationsResponse } from "@/types/api";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
+import { Add, Search, ChevronLeft, ChevronRight } from "@mui/icons-material";
+import { Button, CircularProgress, IconButton } from "@mui/material";
 
 type FaqLayoutProps = {
-    children: React.ReactNode;
+  children: React.ReactNode;
 };
 
 const SIDEBAR_WIDTH = 300;
-const TOP_OFFSET = "3rem";
-const INPUT_BAR_SPACE = "120px"; // reserve space for floating input
+const SIDEBAR_COLLAPSED_WIDTH = 64;
+const TOP_OFFSET = "4rem";
 
 const Faq = ({ children }: FaqLayoutProps) => {
-    const router = useRouter();
+  const router = useRouter();
 
-    const { data: conversationsResponse, status } =
-        useFetch<GetFaqConversationsResponse>({
-            endpoint: `/ai/faq`,
-            enabled: true,
-        });
+  const { data, status } = useFetch<GetFaqConversationsResponse>({
+    endpoint: `/ai/faq`,
+    enabled: true,
+  });
 
-    const conversations = conversationsResponse?.faqConversations ?? [];
+  const conversations = data?.faqConversations ?? [];
 
-    return (
+  const [collapsed, setCollapsed] = useState(false);
+
+  const sidebarWidth = collapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH;
+
+  return (
+    <div
+      style={{
+        minHeight: `calc(100vh - ${TOP_OFFSET})`,
+        marginTop: TOP_OFFSET,
+        fontFamily: "Inter, sans-serif",
+      }}
+    >
+      {/* ===== SIDEBAR ===== */}
+      <div
+        style={{
+          position: "fixed",
+          top: TOP_OFFSET,
+          left: 0,
+          width: sidebarWidth,
+          height: `calc(100vh - ${TOP_OFFSET})`,
+          borderRight: "1px solid #e0e0e0",
+          background: "#fafafa",
+          display: "flex",
+          flexDirection: "column",
+          transition: "width 0.2s ease",
+          overflowX: "hidden",
+        }}
+      >
+        {/* --- TOP ACTIONS --- */}
         <div
-            style={{
-                minHeight: `calc(100vh - ${TOP_OFFSET})`,
-                fontFamily: "Inter, sans-serif",
-                color: "#111",
-                marginTop: TOP_OFFSET,
-            }}
+          style={{
+            padding: "0.75rem",
+            display: "flex",
+            flexDirection: "column",
+            gap: "0.5rem",
+            borderBottom: "1px solid #e5e5e5",
+          }}
         >
-            {/* --- LEFT SIDEBAR (FIXED) --- */}
-            <div
-                style={{
-                    position: "fixed",
-                    top: TOP_OFFSET,
-                    left: 0,
-                    width: `${SIDEBAR_WIDTH}px`,
-                    height: `calc(100vh - ${TOP_OFFSET})`,
-                    borderRight: "1px solid #e0e0e0",
-                    padding: "1rem",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "1rem",
-                    background: "#fafafa",
-                    overflowY: "auto", // ✅ sidebar only
-                }}
+          {/* Collapse Toggle */}
+          <IconButton
+            onClick={() => setCollapsed((v) => !v)}
+            style={{ alignSelf: collapsed ? "center" : "flex-end" }}
+          >
+            {collapsed ? <ChevronRight /> : <ChevronLeft />}
+          </IconButton>
+
+          {/* New Conversation */}
+          {collapsed ? (
+            <IconButton
+              onClick={() => router.push("/faq")}
+              sx={{
+                alignSelf: "center",
+                borderRadius: 2,
+              }}
             >
-                <h4 style={{ margin: 0, fontWeight: 600 }}>History</h4>
+              <Add fontSize="small" />
+            </IconButton>
+          ) : (
+            <Button
+              onClick={() => router.push("/faq")}
+              variant="text"
+              startIcon={<Add fontSize="small" />}
+              fullWidth
+              sx={{
+                justifyContent: "flex-start",
+                textTransform: "none",
+                borderRadius: 2,
 
-                {status === "FETCHING" && (
-                    <div style={{ fontSize: "0.85rem", color: "#666" }}>
-                        Loading conversations…
-                    </div>
-                )}
-
-                {status === "FETCHED" && conversations.length === 0 && (
-                    <div style={{ fontSize: "0.85rem", color: "#666" }}>
-                        No conversations yet
-                    </div>
-                )}
-
-                {conversations.map((conv) => (
-                    <div
-                        key={conv.id}
-                        onClick={() => router.push(`/faq/${conv.id}`)}
-                        style={{
-                            padding: "0.75rem",
-                            borderRadius: "8px",
-                            background: "#fff",
-                            border: "1px solid #ddd",
-                            cursor: "pointer",
-                            fontSize: "0.9rem",
-                            lineHeight: 1.4,
-                            transition: "background 0.15s ease",
-                        }}
-                        onMouseEnter={(e) =>
-                            (e.currentTarget.style.background = "#f5f5f5")
-                        }
-                        onMouseLeave={(e) =>
-                            (e.currentTarget.style.background = "#fff")
-                        }
-                    >
-                        {conv.title ?? "Untitled conversation"}
-                    </div>
-                ))}
-            </div>
-
-            {/* --- MAIN CONTENT (BODY SCROLLS) --- */}
-            <div
-                style={{
-                    marginLeft: `${SIDEBAR_WIDTH}px`,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    paddingTop: "4rem",
-                    paddingBottom: INPUT_BAR_SPACE,
-                }}
+                px: 1.5,
+              }}
             >
-                {children}
-            </div>
+              New conversation
+            </Button>
+          )}
+
+          {/* Search */}
+          {collapsed ? (
+            <IconButton
+              sx={{
+                alignSelf: "center",
+                borderRadius: 2,
+              }}
+            >
+              <Search fontSize="small" />
+            </IconButton>
+          ) : (
+            <Button
+              variant="text"
+              startIcon={<Search fontSize="small" />}
+              fullWidth
+              sx={{
+                justifyContent: "flex-start",
+                textTransform: "none",
+                borderRadius: 2,
+
+                px: 1.5,
+              }}
+            >
+              Conversations
+            </Button>
+          )}
         </div>
-    );
+
+        {/* --- CONVERSATIONS --- */}
+        {!collapsed && (
+          <div
+            style={{
+              flex: 1,
+              overflowY: "auto",
+              padding: "0.75rem",
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.1rem",
+            }}
+          >
+            <h4
+              style={{
+                margin: "0.5rem 0 0.25rem",
+                fontSize: "0.85rem",
+                fontWeight: 600,
+                color: "#6b6b6b",
+                letterSpacing: "0.04em",
+              }}
+            >
+              Recent Conversations
+            </h4>
+
+            {status === "FETCHING" && <CircularProgress />}
+
+            {conversations.map((conv) => (
+              <Button
+                key={conv.id}
+                variant="text"
+                onClick={() => router.push(`/faq/${conv.id}`)}
+                fullWidth
+                sx={{
+                  justifyContent: "flex-start",
+                  textTransform: "none",
+                  borderRadius: 2,
+                  color: "text.primary",
+                  px: 1.5,
+
+                  "&:hover": {
+                    backgroundColor: "#eeeeee",
+                  },
+                }}
+              >
+                <span
+                  style={{
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    width: "100%",
+                    textAlign: "left",
+                    display: "block",
+                  }}
+                >
+                  {conv.title ?? "Untitled conversation"}
+                </span>
+              </Button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ===== MAIN CONTENT ===== */}
+      <div
+        style={{
+          marginLeft: sidebarWidth,
+          transition: "margin-left 0.2s ease",
+          minHeight: `calc(100vh - ${TOP_OFFSET})`,
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
 };
 
 export default Faq;
