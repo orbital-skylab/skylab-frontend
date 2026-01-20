@@ -23,7 +23,8 @@ export default function useAutoScroll<T extends HTMLElement>(
         block: "end",
       });
     }
-  }, [threshold, deps]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [threshold, ...deps]);
 
   return { containerRef, bottomRef };
 }

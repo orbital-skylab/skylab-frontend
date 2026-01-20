@@ -20,19 +20,12 @@ import remarkGfm from "remark-gfm";
 import rehypeSanitize from "rehype-sanitize";
 import { FaqMessage } from "@/types/ai";
 import useAutoScroll from "@/hooks/useAutoScroll";
-import {
-  Box,
-  Button,
-  IconButton,
-  Input,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, Button, IconButton, Input, Tooltip } from "@mui/material";
 import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 
 const INPUT_WARNING_LIMIT = 3000;
 const INPUT_EXCEEDED_LIMIT = 4000;
-const SHOW_SCROLL_DOWN_BUTTON_THRESHOLD = 150;
+const SHOW_SCROLL_DOWN_BUTTON_THRESHOLD = 350;
 
 const Conversation = () => {
   const router = useRouter();
@@ -125,19 +118,21 @@ const Conversation = () => {
   }, [conversationId, conversationResponse]);
 
   useEffect(() => {
-    const el = containerRef.current;
+    const el = document.scrollingElement;
     if (!el) return;
 
     const onScroll = () => {
       const distanceFromBottom =
         el.scrollHeight - el.scrollTop - el.clientHeight;
-      console.log(distanceFromBottom)
-      setShowScrollDownButton(distanceFromBottom > SHOW_SCROLL_DOWN_BUTTON_THRESHOLD);
+
+      setShowScrollDownButton(
+        distanceFromBottom > SHOW_SCROLL_DOWN_BUTTON_THRESHOLD
+      );
     };
 
-    el.addEventListener("scroll", onScroll);
-    return () => el.removeEventListener("scroll", onScroll);
-  }, [containerRef]);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   if (!conversationResponse) {
     return null;
@@ -162,7 +157,6 @@ const Conversation = () => {
           paddingBottom: "6rem",
         }}
       >
-
         {messages.map((msg) => {
           const isUser = msg.role === "USER";
           return <Message key={msg.id} content={msg.content} isUser={isUser} />;
@@ -285,25 +279,26 @@ const Conversation = () => {
           >
             {charCount} / {INPUT_EXCEEDED_LIMIT}
             {charCount <= INPUT_EXCEEDED_LIMIT && (
-              <Typography component="span" sx={{ marginLeft: 1 }}>
+              <Box component="span" sx={{ marginLeft: 6 }}>
                 · Consider shortening for clearer answers
-              </Typography>
+              </Box>
             )}
             {charCount > INPUT_EXCEEDED_LIMIT && (
-              <Typography
-                component="span"
-                sx={{ marginLeft: 1, color: "error.main" }}
-              >
+              <Box component="span" sx={{ marginLeft: 6 }}>
                 · Message is too long, please shorten it
-              </Typography>
+              </Box>
             )}
           </Box>
         )}
-<<<<<<< HEAD
       </Box>
-=======
-      </div>
-      {showScrollDownButton && (
+      <Box
+        sx={{
+          width: "100%",
+          position: "fixed",
+          bottom: "110px",
+          textAlign: "center",
+        }}
+      >
         <IconButton
           onClick={() =>
             bottomRef.current?.scrollIntoView({
@@ -312,20 +307,18 @@ const Conversation = () => {
             })
           }
           sx={{
-            position: "fixed",
-            bottom: "110px",
-            right: "32px",
-            background: "#111",
-            color: "#fff",
-            boxShadow: "0 8px 20px rgba(0,0,0,0.25)",
+            background: "rgba(235, 235, 235, 0.9)",
+            color: "#2b2b2b",
+            border: "1px solid rgba(0, 0, 0, 0.18)",
             zIndex: 1000,
-            "&:hover": { background: "#000" },
+            pointerEvents: showScrollDownButton ? "auto" : "none",
+            opacity: showScrollDownButton ? 1 : 0,
+            transition: "opacity 0.2s ease",
           }}
         >
           <ArrowDownwardOutlined />
         </IconButton>
-      )}
->>>>>>> 25973cb (Fix layout issues)
+      </Box>
     </FaqLayout>
   );
 };
@@ -383,7 +376,7 @@ const Message = ({ content, isUser }: MessageProps) => {
                   sx={{
                     border: "1px solid #ddd",
                     padding: "8px",
-                    backgroundColor: "#f5f5f5",
+                    background: "#f5f5f5",
                     fontWeight: 600,
                     textAlign: "left",
                   }}
@@ -414,11 +407,10 @@ const Message = ({ content, isUser }: MessageProps) => {
                   <Box
                     component="code"
                     sx={{
-                      backgroundColor: "#eaeaea",
+                      background: "#eaeaea",
                       padding: "0.2em 0.4em",
                       borderRadius: "4px",
                       fontSize: "0.85em",
-                      fontFamily: "monospace",
                     }}
                   >
                     {children}
@@ -430,13 +422,12 @@ const Message = ({ content, isUser }: MessageProps) => {
                 <Box
                   component="pre"
                   sx={{
-                    backgroundColor: "#1e1e1e",
+                    background: "#1e1e1e",
                     color: "#fff",
                     padding: "1rem",
                     borderRadius: "8px",
                     overflowX: "auto",
                     fontSize: "0.85em",
-                    margin: "0.75rem 0",
                   }}
                 >
                   <Box component="code">{children}</Box>
@@ -450,7 +441,6 @@ const Message = ({ content, isUser }: MessageProps) => {
                 </Box>
               );
             },
-
             ol({ children }) {
               return (
                 <Box component="ol" sx={{ paddingLeft: "1.2rem" }}>
@@ -458,12 +448,11 @@ const Message = ({ content, isUser }: MessageProps) => {
                 </Box>
               );
             },
-
             p({ children }) {
               return (
-                <Typography component="p" sx={{ margin: "0.4rem 0" }}>
+                <Box component="p" sx={{ margin: "0.4rem 0" }}>
                   {children}
-                </Typography>
+                </Box>
               );
             },
           }}
@@ -477,8 +466,8 @@ const Message = ({ content, isUser }: MessageProps) => {
 
 const ConversationHeader = ({ title }: { title?: string }) => {
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         position: "sticky",
         top: "4rem",
         zIndex: 10,
@@ -491,8 +480,8 @@ const ConversationHeader = ({ title }: { title?: string }) => {
         color: "#5f5f5f",
       }}
     >
-      <div
-        style={{
+      <Box
+        sx={{
           fontSize: "0.95rem",
           fontWeight: 600,
 
@@ -503,13 +492,10 @@ const ConversationHeader = ({ title }: { title?: string }) => {
         }}
       >
         {title ?? "Untitled Conversation"}
-      </div>
-      <IconButton
-        color="inherit"
-        sx={{ pointerEvents: "auto" }}
-      >
+      </Box>
+      <IconButton color="inherit" sx={{ pointerEvents: "auto" }}>
         <MoreHorizOutlined />
       </IconButton>
-    </div>
+    </Box>
   );
 };

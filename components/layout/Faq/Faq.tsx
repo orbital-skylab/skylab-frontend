@@ -236,9 +236,7 @@ const Faq = ({ children }: FaqLayoutProps) => {
                 </Button>
               );
             })}
-            <CircularProgress
-              sx={{ opacity: status === "FETCHING" ? 1 : 0 }}
-            />
+            <CircularProgress sx={{ opacity: status === "FETCHING" ? 1 : 0 }} />
             {!hasMoreConversations && (
               <Box
                 sx={{
