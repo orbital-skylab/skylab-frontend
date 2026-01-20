@@ -8,8 +8,10 @@ import {
 } from "@/types/api";
 import {
   AddOutlined,
+  ArrowDownwardOutlined,
   ArrowUpwardOutlined,
   KeyboardVoiceOutlined,
+  MoreHorizOutlined,
 } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -30,16 +32,17 @@ import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 
 const INPUT_WARNING_LIMIT = 3000;
 const INPUT_EXCEEDED_LIMIT = 4000;
+const SHOW_SCROLL_DOWN_BUTTON_THRESHOLD = 150;
 
 const Conversation = () => {
   const router = useRouter();
   const { draft, conversationId } = router.query;
-
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [tempUserMessage, setTempUserMessage] = useState("");
   const [messages, setMessages] = useState<FaqMessage[]>([]);
   const [tempAssistantMessage, setTempAssistantMessage] = useState("");
+  const [showScrollDownButton, setShowScrollDownButton] = useState(false);
   const charCount = input.length;
   const isInputLimitExceeded = charCount > INPUT_EXCEEDED_LIMIT;
 
@@ -121,8 +124,30 @@ const Conversation = () => {
     setMessages(conversationResponse?.faqConversation?.messages || []);
   }, [conversationId, conversationResponse]);
 
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const onScroll = () => {
+      const distanceFromBottom =
+        el.scrollHeight - el.scrollTop - el.clientHeight;
+      console.log(distanceFromBottom)
+      setShowScrollDownButton(distanceFromBottom > SHOW_SCROLL_DOWN_BUTTON_THRESHOLD);
+    };
+
+    el.addEventListener("scroll", onScroll);
+    return () => el.removeEventListener("scroll", onScroll);
+  }, [containerRef]);
+
+  if (!conversationResponse) {
+    return null;
+  }
+
   return (
     <FaqLayout>
+      <ConversationHeader
+        title={conversationResponse?.faqConversation?.title ?? undefined}
+      />
       {/* --- MESSAGE AREA --- */}
       <Box
         ref={containerRef}
@@ -137,6 +162,7 @@ const Conversation = () => {
           paddingBottom: "6rem",
         }}
       >
+
         {messages.map((msg) => {
           const isUser = msg.role === "USER";
           return <Message key={msg.id} content={msg.content} isUser={isUser} />;
@@ -273,7 +299,33 @@ const Conversation = () => {
             )}
           </Box>
         )}
+<<<<<<< HEAD
       </Box>
+=======
+      </div>
+      {showScrollDownButton && (
+        <IconButton
+          onClick={() =>
+            bottomRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "end",
+            })
+          }
+          sx={{
+            position: "fixed",
+            bottom: "110px",
+            right: "32px",
+            background: "#111",
+            color: "#fff",
+            boxShadow: "0 8px 20px rgba(0,0,0,0.25)",
+            zIndex: 1000,
+            "&:hover": { background: "#000" },
+          }}
+        >
+          <ArrowDownwardOutlined />
+        </IconButton>
+      )}
+>>>>>>> 25973cb (Fix layout issues)
     </FaqLayout>
   );
 };
@@ -420,5 +472,44 @@ const Message = ({ content, isUser }: MessageProps) => {
         </ReactMarkdown>
       </Box>
     </Box>
+  );
+};
+
+const ConversationHeader = ({ title }: { title?: string }) => {
+  return (
+    <div
+      style={{
+        position: "sticky",
+        top: "4rem",
+        zIndex: 10,
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        pointerEvents: "none",
+        padding: "0.6rem 1.1rem",
+        color: "#5f5f5f",
+      }}
+    >
+      <div
+        style={{
+          fontSize: "0.95rem",
+          fontWeight: 600,
+
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          pointerEvents: "auto",
+        }}
+      >
+        {title ?? "Untitled Conversation"}
+      </div>
+      <IconButton
+        color="inherit"
+        sx={{ pointerEvents: "auto" }}
+      >
+        <MoreHorizOutlined />
+      </IconButton>
+    </div>
   );
 };

@@ -19,7 +19,7 @@ const SCROLL_THRESHOLD = 80;
 const Faq = ({ children }: FaqLayoutProps) => {
   const router = useRouter();
   const { conversationId } = router.query;
-  const conversationBoxRef = React.useRef<HTMLBoxElement | null>(null);
+  const conversationBoxRef = React.useRef<HTMLDivElement | null>(null);
   const [page, setPage] = useState(0);
   const [collapsed, setCollapsed] = useState(false);
   const [conversations, setAllConversations] = useState<FaqConversation[]>([]);
