@@ -196,9 +196,10 @@ const FaqLayoutInner = ({ children }: FaqLayoutProps) => {
                       whiteSpace: "nowrap",
                       width: "100%",
                       textAlign: "left",
-                    }} >
+                    }}>
                       {conv.title ?? "Untitled Conversation"}
                     </Box>
+
                   </Button>
                 );
               })}
