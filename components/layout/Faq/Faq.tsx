@@ -1,113 +1,91 @@
-import useFetch from "@/hooks/useFetch";
-import { GetFaqConversationsResponse } from "@/types/api";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
 import { Add, Search, ChevronLeft, ChevronRight } from "@mui/icons-material";
-import { Box, Button, CircularProgress, IconButton } from "@mui/material";
-import { FaqConversation } from "@/types/ai";
+import {
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import {
+  NAVBAR_HEIGHT_REM,
+  SIDEBAR_COLLAPSED_WIDTH,
+  SIDEBAR_EXPANDED_WIDTH,
+} from "@/styles/constants";
+import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
+import NoneFound from "@/components/emptyStates/NoneFound";
+import useFaq, { FaqProvider } from "@/contexts/useFaq";
+import { PAGES } from "@/helpers/navigation";
+import dayjs from "dayjs";
+import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 
 type FaqLayoutProps = {
   children: React.ReactNode;
 };
 
-const SIDEBAR_WIDTH = 300;
-const SIDEBAR_COLLAPSED_WIDTH = 64;
-const TOP_OFFSET = "4rem";
-const PAGE_SIZE = 25;
-const SCROLL_THRESHOLD = 80;
+const SCROLL_THRESHOLD = 120;
 
-const Faq = ({ children }: FaqLayoutProps) => {
+/* ---------------- INNER LAYOUT ---------------- */
+const FaqLayoutInner = ({ children }: FaqLayoutProps) => {
   const router = useRouter();
   const { conversationId } = router.query;
-  const conversationBoxRef = React.useRef<HTMLDivElement | null>(null);
-  const [page, setPage] = useState(0);
+
+  const conversationDivRef = useRef<HTMLDivElement | null>(null);
   const [collapsed, setCollapsed] = useState(false);
-  const [conversations, setAllConversations] = useState<FaqConversation[]>([]);
-  const [hasMoreConversations, setHasMoreConversations] = useState(true);
 
-  const { data, status, refetch } = useFetch<GetFaqConversationsResponse>({
-    endpoint: `/ai/faq`,
-    enabled: hasMoreConversations,
-    queryParams: {
-      limit: PAGE_SIZE,
-      page,
-      order: "desc",
-    },
-  });
-  const sidebarWidth = collapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH;
+  const { conversations, isFetching, hasMore, loadMore } = useFaq();
+  const recentConversations = useMemo(() => {
+    return [...conversations].sort(
+      (a, b) =>
+        dayjs(b.updatedAt ?? 0).valueOf() - dayjs(a.updatedAt ?? 0).valueOf()
+    );
+  }, [conversations]);
 
+  const sidebarWidth = collapsed
+    ? SIDEBAR_COLLAPSED_WIDTH
+    : SIDEBAR_EXPANDED_WIDTH;
+
+  // Infinite scroll
   useEffect(() => {
-    refetch();
-    setHasMoreConversations(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [conversationId]);
-
-  useEffect(() => {
-    if (!data?.faqConversations) {
-      return;
-    }
-    setHasMoreConversations(data.hasMore);
-    setAllConversations((prev) => {
-      const existingIds = new Set(prev.map((c) => c.id));
-      const uniqueIncoming = data.faqConversations.filter(
-        (c) => !existingIds.has(c.id)
-      );
-      return [...prev, ...uniqueIncoming];
-    });
-  }, [data]);
-
-  useEffect(() => {
-    const el = conversationBoxRef.current;
+    const el = conversationDivRef.current;
     if (!el) return;
 
     const onScroll = () => {
-      if (status === "FETCHING" || !hasMoreConversations) return;
+      if (!hasMore || isFetching) return;
 
       const { scrollTop, scrollHeight, clientHeight } = el;
-
       if (scrollHeight - scrollTop - clientHeight < SCROLL_THRESHOLD) {
-        setPage((p) => p + 1);
+        loadMore();
       }
     };
 
     el.addEventListener("scroll", onScroll);
     return () => el.removeEventListener("scroll", onScroll);
-  }, [status, hasMoreConversations]);
+  }, [hasMore, isFetching, loadMore]);
 
   return (
-    <Box
-      sx={{
-        minHeight: `calc(100vh - ${TOP_OFFSET})`,
-        marginTop: TOP_OFFSET,
-        fontFamily: "Inter, sans-serif",
-      }}
-    >
-      {/* ===== SIDEBAR ===== */}
+    <Box sx={{ minHeight: "100dvh", fontFamily: "Inter, sans-serif" }}>
+      {/* --- SIDEBAR --- */}
       <Box
         sx={{
           position: "fixed",
-          top: TOP_OFFSET,
+          top: NAVBAR_HEIGHT_REM,
           left: 0,
           width: sidebarWidth,
-          height: `calc(100vh - ${TOP_OFFSET})`,
+          height: `calc(100dvh - ${NAVBAR_HEIGHT_REM})`,
           background: "#f3f3f3",
           display: "flex",
           flexDirection: "column",
           transition: "width 0.2s ease",
           overflowX: "hidden",
-          padding: "0.4rem",
-          gap: "1rem",
+          p: "0.4rem",
+          gap: "0.5rem",
         }}
       >
         {/* --- TOP ACTIONS --- */}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "0.5rem",
-          }}
-        >
-          {/* Collapse Toggle */}
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
           <IconButton
             onClick={() => setCollapsed((v) => !v)}
             sx={{ alignSelf: collapsed ? "center" : "flex-end" }}
@@ -115,55 +93,49 @@ const Faq = ({ children }: FaqLayoutProps) => {
             {collapsed ? <ChevronRight /> : <ChevronLeft />}
           </IconButton>
 
-          {/* New Conversation */}
           {collapsed ? (
-            <IconButton
-              onClick={() => router.push("/faq")}
-              sx={{
-                alignSelf: "center",
-                borderRadius: 2,
-              }}
-            >
-              <Add fontSize="small" />
-            </IconButton>
+            <Tooltip title="New Conversation" placement="right">
+              <IconButton
+                onClick={() => router.push(PAGES.FAQ)}
+                sx={{ alignSelf: "center", borderRadius: 2 }}
+              >
+                <Add fontSize="small" />
+              </IconButton>
+            </Tooltip>
           ) : (
             <Button
-              onClick={() => router.push("/faq")}
-              variant="text"
+              onClick={() => router.push(PAGES.FAQ)}
               startIcon={<Add fontSize="small" />}
               fullWidth
               sx={{
                 justifyContent: "flex-start",
                 textTransform: "none",
                 borderRadius: 2,
-
                 px: 1.5,
               }}
             >
-              New conversation
+              New Conversation
             </Button>
           )}
 
-          {/* Search */}
           {collapsed ? (
-            <IconButton
-              sx={{
-                alignSelf: "center",
-                borderRadius: 2,
-              }}
-            >
-              <Search fontSize="small" />
-            </IconButton>
+            <Tooltip title="Search Conversations" placement="right">
+              <IconButton
+                onClick={() => router.push(`${PAGES.FAQ}/conversations`)}
+                sx={{ alignSelf: "center", borderRadius: 2 }}
+              >
+                <Search fontSize="small" />
+              </IconButton>
+            </Tooltip>
           ) : (
             <Button
-              variant="text"
+              onClick={() => router.push(`${PAGES.FAQ}/conversations`)}
               startIcon={<Search fontSize="small" />}
               fullWidth
               sx={{
                 justifyContent: "flex-start",
                 textTransform: "none",
                 borderRadius: 2,
-
                 px: 1.5,
               }}
             >
@@ -172,96 +144,93 @@ const Faq = ({ children }: FaqLayoutProps) => {
           )}
         </Box>
 
-        {/* --- CONVERSATIONS --- */}
+        {/* --- CONVERSATION LIST --- */}
         {!collapsed && (
-          <Box
-            ref={conversationBoxRef}
-            sx={{
-              flex: 1,
-              overflowY: "auto",
-              display: "flex",
-              flexDirection: "column",
-              gap: "0rem",
-              alignItems: "center",
-            }}
+          <NoDataWrapper
+            noDataCondition={
+              recentConversations?.length === 0 && !isFetching && !hasMore
+            }
+            fallback={<NoneFound title="No Conversations Yet" message="" />}
           >
             <Box
-              component="h4"
+              ref={conversationDivRef}
               sx={{
-                padding: "0.2rem 0.7rem",
-                fontSize: "0.90rem",
-                fontWeight: 600,
-                color: "#6b6b6b",
-                letterSpacing: "0.04em",
-                textAlign: "left",
-                width: "100%",
+                flex: 1,
+                overflowY: "auto",
+                display: "flex",
+                flexDirection: "column",
               }}
             >
-              Recent Conversations
-            </Box>
-            {conversations.map((conv) => {
-              const isActive = Number(conversationId) === conv.id;
-              return (
-                <Button
-                  key={conv.id}
-                  variant="text"
-                  onClick={() => router.push(`/faq/${conv.id}`)}
-                  fullWidth
-                  sx={{
-                    justifyContent: "flex-start",
-                    textTransform: "none",
-                    borderRadius: 2,
-                    color: "text.primary",
-                    px: "0.7rem",
-                    backgroundColor: isActive ? "#e5e5e5" : "transparent",
+              <Typography
+                sx={{
+                  p: "0.4rem 0.7rem",
+                  fontSize: "0.85rem",
+                  fontWeight: 700,
+                  color: "#6b6b6b",
+                  letterSpacing: "0.04em",
+                  width: "100%",
+                }}
+              >
+                Recent Conversations
+              </Typography>
 
-                    "&:hover": {
-                      backgroundColor: "#eeeeee",
-                    },
-                  }}
-                >
-                  <Box
-                    component="span"
+              {recentConversations.map((conv) => {
+                const isActive = Number(conversationId) === conv.id;
+                return (
+                  <Button
+                    key={conv.id}
+                    onClick={() => router.push(`${PAGES.FAQ}/${conv.id}`)}
+                    fullWidth
                     sx={{
+                      justifyContent: "flex-start",
+                      textTransform: "none",
+                      borderRadius: 2,
+                      px: "0.7rem",
+                      backgroundColor: isActive ? "#e5e5e5" : "transparent",
+                      "&:hover": { backgroundColor: "#eeeeee" },
+                    }}
+                  >
+                    <Box component="span" sx={{
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
                       width: "100%",
                       textAlign: "left",
-                      display: "block",
-                    }}
-                  >
-                    {conv.title ?? "Untitled Conversation"}
+                    }}>{conv.title ?? "Untitled Conversation"}</Box>
+
+                  </Button>
+                );
+              })}
+
+              <Box py={1} display="flex" justifyContent="center">
+                {isFetching && hasMore && <LoadingSpinner size={30} />}
+                {!isFetching && !hasMore && (
+                  <Box textAlign="center" width="100%">
+                    <Divider sx={{ my: 1 }} />{" "}
+                    <Typography
+                      color="text.secondary"
+                      sx={{ fontSize: "0.9rem" }}
+                    >
+                      No more conversations
+                    </Typography>
                   </Box>
-                </Button>
-              );
-            })}
-            <CircularProgress sx={{ opacity: status === "FETCHING" ? 1 : 0 }} />
-            {!hasMoreConversations && (
-              <Box
-                sx={{
-                  padding: "0.5rem",
-                  fontSize: "0.75rem",
-                  color: "#999",
-                }}
-              >
-                No more conversations
+                )}
               </Box>
-            )}
-          </Box>
+            </Box>
+          </NoDataWrapper>
         )}
       </Box>
 
-      {/* ===== MAIN CONTENT ===== */}
+      {/* --- MAIN CONTENT --- */}
       <Box
         sx={{
-          marginLeft: sidebarWidth,
+          marginLeft: `${sidebarWidth}px`,
           transition: "margin-left 0.2s ease",
-          minHeight: `calc(100vh - ${TOP_OFFSET})`,
           display: "flex",
           justifyContent: "center",
           flexDirection: "column",
           alignItems: "center",
+          "--faq-sidebar-width": `${sidebarWidth}px`,
         }}
       >
         {children}
@@ -270,4 +239,13 @@ const Faq = ({ children }: FaqLayoutProps) => {
   );
 };
 
-export default Faq;
+/* ---------------- OUTER LAYOUT ---------------- */
+const FaqLayout = ({ children }: FaqLayoutProps) => {
+  return (
+    <FaqProvider>
+      <FaqLayoutInner>{children}</FaqLayoutInner>
+    </FaqProvider>
+  );
+};
+
+export default FaqLayout;
