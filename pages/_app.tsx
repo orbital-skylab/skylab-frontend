@@ -13,8 +13,16 @@ import { SnackbarAlertProvider } from "@/contexts/useSnackbarAlert";
 import "../styles/globals.scss";
 import { theme } from "@/styles/muiTheme";
 import "react-quill/dist/quill.snow.css";
+import { NextPage } from "next";
+import { ReactElement, ReactNode } from "react";
 
-function MyApp({ Component, pageProps }: AppProps) {
+type AppPropsWithLayout = AppProps & {
+  Component: NextPage & {
+    getLayout?: (page: ReactElement) => ReactNode;
+  };
+};
+function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  const getLayout = Component.getLayout ?? ((page) => page);
   return (
     <ThemeProvider theme={theme}>
       <CustomHead />
@@ -22,7 +30,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <CohortProvider>
           <AuthProvider>
             <Navbar />
-            <Component {...pageProps} />
+            {getLayout(<Component {...pageProps} />)}
             <Footer />
           </AuthProvider>
         </CohortProvider>

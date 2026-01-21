@@ -145,6 +145,13 @@ const MarkdownText = ({ markdownContent }: Props) => {
         strong({ children }) {
           return <strong style={{ fontWeight: 600 }}>{children}</strong>;
         },
+        a({ href, children }) {
+          return (
+            <a href={href} target="_blank" rel="noopener noreferrer">
+              {children}
+            </a>
+          );
+        },
       }}
     >
       {markdownContent}
