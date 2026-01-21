@@ -13,16 +13,17 @@ const INPUT_EXCEEDED_LIMIT = 4000;
 interface Props {
   isLoadingMessage: boolean;
   onSend: (content: string) => void;
+  position?: "relative" | "fixed";
 }
 
-const InputBar = ({ isLoadingMessage, onSend }: Props) => {
+const InputBar = ({ isLoadingMessage, onSend, position = "fixed" }: Props) => {
+  const isFixed = position === "fixed";
   return (
     <Formik
       initialValues={{ input: "" }}
       onSubmit={(values, helpers) => {
         const content = values.input.trim();
         if (!content) return;
-
         onSend(content);
         helpers.resetForm();
       }}
@@ -31,42 +32,41 @@ const InputBar = ({ isLoadingMessage, onSend }: Props) => {
         const { values } = formik;
         const charCount = values.input.length;
         const isLimitExceeded = charCount > INPUT_EXCEEDED_LIMIT;
-        const canSend = !isLoadingMessage && values.input.trim() && !isLimitExceeded;
+        const canSend =
+          !isLoadingMessage && values.input.trim() && !isLimitExceeded;
 
         return (
-          <Box
-            sx={{
-              position: "fixed",
-              bottom: "24px",
-              left: "300px",
-              right: 0,
-              display: "flex",
-              justifyContent: "center",
-              pointerEvents: "none",
-              flexDirection: "column",
-              alignItems: "center",
+          <Form
+            style={{
+              width: "100%",
             }}
           >
-            <Form
-              style={{
-                width: "100%",
+            <Box
+              sx={{
+                position: isFixed ? "fixed" : "relative",
+                bottom: isFixed ? "24px" : undefined,
+                left: isFixed ? "var(--faq-sidebar-width)" : undefined,
+                transition: "left 0.2s ease",
+                right: 0,
                 display: "flex",
                 justifyContent: "center",
+                pointerEvents: "none",
+                alignItems: "flex-end",
               }}
             >
               <Box
                 sx={{
                   width: "100%",
                   maxWidth: "760px",
-                  borderRadius: "999px",
+                  borderRadius: "32px",
                   p: "0.5rem 1.0rem",
-                  display: "flex",
                   gap: "0.75rem",
+                  display: "flex",
                   alignItems: "center",
                   background: "#f5f5f5",
-                  boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
                   pointerEvents: "auto",
                   border: "1px solid #e0e0e0",
+                  contain: "layout paint",
                 }}
               >
                 <Tooltip title="Add attachments">
@@ -74,14 +74,15 @@ const InputBar = ({ isLoadingMessage, onSend }: Props) => {
                     <AddOutlined />
                   </IconButton>
                 </Tooltip>
-
                 <TextInput
                   name="input"
                   formik={formik}
                   placeholder="Ask a question"
                   disabled={isLoadingMessage}
                   onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                    if (e.key !== "Enter" || e.shiftKey || !canSend) return;
+                    if (e.key !== "Enter" || e.shiftKey || !canSend) {
+                      return;
+                    }
                     e.preventDefault();
                     (e.target as HTMLInputElement).form?.dispatchEvent(
                       new Event("submit", { bubbles: true, cancelable: true })
@@ -90,7 +91,7 @@ const InputBar = ({ isLoadingMessage, onSend }: Props) => {
                   fullWidth
                   multiline
                   minRows={1}
-                  maxRows={7}
+                  maxRows={6}
                   bordered={false}
                 />
 
@@ -122,33 +123,33 @@ const InputBar = ({ isLoadingMessage, onSend }: Props) => {
                   <ArrowUpwardOutlined />
                 </Button>
               </Box>
-            </Form>
 
-            {charCount > INPUT_WARNING_LIMIT && (
-              <Box
-                sx={{
-                  mt: "6px",
-                  ml: "32px",
-                  width: "100%",
-                  maxWidth: "760px",
-                  textAlign: "left",
-                  fontSize: "0.80rem",
-                  fontWeight: 500,
-                  color: isLimitExceeded ? "#d32f2f" : "#515151",
-                  pr: "12px",
-                  pointerEvents: "auto",
-                }}
-              >
-                {charCount} / {INPUT_EXCEEDED_LIMIT}
-                <span style={{ marginLeft: 6 }}>
-                  ·{" "}
-                  {isLimitExceeded
-                    ? "Message is too long, please shorten it"
-                    : "Consider shortening for clearer answers"}
-                </span>
-              </Box>
-            )}
-          </Box>
+              {charCount > INPUT_WARNING_LIMIT && (
+                <Box
+                  sx={{
+                    mt: "6px",
+                    ml: "32px",
+                    width: "100%",
+                    maxWidth: "760px",
+                    textAlign: "left",
+                    fontSize: "0.80rem",
+                    fontWeight: 500,
+                    color: isLimitExceeded ? "#d32f2f" : "#515151",
+                    pr: "12px",
+                    pointerEvents: "auto",
+                  }}
+                >
+                  {charCount} / {INPUT_EXCEEDED_LIMIT}
+                  <span style={{ marginLeft: 6 }}>
+                    ·{" "}
+                    {isLimitExceeded
+                      ? "Message is too long, please shorten it"
+                      : "Consider shortening for clearer answers"}
+                  </span>
+                </Box>
+              )}
+            </Box>{" "}
+          </Form>
         );
       }}
     </Formik>
