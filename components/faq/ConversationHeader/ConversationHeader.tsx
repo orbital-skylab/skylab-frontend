@@ -1,11 +1,18 @@
-import { MoreHorizOutlined } from "@mui/icons-material";
-import { Box, IconButton } from "@mui/material";
-import { memo } from "react";
+import ConversationMenu from "@/components/menus/ConversationMenu";
+import ConfirmationModal from "@/components/modals/ConfirmationModal";
+import { IosShareOutlined } from "@mui/icons-material";
+import { Box, Button } from "@mui/material";
+import { memo, useState } from "react";
 
 interface Props {
   title?: string;
+  onDelete: () => void;
 }
-const ConversationHeader = memo(function ConversationHeader({ title }: Props) {
+const ConversationHeader = memo(function ConversationHeader({
+  title,
+  onDelete,
+}: Props) {
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
   return (
     <Box
       style={{
@@ -16,27 +23,33 @@ const ConversationHeader = memo(function ConversationHeader({ title }: Props) {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        pointerEvents: "none",
-        padding: "0.6rem 1.1rem",
+        padding: "0.6rem 0rem",
         color: "#5f5f5f",
       }}
     >
-      <Box
-        style={{
-          fontSize: "0.95rem",
-          fontWeight: 600,
-
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          pointerEvents: "auto",
+      <ConversationMenu
+        title={title}
+        onDelete={() => setOpenDeleteModal(true)}
+        onRename={() => {
+          return;
         }}
+        onToggleStar={() => {
+          return;
+        }}
+      />
+      <Button
+        startIcon={<IosShareOutlined />}
+        sx={{ padding: "0.4rem 1.1rem", borderRadius: "12px" }}
       >
-        {title ?? "Untitled Conversation"}
-      </Box>
-      <IconButton color="inherit" sx={{ pointerEvents: "auto" }}>
-        <MoreHorizOutlined />
-      </IconButton>
+        Share
+      </Button>
+      <ConfirmationModal
+        open={openDeleteModal}
+        onConfirm={onDelete}
+        onClose={() => setOpenDeleteModal(false)}
+        title="Delete Conversation"
+        description={`You are deleting the conversation ${title}.\n\nThis action is irreversible, are you sure?`}
+      />
     </Box>
   );
 });

@@ -6,6 +6,7 @@ import {
 } from "@mui/icons-material";
 import { Formik, Form } from "formik";
 import TextInput from "@/components/formikFormControllers/TextInput";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 
 const INPUT_WARNING_LIMIT = 3000;
 const INPUT_EXCEEDED_LIMIT = 4000;
@@ -18,6 +19,7 @@ interface Props {
 
 const InputBar = ({ isLoadingMessage, onSend, position = "fixed" }: Props) => {
   const isFixed = position === "fixed";
+  const { setError } = useSnackbarAlert();
   return (
     <Formik
       initialValues={{ input: "" }}
@@ -26,6 +28,13 @@ const InputBar = ({ isLoadingMessage, onSend, position = "fixed" }: Props) => {
         if (!content) return;
         onSend(content);
         helpers.resetForm();
+      }}
+      validate={(values) => {
+        if (values.input.length > INPUT_EXCEEDED_LIMIT) {
+          setError(
+            `Your message too long, please shorten it. The max length is ${INPUT_EXCEEDED_LIMIT} characters.`
+          );
+        }
       }}
     >
       {(formik) => {
@@ -44,14 +53,15 @@ const InputBar = ({ isLoadingMessage, onSend, position = "fixed" }: Props) => {
             <Box
               sx={{
                 position: isFixed ? "fixed" : "relative",
-                bottom: isFixed ? "24px" : undefined,
+                bottom: isFixed ? "18px" : undefined,
                 left: isFixed ? "var(--faq-sidebar-width)" : undefined,
                 transition: "left 0.2s ease",
                 right: 0,
                 display: "flex",
-                justifyContent: "center",
+                flexDirection: "column",
                 pointerEvents: "none",
-                alignItems: "flex-end",
+                justifyContent: "flex-end",
+                alignItems: "center",
               }}
             >
               <Box
@@ -100,7 +110,6 @@ const InputBar = ({ isLoadingMessage, onSend, position = "fixed" }: Props) => {
                     <KeyboardVoiceOutlined />
                   </IconButton>
                 </Tooltip>
-
                 <Button
                   type="submit"
                   variant="contained"
@@ -127,13 +136,12 @@ const InputBar = ({ isLoadingMessage, onSend, position = "fixed" }: Props) => {
               {charCount > INPUT_WARNING_LIMIT && (
                 <Box
                   sx={{
-                    mt: "6px",
+                    mt: "2px",
                     ml: "32px",
                     width: "100%",
                     maxWidth: "760px",
                     textAlign: "left",
-                    fontSize: "0.80rem",
-                    fontWeight: 500,
+                    fontSize: "0.85rem",
                     color: isLimitExceeded ? "#d32f2f" : "#515151",
                     pr: "12px",
                     pointerEvents: "auto",

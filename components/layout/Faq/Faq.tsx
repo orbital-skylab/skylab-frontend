@@ -234,7 +234,6 @@ const FaqLayoutInner = ({ children }: FaqLayoutProps) => {
           alignItems: "center",
           "--faq-sidebar-width": `${sidebarWidth}px`,
         }}
-        sx={{ "--faq-sidebar-width": `${sidebarWidth}px` }}
       >
         {children}
       </Box>
