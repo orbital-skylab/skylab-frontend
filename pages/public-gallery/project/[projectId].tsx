@@ -156,21 +156,37 @@ const PublicProjectDetail: NextPage<Props> = ({ project }) => {
 export const getStaticPaths: GetStaticPaths = async () => {
   const API_URL =
     process.env.NEXT_PUBLIC_BASE_DEV_API_URL || "http://localhost:4000/api";
+  const PAGE_SIZE = 100; // Larger page size to reduce API calls
 
   try {
-    const response = await fetch(`${API_URL}/projects/public`);
+    // Fetch first page to get total pages
+    const firstResponse = await fetch(
+      `${API_URL}/projects/public?page=1&limit=${PAGE_SIZE}`
+    );
 
-    if (!response.ok) {
+    if (!firstResponse.ok) {
       return {
         paths: [],
         fallback: false,
       };
     }
 
-    const data = await response.json();
-    const projects = data.projects || [];
+    const firstData = await firstResponse.json();
+    let allProjects = firstData.projects || [];
+    const totalPages = firstData.totalPages || 1;
 
-    const paths = projects.map((project: Project) => ({
+    // Fetch remaining pages if needed
+    for (let page = 2; page <= totalPages; page++) {
+      const response = await fetch(
+        `${API_URL}/projects/public?page=${page}&limit=${PAGE_SIZE}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        allProjects = allProjects.concat(data.projects || []);
+      }
+    }
+
+    const paths = allProjects.map((project: Project) => ({
       params: { projectId: project.id.toString() },
     }));
 

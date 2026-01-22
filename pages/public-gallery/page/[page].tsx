@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useMemo, useState } from "react";
-import type { GetStaticProps, NextPage } from "next";
+import { useMemo, useState } from "react";
+import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import {
   Box,
   Container,
@@ -11,8 +11,6 @@ import {
   Tab,
   tabsClasses,
   Stack,
-  TextField,
-  MenuItem,
 } from "@mui/material";
 import { useRouter } from "next/router";
 import ProjectCard from "@/components/cards/ProjectCard/ProjectCard";
@@ -20,6 +18,7 @@ import CustomHead from "@/components/layout/CustomHead";
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
 
 const PAGE_SIZE = 28;
+const MAX_PAGES_TO_PREBUILD = 10;
 
 type Props = {
   projects: Project[];
@@ -28,7 +27,7 @@ type Props = {
   total: number;
 };
 
-const PublicGallery: NextPage<Props> = ({
+const PublicGalleryPage: NextPage<Props> = ({
   projects,
   currentPage,
   totalPages,
@@ -38,31 +37,14 @@ const PublicGallery: NextPage<Props> = ({
   const [selectedLevel, setSelectedLevel] = useState<LEVELS_OF_ACHIEVEMENT>(
     LEVELS_OF_ACHIEVEMENT.ARTEMIS
   );
-  const [selectedCohort, setSelectedCohort] = useState<number | "">("");
-
-  const cohortYears = useMemo(
-    () =>
-      Array.from(new Set(projects.map((p) => p.cohortYear))).sort(
-        (a, b) => b - a
-      ),
-    [projects]
-  );
-
-  useEffect(() => {
-    if (selectedCohort === "" && cohortYears.length > 0) {
-      setSelectedCohort(cohortYears[0]);
-    }
-  }, [cohortYears, selectedCohort]);
 
   const filteredProjects = useMemo(
     () =>
-      projects.filter((project) => {
-        const matchesLevel = project.achievement === selectedLevel;
-        const matchesCohort =
-          selectedCohort === "" || project.cohortYear === selectedCohort;
-        return matchesLevel && matchesCohort && !project.hasDropped;
-      }),
-    [projects, selectedCohort, selectedLevel]
+      projects.filter(
+        (project) =>
+          project.achievement === selectedLevel && !project.hasDropped
+      ),
+    [projects, selectedLevel]
   );
 
   const handlePageChange = (
@@ -74,47 +56,15 @@ const PublicGallery: NextPage<Props> = ({
 
   return (
     <>
-      <CustomHead title="Public Project Gallery - Skylab" />
+      <CustomHead title={`Public Project Gallery - Page ${currentPage}`} />
       <Container maxWidth="xl" sx={{ py: 4 }}>
-        <Box
-          sx={{
-            mb: 4,
-            display: "flex",
-            flexDirection: { xs: "column", sm: "row" },
-            justifyContent: "space-between",
-            alignItems: { sm: "center" },
-            gap: 2,
-          }}
-        >
-          <Box>
-            <Typography variant="h3" component="h1" gutterBottom>
-              Public Project Gallery
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Explore outstanding projects from the Orbital program ({total}{" "}
-              projects)
-            </Typography>
-          </Box>
-
-          <TextField
-            id="public-gallery-cohort-select"
-            label="Cohort"
-            select
-            value={selectedCohort}
-            onChange={(e) =>
-              setSelectedCohort(
-                e.target.value === "" ? "" : Number(e.target.value)
-              )
-            }
-            size="small"
-            sx={{ minWidth: 180 }}
-          >
-            {cohortYears.map((year) => (
-              <MenuItem key={year} value={year}>
-                {year}
-              </MenuItem>
-            ))}
-          </TextField>
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h3" component="h1" gutterBottom>
+            Public Project Gallery
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Explore outstanding projects from Orbital ({total} projects)
+          </Typography>
         </Box>
 
         <Stack spacing={2} sx={{ mb: 3 }}>
@@ -169,13 +119,53 @@ const PublicGallery: NextPage<Props> = ({
   );
 };
 
-export const getStaticProps: GetStaticProps<Props> = async () => {
+export const getStaticPaths: GetStaticPaths = async () => {
   const API_URL =
     process.env.NEXT_PUBLIC_BASE_DEV_API_URL || "http://localhost:4000/api";
 
   try {
+    // Fetch first page to get total pages
     const response = await fetch(
       `${API_URL}/projects/public?page=1&limit=${PAGE_SIZE}`
+    );
+
+    if (!response.ok) {
+      return {
+        paths: [{ params: { page: "1" } }],
+        fallback: false,
+      };
+    }
+
+    const data = await response.json();
+    const totalPages = Math.min(data.totalPages || 1, MAX_PAGES_TO_PREBUILD);
+
+    // Generate paths for first N pages
+    const paths = Array.from({ length: totalPages }, (_, i) => ({
+      params: { page: (i + 1).toString() },
+    }));
+
+    return {
+      paths,
+      fallback: false,
+    };
+  } catch (error) {
+    console.error("Error fetching page paths:", error);
+    return {
+      paths: [{ params: { page: "1" } }],
+      fallback: false,
+    };
+  }
+};
+
+export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+  const API_URL =
+    process.env.NEXT_PUBLIC_BASE_DEV_API_URL || "http://localhost:4000/api";
+
+  const page = parseInt(params?.page as string) || 1;
+
+  try {
+    const response = await fetch(
+      `${API_URL}/projects/public?page=${page}&limit=${PAGE_SIZE}`
     );
 
     if (!response.ok) {
@@ -184,10 +174,17 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 
     const data = await response.json();
 
+    // If page is beyond what we have, return 404
+    if (page > data.totalPages && data.totalPages > 0) {
+      return {
+        notFound: true,
+      };
+    }
+
     return {
       props: {
         projects: data.projects || [],
-        currentPage: data.page || 1,
+        currentPage: data.page || page,
         totalPages: data.totalPages || 1,
         total: data.total || 0,
       },
@@ -206,4 +203,4 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
   }
 };
 
-export default PublicGallery;
+export default PublicGalleryPage;
