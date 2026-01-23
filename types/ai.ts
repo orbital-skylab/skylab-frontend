@@ -15,4 +15,5 @@ export interface FaqConversation {
   createdAt: Date;
   updatedAt: Date;
   messages: FaqMessage[];
+  messageCount: number;
 }

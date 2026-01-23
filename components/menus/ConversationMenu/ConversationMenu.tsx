@@ -4,6 +4,7 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
+  Box,
 } from "@mui/material";
 import {
   KeyboardArrowDownOutlined,
@@ -54,13 +55,22 @@ const ConversationMenu = ({
         sx={{
           fontSize: "1.1rem",
           textTransform: "none",
-          maxWidth: 300,
+          maxWidth: 340,
           justifyContent: "space-between",
           padding: "0.4rem 1.0rem",
           borderRadius: "12px",
         }}
       >
-        {title}
+        <Box
+          sx={{
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            maxWidth: "100%",
+          }}
+        >
+          {title}
+        </Box>
       </Button>
 
       <Menu

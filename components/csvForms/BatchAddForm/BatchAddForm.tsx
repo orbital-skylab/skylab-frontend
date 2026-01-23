@@ -20,7 +20,7 @@ import {
   Alert,
 } from "@mui/material";
 // Helpers
-import {parse} from "papaparse";
+import { parse } from "papaparse";
 import { ACCEPTED_FILE_TYPES, checkValidity } from "@/helpers/batchForms";
 // Hooks
 import useAlert from "@/hooks/useAlert";

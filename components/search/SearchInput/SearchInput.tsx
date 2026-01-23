@@ -6,9 +6,10 @@ type Props = {
   id: string;
   label: string;
   onChange: (searchText: string) => void;
+  fullWidth?: boolean;
 };
 
-const SearchInput: FC<Props> = ({ id, label, onChange }) => {
+const SearchInput: FC<Props> = ({ id, label, onChange, fullWidth }) => {
   const [searchTextInput, setSearchTextInput] = useState("");
 
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,6 +31,7 @@ const SearchInput: FC<Props> = ({ id, label, onChange }) => {
           </InputAdornment>
         ),
       }}
+      fullWidth={fullWidth}
     />
   );
 };
