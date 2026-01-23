@@ -7,6 +7,7 @@ import {
 import { Formik, Form } from "formik";
 import TextInput from "@/components/formikFormControllers/TextInput";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
+import { useEffect, useRef } from "react";
 
 const INPUT_WARNING_LIMIT = 3000;
 const INPUT_EXCEEDED_LIMIT = 4000;
@@ -20,6 +21,12 @@ interface Props {
 const InputBar = ({ isLoadingMessage, onSend, position = "fixed" }: Props) => {
   const isFixed = position === "fixed";
   const { setError } = useSnackbarAlert();
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  // Auto focus the input on mount
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
   return (
     <Formik
       initialValues={{ input: "" }}
@@ -80,11 +87,12 @@ const InputBar = ({ isLoadingMessage, onSend, position = "fixed" }: Props) => {
                 }}
               >
                 <Tooltip title="Add attachments">
-                  <IconButton>
+                  <IconButton disabled={isLoadingMessage}>
                     <AddOutlined />
                   </IconButton>
                 </Tooltip>
                 <TextInput
+                  ref={inputRef}
                   name="input"
                   formik={formik}
                   placeholder="Ask a question"
@@ -106,7 +114,7 @@ const InputBar = ({ isLoadingMessage, onSend, position = "fixed" }: Props) => {
                 />
 
                 <Tooltip title="Voice">
-                  <IconButton>
+                  <IconButton disabled={isLoadingMessage}>
                     <KeyboardVoiceOutlined />
                   </IconButton>
                 </Tooltip>
