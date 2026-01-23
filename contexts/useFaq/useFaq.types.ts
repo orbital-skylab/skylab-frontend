@@ -7,7 +7,9 @@ export interface IFaq {
 
   loadMore: () => void;
   resetConversations: () => void;
-  removeConversation: (id: number) => void;
+  removeConversation: (id: number) => Promise<void>;
+  removeConversations: (ids: number[]) => Promise<void>;
+  addConversation: (content: string) => Promise<FaqConversation>;
 }
 
 export interface FaqProviderProps {

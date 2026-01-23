@@ -389,6 +389,12 @@ export type PostFaqMessageResponse = {
   userMessage: FaqMessage;
   assistantMessage: FaqMessage;
 };
+export type DeleteFaqConversationResponse = {
+  faqConversation: FaqConversation;
+};
+export type DeleteFaqConversationsResponse = {
+  deletedCount: number;
+};
 
 /**
  * Application Endpoints

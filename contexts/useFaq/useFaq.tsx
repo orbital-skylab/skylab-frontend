@@ -8,8 +8,9 @@ import {
 } from "react";
 import { IFaq } from "./useFaq.types";
 import useFetch from "@/hooks/useFetch";
-import { GetFaqConversationsResponse } from "@/types/api";
+import { GetFaqConversationsResponse, HTTP_METHOD } from "@/types/api";
 import { FaqConversation } from "@/types/ai";
+import { ApiServiceBuilder } from "@/helpers/api";
 
 const FaqContext = createContext<IFaq>({
   conversations: [],
@@ -22,8 +23,14 @@ const FaqContext = createContext<IFaq>({
   resetConversations: () => {
     return;
   },
-  removeConversation: () => {
+  removeConversation: async () => {
     return;
+  },
+  removeConversations: async () => {
+    return;
+  },
+  addConversation: async () => {
+    return {} as FaqConversation;
   },
 });
 
@@ -43,7 +50,7 @@ export const FaqProvider = ({ children }: { children: React.ReactNode }) => {
     },
   });
 
-  // Append incoming conversations
+  // Append incoming conversations if data changes
   useEffect(() => {
     if (!data?.faqConversations) return;
 
@@ -68,9 +75,48 @@ export const FaqProvider = ({ children }: { children: React.ReactNode }) => {
     setHasMore(true);
   };
 
-  const removeConversation = (id: number) => {
-    setConversations((prev) => prev.filter((c) => c.id !== id));
+  const addConversation = async (content: string) => {
+    const apiService = new ApiServiceBuilder({
+      method: HTTP_METHOD.POST,
+      endpoint: "/ai/faq",
+      body: { content },
+      requiresAuthorization: true,
+      stream: true,
+    }).build();
+
+    const response = await apiService();
+    const { conversation } = await response.json();
+    setConversations((prev) => [...prev, conversation]);
+
+    return conversation;
   };
+
+  const removeConversation = useCallback(async (id: number) => {
+    if (typeof id !== "number") return;
+
+    const apiService = new ApiServiceBuilder({
+      method: HTTP_METHOD.DELETE,
+      endpoint: `/ai/faq/${id}`,
+      requiresAuthorization: true,
+    }).build();
+
+    await apiService();
+    setConversations((prev) => prev.filter((c) => c.id !== id));
+  }, []);
+
+  const removeConversations = useCallback(async (ids: number[]) => {
+    if (!Array.isArray(ids) || ids.length === 0) return;
+
+    const apiService = new ApiServiceBuilder({
+      method: HTTP_METHOD.DELETE,
+      endpoint: `/ai/faq/bulk`,
+      body: { conversationIds: ids },
+      requiresAuthorization: true,
+    }).build();
+
+    await apiService();
+    setConversations((prev) => prev.filter((c) => !ids.includes(c.id)));
+  }, []);
 
   const value = useMemo(
     () => ({
@@ -80,8 +126,17 @@ export const FaqProvider = ({ children }: { children: React.ReactNode }) => {
       loadMore,
       resetConversations,
       removeConversation,
+      removeConversations,
+      addConversation,
     }),
-    [conversations, status, hasMore, loadMore]
+    [
+      conversations,
+      status,
+      hasMore,
+      loadMore,
+      removeConversations,
+      removeConversation,
+    ]
   );
 
   return <FaqContext.Provider value={value}>{children}</FaqContext.Provider>;

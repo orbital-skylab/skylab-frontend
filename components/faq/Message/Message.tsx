@@ -10,7 +10,7 @@ const Message = memo(function Message({ content, isUser }: Props) {
   return (
     <Box
       style={{
-        width: isUser ? "auto" : "100%",
+        width: "100%",
         alignSelf: isUser ? "flex-end" : "stretch",
         display: "flex",
         justifyContent: isUser ? "flex-end" : "flex-start",
@@ -18,7 +18,7 @@ const Message = memo(function Message({ content, isUser }: Props) {
     >
       <Box
         style={{
-          maxWidth: "80%",
+          maxWidth: isUser ? "80%" : undefined,
           background: isUser ? "#111" : "transparent",
           color: isUser ? "#fff" : "#111",
           padding: isUser ? "0.4rem 0.9rem" : "0",
