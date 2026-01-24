@@ -6,7 +6,7 @@ import About from "@/components/About";
 import useFetch from "@/hooks/useFetch";
 import { useState } from "react";
 import { Close, HelpOutline, KeyboardVoice, Send } from "@mui/icons-material";
-import { Button, Typography } from "@mui/material";
+import { Button, Input, Typography } from "@mui/material";
 import { GetLatestApplicationResponse } from "@/types/api";
 
 const Home: NextPage = () => {
@@ -118,8 +118,8 @@ export default Home;
 
 const FaqAssistantPopup = ({ onClose }: { onClose: () => void }) => {
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         position: "fixed",
         top: 0,
         right: 0,
@@ -135,8 +135,8 @@ const FaqAssistantPopup = ({ onClose }: { onClose: () => void }) => {
       }}
     >
       {/* Header */}
-      <div
-        style={{
+      <Box
+        sx={{
           padding: "1rem",
           borderBottom: "1px solid #e0e0e0",
           display: "flex",
@@ -144,21 +144,27 @@ const FaqAssistantPopup = ({ onClose }: { onClose: () => void }) => {
           justifyContent: "space-between",
         }}
       >
-        <div>
-          <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 600 }}>
+        <Box>
+          <Box
+            component="h3"
+            sx={{ margin: 0, fontSize: "1.2rem", fontWeight: 600 }}
+          >
             Orbital FAQ Assistant
-          </h3>
-          <p style={{ margin: 0, fontSize: "0.8rem", color: "#666" }}>
+          </Box>
+          <Box
+            component="p"
+            sx={{ margin: 0, fontSize: "0.8rem", color: "#666" }}
+          >
             Ask anything about Orbital
-          </p>
-        </div>
+          </Box>
+        </Box>
 
         {/* Close Button */}
-        <Close onClick={onClose} style={{ cursor: "pointer", opacity: 0.7 }} />
-      </div>
+        <Close onClick={onClose} sx={{ cursor: "pointer", opacity: 0.7 }} />
+      </Box>
       {/* Chat Body */}{" "}
-      <div
-        style={{
+      <Box
+        sx={{
           flexGrow: 1,
           padding: "1rem",
           overflowY: "auto",
@@ -170,8 +176,8 @@ const FaqAssistantPopup = ({ onClose }: { onClose: () => void }) => {
       >
         {" "}
         {/* User Message */}{" "}
-        <div
-          style={{
+        <Box
+          sx={{
             alignSelf: "flex-end",
             background: "#fff",
             border: "1px solid #000",
@@ -183,10 +189,10 @@ const FaqAssistantPopup = ({ onClose }: { onClose: () => void }) => {
         >
           {" "}
           What should I include in Milestone 2?{" "}
-        </div>{" "}
+        </Box>{" "}
         {/* Assistant Message */}{" "}
-        <div
-          style={{
+        <Box
+          sx={{
             alignSelf: "flex-start",
             background: "#f2f2f2",
             borderRadius: "10px",
@@ -201,10 +207,10 @@ const FaqAssistantPopup = ({ onClose }: { onClose: () => void }) => {
           core features <br />• Describe technical challenges faced <br />•
           Include screenshots or demo links <br />• Outline next development
           steps{" "}
-        </div>{" "}
+        </Box>{" "}
         {/* User Message */}{" "}
-        <div
-          style={{
+        <Box
+          sx={{
             alignSelf: "flex-end",
             background: "#fff",
             border: "1px solid #000",
@@ -216,10 +222,10 @@ const FaqAssistantPopup = ({ onClose }: { onClose: () => void }) => {
         >
           {" "}
           Is a video demo required?{" "}
-        </div>{" "}
+        </Box>{" "}
         {/* Assistant Message */}{" "}
-        <div
-          style={{
+        <Box
+          sx={{
             alignSelf: "flex-start",
             background: "#f2f2f2",
             borderRadius: "10px",
@@ -232,18 +238,18 @@ const FaqAssistantPopup = ({ onClose }: { onClose: () => void }) => {
           {" "}
           A video demo is recommended but not strictly required. Clear
           screenshots or a live demo link are acceptable alternatives.{" "}
-        </div>{" "}
-      </div>
+        </Box>{" "}
+      </Box>
       {/* Input Bar */}
-      <div
-        style={{
+      <Box
+        sx={{
           padding: "0.75rem",
           borderTop: "1px solid #e0e0e0",
           background: "#fff",
         }}
       >
-        <div
-          style={{
+        <Box
+          sx={{
             display: "flex",
             alignItems: "center",
             gap: "0.5rem",
@@ -252,9 +258,9 @@ const FaqAssistantPopup = ({ onClose }: { onClose: () => void }) => {
             padding: "0.5rem 0.75rem",
           }}
         >
-          <input
+          <Input
             placeholder="Ask a question"
-            style={{
+            sx={{
               flexGrow: 1,
               border: "none",
               outline: "none",
@@ -263,10 +269,10 @@ const FaqAssistantPopup = ({ onClose }: { onClose: () => void }) => {
             }}
           />
 
-          <KeyboardVoice style={{ cursor: "pointer", opacity: 0.7 }} />
-          <Send style={{ cursor: "pointer", opacity: 0.8 }} />
-        </div>
-      </div>
-    </div>
+          <KeyboardVoice sx={{ cursor: "pointer", opacity: 0.7 }} />
+          <Send sx={{ cursor: "pointer", opacity: 0.8 }} />
+        </Box>
+      </Box>
+    </Box>
   );
 };
