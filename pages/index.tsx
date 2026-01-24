@@ -6,12 +6,8 @@ import About from "@/components/About";
 import useFetch from "@/hooks/useFetch";
 import { useState } from "react";
 import { Close, HelpOutline, KeyboardVoice, Send } from "@mui/icons-material";
-import { Typography } from "@mui/material";
-
-type GetLatestApplicationResponse = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  application: any;
-};
+import { Button, Typography } from "@mui/material";
+import { GetLatestApplicationResponse } from "@/types/api";
 
 const Home: NextPage = () => {
   const { data } = useFetch<GetLatestApplicationResponse>({
@@ -28,9 +24,9 @@ const Home: NextPage = () => {
 
       {/* Floating FAQ Button */}
       {!showFaq && (
-        <button
+        <Button
           onClick={() => setShowFaq(true)}
-          style={{
+          sx={{
             position: "fixed",
             bottom: "50px",
             right: "50px",
@@ -109,7 +105,7 @@ const Home: NextPage = () => {
         >
           <HelpOutline fontSize="small" />
           <Typography sx={{ fontWeight: 500 }}>FAQ</Typography>
-        </button>
+        </Button>
       )}
 
       {/* FAQ Assistant Popup */}

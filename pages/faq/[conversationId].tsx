@@ -18,7 +18,14 @@ import remarkGfm from "remark-gfm";
 import rehypeSanitize from "rehype-sanitize";
 import { FaqMessage } from "@/types/ai";
 import useAutoScroll from "@/hooks/useAutoScroll";
-import { Button, IconButton, Tooltip } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  Input,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 
 const INPUT_WARNING_LIMIT = 3000;
@@ -117,9 +124,9 @@ const Conversation = () => {
   return (
     <FaqLayout>
       {/* --- MESSAGE AREA --- */}
-      <div
+      <Box
         ref={containerRef}
-        style={{
+        sx={{
           width: "100%",
           maxWidth: "720px",
           flexGrow: 1,
@@ -142,11 +149,11 @@ const Conversation = () => {
           <Message isUser={false} content={tempAssistantMessage} />
         )}
         {isLoading && <LoadingSpinner size={40} />}
-      </div>
-      <div ref={bottomRef} />
+      </Box>
+      <Box ref={bottomRef} />
       {/* --- INPUT BAR --- */}
-      <div
-        style={{
+      <Box
+        sx={{
           position: "fixed",
           bottom: "24px",
           left: "300px",
@@ -158,8 +165,8 @@ const Conversation = () => {
           alignItems: "center",
         }}
       >
-        <div
-          style={{
+        <Box
+          sx={{
             width: "100%",
             maxWidth: "760px",
             borderRadius: "999px",
@@ -178,7 +185,7 @@ const Conversation = () => {
               <AddOutlined />
             </IconButton>
           </Tooltip>
-          <input
+          <Input
             type="text"
             placeholder="Ask a question"
             value={input}
@@ -190,7 +197,7 @@ const Conversation = () => {
                 setInput("");
               }
             }}
-            style={{
+            sx={{
               flexGrow: 1,
               border: "none",
               outline: "none",
@@ -234,10 +241,10 @@ const Conversation = () => {
           >
             <ArrowUpwardOutlined />
           </Button>
-        </div>
+        </Box>
         {charCount > INPUT_WARNING_LIMIT && (
-          <div
-            style={{
+          <Box
+            sx={{
               marginTop: "6px",
               marginLeft: "32px",
               width: "100%",
@@ -252,18 +259,21 @@ const Conversation = () => {
           >
             {charCount} / {INPUT_EXCEEDED_LIMIT}
             {charCount <= INPUT_EXCEEDED_LIMIT && (
-              <span style={{ marginLeft: 6 }}>
+              <Typography component="span" sx={{ marginLeft: 1 }}>
                 · Consider shortening for clearer answers
-              </span>
+              </Typography>
             )}
             {charCount > INPUT_EXCEEDED_LIMIT && (
-              <span style={{ marginLeft: 6 }}>
+              <Typography
+                component="span"
+                sx={{ marginLeft: 1, color: "error.main" }}
+              >
                 · Message is too long, please shorten it
-              </span>
+              </Typography>
             )}
-          </div>
+          </Box>
         )}
-      </div>
+      </Box>
     </FaqLayout>
   );
 };
@@ -276,16 +286,16 @@ interface MessageProps {
 }
 const Message = ({ content, isUser }: MessageProps) => {
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         width: isUser ? "auto" : "100%",
         alignSelf: isUser ? "flex-end" : "stretch",
         display: "flex",
         justifyContent: isUser ? "flex-end" : "flex-start",
       }}
     >
-      <div
-        style={{
+      <Box
+        sx={{
           background: isUser ? "#111" : "transparent",
           color: isUser ? "#fff" : "#111",
           padding: isUser ? "0.4rem 0.9rem" : "0",
@@ -301,8 +311,9 @@ const Message = ({ content, isUser }: MessageProps) => {
           components={{
             table({ children }) {
               return (
-                <table
-                  style={{
+                <Box
+                  component="table"
+                  sx={{
                     width: "100%",
                     borderCollapse: "collapse",
                     margin: "0.75rem 0",
@@ -310,35 +321,37 @@ const Message = ({ content, isUser }: MessageProps) => {
                   }}
                 >
                   {children}
-                </table>
+                </Box>
               );
             },
             th({ children }) {
               return (
-                <th
-                  style={{
+                <Box
+                  component="th"
+                  sx={{
                     border: "1px solid #ddd",
                     padding: "8px",
-                    background: "#f5f5f5",
+                    backgroundColor: "#f5f5f5",
                     fontWeight: 600,
                     textAlign: "left",
                   }}
                 >
                   {children}
-                </th>
+                </Box>
               );
             },
             td({ children }) {
               return (
-                <td
-                  style={{
+                <Box
+                  component="td"
+                  sx={{
                     border: "1px solid #ddd",
                     padding: "8px",
                     verticalAlign: "top",
                   }}
                 >
                   {children}
-                </td>
+                </Box>
               );
             },
 
@@ -346,48 +359,66 @@ const Message = ({ content, isUser }: MessageProps) => {
             code({ inline, children }) {
               if (inline) {
                 return (
-                  <code
-                    style={{
-                      background: "#eaeaea",
+                  <Box
+                    component="code"
+                    sx={{
+                      backgroundColor: "#eaeaea",
                       padding: "0.2em 0.4em",
                       borderRadius: "4px",
                       fontSize: "0.85em",
+                      fontFamily: "monospace",
                     }}
                   >
                     {children}
-                  </code>
+                  </Box>
                 );
               }
 
               return (
-                <pre
-                  style={{
-                    background: "#1e1e1e",
+                <Box
+                  component="pre"
+                  sx={{
+                    backgroundColor: "#1e1e1e",
                     color: "#fff",
                     padding: "1rem",
                     borderRadius: "8px",
                     overflowX: "auto",
                     fontSize: "0.85em",
+                    margin: "0.75rem 0",
                   }}
                 >
-                  <code>{children}</code>
-                </pre>
+                  <Box component="code">{children}</Box>
+                </Box>
               );
             },
             ul({ children }) {
-              return <ul style={{ paddingLeft: "1.2rem" }}>{children}</ul>;
+              return (
+                <Box component="ul" sx={{ paddingLeft: "1.2rem" }}>
+                  {children}
+                </Box>
+              );
             },
+
             ol({ children }) {
-              return <ol style={{ paddingLeft: "1.2rem" }}>{children}</ol>;
+              return (
+                <Box component="ol" sx={{ paddingLeft: "1.2rem" }}>
+                  {children}
+                </Box>
+              );
             },
+
             p({ children }) {
-              return <p style={{ margin: "0.4rem 0" }}>{children}</p>;
+              return (
+                <Typography component="p" sx={{ margin: "0.4rem 0" }}>
+                  {children}
+                </Typography>
+              );
             },
           }}
         >
           {content}
         </ReactMarkdown>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };

@@ -3,7 +3,13 @@ import { GetFaqConversationsResponse } from "@/types/api";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { Add, Search, ChevronLeft, ChevronRight } from "@mui/icons-material";
-import { Button, CircularProgress, IconButton } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  IconButton,
+  Typography,
+} from "@mui/material";
 
 type FaqLayoutProps = {
   children: React.ReactNode;
@@ -29,16 +35,16 @@ const Faq = ({ children }: FaqLayoutProps) => {
   const sidebarWidth = collapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH;
 
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         minHeight: `calc(100vh - ${TOP_OFFSET})`,
         marginTop: TOP_OFFSET,
         fontFamily: "Inter, sans-serif",
       }}
     >
       {/* ===== SIDEBAR ===== */}
-      <div
-        style={{
+      <Box
+        sx={{
           position: "fixed",
           top: TOP_OFFSET,
           left: 0,
@@ -53,8 +59,8 @@ const Faq = ({ children }: FaqLayoutProps) => {
         }}
       >
         {/* --- TOP ACTIONS --- */}
-        <div
-          style={{
+        <Box
+          sx={{
             padding: "0.75rem",
             display: "flex",
             flexDirection: "column",
@@ -65,7 +71,7 @@ const Faq = ({ children }: FaqLayoutProps) => {
           {/* Collapse Toggle */}
           <IconButton
             onClick={() => setCollapsed((v) => !v)}
-            style={{ alignSelf: collapsed ? "center" : "flex-end" }}
+            sx={{ alignSelf: collapsed ? "center" : "flex-end" }}
           >
             {collapsed ? <ChevronRight /> : <ChevronLeft />}
           </IconButton>
@@ -125,12 +131,12 @@ const Faq = ({ children }: FaqLayoutProps) => {
               Conversations
             </Button>
           )}
-        </div>
+        </Box>
 
         {/* --- CONVERSATIONS --- */}
         {!collapsed && (
-          <div
-            style={{
+          <Box
+            sx={{
               flex: 1,
               overflowY: "auto",
               padding: "0.75rem",
@@ -139,8 +145,9 @@ const Faq = ({ children }: FaqLayoutProps) => {
               gap: "0rem",
             }}
           >
-            <h4
-              style={{
+            <Typography
+              variant="h4"
+              sx={{
                 margin: "0.5rem 0 0.25rem",
                 fontSize: "0.85rem",
                 fontWeight: 600,
@@ -149,7 +156,7 @@ const Faq = ({ children }: FaqLayoutProps) => {
               }}
             >
               Recent Conversations
-            </h4>
+            </Typography>
 
             {status === "FETCHING" && <CircularProgress />}
 
@@ -174,8 +181,8 @@ const Faq = ({ children }: FaqLayoutProps) => {
                     },
                   }}
                 >
-                  <span
-                    style={{
+                  <Typography
+                    sx={{
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
@@ -185,17 +192,17 @@ const Faq = ({ children }: FaqLayoutProps) => {
                     }}
                   >
                     {conv.title ?? "Untitled conversation"}
-                  </span>
+                  </Typography>
                 </Button>
               );
             })}
-          </div>
+          </Box>
         )}
-      </div>
+      </Box>
 
       {/* ===== MAIN CONTENT ===== */}
-      <div
-        style={{
+      <Box
+        sx={{
           marginLeft: sidebarWidth,
           transition: "margin-left 0.2s ease",
           minHeight: `calc(100vh - ${TOP_OFFSET})`,
@@ -206,8 +213,8 @@ const Faq = ({ children }: FaqLayoutProps) => {
         }}
       >
         {children}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
