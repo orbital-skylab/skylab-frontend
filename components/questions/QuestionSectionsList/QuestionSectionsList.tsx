@@ -4,12 +4,13 @@ import QuestionsList from "./QuestionsList";
 import { Card, CardContent, Stack, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 // Helpers
-import { isSection } from "@/helpers/types";
+import { isSection, isQuestion } from "@/helpers/types";
 import { generateIndexOffset } from "@/hooks/useAnswers/useAnswers.helpers";
 // Types
 import { UseAnswersActions } from "@/hooks/useAnswers";
-import { LeanSection, Section } from "@/types/deadlines";
+import { LeanSection, QUESTION_TYPE, Section } from "@/types/deadlines";
 import { Answer } from "@/types/submissions";
+import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 
 type Props = {
   questionSections: (Section | LeanSection)[];
@@ -39,6 +40,7 @@ const QuestionSectionsList: FC<Props> = ({
   isDraft = true,
   includeAnonymousQuestions = false,
 }) => {
+  const { setError } = useSnackbarAlert();
   const getSectionNumber = (section: Section | LeanSection, idx: number) => {
     if (isSection(section)) {
       return section.sectionNumber;
@@ -47,6 +49,75 @@ const QuestionSectionsList: FC<Props> = ({
     } else {
       return -1;
     }
+  };
+
+  const handleValidationAndSubmit = () => {
+    if (!submitAnswers) return;
+
+    const allQuestions = questionSections.flatMap(
+      (section) => section.questions
+    );
+
+    const firstMissingQuestion = allQuestions.find((question, index) => {
+      if (!question.isRequired) return false;
+
+      if (question.isAnonymous && !includeAnonymousQuestions) return false;
+
+      let answer: string | undefined;
+
+      if (accessAnswersWithQuestionIndex) {
+        answer = answers.get(index);
+      } else {
+        if (isQuestion(question)) {
+          answer = answers.get(question.id);
+        } else {
+          // Cannot validate LeanQuestion without index mode
+          return false;
+        }
+      }
+
+      if (answer === undefined || answer === null) return true;
+
+      switch (question.type) {
+        case QUESTION_TYPE.CHECKBOXES:
+          try {
+            const answerObj = JSON.parse(answer);
+            const hasCheckedOption = Object.values(answerObj).some(
+              (val) => val === true
+            );
+            return !hasCheckedOption;
+          } catch (e) {
+            return true;
+          }
+
+        case QUESTION_TYPE.RICH_TEXT_EDITOR: {
+          const strippedContent = answer.replace(/<[^>]*>/g, "").trim();
+          return strippedContent === "";
+        }
+
+        case QUESTION_TYPE.SHORT_ANSWER:
+        case QUESTION_TYPE.PARAGRAPH:
+        case QUESTION_TYPE.URL:
+        case QUESTION_TYPE.DROPDOWN:
+        case QUESTION_TYPE.MULTIPLE_CHOICE:
+        case QUESTION_TYPE.DATE:
+        case QUESTION_TYPE.TIME:
+        default:
+          return answer.trim() === "";
+      }
+    });
+
+    if (firstMissingQuestion) {
+      setError(
+        `Please fill in the required question: "${firstMissingQuestion.question}"`
+      );
+      return;
+    }
+
+    submitAnswers({
+      isDraft: false,
+      shouldDisplaySuccess: true,
+    });
   };
 
   return (
@@ -149,15 +220,7 @@ const QuestionSectionsList: FC<Props> = ({
           <LoadingButton
             id="submit-submission-button"
             variant="contained"
-            onClick={
-              submitAnswers
-                ? () =>
-                    submitAnswers({
-                      isDraft: false,
-                      shouldDisplaySuccess: true,
-                    })
-                : undefined
-            }
+            onClick={handleValidationAndSubmit}
             loading={isSubmitting}
             disabled={isSubmitting}
           >
