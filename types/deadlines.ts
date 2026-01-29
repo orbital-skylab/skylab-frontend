@@ -57,6 +57,7 @@ export type Question = {
   type: QUESTION_TYPE;
   options?: Option[];
   isAnonymous?: boolean;
+  isRequired: boolean;
 };
 
 export type LeanQuestion = Omit<
