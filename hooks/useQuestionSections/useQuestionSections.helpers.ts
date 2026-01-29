@@ -171,6 +171,7 @@ const getNewDefaultQuestion = () => {
     type: QUESTION_TYPE.MULTIPLE_CHOICE,
     options: ["Option 1"],
     isAnonymous: false,
+    isRequired: false,
   };
   return newDefaultQuestion;
 };

@@ -33,6 +33,12 @@ const EditQuestionConfig: FC<Props> = ({ question, setQuestion }) => {
     setQuestion(newQuestion);
   };
 
+  const handleToggleRequired = () => {
+    const newQuestion: LeanQuestion = { ...question };
+    newQuestion.isRequired = !question.isRequired;
+    setQuestion(newQuestion);
+  };
+
   const handleDeleteQuestion = () => {
     setQuestion();
   };
@@ -69,6 +75,18 @@ const EditQuestionConfig: FC<Props> = ({ question, setQuestion }) => {
             onClick={handleToggleAnonymous}
             control={<Switch color="secondary" size="small" />}
             label="Anonymous"
+            labelPlacement="start"
+          />
+        </Tooltip>
+        <Tooltip
+          title="A required question means that the receiver of the question must answer this question before submitting"
+          placement="top"
+        >
+          <FormControlLabel
+            value={question.isRequired}
+            onClick={handleToggleRequired}
+            control={<Switch color="secondary" size="small" />}
+            label="Required"
             labelPlacement="start"
           />
         </Tooltip>
