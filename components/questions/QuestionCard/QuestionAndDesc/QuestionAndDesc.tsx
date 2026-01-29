@@ -2,6 +2,7 @@ import { LeanQuestion, Question } from "@/types/deadlines";
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import AnonymousChip from "../AnonymousChip";
+import RequiredChip from "../RequiredChip";
 
 type Props = {
   question: LeanQuestion | Question;
@@ -18,6 +19,7 @@ const QuestionAndDesc: FC<Props> = ({ question, questionType }) => {
             : `<Empty ${questionType} Question> (Will not be saved if a question is not provided)`}
         </Typography>
         {question.isAnonymous && <AnonymousChip />}
+        {question.isRequired && <RequiredChip />}
       </Stack>
       {question.desc && (
         <Typography
