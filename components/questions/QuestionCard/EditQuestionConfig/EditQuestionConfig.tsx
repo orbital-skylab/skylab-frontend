@@ -73,6 +73,7 @@ const EditQuestionConfig: FC<Props> = ({ question, setQuestion }) => {
           <FormControlLabel
             value={question.isAnonymous}
             onClick={handleToggleAnonymous}
+            checked={question.isAnonymous}
             control={<Switch color="secondary" size="small" />}
             label="Anonymous"
             labelPlacement="start"
@@ -85,6 +86,7 @@ const EditQuestionConfig: FC<Props> = ({ question, setQuestion }) => {
           <FormControlLabel
             value={question.isRequired}
             onClick={handleToggleRequired}
+            checked={question.isRequired}
             control={<Switch color="secondary" size="small" />}
             label="Required"
             labelPlacement="start"
