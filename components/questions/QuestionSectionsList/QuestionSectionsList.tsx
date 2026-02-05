@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 // Components
 import QuestionsList from "./QuestionsList";
 import { Card, CardContent, Stack, Typography } from "@mui/material";
@@ -47,6 +47,24 @@ const QuestionSectionsList: FC<Props> = ({
   includeAnonymousQuestions = false,
 }) => {
   const { setError } = useSnackbarAlert();
+  const [questionErrors, setQuestionErrors] = useState<Record<string, boolean>>(
+    {}
+  );
+
+  /**
+   * Clear error for a question
+   * @param questionId ID of the question to clear error for
+   */
+  const handleClearError = (questionId: number) => {
+    if (questionErrors[questionId]) {
+      setQuestionErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[questionId];
+        return newErrors;
+      });
+    }
+  };
+
   const getSectionNumber = (section: Section | LeanSection, idx: number) => {
     if (isSection(section)) {
       return section.sectionNumber;
@@ -82,6 +100,8 @@ const QuestionSectionsList: FC<Props> = ({
   const handleValidationAndSubmit = () => {
     if (!submitAnswers) return;
 
+    setQuestionErrors({});
+
     const requiredQuestions = questionSections
       .flatMap((section) => section.questions)
       .filter(
@@ -102,6 +122,14 @@ const QuestionSectionsList: FC<Props> = ({
     });
 
     if (missingQuestions.length > 0) {
+      const newErrors: Record<string, boolean> = {};
+      missingQuestions.forEach((q) => {
+        if (isQuestion(q)) {
+          newErrors[q.id] = true;
+        }
+      });
+      setQuestionErrors(newErrors);
+
       const firstFewNames = missingQuestions
         .slice(0, 3)
         .map((q) => `"${q.question}"`)
@@ -188,6 +216,8 @@ const QuestionSectionsList: FC<Props> = ({
                 accessAnswersWithQuestionIndex={accessAnswersWithQuestionIndex}
                 indexOffset={indexOffset}
                 isReadonly={Boolean(isReadonly)}
+                errors={questionErrors}
+                onClearError={handleClearError}
               />
             </CardContent>
           </Card>

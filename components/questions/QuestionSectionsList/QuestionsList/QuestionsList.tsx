@@ -12,6 +12,8 @@ type Props = {
   accessAnswersWithQuestionIndex?: boolean;
   indexOffset?: number; // Only valid when `accessAnswersWithQuestionIndex` is true
   isReadonly: boolean;
+  errors?: Record<string, boolean>;
+  onClearError?: (id: number) => void;
 };
 
 /**
@@ -31,6 +33,8 @@ const QuestionsList: FC<Props> = ({
   accessAnswersWithQuestionIndex = false,
   indexOffset,
   isReadonly,
+  errors = {},
+  onClearError,
 }) => {
   return (
     <Stack spacing="1rem">
@@ -41,7 +45,7 @@ const QuestionsList: FC<Props> = ({
          * Else it is stored and accessed via its questionId.
          * (The index is offset as )
          */
-        let questionIdOrIdx;
+        let questionIdOrIdx: number;
         if (!accessAnswersWithQuestionIndex) {
           if (isQuestion(question)) {
             questionIdOrIdx = question.id;
@@ -73,6 +77,8 @@ const QuestionsList: FC<Props> = ({
             answer={answer}
             setAnswer={setAnswer}
             isReadonly={isReadonly}
+            hasError={!!errors[questionIdOrIdx]}
+            onClearError={() => onClearError && onClearError(questionIdOrIdx)}
           />
         );
       })}

@@ -10,6 +10,8 @@ type Props = {
   answer: Option;
   setAnswer: (newAnswer: string) => void;
   isReadonly: boolean;
+  hasError?: boolean;
+  onClearError?: () => void;
 };
 
 const DateQuestion: FC<Props> = ({
@@ -17,9 +19,14 @@ const DateQuestion: FC<Props> = ({
   answer,
   setAnswer,
   isReadonly,
+  hasError = false,
+  onClearError,
 }) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAnswer(e.target.value);
+    if (hasError && onClearError) {
+      onClearError();
+    }
   };
 
   return (
@@ -34,6 +41,8 @@ const DateQuestion: FC<Props> = ({
         inputProps={{
           readOnly: isReadonly,
         }}
+        error={hasError}
+        helperText={hasError && "This field is required"}
       />
     </Stack>
   );
