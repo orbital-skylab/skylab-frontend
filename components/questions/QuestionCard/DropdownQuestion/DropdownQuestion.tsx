@@ -10,6 +10,8 @@ type Props = {
   answer: Option;
   setAnswer: (newAnswer: string) => void;
   isReadonly: boolean;
+  hasError?: boolean;
+  onClearError?: () => void;
 };
 
 const DropdownQuestion: FC<Props> = ({
@@ -17,9 +19,14 @@ const DropdownQuestion: FC<Props> = ({
   answer,
   setAnswer,
   isReadonly,
+  hasError = false,
+  onClearError,
 }) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAnswer(e.target.value);
+    if (hasError && onClearError) {
+      onClearError();
+    }
   };
 
   return (
@@ -35,6 +42,8 @@ const DropdownQuestion: FC<Props> = ({
         onChange={handleChange}
         select
         inputProps={{ readOnly: isReadonly }}
+        error={hasError}
+        helperText={hasError && "This field is required"}
       >
         {question.options &&
           question.options.map((option, idx) => (

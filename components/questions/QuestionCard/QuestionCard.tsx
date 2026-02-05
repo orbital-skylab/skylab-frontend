@@ -32,6 +32,8 @@ type Props = {
   answer?: Option; // Only valid when isEditMode === false
   setAnswer?: (newAnswer: string) => void;
   isReadonly?: boolean; // Only valid when isEditMode === false
+  hasError?: boolean;
+  onClearError?: () => void;
 };
 
 /**
@@ -48,6 +50,8 @@ const QuestionCard: FC<Props> = ({
   answer,
   setAnswer,
   isReadonly,
+  hasError = false,
+  onClearError,
 }) => {
   const getQuestionNumber = () => {
     if (isQuestion(question)) {
@@ -120,6 +124,8 @@ const QuestionCard: FC<Props> = ({
         answer,
         setAnswer,
         isReadonly: Boolean(isReadonly),
+        hasError,
+        onClearError,
       };
       switch (question.type) {
         case QUESTION_TYPE.SHORT_ANSWER:
