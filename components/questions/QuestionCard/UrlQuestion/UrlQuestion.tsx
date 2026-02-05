@@ -11,6 +11,8 @@ type Props = {
   answer: Option;
   setAnswer: (newAnswer: string) => void;
   isReadonly: boolean;
+  hasError?: boolean;
+  onClearError?: () => void;
 };
 
 const UrlQuestion: FC<Props> = ({
@@ -18,6 +20,8 @@ const UrlQuestion: FC<Props> = ({
   answer,
   setAnswer,
   isReadonly,
+  hasError = false,
+  onClearError,
 }) => {
   const [touched, setTouched] = useState(false);
 
@@ -26,9 +30,13 @@ const UrlQuestion: FC<Props> = ({
       setTouched(true);
     }
     setAnswer(e.target.value);
+    if (hasError && onClearError) {
+      onClearError();
+    }
   };
 
-  const isInvalid = touched && !validateUrl(answer);
+  const isUrlFormatInvalid = touched && !validateUrl(answer);
+  const showRedBorder = isUrlFormatInvalid || hasError;
 
   return (
     <Stack className="url-question" spacing="0.5rem" sx={{ width: "100%" }}>
@@ -42,8 +50,11 @@ const UrlQuestion: FC<Props> = ({
             size="small"
             type="url"
             placeholder="Your URL here"
-            error={isInvalid}
-            helperText={isInvalid && "Please enter a valid URL"}
+            error={showRedBorder}
+            helperText={
+              (isUrlFormatInvalid && "Please enter a valid URL") ||
+              (hasError && "This field is required")
+            }
           />
         </>
       ) : (
