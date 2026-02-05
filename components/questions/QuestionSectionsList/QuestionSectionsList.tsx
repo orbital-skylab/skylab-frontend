@@ -8,7 +8,13 @@ import { isSection, isQuestion } from "@/helpers/types";
 import { generateIndexOffset } from "@/hooks/useAnswers/useAnswers.helpers";
 // Types
 import { UseAnswersActions } from "@/hooks/useAnswers";
-import { LeanSection, QUESTION_TYPE, Section } from "@/types/deadlines";
+import {
+  LeanQuestion,
+  LeanSection,
+  Question,
+  QUESTION_TYPE,
+  Section,
+} from "@/types/deadlines";
 import { Answer } from "@/types/submissions";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 
@@ -51,73 +57,56 @@ const QuestionSectionsList: FC<Props> = ({
     }
   };
 
+  const isAnswerEmpty = (
+    question: LeanQuestion | Question,
+    answer: string | undefined
+  ): boolean => {
+    if (answer === undefined || answer === null) return true;
+
+    switch (question.type) {
+      case QUESTION_TYPE.CHECKBOXES:
+        try {
+          const answerObj =
+            typeof answer === "string" ? JSON.parse(answer) : answer;
+          return !Object.values(answerObj).some((val) => val === true);
+        } catch {
+          return true;
+        }
+      case QUESTION_TYPE.RICH_TEXT_EDITOR:
+        return answer.replace(/<[^>]*>/g, "").trim() === "";
+      default:
+        return String(answer).trim() === "";
+    }
+  };
+
   const handleValidationAndSubmit = () => {
     if (!submitAnswers) return;
 
-    const allQuestions = questionSections.flatMap(
-      (section) => section.questions
-    );
+    const requiredQuestions = questionSections
+      .flatMap((section) => section.questions)
+      .filter(
+        (q) => q.isRequired && (!q.isAnonymous || includeAnonymousQuestions)
+      );
 
-    const firstMissingQuestion = allQuestions.find((question, index) => {
-      if (!question.isRequired) return false;
+    const firstMissingQuestion = requiredQuestions.find((question, index) => {
+      const key = accessAnswersWithQuestionIndex
+        ? index
+        : isQuestion(question)
+        ? question.id
+        : null;
 
-      if (question.isAnonymous && !includeAnonymousQuestions) return false;
+      if (key === null) return false;
 
-      let answer: string | undefined;
-
-      if (accessAnswersWithQuestionIndex) {
-        answer = answers.get(index);
-      } else {
-        if (isQuestion(question)) {
-          answer = answers.get(question.id);
-        } else {
-          // Cannot validate LeanQuestion without index mode
-          return false;
-        }
-      }
-
-      if (answer === undefined || answer === null) return true;
-
-      switch (question.type) {
-        case QUESTION_TYPE.CHECKBOXES:
-          try {
-            const answerObj = JSON.parse(answer);
-            const hasCheckedOption = Object.values(answerObj).some(
-              (val) => val === true
-            );
-            return !hasCheckedOption;
-          } catch (e) {
-            return true;
-          }
-
-        case QUESTION_TYPE.RICH_TEXT_EDITOR: {
-          const strippedContent = answer.replace(/<[^>]*>/g, "").trim();
-          return strippedContent === "";
-        }
-
-        case QUESTION_TYPE.SHORT_ANSWER:
-        case QUESTION_TYPE.PARAGRAPH:
-        case QUESTION_TYPE.URL:
-        case QUESTION_TYPE.DROPDOWN:
-        case QUESTION_TYPE.MULTIPLE_CHOICE:
-        case QUESTION_TYPE.DATE:
-        case QUESTION_TYPE.TIME:
-        default:
-          return answer.trim() === "";
-      }
+      const answer = answers.get(key);
+      return isAnswerEmpty(question, answer);
     });
 
     if (firstMissingQuestion) {
-      setError(
-        `Please fill in the required question: "${firstMissingQuestion.question}"`
-      );
+      setError(`Please fill in: "${firstMissingQuestion.question}"`);
       return;
     }
 
-    submitAnswers({
-      isDraft: false,
-      shouldDisplaySuccess: true,
-    });
+    submitAnswers({ isDraft: false, shouldDisplaySuccess: true });
   };
 
   return (
