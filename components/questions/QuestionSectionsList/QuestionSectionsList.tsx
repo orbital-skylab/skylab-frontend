@@ -88,7 +88,7 @@ const QuestionSectionsList: FC<Props> = ({
         (q) => q.isRequired && (!q.isAnonymous || includeAnonymousQuestions)
       );
 
-    const firstMissingQuestion = requiredQuestions.find((question, index) => {
+    const missingQuestions = requiredQuestions.filter((question, index) => {
       const key = accessAnswersWithQuestionIndex
         ? index
         : isQuestion(question)
@@ -101,8 +101,20 @@ const QuestionSectionsList: FC<Props> = ({
       return isAnswerEmpty(question, answer);
     });
 
-    if (firstMissingQuestion) {
-      setError(`Please fill in: "${firstMissingQuestion.question}"`);
+    if (missingQuestions.length > 0) {
+      const firstFewNames = missingQuestions
+        .slice(0, 3)
+        .map((q) => `"${q.question}"`)
+        .join(", ");
+      if (missingQuestions.length <= 3) {
+        setError(`Please fill in: ${firstFewNames}`);
+      } else {
+        const remainingCount = missingQuestions.length - 3;
+        setError(
+          `Please fill in: ${firstFewNames} and ${remainingCount} others.`
+        );
+      }
+      document.getElementById("question-section-list-div")?.scrollIntoView();
       return;
     }
 
