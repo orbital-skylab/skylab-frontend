@@ -142,7 +142,6 @@ const QuestionSectionsList: FC<Props> = ({
           `Please fill in: ${firstFewNames} and ${remainingCount} others.`
         );
       }
-      document.getElementById("question-section-list-div")?.scrollIntoView();
       return;
     }
 
