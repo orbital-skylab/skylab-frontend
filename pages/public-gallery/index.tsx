@@ -18,8 +18,13 @@ import { useRouter } from "next/router";
 import ProjectCard from "@/components/cards/ProjectCard/ProjectCard";
 import CustomHead from "@/components/layout/CustomHead";
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
-
-const PAGE_SIZE = 28;
+import { PAGE_SIZE } from "@/ssg/config/ssg";
+import { fetchPublicProjects, ApiError } from "@/lib/api/projectsApi";
+import {
+  filterProjects,
+  extractCohortYears,
+  getMostRecentCohort,
+} from "@/helpers/publicGallery";
 
 type Props = {
   projects: Project[];
@@ -40,28 +45,19 @@ const PublicGallery: NextPage<Props> = ({
   );
   const [selectedCohort, setSelectedCohort] = useState<number | "">("");
 
-  const cohortYears = useMemo(
-    () =>
-      Array.from(new Set(projects.map((p) => p.cohortYear))).sort(
-        (a, b) => b - a
-      ),
-    [projects]
-  );
+  // Extract unique cohort years using helper function (DRY principle)
+  const cohortYears = useMemo(() => extractCohortYears(projects), [projects]);
 
+  // Set default cohort to most recent on mount
   useEffect(() => {
     if (selectedCohort === "" && cohortYears.length > 0) {
-      setSelectedCohort(cohortYears[0]);
+      setSelectedCohort(getMostRecentCohort(projects) || cohortYears[0]);
     }
-  }, [cohortYears, selectedCohort]);
+  }, [cohortYears, selectedCohort, projects]);
 
+  // Filter projects using helper function (DRY principle)
   const filteredProjects = useMemo(
-    () =>
-      projects.filter((project) => {
-        const matchesLevel = project.achievement === selectedLevel;
-        const matchesCohort =
-          selectedCohort === "" || project.cohortYear === selectedCohort;
-        return matchesLevel && matchesCohort && !project.hasDropped;
-      }),
+    () => filterProjects(projects, selectedLevel, selectedCohort),
     [projects, selectedCohort, selectedLevel]
   );
 
@@ -107,7 +103,6 @@ const PublicGallery: NextPage<Props> = ({
               )
             }
             size="small"
-            sx={{ minWidth: 180 }}
           >
             {cohortYears.map((year) => (
               <MenuItem key={year} value={year}>
@@ -170,19 +165,8 @@ const PublicGallery: NextPage<Props> = ({
 };
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  const API_URL =
-    process.env.NEXT_PUBLIC_BASE_DEV_API_URL || "http://localhost:4000/api";
-
   try {
-    const response = await fetch(
-      `${API_URL}/projects/public?page=1&limit=${PAGE_SIZE}`
-    );
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch projects: ${response.statusText}`);
-    }
-
-    const data = await response.json();
+    const data = await fetchPublicProjects(1, PAGE_SIZE);
 
     return {
       props: {
@@ -193,8 +177,19 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
       },
     };
   } catch (error) {
-    console.error("Error fetching public projects:", error);
+    // Log error with context for debugging
+    const errorMessage =
+      error instanceof ApiError
+        ? `API Error (${error.statusCode}): ${error.message} at ${error.endpoint}`
+        : `Unknown error: ${error}`;
 
+    console.error(
+      "[SSG] Failed to fetch public projects for index:",
+      errorMessage
+    );
+
+    // In production, consider throwing to fail the build
+    // For now, return empty state with error indicator
     return {
       props: {
         projects: [],

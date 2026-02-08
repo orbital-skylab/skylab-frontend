@@ -15,6 +15,12 @@ import { Project } from "@/types/projects";
 import Image from "next/image";
 import Link from "next/link";
 import { getImageOrDefault } from "@/helpers/errors";
+import { PROJECT_PATHS_PAGE_SIZE } from "@/ssg/config/ssg";
+import {
+  fetchAllPublicProjectIds,
+  fetchProjectById,
+  ApiError,
+} from "@/lib/api/projectsApi";
 
 type Props = {
   project: Project;
@@ -154,40 +160,12 @@ const PublicProjectDetail: NextPage<Props> = ({ project }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const API_URL =
-    process.env.NEXT_PUBLIC_BASE_DEV_API_URL || "http://localhost:4000/api";
-  const PAGE_SIZE = 100; // Larger page size to reduce API calls
-
   try {
-    // Fetch first page to get total pages
-    const firstResponse = await fetch(
-      `${API_URL}/projects/public?page=1&limit=${PAGE_SIZE}`
-    );
+    // Use helper function to fetch all project IDs (SRP principle)
+    const projectIds = await fetchAllPublicProjectIds(PROJECT_PATHS_PAGE_SIZE);
 
-    if (!firstResponse.ok) {
-      return {
-        paths: [],
-        fallback: false,
-      };
-    }
-
-    const firstData = await firstResponse.json();
-    let allProjects = firstData.projects || [];
-    const totalPages = firstData.totalPages || 1;
-
-    // Fetch remaining pages if needed
-    for (let page = 2; page <= totalPages; page++) {
-      const response = await fetch(
-        `${API_URL}/projects/public?page=${page}&limit=${PAGE_SIZE}`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        allProjects = allProjects.concat(data.projects || []);
-      }
-    }
-
-    const paths = allProjects.map((project: Project) => ({
-      params: { projectId: project.id.toString() },
+    const paths = projectIds.map((id) => ({
+      params: { projectId: id.toString() },
     }));
 
     return {
@@ -195,7 +173,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
       fallback: false, // Show 404 for projects not in paths
     };
   } catch (error) {
-    console.error("Error fetching project paths:", error);
+    // Fail Fast: Log with context
+    const errorMessage =
+      error instanceof ApiError
+        ? `API Error (${error.statusCode}): ${error.message}`
+        : `Unknown error: ${error}`;
+
+    console.error("[SSG] Failed to fetch project paths:", errorMessage);
+
     return {
       paths: [],
       fallback: false,
@@ -204,20 +189,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-  const API_URL =
-    process.env.NEXT_PUBLIC_BASE_DEV_API_URL || "http://localhost:4000/api";
+  const projectId = params?.projectId as string;
 
   try {
-    const projectId = params?.projectId as string;
-    const response = await fetch(`${API_URL}/projects/${projectId}`);
-
-    if (!response.ok) {
-      return {
-        notFound: true,
-      };
-    }
-
-    const data = await response.json();
+    const data = await fetchProjectById(projectId);
     const project = data.project;
 
     if (!project || project.hasDropped) {
@@ -232,7 +207,14 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
       },
     };
   } catch (error) {
-    console.error("Error fetching project:", error);
+    // Fail Fast: Log with context
+    const errorMessage =
+      error instanceof ApiError
+        ? `API Error (${error.statusCode}): ${error.message} at ${error.endpoint}`
+        : `Unknown error: ${error}`;
+
+    console.error(`[SSG] Failed to fetch project ${projectId}:`, errorMessage);
+
     return {
       notFound: true,
     };

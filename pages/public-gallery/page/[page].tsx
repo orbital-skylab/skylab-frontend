@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import {
   Box,
@@ -11,14 +11,24 @@ import {
   Tab,
   tabsClasses,
   Stack,
+  TextField,
+  MenuItem,
 } from "@mui/material";
 import { useRouter } from "next/router";
 import ProjectCard from "@/components/cards/ProjectCard/ProjectCard";
 import CustomHead from "@/components/layout/CustomHead";
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
-
-const PAGE_SIZE = 28;
-const MAX_PAGES_TO_PREBUILD = 10;
+import { PAGE_SIZE, MAX_PAGES_TO_PREBUILD } from "@/ssg/config/ssg";
+import {
+  fetchPublicProjects,
+  fetchPublicProjectsCount,
+  ApiError,
+} from "@/lib/api/projectsApi";
+import {
+  filterProjects,
+  extractCohortYears,
+  getMostRecentCohort,
+} from "@/helpers/publicGallery";
 
 type Props = {
   projects: Project[];
@@ -37,14 +47,22 @@ const PublicGalleryPage: NextPage<Props> = ({
   const [selectedLevel, setSelectedLevel] = useState<LEVELS_OF_ACHIEVEMENT>(
     LEVELS_OF_ACHIEVEMENT.ARTEMIS
   );
+  const [selectedCohort, setSelectedCohort] = useState<number | "">("");
 
+  // Extract unique cohort years using helper function (DRY principle)
+  const cohortYears = useMemo(() => extractCohortYears(projects), [projects]);
+
+  // Set default cohort to most recent on mount
+  useEffect(() => {
+    if (selectedCohort === "" && cohortYears.length > 0) {
+      setSelectedCohort(getMostRecentCohort(projects) || cohortYears[0]);
+    }
+  }, [cohortYears, selectedCohort, projects]);
+
+  // Filter projects using helper function (DRY principle)
   const filteredProjects = useMemo(
-    () =>
-      projects.filter(
-        (project) =>
-          project.achievement === selectedLevel && !project.hasDropped
-      ),
-    [projects, selectedLevel]
+    () => filterProjects(projects, selectedLevel, selectedCohort),
+    [projects, selectedCohort, selectedLevel]
   );
 
   const handlePageChange = (
@@ -58,13 +76,44 @@ const PublicGalleryPage: NextPage<Props> = ({
     <>
       <CustomHead title={`Public Project Gallery - Page ${currentPage}`} />
       <Container maxWidth="xl" sx={{ py: 4 }}>
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h3" component="h1" gutterBottom>
-            Public Project Gallery
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Explore outstanding projects from Orbital ({total} projects)
-          </Typography>
+        <Box
+          sx={{
+            mb: 4,
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            justifyContent: "space-between",
+            alignItems: { sm: "center" },
+            gap: 2,
+          }}
+        >
+          <Box>
+            <Typography variant="h3" component="h1" gutterBottom>
+              Public Project Gallery
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Explore outstanding projects from the Orbital program ({total}{" "}
+              projects)
+            </Typography>
+          </Box>
+
+          <TextField
+            id="public-gallery-cohort-select"
+            label="Cohort"
+            select
+            value={selectedCohort}
+            onChange={(e) =>
+              setSelectedCohort(
+                e.target.value === "" ? "" : Number(e.target.value)
+              )
+            }
+            size="small"
+          >
+            {cohortYears.map((year) => (
+              <MenuItem key={year} value={year}>
+                {year}
+              </MenuItem>
+            ))}
+          </TextField>
         </Box>
 
         <Stack spacing={2} sx={{ mb: 3 }}>
@@ -120,24 +169,12 @@ const PublicGalleryPage: NextPage<Props> = ({
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const API_URL =
-    process.env.NEXT_PUBLIC_BASE_DEV_API_URL || "http://localhost:4000/api";
-
   try {
-    // Fetch first page to get total pages
-    const response = await fetch(
-      `${API_URL}/projects/public?page=1&limit=${PAGE_SIZE}`
+    const countData = await fetchPublicProjectsCount(PAGE_SIZE);
+    const totalPages = Math.min(
+      countData.totalPages || 1,
+      MAX_PAGES_TO_PREBUILD
     );
-
-    if (!response.ok) {
-      return {
-        paths: [{ params: { page: "1" } }],
-        fallback: false,
-      };
-    }
-
-    const data = await response.json();
-    const totalPages = Math.min(data.totalPages || 1, MAX_PAGES_TO_PREBUILD);
 
     // Generate paths for first N pages
     const paths = Array.from({ length: totalPages }, (_, i) => ({
@@ -149,7 +186,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
       fallback: false,
     };
   } catch (error) {
-    console.error("Error fetching page paths:", error);
+    // Fail Fast: Log with context
+    const errorMessage =
+      error instanceof ApiError
+        ? `API Error (${error.statusCode}): ${error.message}`
+        : `Unknown error: ${error}`;
+
+    console.error("[SSG] Failed to fetch page paths:", errorMessage);
+
+    // Fallback to single page to prevent complete build failure
     return {
       paths: [{ params: { page: "1" } }],
       fallback: false,
@@ -158,21 +203,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-  const API_URL =
-    process.env.NEXT_PUBLIC_BASE_DEV_API_URL || "http://localhost:4000/api";
-
   const page = parseInt(params?.page as string) || 1;
 
   try {
-    const response = await fetch(
-      `${API_URL}/projects/public?page=${page}&limit=${PAGE_SIZE}`
-    );
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch projects: ${response.statusText}`);
-    }
-
-    const data = await response.json();
+    const data = await fetchPublicProjects(page, PAGE_SIZE);
 
     // If page is beyond what we have, return 404
     if (page > data.totalPages && data.totalPages > 0) {
@@ -190,12 +224,21 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
       },
     };
   } catch (error) {
-    console.error("Error fetching public projects:", error);
+    // Fail Fast: Log with context
+    const errorMessage =
+      error instanceof ApiError
+        ? `API Error (${error.statusCode}): ${error.message} at ${error.endpoint}`
+        : `Unknown error: ${error}`;
+
+    console.error(
+      `[SSG] Failed to fetch public projects for page ${page}:`,
+      errorMessage
+    );
 
     return {
       props: {
         projects: [],
-        currentPage: 1,
+        currentPage: page,
         totalPages: 1,
         total: 0,
       },
