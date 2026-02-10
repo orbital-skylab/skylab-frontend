@@ -52,7 +52,10 @@ jest.mock("@/ssg/config/ssg", () => ({
   getApiUrl: () => "http://localhost:4000/api",
 }));
 
-import { getStaticPaths, getStaticProps } from "../[projectId]";
+import {
+  getStaticPaths,
+  getStaticProps,
+} from "../../pages/public-gallery/project/[projectId]";
 import { ApiError } from "@/lib/api/projectsApi";
 
 beforeEach(() => {

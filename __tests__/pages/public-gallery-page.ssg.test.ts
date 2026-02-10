@@ -53,7 +53,10 @@ jest.mock("@/lib/api/projectsApi", () => {
 });
 
 // Import after mocks are set up
-import { getStaticPaths, getStaticProps } from "../[page]";
+import {
+  getStaticPaths,
+  getStaticProps,
+} from "../../pages/public-gallery/page/[page]";
 import { ApiError } from "@/lib/api/projectsApi";
 
 beforeEach(() => {
