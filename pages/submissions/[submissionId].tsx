@@ -175,6 +175,7 @@ const Submission: NextPage = () => {
               isSubmitting={isCalling(submitAnswers.status)}
               isReadonly={isReadonly}
               isDraft={submissionResponse?.submission.isDraft}
+              includeAnonymousQuestions
             />
             {!isReadonly && (
               <Box sx={{ display: "flex", marginTop: "1rem" }}>
