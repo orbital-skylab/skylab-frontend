@@ -224,7 +224,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
       },
     };
   } catch (error) {
-    // Fail Fast: Log with context
+    // Log with context
     const errorMessage =
       error instanceof ApiError
         ? `API Error (${error.statusCode}): ${error.message} at ${error.endpoint}`

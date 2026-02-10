@@ -45,7 +45,7 @@ const PublicGallery: NextPage<Props> = ({
   );
   const [selectedCohort, setSelectedCohort] = useState<number | "">("");
 
-  // Extract unique cohort years using helper function (DRY principle)
+  // Extract unique cohort years using helper function
   const cohortYears = useMemo(() => extractCohortYears(projects), [projects]);
 
   // Set default cohort to most recent on mount
@@ -55,7 +55,7 @@ const PublicGallery: NextPage<Props> = ({
     }
   }, [cohortYears, selectedCohort, projects]);
 
-  // Filter projects using helper function (DRY principle)
+  // Filter projects using helper function
   const filteredProjects = useMemo(
     () => filterProjects(projects, selectedLevel, selectedCohort),
     [projects, selectedCohort, selectedLevel]
