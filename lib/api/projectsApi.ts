@@ -53,17 +53,24 @@ export class ApiError extends Error {
  *
  * @param page - Page number (1-indexed)
  * @param limit - Number of projects per page
+ * @param achievement - Optional achievement level filter (e.g., "ARTEMIS", "APOLLO")
  * @returns Paginated projects with metadata
  * @throws ApiError if request fails
  */
 export async function fetchPublicProjects(
   page = 1,
-  limit = PAGE_SIZE
+  limit = PAGE_SIZE,
+  achievement?: string
 ): Promise<PaginatedProjectsResponse> {
+  const queryParams: Record<string, string | number> = { page, limit };
+  if (achievement) {
+    queryParams.achievement = achievement;
+  }
+
   const apiService = new ApiServiceBuilder({
     method: HTTP_METHOD.GET,
     endpoint: "/projects/public",
-    queryParams: { page, limit },
+    queryParams,
   }).build();
 
   const response = await apiService();
@@ -72,7 +79,7 @@ export async function fetchPublicProjects(
     throw new ApiError(
       `Failed to fetch public projects: ${response.statusText}`,
       response.status,
-      `/projects/public?page=${page}&limit=${limit}`
+      `/projects/public?page=${page}&limit=${limit}${achievement ? `&achievement=${achievement}` : ""}`
     );
   }
 
@@ -84,16 +91,23 @@ export async function fetchPublicProjects(
  * Used by getStaticPaths to determine number of pages without fetching all projects
  *
  * @param limit - Page size for totalPages calculation
+ * @param achievement - Optional achievement level filter (e.g., "artemis", "apollo")
  * @returns Total count and total pages
  * @throws ApiError if request fails
  */
 export async function fetchPublicProjectsCount(
-  limit: number = PAGE_SIZE
+  limit: number = PAGE_SIZE,
+  achievement?: string
 ): Promise<ProjectsCountResponse> {
+  const queryParams: Record<string, string | number> = { limit };
+  if (achievement) {
+    queryParams.achievement = achievement;
+  }
+
   const apiService = new ApiServiceBuilder({
     method: HTTP_METHOD.GET,
     endpoint: "/projects/public/count",
-    queryParams: { limit },
+    queryParams,
   }).build();
 
   const response = await apiService();

@@ -3,7 +3,7 @@
 // @ts-nocheck
 
 /**
- * Unit tests for SSG functions in pages/public-gallery/project/[projectId].tsx
+ * Unit tests for SSG functions in pages/public-gallery/projects/[projectId].tsx
  *
  * Tests getStaticPaths() and getStaticProps() for the individual project detail page:
  * - getStaticPaths: fetches all public project IDs for path generation
@@ -55,7 +55,7 @@ jest.mock("@/ssg/config/ssg", () => ({
 import {
   getStaticPaths,
   getStaticProps,
-} from "../../pages/public-gallery/project/[projectId]";
+} from "../../pages/public-gallery/projects/[projectId]";
 import { ApiError } from "@/lib/api/projectsApi";
 
 beforeEach(() => {

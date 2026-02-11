@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useMemo, useState } from "react";
 import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import {
   Box,
@@ -11,8 +10,6 @@ import {
   Tab,
   tabsClasses,
   Stack,
-  TextField,
-  MenuItem,
 } from "@mui/material";
 import { useRouter } from "next/router";
 import ProjectCard from "@/components/cards/ProjectCard/ProjectCard";
@@ -24,57 +21,60 @@ import {
   fetchPublicProjectsCount,
   ApiError,
 } from "@/lib/api/projectsApi";
-import {
-  filterProjects,
-  extractCohortYears,
-  getMostRecentCohort,
-} from "@/helpers/publicGallery";
 
 type Props = {
   projects: Project[];
   currentPage: number;
   totalPages: number;
   total: number;
+  level: string;
 };
 
-const PublicGalleryPage: NextPage<Props> = ({
+/** Convert URL slug to LEVELS_OF_ACHIEVEMENT enum */
+const slugToLevel = (slug: string): LEVELS_OF_ACHIEVEMENT => {
+  // Convert lowercase slug (e.g., "artemis") to PascalCase (e.g., "Artemis")
+  const pascalCase = slug.charAt(0).toUpperCase() + slug.slice(1).toLowerCase();
+  // Find matching enum value
+  const matchingLevel = Object.values(LEVELS_OF_ACHIEVEMENT).find(
+    (level) => level === pascalCase
+  );
+  return matchingLevel || LEVELS_OF_ACHIEVEMENT.ARTEMIS;
+};
+
+/** Convert LEVELS_OF_ACHIEVEMENT to URL slug */
+const levelToSlug = (level: LEVELS_OF_ACHIEVEMENT): string => {
+  return level.toLowerCase();
+};
+
+const PublicGalleryLevelPage: NextPage<Props> = ({
   projects,
   currentPage,
   totalPages,
   total,
+  level,
 }) => {
   const router = useRouter();
-  const [selectedLevel, setSelectedLevel] = useState<LEVELS_OF_ACHIEVEMENT>(
-    LEVELS_OF_ACHIEVEMENT.ARTEMIS
-  );
-  const [selectedCohort, setSelectedCohort] = useState<number | "">("");
+  const selectedLevel = slugToLevel(level);
 
-  // Extract unique cohort years using helper function (DRY principle)
-  const cohortYears = useMemo(() => extractCohortYears(projects), [projects]);
-
-  // Set default cohort to most recent on mount
-  useEffect(() => {
-    if (selectedCohort === "" && cohortYears.length > 0) {
-      setSelectedCohort(getMostRecentCohort(projects) || cohortYears[0]);
-    }
-  }, [cohortYears, selectedCohort, projects]);
-
-  // Filter projects using helper function (DRY principle)
-  const filteredProjects = useMemo(
-    () => filterProjects(projects, selectedLevel, selectedCohort),
-    [projects, selectedCohort, selectedLevel]
-  );
+  const handleTabChange = (
+    _: React.SyntheticEvent,
+    newLevel: LEVELS_OF_ACHIEVEMENT
+  ) => {
+    router.push(`/public-gallery/${levelToSlug(newLevel)}/page/1/`);
+  };
 
   const handlePageChange = (
     _event: React.ChangeEvent<unknown>,
     page: number
   ) => {
-    router.push(`/public-gallery/page/${page}`);
+    router.push(`/public-gallery/${levelToSlug(selectedLevel)}/page/${page}/`);
   };
 
   return (
     <>
-      <CustomHead title={`Public Project Gallery - Page ${currentPage}`} />
+      <CustomHead
+        title={`${selectedLevel} Projects - Public Gallery - Page ${currentPage}`}
+      />
       <Container maxWidth="xl" sx={{ py: 4 }}>
         <Box
           sx={{
@@ -91,35 +91,16 @@ const PublicGalleryPage: NextPage<Props> = ({
               Public Project Gallery
             </Typography>
             <Typography variant="body1" color="text.secondary">
-              Explore outstanding projects from the Orbital program ({total}{" "}
-              projects)
+              Explore outstanding {selectedLevel} projects from the Orbital
+              program ({total} projects)
             </Typography>
           </Box>
-
-          <TextField
-            id="public-gallery-cohort-select"
-            label="Cohort"
-            select
-            value={selectedCohort}
-            onChange={(e) =>
-              setSelectedCohort(
-                e.target.value === "" ? "" : Number(e.target.value)
-              )
-            }
-            size="small"
-          >
-            {cohortYears.map((year) => (
-              <MenuItem key={year} value={year}>
-                {year}
-              </MenuItem>
-            ))}
-          </TextField>
         </Box>
 
         <Stack spacing={2} sx={{ mb: 3 }}>
           <Tabs
             value={selectedLevel}
-            onChange={(_, val) => setSelectedLevel(val)}
+            onChange={handleTabChange}
             textColor="secondary"
             indicatorColor="secondary"
             aria-label="achievement-level-tabs"
@@ -128,21 +109,24 @@ const PublicGalleryPage: NextPage<Props> = ({
             allowScrollButtonsMobile
             sx={{ [`& .${tabsClasses.scrollButtons}`]: { color: "primary" } }}
           >
-            {Object.values(LEVELS_OF_ACHIEVEMENT).map((level) => (
-              <Tab key={level} value={level} label={level} />
+            {Object.values(LEVELS_OF_ACHIEVEMENT).map((lvl) => (
+              <Tab key={lvl} value={lvl} label={lvl} />
             ))}
           </Tabs>
         </Stack>
 
         <Grid container spacing={3}>
-          {filteredProjects.map((project) => (
+          {projects.map((project) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={project.id}>
-              <ProjectCard project={project} />
+              <ProjectCard
+                project={project}
+                detailsLinkPath={`/public-gallery/projects/${project.id}`}
+              />
             </Grid>
           ))}
         </Grid>
 
-        {filteredProjects.length === 0 && (
+        {projects.length === 0 && (
           <Box sx={{ textAlign: "center", py: 8 }}>
             <Typography variant="h6" color="text.secondary">
               No projects available for {selectedLevel}
@@ -169,50 +153,51 @@ const PublicGalleryPage: NextPage<Props> = ({
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  try {
-    const countData = await fetchPublicProjectsCount(PAGE_SIZE);
-    const totalPages = Math.min(
-      countData.totalPages || 1,
-      MAX_PAGES_TO_PREBUILD
-    );
+  const levels = Object.values(LEVELS_OF_ACHIEVEMENT).map((l) =>
+    l.toLowerCase()
+  );
+  const paths: { params: { level: string; page: string } }[] = [];
 
-    // Generate paths for first N pages
-    const paths = Array.from({ length: totalPages }, (_, i) => ({
-      params: { page: (i + 1).toString() },
-    }));
+  for (const level of levels) {
+    try {
+      const countData = await fetchPublicProjectsCount(PAGE_SIZE, level);
+      const totalPages = Math.min(
+        Math.max(countData.totalPages || 1, 1),
+        MAX_PAGES_TO_PREBUILD
+      );
 
-    return {
-      paths,
-      fallback: false,
-    };
-  } catch (error) {
-    // Fail Fast: Log with context
-    const errorMessage =
-      error instanceof ApiError
-        ? `API Error (${error.statusCode}): ${error.message}`
-        : `Unknown error: ${error}`;
+      for (let p = 1; p <= totalPages; p++) {
+        paths.push({ params: { level, page: String(p) } });
+      }
+    } catch (error) {
+      const errorMessage =
+        error instanceof ApiError
+          ? `API Error (${error.statusCode}): ${error.message}`
+          : `Unknown error: ${error}`;
 
-    console.error("[SSG] Failed to fetch page paths:", errorMessage);
+      console.error(`[SSG] Failed to fetch paths for ${level}:`, errorMessage);
 
-    // Fallback to single page to prevent complete build failure
-    return {
-      paths: [{ params: { page: "1" } }],
-      fallback: false,
-    };
+      // Fallback to single page for this level
+      paths.push({ params: { level, page: "1" } });
+    }
   }
+
+  return {
+    paths,
+    fallback: false,
+  };
 };
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+  const level = (params?.level as string) || "artemis";
   const page = parseInt(params?.page as string) || 1;
+  const achievementLevel = slugToLevel(level);
 
   try {
-    const data = await fetchPublicProjects(page, PAGE_SIZE);
+    const data = await fetchPublicProjects(page, PAGE_SIZE, achievementLevel);
 
-    // If page is beyond what we have, return 404
     if (page > data.totalPages && data.totalPages > 0) {
-      return {
-        notFound: true,
-      };
+      return { notFound: true };
     }
 
     return {
@@ -221,17 +206,17 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
         currentPage: data.page || page,
         totalPages: data.totalPages || 1,
         total: data.total || 0,
+        level,
       },
     };
   } catch (error) {
-    // Log with context
     const errorMessage =
       error instanceof ApiError
         ? `API Error (${error.statusCode}): ${error.message} at ${error.endpoint}`
         : `Unknown error: ${error}`;
 
     console.error(
-      `[SSG] Failed to fetch public projects for page ${page}:`,
+      `[SSG] Failed to fetch ${level} projects for page ${page}:`,
       errorMessage
     );
 
@@ -241,9 +226,10 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
         currentPage: page,
         totalPages: 1,
         total: 0,
+        level,
       },
     };
   }
 };
 
-export default PublicGalleryPage;
+export default PublicGalleryLevelPage;

@@ -12,10 +12,11 @@ import ImageCard from "@/components/cards/ImageCard/ImageCard";
 
 type Props = {
   project: Project;
-  priority: boolean;
+  detailsLinkPath?: string;
 };
 
-const ProjectCard: FC<Props> = ({ project, priority = false }) => {
+const ProjectCard: FC<Props> = ({ project, detailsLinkPath }) => {
+  const detailsHref = detailsLinkPath || `${PAGES.PROJECTS}/${project.id}`;
   return (
     <ImageCard
       id={project.id.toString()}
@@ -23,7 +24,6 @@ const ProjectCard: FC<Props> = ({ project, priority = false }) => {
       title={project.teamName}
       imageSrc={project.posterUrl}
       imgAlt={`${project.name} Poster`}
-      priority={priority}
       cardClasses={`${project.achievement.toLowerCase()} ${
         project.cohortYear
       } project-card`}
@@ -53,7 +53,7 @@ const ProjectCard: FC<Props> = ({ project, priority = false }) => {
       }
       actionButton={
         <Stack direction={{ xs: "column-reverse", md: "row" }} gap="0.5rem">
-          <Link passHref href={`${PAGES.PROJECTS}/${project.id}`}>
+          <Link passHref href={detailsHref}>
             <Button
               variant="outlined"
               size="small"

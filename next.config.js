@@ -5,6 +5,16 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: "/public-gallery/",
+          destination: "/public-gallery/artemis/page/1/",
+        },
+      ],
+    };
+  },
 };
 
 module.exports = nextConfig;

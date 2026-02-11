@@ -180,7 +180,7 @@ describe("Public Gallery - SSG Feature", () => {
           $body.find('[class*="MuiCard"]').length > 0
         ) {
           cy.get('[class*="MuiCard"]').first().click();
-          cy.url().should("include", "/public-gallery/project/");
+          cy.url().should("include", "/public-gallery/projects/");
         }
       });
     });
@@ -194,10 +194,9 @@ describe("Public Gallery - SSG Feature", () => {
 
           // Verify detail page elements
           cy.contains("Back to Gallery").should("be.visible");
-          cy.contains("Project Details").should("be.visible");
-          cy.contains("Team Name").should("be.visible");
-          cy.contains("Achievement Level").should("be.visible");
-          cy.contains("Cohort Year").should("be.visible");
+          cy.contains("Project ID").should("be.visible");
+          cy.contains("Project Name").should("be.visible");
+          cy.contains("Level of Achievement").should("be.visible");
         }
       });
     });
@@ -208,19 +207,19 @@ describe("Public Gallery - SSG Feature", () => {
       cy.get("body").then(($body) => {
         if ($body.find('[class*="MuiCard"]').length > 0) {
           cy.get('[class*="MuiCard"]').first().click();
-          cy.url().should("include", "/public-gallery/project/");
+          cy.url().should("include", "/public-gallery/projects/");
 
           // Click back button
           cy.contains("Back to Gallery").click();
           cy.url().should("include", "/public-gallery");
-          cy.url().should("not.include", "/project/");
+          cy.url().should("not.include", "/projects/");
         }
       });
     });
 
     it("returns 404 for non-existent project ID", () => {
       cy.request({
-        url: "http://localhost:3000/public-gallery/project/99999999/",
+        url: "http://localhost:3000/public-gallery/projects/99999999/",
         failOnStatusCode: false,
       }).then((response) => {
         expect(response.status).to.eq(404);
