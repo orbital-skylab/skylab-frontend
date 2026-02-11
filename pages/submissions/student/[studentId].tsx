@@ -11,6 +11,7 @@ import useAuth from "@/contexts/useAuth";
 import useAnswers from "@/hooks/useAnswers";
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 // Types
 import { GetSubmissionsAnonymousQuestions } from "@/types/api";
 import { Section } from "@/types/deadlines";
@@ -81,13 +82,24 @@ const AnonymousQuestionSectionsList = ({
   answersArray: Answer[];
 }) => {
   const { answers, actions } = useAnswers();
-  actions.setAnswersFromArray(answersArray);
+  const [hasLoadedAnswers, setHasLoadedAnswers] = useState(false);
+
+  useEffect(() => {
+    actions.setAnswersFromArray(answersArray);
+    setHasLoadedAnswers(true);
+  }, [actions, answersArray]);
+
+  if (!hasLoadedAnswers) {
+    return null;
+  }
 
   return (
     <QuestionSectionsList
       questionSections={questionSections}
       answers={answers}
       includeAnonymousQuestions
+      isReadonly={true}
+      answersActions={actions}
     />
   );
 };
