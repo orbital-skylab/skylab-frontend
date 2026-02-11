@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import { useState, useEffect, useMemo } from "react";
 import {
   Box,
   Container,
@@ -10,12 +11,15 @@ import {
   Tab,
   tabsClasses,
   Stack,
+  TextField,
+  MenuItem,
 } from "@mui/material";
 import { useRouter } from "next/router";
 import ProjectCard from "@/components/cards/ProjectCard/ProjectCard";
 import CustomHead from "@/components/layout/CustomHead";
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
 import { PAGE_SIZE, MAX_PAGES_TO_PREBUILD } from "@/ssg/config/ssg";
+import { extractCohortYears } from "@/helpers/publicGallery";
 import {
   fetchPublicProjects,
   fetchPublicProjectsCount,
@@ -49,31 +53,97 @@ const levelToSlug = (level: LEVELS_OF_ACHIEVEMENT): string => {
 const PublicGalleryLevelPage: NextPage<Props> = ({
   projects,
   currentPage,
-  totalPages,
-  total,
   level,
 }) => {
   const router = useRouter();
   const selectedLevel = slugToLevel(level);
 
+  // Extract available cohort years from projects (sorted descending)
+  const cohortYears = useMemo(() => extractCohortYears(projects), [projects]);
+  const mostRecentCohort = cohortYears[0] || "";
+
+  // Initialize cohort from query param or default to most recent
+  const [selectedCohort, setSelectedCohort] = useState<number | "">(
+    mostRecentCohort
+  );
+
+  // Sync cohort state with URL query param
+  useEffect(() => {
+    if (router.isReady) {
+      const cohortParam = router.query.cohort;
+      if (cohortParam && !Array.isArray(cohortParam)) {
+        const parsedCohort = parseInt(cohortParam, 10);
+        if (!isNaN(parsedCohort) && cohortYears.includes(parsedCohort)) {
+          setSelectedCohort(parsedCohort);
+        } else {
+          setSelectedCohort(mostRecentCohort);
+        }
+      } else {
+        setSelectedCohort(mostRecentCohort);
+      }
+    }
+  }, [router.isReady, router.query.cohort, cohortYears, mostRecentCohort]);
+
+  // Filter projects by selected cohort
+  const filteredProjects = useMemo(() => {
+    if (selectedCohort === "") return projects;
+    return projects.filter((p) => p.cohortYear === selectedCohort);
+  }, [projects, selectedCohort]);
+
+  // Recalculate pagination based on filtered results
+  const filteredTotalPages = Math.max(
+    Math.ceil(filteredProjects.length / PAGE_SIZE),
+    1
+  );
+  const clientPage = Math.min(currentPage, filteredTotalPages);
+  const paginatedProjects = filteredProjects.slice(
+    (clientPage - 1) * PAGE_SIZE,
+    clientPage * PAGE_SIZE
+  );
+
+  const handleCohortChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    const newCohort = value === "" ? "" : parseInt(value, 10);
+    setSelectedCohort(newCohort);
+    // Reset to page 1 and update query param
+    router.push(
+      {
+        pathname: `/public-gallery/${levelToSlug(selectedLevel)}/page/1/`,
+        query: newCohort !== "" ? { cohort: newCohort } : {},
+      },
+      undefined,
+      { shallow: false }
+    );
+  };
+
   const handleTabChange = (
     _: React.SyntheticEvent,
     newLevel: LEVELS_OF_ACHIEVEMENT
   ) => {
-    router.push(`/public-gallery/${levelToSlug(newLevel)}/page/1/`);
+    // Preserve cohort when switching tabs
+    router.push({
+      pathname: `/public-gallery/${levelToSlug(newLevel)}/page/1/`,
+      query: selectedCohort !== "" ? { cohort: selectedCohort } : {},
+    });
   };
 
   const handlePageChange = (
     _event: React.ChangeEvent<unknown>,
     page: number
   ) => {
-    router.push(`/public-gallery/${levelToSlug(selectedLevel)}/page/${page}/`);
+    // Preserve cohort when changing pages
+    router.push({
+      pathname: `/public-gallery/${levelToSlug(selectedLevel)}/page/${page}/`,
+      query: selectedCohort !== "" ? { cohort: selectedCohort } : {},
+    });
   };
 
   return (
     <>
       <CustomHead
-        title={`${selectedLevel} Projects - Public Gallery - Page ${currentPage}`}
+        title={`${
+          selectedCohort !== "" ? `${selectedCohort} ` : ""
+        }${selectedLevel} Projects - Public Gallery - Page ${clientPage}`}
       />
       <Container maxWidth="xl" sx={{ py: 4 }}>
         <Box
@@ -92,12 +162,32 @@ const PublicGalleryLevelPage: NextPage<Props> = ({
             </Typography>
             <Typography variant="body1" color="text.secondary">
               Explore outstanding {selectedLevel} projects from the Orbital
-              program ({total} projects)
+              program ({filteredProjects.length} projects
+              {selectedCohort !== "" ? ` in ${selectedCohort}` : ""})
             </Typography>
           </Box>
         </Box>
 
         <Stack spacing={2} sx={{ mb: 3 }}>
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <TextField
+              id="cohort-select"
+              name="cohort"
+              label="Cohort"
+              value={selectedCohort}
+              onChange={handleCohortChange}
+              select
+              size="small"
+              sx={{ minWidth: 120 }}
+            >
+              <MenuItem value="">All Cohorts</MenuItem>
+              {cohortYears.map((year) => (
+                <MenuItem key={year} value={year}>
+                  {year}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
           <Tabs
             value={selectedLevel}
             onChange={handleTabChange}
@@ -116,7 +206,7 @@ const PublicGalleryLevelPage: NextPage<Props> = ({
         </Stack>
 
         <Grid container spacing={3}>
-          {projects.map((project) => (
+          {paginatedProjects.map((project) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={project.id}>
               <ProjectCard
                 project={project}
@@ -126,19 +216,20 @@ const PublicGalleryLevelPage: NextPage<Props> = ({
           ))}
         </Grid>
 
-        {projects.length === 0 && (
+        {paginatedProjects.length === 0 && (
           <Box sx={{ textAlign: "center", py: 8 }}>
             <Typography variant="h6" color="text.secondary">
               No projects available for {selectedLevel}
+              {selectedCohort !== "" ? ` in ${selectedCohort}` : ""}
             </Typography>
           </Box>
         )}
 
-        {totalPages > 1 && (
+        {filteredTotalPages > 1 && (
           <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
             <Pagination
-              count={totalPages}
-              page={currentPage}
+              count={filteredTotalPages}
+              page={clientPage}
               onChange={handlePageChange}
               color="primary"
               size="large"
@@ -194,18 +285,36 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const achievementLevel = slugToLevel(level);
 
   try {
-    const data = await fetchPublicProjects(page, PAGE_SIZE, achievementLevel);
+    // Fetch first page to get total count
+    const firstPageData = await fetchPublicProjects(
+      1,
+      PAGE_SIZE,
+      achievementLevel
+    );
+    const { totalPages, total } = firstPageData;
 
-    if (page > data.totalPages && data.totalPages > 0) {
+    // Fetch ALL projects for this level so client-side cohort filtering works
+    let allProjects = [...firstPageData.projects];
+
+    for (let p = 2; p <= totalPages; p++) {
+      const pageData = await fetchPublicProjects(
+        p,
+        PAGE_SIZE,
+        achievementLevel
+      );
+      allProjects = allProjects.concat(pageData.projects);
+    }
+
+    if (page > totalPages && totalPages > 0) {
       return { notFound: true };
     }
 
     return {
       props: {
-        projects: data.projects || [],
-        currentPage: data.page || page,
-        totalPages: data.totalPages || 1,
-        total: data.total || 0,
+        projects: allProjects,
+        currentPage: page,
+        totalPages: totalPages || 1,
+        total: total || 0,
         level,
       },
     };

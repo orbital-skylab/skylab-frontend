@@ -79,7 +79,9 @@ export async function fetchPublicProjects(
     throw new ApiError(
       `Failed to fetch public projects: ${response.statusText}`,
       response.status,
-      `/projects/public?page=${page}&limit=${limit}${achievement ? `&achievement=${achievement}` : ""}`
+      `/projects/public?page=${page}&limit=${limit}${
+        achievement ? `&achievement=${achievement}` : ""
+      }`
     );
   }
 

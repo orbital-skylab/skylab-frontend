@@ -3,11 +3,11 @@
 // @ts-nocheck
 
 /**
- * Unit tests for SSG functions in pages/public-gallery/page/[page].tsx
+ * Unit tests for SSG functions in pages/public-gallery/[level]/page/[page].tsx
  *
- * Tests getStaticPaths() and getStaticProps() for the paginated gallery page:
- * - getStaticPaths: generates paths for pre-built pages
- * - getStaticProps: fetches paginated project data for each page
+ * Tests getStaticPaths() and getStaticProps() for per-achievement paginated gallery pages:
+ * - getStaticPaths: generates paths for each achievement level × page combination
+ * - getStaticProps: fetches paginated project data filtered by achievement level
  */
 
 // Mock React component dependencies to avoid import resolution issues
@@ -56,7 +56,7 @@ jest.mock("@/lib/api/projectsApi", () => {
 import {
   getStaticPaths,
   getStaticProps,
-} from "../../pages/public-gallery/page/[page]";
+} from "../../pages/public-gallery/[level]/page/[page]";
 import { ApiError } from "@/lib/api/projectsApi";
 
 beforeEach(() => {
@@ -66,7 +66,7 @@ beforeEach(() => {
 });
 
 describe("getStaticPaths", () => {
-  it("generates paths and caps at MAX_PAGES_TO_PREBUILD", async () => {
+  it("generates paths for each level and caps pages at MAX_PAGES_TO_PREBUILD", async () => {
     mockFetchPublicProjectsCountFn.mockResolvedValue({
       total: 500,
       totalPages: 18,
@@ -74,14 +74,23 @@ describe("getStaticPaths", () => {
 
     const result = await getStaticPaths({});
 
-    expect(mockFetchPublicProjectsCountFn).toHaveBeenCalledWith(28); // PAGE_SIZE
-    expect(result.paths).toHaveLength(10); // capped at MAX_PAGES_TO_PREBUILD
-    expect(result.paths[0]).toEqual({ params: { page: "1" } });
-    expect(result.paths[9]).toEqual({ params: { page: "10" } });
+    // Should call fetchPublicProjectsCount for each of 4 levels (artemis, apollo, gemini, vostok)
+    expect(mockFetchPublicProjectsCountFn).toHaveBeenCalledTimes(4);
+    // Each level should have up to MAX_PAGES_TO_PREBUILD (10) pages
+    expect(result.paths.length).toBe(40); // 4 levels × 10 pages
+    expect(result.paths[0]).toEqual({
+      params: { level: "artemis", page: "1" },
+    });
+    expect(result.paths[9]).toEqual({
+      params: { level: "artemis", page: "10" },
+    });
+    expect(result.paths[10]).toEqual({
+      params: { level: "apollo", page: "1" },
+    });
     expect(result.fallback).toBe(false);
   });
 
-  it("generates at least 1 page when totalPages is 0 (empty DB)", async () => {
+  it("generates at least 1 page per level when totalPages is 0 (empty DB)", async () => {
     mockFetchPublicProjectsCountFn.mockResolvedValue({
       total: 0,
       totalPages: 0,
@@ -89,35 +98,49 @@ describe("getStaticPaths", () => {
 
     const result = await getStaticPaths({});
 
-    expect(result.paths).toHaveLength(1);
-    expect(result.paths[0]).toEqual({ params: { page: "1" } });
+    expect(result.paths.length).toBe(4); // 4 levels × 1 page each
+    expect(result.paths[0]).toEqual({
+      params: { level: "artemis", page: "1" },
+    });
+    expect(result.paths[1]).toEqual({ params: { level: "apollo", page: "1" } });
   });
 
-  it("falls back to single page on API error", async () => {
+  it("falls back to single page per level on API error", async () => {
     mockFetchPublicProjectsCountFn.mockRejectedValue(
-      new ApiError("Server Error", 500, "/projects/public/count")
+      new ApiError(
+        "Server Error",
+        500,
+        "/projects/public/count?achievement=artemis"
+      )
     );
 
     const result = await getStaticPaths({});
 
-    expect(result.paths).toEqual([{ params: { page: "1" } }]);
+    expect(result.paths.length).toBe(4); // 4 levels × 1 page fallback each
+    expect(result.paths[0]).toEqual({
+      params: { level: "artemis", page: "1" },
+    });
   });
 
-  it("logs error with context on ApiError", async () => {
+  it("logs error with context on ApiError per level", async () => {
     const consoleErrorSpy = jest.spyOn(console, "error");
     mockFetchPublicProjectsCountFn.mockRejectedValue(
-      new ApiError("Server Error", 500, "/projects/public/count")
+      new ApiError(
+        "Server Error",
+        500,
+        "/projects/public/count?achievement=artemis"
+      )
     );
 
     await getStaticPaths({});
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "[SSG] Failed to fetch page paths:",
+      expect.stringContaining("[SSG] Failed to fetch paths for"),
       expect.stringContaining("API Error (500)")
     );
   });
 
-  it("logs error on unknown error", async () => {
+  it("logs error on unknown error per level", async () => {
     const consoleErrorSpy = jest.spyOn(console, "error");
     mockFetchPublicProjectsCountFn.mockRejectedValue(
       new Error("Connection refused")
@@ -126,7 +149,7 @@ describe("getStaticPaths", () => {
     await getStaticPaths({});
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "[SSG] Failed to fetch page paths:",
+      expect.stringContaining("[SSG] Failed to fetch paths for"),
       expect.stringContaining("Unknown error")
     );
   });
@@ -150,32 +173,37 @@ describe("getStaticProps", () => {
     totalPages: 2,
   };
 
-  it("fetches projects and returns props with correct structure", async () => {
+  it("fetches projects for a level and returns props with correct structure", async () => {
     mockFetchPublicProjectsFn.mockResolvedValue(mockProjectsResponse);
 
-    const result = await getStaticProps({ params: { page: "1" } } as any);
+    const result = await getStaticProps({
+      params: { level: "artemis", page: "1" },
+    } as any);
 
-    expect(mockFetchPublicProjectsFn).toHaveBeenCalledWith(1, 28);
+    expect(mockFetchPublicProjectsFn).toHaveBeenCalledWith(1, 28, "Artemis");
     expect(result).toEqual({
       props: {
         projects: mockProjectsResponse.projects,
         currentPage: 1,
         totalPages: 2,
         total: 50,
+        level: "artemis",
       },
     });
   });
 
-  it("returns notFound when page exceeds totalPages", async () => {
+  it("returns notFound when page exceeds totalPages for a level", async () => {
     const response = { ...mockProjectsResponse, totalPages: 2 };
     mockFetchPublicProjectsFn.mockResolvedValue(response);
 
-    const result = await getStaticProps({ params: { page: "5" } } as any);
+    const result = await getStaticProps({
+      params: { level: "apollo", page: "5" },
+    } as any);
 
     expect(result).toEqual({ notFound: true });
   });
 
-  it("handles empty DB (totalPages = 0) gracefully", async () => {
+  it("handles empty DB (totalPages = 0) gracefully for a level", async () => {
     const emptyResponse = {
       projects: [],
       total: 0,
@@ -185,17 +213,26 @@ describe("getStaticProps", () => {
     };
     mockFetchPublicProjectsFn.mockResolvedValue(emptyResponse);
 
-    const result = await getStaticProps({ params: { page: "1" } } as any);
+    const result = await getStaticProps({
+      params: { level: "gemini", page: "1" },
+    } as any);
 
     expect((result as any).props.projects).toBeDefined();
     expect((result as any).props.totalPages).toBeGreaterThanOrEqual(1);
+    expect((result as any).props.level).toBe("gemini");
   });
 
-  it("returns fallback props on API error", async () => {
+  it("returns fallback props on API error for a level", async () => {
     mockFetchPublicProjectsFn.mockRejectedValue(
-      new ApiError("Internal Error", 500, "/projects/public?page=1&limit=28")
+      new ApiError(
+        "Internal Error",
+        500,
+        "/projects/public?page=1&limit=28&achievement=Artemis"
+      )
     );
-    const result = await getStaticProps({ params: { page: "1" } } as any);
+    const result = await getStaticProps({
+      params: { level: "artemis", page: "1" },
+    } as any);
 
     expect(result).toEqual({
       props: {
@@ -203,45 +240,54 @@ describe("getStaticProps", () => {
         currentPage: 1,
         totalPages: 1,
         total: 0,
+        level: "artemis",
       },
     });
   });
 
-  it("logs error with context on ApiError", async () => {
+  it("logs error with context on ApiError for a level", async () => {
     const consoleErrorSpy = jest.spyOn(console, "error");
     mockFetchPublicProjectsFn.mockRejectedValue(
-      new ApiError("Server Error", 500, "/projects/public?page=1&limit=28")
+      new ApiError(
+        "Server Error",
+        500,
+        "/projects/public?page=1&limit=28&achievement=Apollo"
+      )
     );
 
-    await getStaticProps({ params: { page: "1" } } as any);
+    await getStaticProps({
+      params: { level: "apollo", page: "1" },
+    } as any);
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       expect.stringContaining(
-        "[SSG] Failed to fetch public projects for page 1"
+        "[SSG] Failed to fetch apollo projects for page 1"
       ),
       expect.stringContaining("API Error (500)")
     );
   });
 
-  it("logs error on unknown error", async () => {
+  it("logs error on unknown error for a level", async () => {
     const consoleErrorSpy = jest.spyOn(console, "error");
     mockFetchPublicProjectsFn.mockRejectedValue(new Error("Timeout"));
 
-    await getStaticProps({ params: { page: "3" } } as any);
+    await getStaticProps({
+      params: { level: "vostok", page: "3" },
+    } as any);
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       expect.stringContaining(
-        "[SSG] Failed to fetch public projects for page 3"
+        "[SSG] Failed to fetch vostok projects for page 3"
       ),
       expect.stringContaining("Unknown error")
     );
   });
 
-  it("defaults to page 1 for invalid params", async () => {
+  it("defaults to page 1 and level artemis for invalid params", async () => {
     mockFetchPublicProjectsFn.mockResolvedValue(mockProjectsResponse);
 
     await getStaticProps({ params: {} } as any);
 
-    expect(mockFetchPublicProjectsFn).toHaveBeenCalledWith(1, 28);
+    expect(mockFetchPublicProjectsFn).toHaveBeenCalledWith(1, 28, "Artemis");
   });
 });

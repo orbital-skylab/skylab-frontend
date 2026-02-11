@@ -11,6 +11,14 @@
  */
 
 // Mock React component dependencies to avoid import resolution issues
+// MUST mock Body before any component that imports it to prevent deep dependency resolution
+jest.mock("@/components/layout/Body", () => {
+  return {
+    __esModule: true,
+    default: ({ children }: any) => children,
+  };
+});
+
 jest.mock("@/components/layout/CustomHead", () => () => null);
 jest.mock("@/components/typography/Attribute", () => () => null);
 jest.mock("@/components/typography/UsersName", () => () => null);
