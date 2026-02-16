@@ -7,7 +7,7 @@ export const targetAudienceRoles = [
   "Mentor",
 ] as const;
 
-export type TargetAudienceRole = (typeof targetAudienceRoles)[number];
+export type TargetAudienceRole = typeof targetAudienceRoles[number];
 
 export type Announcement = {
   id: number;

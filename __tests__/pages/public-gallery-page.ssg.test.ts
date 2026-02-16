@@ -11,8 +11,20 @@
  */
 
 // Mock React component dependencies to avoid import resolution issues
-jest.mock("@/components/cards/ProjectCard/ProjectCard", () => () => null);
-jest.mock("@/components/layout/CustomHead", () => () => null);
+jest.mock("@/components/cards/ProjectCard/ProjectCard", () => {
+  function MockProjectCard() {
+    return null;
+  }
+  MockProjectCard.displayName = "MockProjectCard";
+  return MockProjectCard;
+});
+jest.mock("@/components/layout/CustomHead", () => {
+  function MockCustomHead() {
+    return null;
+  }
+  MockCustomHead.displayName = "MockCustomHead";
+  return MockCustomHead;
+});
 jest.mock("@/helpers/publicGallery", () => ({
   filterProjects: jest.fn(),
   extractCohortYears: jest.fn(() => []),

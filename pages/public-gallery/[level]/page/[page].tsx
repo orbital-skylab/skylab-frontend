@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import {
   Box,
   Container,
@@ -15,8 +15,10 @@ import {
   MenuItem,
 } from "@mui/material";
 import { useRouter } from "next/router";
+import Fuse from "fuse.js";
 import ProjectCard from "@/components/cards/ProjectCard/ProjectCard";
 import CustomHead from "@/components/layout/CustomHead";
+import SearchInput from "@/components/search/SearchInput/SearchInput";
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
 import { PAGE_SIZE, MAX_PAGES_TO_PREBUILD } from "@/ssg/config/ssg";
 import { extractCohortYears } from "@/helpers/publicGallery";
@@ -67,6 +69,46 @@ const PublicGalleryLevelPage: NextPage<Props> = ({
     mostRecentCohort
   );
 
+  // Search state
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Create Fuse.js instance for fuzzy search
+  const fuse = useMemo(
+    () =>
+      new Fuse(projects, {
+        keys: [
+          "name",
+          "teamName",
+          "students.name",
+          "adviser.name",
+          "mentor.name",
+        ],
+        threshold: 0.3,
+        ignoreLocation: true,
+      }),
+    [projects]
+  );
+
+  // Debounced search handler
+  const handleSearchChange = (value: string) => {
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    searchTimeoutRef.current = setTimeout(() => {
+      setSearchQuery(value);
+    }, 200);
+  };
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // Sync cohort state with URL query param
   useEffect(() => {
     if (router.isReady) {
@@ -84,11 +126,17 @@ const PublicGalleryLevelPage: NextPage<Props> = ({
     }
   }, [router.isReady, router.query.cohort, cohortYears, mostRecentCohort]);
 
+  // Apply fuzzy search
+  const searchedProjects = useMemo(() => {
+    if (!searchQuery.trim()) return projects;
+    return fuse.search(searchQuery).map((result) => result.item);
+  }, [fuse, searchQuery, projects]);
+
   // Filter projects by selected cohort
   const filteredProjects = useMemo(() => {
-    if (selectedCohort === "") return projects;
-    return projects.filter((p) => p.cohortYear === selectedCohort);
-  }, [projects, selectedCohort]);
+    if (selectedCohort === "") return searchedProjects;
+    return searchedProjects.filter((p) => p.cohortYear === selectedCohort);
+  }, [searchedProjects, selectedCohort]);
 
   // Recalculate pagination based on filtered results
   const filteredTotalPages = Math.max(
@@ -168,8 +216,15 @@ const PublicGalleryLevelPage: NextPage<Props> = ({
           </Box>
         </Box>
 
-        <Stack spacing={2} sx={{ mb: 3 }}>
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <Stack direction="column" spacing={2} sx={{ mb: 3 }}>
+          <Box
+            sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}
+          >
+            <SearchInput
+              id="project-search"
+              label="Search projects"
+              onChange={handleSearchChange}
+            />
             <TextField
               id="cohort-select"
               name="cohort"
@@ -219,8 +274,10 @@ const PublicGalleryLevelPage: NextPage<Props> = ({
         {paginatedProjects.length === 0 && (
           <Box sx={{ textAlign: "center", py: 8 }}>
             <Typography variant="h6" color="text.secondary">
-              No projects available for {selectedLevel}
+              No projects found
+              {searchQuery ? ` matching "${searchQuery}"` : ""}
               {selectedCohort !== "" ? ` in ${selectedCohort}` : ""}
+              {` for ${selectedLevel}`}
             </Typography>
           </Box>
         )}
