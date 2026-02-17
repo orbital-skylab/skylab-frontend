@@ -186,16 +186,65 @@ describe("getStaticProps", () => {
   };
 
   it("fetches projects for a level and returns props with correct structure", async () => {
-    mockFetchPublicProjectsFn.mockResolvedValue(mockProjectsResponse);
+    // Mock returns different data for page 1 and page 2
+    const page1Response = {
+      projects: [
+        {
+          id: 1,
+          name: "Project 1",
+          teamName: "Team 1",
+          achievement: "Artemis",
+          cohortYear: 2024,
+          hasDropped: false,
+        },
+      ],
+      total: 50,
+      page: 1,
+      pageSize: 28,
+      totalPages: 2,
+    };
+
+    const page2Response = {
+      projects: [
+        {
+          id: 2,
+          name: "Project 2",
+          teamName: "Team 2",
+          achievement: "Artemis",
+          cohortYear: 2024,
+          hasDropped: false,
+        },
+      ],
+      total: 50,
+      page: 2,
+      pageSize: 28,
+      totalPages: 2,
+    };
+
+    mockFetchPublicProjectsFn
+      .mockResolvedValueOnce(page1Response)
+      .mockResolvedValueOnce(page2Response);
 
     const result = await getStaticProps({
       params: { level: "artemis", page: "1" },
     } as any);
 
-    expect(mockFetchPublicProjectsFn).toHaveBeenCalledWith(1, 28, "Artemis");
+    expect(mockFetchPublicProjectsFn).toHaveBeenCalledTimes(2);
+    expect(mockFetchPublicProjectsFn).toHaveBeenNthCalledWith(
+      1,
+      1,
+      28,
+      "Artemis"
+    );
+    expect(mockFetchPublicProjectsFn).toHaveBeenNthCalledWith(
+      2,
+      2,
+      28,
+      "Artemis"
+    );
     expect(result).toEqual({
       props: {
-        projects: mockProjectsResponse.projects,
+        projects: [page1Response.projects[0], page2Response.projects[0]],
         currentPage: 1,
         totalPages: 2,
         total: 50,
