@@ -75,7 +75,7 @@ const CheckboxesQuestion: FC<Props> = ({
           border: hasError ? "1px solid" : "1px solid transparent",
           borderColor: hasError ? "error.main" : "transparent",
           borderRadius: "4px",
-          padding: hasError ? "0.5rem" : "0.5rem",
+          padding: "0.5rem",
           marginLeft: "-0.5rem",
         }}
       >
