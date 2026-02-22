@@ -120,42 +120,54 @@ const QuestionSectionsList: FC<Props> = ({
 
     setQuestionErrors({});
 
-    const requiredQuestions = questionSections
-      .flatMap((section) => section.questions)
-      .filter(
-        (q) => q.isRequired && (!q.isAnonymous || includeAnonymousQuestions)
-      );
+    const questionsWithKeys = questionSections.flatMap(
+      (section, sectionIdx) => {
+        const indexOffset = accessAnswersWithQuestionIndex
+          ? generateIndexOffset(questionSections, sectionIdx)
+          : 0;
 
-    const missingQuestions = requiredQuestions.filter((question, index) => {
-      const key = accessAnswersWithQuestionIndex
-        ? index
-        : isQuestion(question)
-        ? question.id
-        : null;
+        return section.questions.map((q, qIdx) => {
+          const key = accessAnswersWithQuestionIndex
+            ? indexOffset + qIdx
+            : isQuestion(q)
+            ? q.id
+            : null;
 
+          return { question: q, key };
+        });
+      }
+    );
+
+    const requiredQuestions = questionsWithKeys.filter(
+      ({ question: q }) =>
+        q.isRequired && (!q.isAnonymous || includeAnonymousQuestions)
+    );
+
+    const missingItems = requiredQuestions.filter(({ question, key }) => {
       if (key === null) return false;
 
       const answer = answers.get(key);
       return isAnswerEmpty(question, answer);
     });
 
-    if (missingQuestions.length > 0) {
+    if (missingItems.length > 0) {
       const newErrors: Record<string, boolean> = {};
-      missingQuestions.forEach((q) => {
-        if (isQuestion(q)) {
-          newErrors[q.id] = true;
+      missingItems.forEach(({ key }) => {
+        if (key !== null) {
+          newErrors[key] = true;
         }
       });
       setQuestionErrors(newErrors);
 
-      const firstFewNames = missingQuestions
+      const firstFewNames = missingItems
         .slice(0, 3)
-        .map((q) => `"${getQuestionLabel(q)}"`)
+        .map(({ question }) => `"${getQuestionLabel(question)}"`)
         .join(", ");
-      if (missingQuestions.length <= 3) {
+
+      if (missingItems.length <= 3) {
         setError(`Please fill in: ${firstFewNames}`);
       } else {
-        const remainingCount = missingQuestions.length - 3;
+        const remainingCount = missingItems.length - 3;
         setError(
           `Please fill in: ${firstFewNames} and ${remainingCount} others.`
         );
