@@ -97,6 +97,24 @@ const QuestionSectionsList: FC<Props> = ({
     }
   };
 
+  /**
+   * Get the label to display for a question, falling back to question type or a default if question text is not available.
+   *
+   * @param q The question to get the label for.
+   * @returns The label to display for the question.
+   */
+  const getQuestionLabel = (q: LeanQuestion | Question) => {
+    if (typeof q.question === "string" && q.question.trim().length > 0) {
+      return q.question;
+    }
+
+    if (isQuestion(q) && q.type) {
+      return q.type;
+    }
+
+    return "Untitled question";
+  };
+
   const handleValidationAndSubmit = () => {
     if (!submitAnswers) return;
 
@@ -132,7 +150,7 @@ const QuestionSectionsList: FC<Props> = ({
 
       const firstFewNames = missingQuestions
         .slice(0, 3)
-        .map((q) => `"${q.question}"`)
+        .map((q) => `"${getQuestionLabel(q)}"`)
         .join(", ");
       if (missingQuestions.length <= 3) {
         setError(`Please fill in: ${firstFewNames}`);
