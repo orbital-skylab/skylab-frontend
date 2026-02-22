@@ -52,8 +52,8 @@ const UrlQuestion: FC<Props> = ({
             placeholder="Your URL here"
             error={showRedBorder}
             helperText={
-              (isUrlFormatInvalid && "Please enter a valid URL") ||
-              (hasError && "This field is required")
+              (hasError && "This field is required") ||
+              (isUrlFormatInvalid && "Please enter a valid URL")
             }
           />
         </>
