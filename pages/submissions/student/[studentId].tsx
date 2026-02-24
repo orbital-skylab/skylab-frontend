@@ -85,9 +85,11 @@ const AnonymousQuestionSectionsList = ({
   const [hasLoadedAnswers, setHasLoadedAnswers] = useState(false);
 
   useEffect(() => {
-    actions.setAnswersFromArray(answersArray);
-    setHasLoadedAnswers(true);
-  }, [actions, answersArray]);
+    if (!hasLoadedAnswers && answersArray && answersArray.length > 0) {
+      actions.setAnswersFromArray(answersArray);
+      setHasLoadedAnswers(true);
+    }
+  }, [actions, answersArray, hasLoadedAnswers]);
 
   if (!hasLoadedAnswers) {
     return null;
