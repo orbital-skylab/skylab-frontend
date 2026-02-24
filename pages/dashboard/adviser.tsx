@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 // Components
 import Body from "@/components/layout/Body";
-import { Box, Stack, Tab, Tabs, tabsClasses, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Stack,
+  Tab,
+  Tabs,
+  tabsClasses,
+  Typography,
+} from "@mui/material";
 import { TabContext, TabPanel } from "@mui/lab";
 import LoadingWrapper from "@/components/wrappers/LoadingWrapper";
 import DeadlineDeliverableTable from "@/components/tables/DeadlineDeliverableTable";
@@ -29,6 +37,8 @@ import {
   GetRelationsResponse,
 } from "@/types/api";
 import { VIEWER_ROLE } from "@/types/deadlines";
+import { PAGES } from "@/helpers/navigation";
+import Link from "next/link";
 
 enum TAB {
   DEADLINES = "Upcoming Deadlines",
@@ -164,9 +174,27 @@ const AdviserDashboard: NextPage = () => {
                     {teamSubmissionsResponse.deadlines.map(
                       ({ deadline, submissions }) => (
                         <Box key={deadline.id}>
-                          <Typography variant="h6" fontWeight={600}>
-                            {deadline.name}
-                          </Typography>
+                          <Stack
+                            direction="row"
+                            justifyContent="space-between"
+                            alignItems="center"
+                          >
+                            <Typography variant="h6" fontWeight={600}>
+                              {deadline.name}
+                            </Typography>
+                            <Link
+                              href={`${PAGES.ANONYMOUS_QUESTIONS_ADVISER}/${user?.adviser?.id}`}
+                              passHref
+                            >
+                              <Button
+                                className="view-anonymous-answers"
+                                variant="outlined"
+                                size="small"
+                              >
+                                View Anonymous Answers
+                              </Button>
+                            </Link>
+                          </Stack>
                           <SubmissionTable
                             deadline={deadline}
                             submissions={submissions}
