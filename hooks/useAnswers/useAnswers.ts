@@ -1,6 +1,6 @@
 import { LeanSection, Section } from "@/types/deadlines";
 import { Answer } from "@/types/submissions";
-import { useReducer } from "react";
+import { useReducer, useMemo } from "react";
 import { reducer } from "./useAnswers.helpers";
 import { ACTION_TYPE, State } from "./useAnswers.types";
 
@@ -60,12 +60,15 @@ const useAnswers = () => {
     }));
   };
 
-  const actions = {
-    generateSetAnswer,
-    setEmptyAnswers,
-    clearAnswers,
-    setAnswersFromArray,
-  };
+  const actions = useMemo(
+    () => ({
+      generateSetAnswer,
+      setEmptyAnswers,
+      clearAnswers,
+      setAnswersFromArray,
+    }),
+    []
+  );
 
   return { ...state, dispatch, actions, getAnswersAsArray };
 };
