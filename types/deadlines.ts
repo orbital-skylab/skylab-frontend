@@ -10,6 +10,12 @@ export enum DEADLINE_TYPE {
   APPLICATION = "Application", // TODO: Not implemented yet
 }
 
+export enum EVALUATOR_TYPE {
+  ADVISER = "Adviser",
+  TEAM = "Team",
+  BOTH = "Both",
+}
+
 export type Deadline = {
   id: number;
   cohortYear: Cohort["academicYear"];
