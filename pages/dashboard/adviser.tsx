@@ -172,36 +172,37 @@ const AdviserDashboard: NextPage = () => {
                 {teamSubmissionsResponse && teamSubmissionsResponse.deadlines && (
                   <>
                     {teamSubmissionsResponse.deadlines.map(
-                      ({ deadline, submissions }) => (
-                        <Box key={deadline.id}>
-                          <Stack
-                            direction="row"
-                            justifyContent="space-between"
-                            alignItems="center"
-                          >
-                            <Typography variant="h6" fontWeight={600}>
-                              {deadline.name}
-                            </Typography>
-                            <Link
-                              href={`${PAGES.ANONYMOUS_QUESTIONS_ADVISER}/${user?.adviser?.id}`}
-                              passHref
+                      ({ deadline, submissions }) =>
+                        submissions.length > 0 ? (
+                          <Box key={deadline.id}>
+                            <Stack
+                              direction="row"
+                              justifyContent="space-between"
+                              alignItems="center"
                             >
-                              <Button
-                                className="view-anonymous-answers"
-                                variant="outlined"
-                                size="small"
+                              <Typography variant="h6" fontWeight={600}>
+                                {deadline.name}
+                              </Typography>
+                              <Link
+                                href={`${PAGES.ANONYMOUS_QUESTIONS_ADVISER}/${user?.adviser?.id}`}
+                                passHref
                               >
-                                View Anonymous Answers
-                              </Button>
-                            </Link>
-                          </Stack>
-                          <SubmissionTable
-                            deadline={deadline}
-                            submissions={submissions}
-                            shouldIncludeToColumn
-                          />
-                        </Box>
-                      )
+                                <Button
+                                  className="view-anonymous-answers"
+                                  variant="outlined"
+                                  size="small"
+                                >
+                                  View Anonymous Answers
+                                </Button>
+                              </Link>
+                            </Stack>
+                            <SubmissionTable
+                              deadline={deadline}
+                              submissions={submissions}
+                              shouldIncludeToColumn
+                            />
+                          </Box>
+                        ) : null
                     )}
                   </>
                 )}
