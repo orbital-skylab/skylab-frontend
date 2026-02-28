@@ -36,11 +36,9 @@ const AllTeamsMilestoneTable: FC<Props> = ({
   ];
 
   if (!deadline) {
-    columnHeadings.push(
-      { heading: "MS1", align: "left" },
-      { heading: "MS2", align: "left" },
-      { heading: "MS3", align: "left" }
-    );
+    milestoneDeadlines.forEach((milestone) => {
+      columnHeadings.push({ heading: milestone.name, align: "left" });
+    });
   } else {
     columnHeadings.push({ heading: "Status", align: "left" });
   }
