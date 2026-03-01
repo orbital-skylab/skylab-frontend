@@ -188,9 +188,9 @@ const AllTeamsMilestoneRow: FC<Props> = ({
             </TableCell>
           </>
         ) : (
-          ["ms1", "ms2", "ms3"].map((milestone, index) => {
+          milestoneDeadlines.map((milestone) => {
             const sub = submission.submission?.find(
-              (sub) => sub.deadlineId === index + 1
+              (sub) => sub.deadlineId === milestone.id
             );
             const status = sub
               ? generateSubmissionStatusForSub(sub)
@@ -198,7 +198,7 @@ const AllTeamsMilestoneRow: FC<Props> = ({
             const updatedAt = sub ? sub.updatedAt : undefined;
 
             return (
-              <TableCell key={milestone}>
+              <TableCell key={milestone.id}>
                 {generateStatusCell(status, updatedAt, sub?.id)}
               </TableCell>
             );
