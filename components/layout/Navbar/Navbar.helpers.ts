@@ -73,6 +73,13 @@ export const NAVBAR_OPTIONS: NavbarOption[] = [
     currentPageRegExp: /users\/[0-9]*/,
   },
   {
+    label: "FAQ",
+    id: "faq",
+    route: PAGES.FAQ,
+    authorizedRoles: allUserRoles,
+    currentPageRegExp: /faq/,
+  },
+  {
     label: "Sign Out",
     id: "nav-sign-out",
     action: NAVBAR_ACTIONS.SIGN_OUT,

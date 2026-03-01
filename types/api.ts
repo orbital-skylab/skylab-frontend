@@ -1,5 +1,7 @@
 import { Adviser } from "./advisers";
+import { FaqConversation, FaqMessage } from "./ai";
 import { Announcement, AnnouncementWithCommentThreads } from "./announcements";
+import { Application } from "./applications";
 import { Cohort } from "./cohorts";
 import { Deadline, DeadlineDeliverable, Section } from "./deadlines";
 import { Mentor } from "./mentors";
@@ -371,6 +373,27 @@ export type SubmitVotesResponse = GetVotesResponse;
  */
 export type GetVoteEventResultsResponse = {
   results: VoteEventResult[];
+};
+
+/**
+ * AI Endpoints
+ */
+export type GetFaqConversationsResponse = {
+  faqConversations: FaqConversation[];
+};
+export type GetFaqConversationResponse = {
+  faqConversation: FaqConversation;
+};
+export type PostFaqMessageResponse = {
+  userMessage: FaqMessage;
+  assistantMessage: FaqMessage;
+};
+
+/**
+ * Application Endpoints
+ */
+export type GetLatestApplicationResponse = {
+  application: Application;
 };
 
 /**
