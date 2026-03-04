@@ -132,6 +132,28 @@ const EvaluationsRow: FC<Props> = ({ data, evaluationDeadlines, deadline }) => {
         </TableCell>
       ) : (
         evaluationDeadlines.map((evalDeadline) => {
+          const isTeamRow = !!data.fromProject;
+          const isAdviserRow = !!data.fromUser;
+
+          const isApplicable =
+            !evalDeadline.evaluatorType ||
+            evalDeadline.evaluatorType === "Both" ||
+            (evalDeadline.evaluatorType === "Team" && isTeamRow) ||
+            (evalDeadline.evaluatorType === "Adviser" && isAdviserRow);
+
+          if (!isApplicable) {
+            return (
+              <TableCell key={evalDeadline.id}>
+                <Box
+                  component="span"
+                  sx={{ color: "text.disabled", fontStyle: "italic" }}
+                >
+                  N/A
+                </Box>
+              </TableCell>
+            );
+          }
+
           const sub = getSubForDeadline(evalDeadline.id);
           const cellStatus = sub
             ? generateSubmissionStatus({
