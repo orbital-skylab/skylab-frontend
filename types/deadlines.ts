@@ -26,6 +26,7 @@ export type Deadline = {
   createdAt: string;
   updatedAt: string;
   evaluating?: Deadline;
+  evaluatorType?: EVALUATOR_TYPE;
 };
 
 export type Section = {
