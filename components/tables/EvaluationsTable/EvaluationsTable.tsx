@@ -12,69 +12,76 @@ import EvaluationsRow from "./EvaluationsRow";
 // Types
 import { Mutate } from "@/hooks/useFetch";
 import { GetRelationsResponse } from "@/types/api";
-import { EvaluationRelation } from "@/types/relations";
 import { Project } from "@/types/projects";
+import { Deadline } from "@/types/deadlines";
+import { PossibleSubmission } from "@/types/submissions";
 
 type Props = {
-  relations: EvaluationRelation[];
   mutate: Mutate<GetRelationsResponse>;
   projects: Project[];
   showAdviserColumn?: boolean;
+  deadline: Deadline | null;
+  evaluationDeadlines: Deadline[];
+  submissions: PossibleSubmission[];
 };
 
-const columnHeadings: { heading: string; align: "left" | "right" }[] = [
-  { heading: "Relation ID", align: "left" },
-  { heading: "Evaluator", align: "left" },
-  { heading: "Evaluatee", align: "left" },
-  { heading: "Adviser", align: "left" },
-  { heading: "Evaluation 1", align: "left" },
-  { heading: "Evaluation 2", align: "left" },
-  { heading: "Evaluation 3", align: "left" },
-];
-
 const EvaluationsTable: FC<Props> = ({
-  relations,
-  mutate,
   projects,
   showAdviserColumn,
+  deadline,
+  evaluationDeadlines,
+  submissions,
 }) => {
+  const columnHeadings: { heading: string; align: "left" | "right" }[] = [
+    { heading: "Relation ID", align: "left" },
+    { heading: "Evaluator Type", align: "left" },
+    { heading: "Evaluator", align: "left" },
+    { heading: "Evaluatee", align: "left" },
+  ];
+
+  if (!deadline) {
+    evaluationDeadlines.forEach((evaluation) => {
+      columnHeadings.push({ heading: evaluation.name, align: "left" });
+    });
+  } else {
+    columnHeadings.push({ heading: "Status", align: "left" });
+  }
+
   const filteredColumnHeadings = columnHeadings.filter(({ heading }) => {
     switch (heading) {
       case "Adviser":
-        return showAdviserColumn;
-
+        return Boolean(showAdviserColumn);
       default:
         return true;
     }
   });
 
   return (
-    <>
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              {filteredColumnHeadings.map(({ heading, align }) => (
-                <TableCell key={heading} align={align}>
-                  {heading}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {relations.map((relation) => (
-              <EvaluationsRow
-                key={relation.id}
-                relation={relation}
-                mutate={mutate}
-                projects={projects}
-                showAdviserColumn={showAdviserColumn ?? false}
-              />
+    <TableContainer>
+      <Table>
+        <TableHead>
+          <TableRow>
+            {filteredColumnHeadings.map(({ heading, align }) => (
+              <TableCell key={heading} align={align}>
+                {heading}
+              </TableCell>
             ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {submissions.map((data) => (
+            <EvaluationsRow
+              key={data.relationId} // Unique key that supports both Relations and Advisers
+              data={data}
+              projects={projects}
+              showAdviserColumn={showAdviserColumn ?? false}
+              deadline={deadline}
+              evaluationDeadlines={evaluationDeadlines}
+            />
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 

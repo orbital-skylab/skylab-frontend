@@ -27,6 +27,7 @@ import RelationTable from "@/components/tables/RelationTable";
 import ActionButtons from "@/components/tables/RelationTable/ActionButtons";
 import AllTeamsMilestoneTable from "@/components/tables/AllTeamsMilestoneTable";
 import ActionRow from "@/components/tables/AllTeamsMilestoneTable/ActionRow";
+import EvaluationsActionRow from "@/components/tables/EvaluationsTable/EvaluationsActionRow";
 import MilestoneSummary from "@/components/tables/AllTeamsMilestoneTable/MilestoneSummary";
 import EvaluationsTable from "@/components/tables/EvaluationsTable";
 // Hooks
@@ -67,6 +68,8 @@ const AdministratorDashboard: NextPage = () => {
   /** States for viewing all teams' milestone submissions and infinite scrolling */
   const [selectedMilestoneDeadline, setSelectedMilestoneDeadline] =
     useState<Deadline | null>(null);
+  const [selectedEvaluationsDeadline, setSelectedEvaluationsDeadline] =
+    useState<Deadline | null>(null);
   const [selectedSubmissionStatus, setSelectedSubmissionStatus] = useState(
     SUBMISSION_STATUS.ALL
   );
@@ -74,30 +77,48 @@ const AdministratorDashboard: NextPage = () => {
   const [viewHasDropped, setViewHasDropped] = useState(false);
   const [searchTextInput, setSearchTextInput] = useState(""); // The input value
   const [querySearch, setQuerySearch] = useState(""); // The debounced input value for searching
+  const [selectedEvaluatorType, setSelectedEvaluatorType] = useState("All");
 
-  /** Fetching deadlines where type === Milestone */
+  /** Fetching deadlines where type === Milestone and type === Evaluation */
   const { data: deadlinesResponse, status: fetchDeadlinesStatus } =
     useFetch<GetDeadlinesResponse>({
       endpoint: `/deadlines?cohortYear=${selectedCohortYear}`,
       enabled: Boolean(selectedCohortYear),
       requiresAuthorization: true,
       onFetch: (response) => {
-        const deadline = response.deadlines.find(
+        const milestoneDeadline = response.deadlines.find(
           (deadline) => deadline.type === DEADLINE_TYPE.MILESTONE
         );
 
-        if (deadline) {
-          setSelectedMilestoneDeadline(null);
+        if (milestoneDeadline) {
+          setSelectedMilestoneDeadline(milestoneDeadline);
+        }
+
+        const evaluationDeadline = response.deadlines.find(
+          (deadline) => deadline.type === DEADLINE_TYPE.EVALUATION
+        );
+
+        if (evaluationDeadline) {
+          setSelectedEvaluationsDeadline(evaluationDeadline);
         }
       },
     });
+
   const milestoneDeadlines =
     deadlinesResponse?.deadlines.filter(
       (deadline) => deadline.type === DEADLINE_TYPE.MILESTONE
     ) ?? [];
 
+  const evaluationDeadlines = useMemo(() => {
+    const filtered =
+      deadlinesResponse?.deadlines.filter(
+        (deadline) => deadline.type === DEADLINE_TYPE.EVALUATION
+      ) ?? [];
+    return [...filtered].sort((a, b) => a.id - b.id);
+  }, [deadlinesResponse]);
+
   /** Infinite fetching of all teams milestone submissions */
-  const memoQueryParams = useMemo(
+  const memoMilestoneQueryParams = useMemo(
     () => ({
       cohortYear: selectedCohortYear,
       deadlineId: selectedMilestoneDeadline
@@ -120,8 +141,34 @@ const AdministratorDashboard: NextPage = () => {
     ]
   );
 
+  /** Infinite fetching of all teams evaluations submissions */
+  const memoEvaluationsQueryParams = useMemo(
+    () => ({
+      cohortYear: selectedCohortYear,
+      deadlineId: selectedEvaluationsDeadline
+        ? selectedEvaluationsDeadline.id
+        : undefined,
+      search: querySearch,
+      limit: LIMIT,
+      submissionStatus:
+        selectedSubmissionStatus === SUBMISSION_STATUS.ALL
+          ? undefined
+          : selectedSubmissionStatus,
+      dropped: viewHasDropped,
+      evaluatorTypeFilter: selectedEvaluatorType,
+    }),
+    [
+      selectedCohortYear,
+      selectedEvaluationsDeadline,
+      querySearch,
+      selectedSubmissionStatus,
+      viewHasDropped,
+      selectedEvaluatorType,
+    ]
+  );
+
   /** Infinite fetching of all teams milestone submissions without limit */
-  const memoQueryParamsSummary = useMemo(
+  const memoMilestoneQueryParamsSummary = useMemo(
     () => ({
       cohortYear: selectedCohortYear,
       deadlineId: selectedMilestoneDeadline
@@ -143,6 +190,29 @@ const AdministratorDashboard: NextPage = () => {
     ]
   );
 
+  // /** Infinite fetching of all teams evaluations submissions without limit */
+  // const memoEvaluationsQueryParamsSummary = useMemo(
+  //   () => ({
+  //     cohortYear: selectedCohortYear,
+  //     deadlineId: selectedEvaluationsDeadline
+  //       ? selectedEvaluationsDeadline.id
+  //       : undefined,
+  //     search: querySearch,
+  //     submissionStatus:
+  //       selectedSubmissionStatus === SUBMISSION_STATUS.ALL
+  //         ? undefined
+  //         : selectedSubmissionStatus,
+  //     dropped: viewHasDropped,
+  //   }),
+  //   [
+  //     selectedCohortYear,
+  //     selectedEvaluationsDeadline,
+  //     querySearch,
+  //     selectedSubmissionStatus,
+  //     viewHasDropped,
+  //   ]
+  // );
+
   const {
     data: allTeamsMilestones,
     status: fetchAllTeamsMilestonesStatus,
@@ -152,20 +222,41 @@ const AdministratorDashboard: NextPage = () => {
     PossibleSubmission
   >({
     endpoint: `/dashboard/administrator/team-submissions`,
-    queryParams: memoQueryParams,
+    queryParams: memoMilestoneQueryParams,
     requiresAuthorization: true,
     page,
     responseToData: (response) => response.submissions,
     enabled: Boolean(selectedCohortYear),
   });
 
+  const { data: allTeamsEvaluations, status: fetchAllTeamsEvaluationsStatus } =
+    useInfiniteFetch<
+      GetAdministratorAllTeamMilestoneSubmissionsResponse,
+      PossibleSubmission
+    >({
+      endpoint: `/dashboard/administrator/evaluations`,
+      queryParams: memoEvaluationsQueryParams,
+      requiresAuthorization: true,
+      page,
+      responseToData: (response) => response.submissions,
+      enabled: Boolean(selectedCohortYear),
+    });
+
   const { data: allTeamsMilestonesSummary } =
     useFetch<GetAdministratorAllTeamMilestoneSubmissionsResponse>({
       endpoint: `/dashboard/administrator/team-submissions`,
-      queryParams: memoQueryParamsSummary,
+      queryParams: memoMilestoneQueryParamsSummary,
       requiresAuthorization: true,
       enabled: Boolean(selectedCohortYear),
     });
+
+  // const { data: allTeamsEvaluationsSummary } =
+  //   useFetch<GetAdministratorAllTeamMilestoneSubmissionsResponse>({
+  //     endpoint: `/dashboard/administrator/evaluations`,
+  //     queryParams: memoEvaluationsQueryParamsSummary,
+  //     requiresAuthorization: true,
+  //     enabled: Boolean(selectedCohortYear),
+  //   });
 
   const { data: projectsResponse } = useFetch<GetProjectsResponse>({
     endpoint: `/projects/lean?cohortYear=${selectedCohortYear}`,
@@ -210,6 +301,21 @@ const AdministratorDashboard: NextPage = () => {
   ) => {
     const newValue = e.target.value;
     setSelectedMilestoneDeadline(
+      newValue !== "0" ? (JSON.parse(newValue) as Deadline) : null
+    );
+    setPage(0);
+  };
+
+  const handleEvaluatorTypeChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSelectedEvaluatorType(e.target.value);
+    setPage(0);
+  };
+
+  const handleSelectedEvaluationsDeadlineChange = (
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
+    const newValue = e.target.value;
+    setSelectedEvaluationsDeadline(
       newValue !== "0" ? (JSON.parse(newValue) as Deadline) : null
     );
     setPage(0);
@@ -394,20 +500,6 @@ const AdministratorDashboard: NextPage = () => {
 
         <TabPanel value={TAB.EVALUATIONS}>
           <LoadingWrapper isLoading={isFetching(fetchRelationsStatus)}>
-            <ActionRow
-              selectedMilestoneDeadline={selectedMilestoneDeadline}
-              handleSelectedMilestoneDeadlineChange={
-                handleSelectedMilestoneDeadlineChange
-              }
-              selectedSubmissionStatus={selectedSubmissionStatus}
-              handleSubmissionStatusChange={handleSubmissionStatusChange}
-              searchTextInput={searchTextInput}
-              handleSearchInputChange={handleSearchInputChange}
-              milestoneDeadlines={milestoneDeadlines}
-              viewHasDropped={viewHasDropped}
-              handleToggleViewDropped={handleToggleViewDropped}
-              selectedCohortYear={selectedCohortYear}
-            />
             <Stack>
               <NoDataWrapper
                 noDataCondition={!relationsResponse?.relations.length}
@@ -415,13 +507,92 @@ const AdministratorDashboard: NextPage = () => {
                   <NoneFound message="No evaluation relations found." />
                 }
               >
-                {relationsResponse && relationsResponse.relations && (
-                  <EvaluationsTable
-                    relations={relationsResponse.relations}
-                    mutate={mutateRelations}
-                    projects={projectsResponse?.projects ?? []}
-                    showAdviserColumn
-                  />
+                {selectedEvaluationsDeadline !== null ? (
+                  <>
+                    <EvaluationsActionRow
+                      selectedEvaluationsDeadline={selectedEvaluationsDeadline}
+                      handleSelectedEvaluationsDeadlineChange={
+                        handleSelectedEvaluationsDeadlineChange
+                      }
+                      selectedSubmissionStatus={selectedSubmissionStatus}
+                      handleSubmissionStatusChange={
+                        handleSubmissionStatusChange
+                      }
+                      searchTextInput={searchTextInput}
+                      handleSearchInputChange={handleSearchInputChange}
+                      evaluationsDeadlines={evaluationDeadlines}
+                      viewHasDropped={viewHasDropped}
+                      handleToggleViewDropped={handleToggleViewDropped}
+                      selectedCohortYear={selectedCohortYear}
+                      selectedEvaluatorType={selectedEvaluatorType}
+                      handleEvaluatorTypeChange={handleEvaluatorTypeChange}
+                    />
+                    <EvaluationsTable
+                      submissions={allTeamsEvaluations}
+                      mutate={mutateRelations}
+                      projects={projectsResponse?.projects ?? []}
+                      showAdviserColumn
+                      deadline={selectedEvaluationsDeadline}
+                      evaluationDeadlines={evaluationDeadlines}
+                    />
+                    <div ref={bottomOfPageRef} />
+                    <Box
+                      sx={{
+                        display: "grid",
+                        placeItems: "center",
+                        height: "100px",
+                      }}
+                    >
+                      {isFetching(fetchAllTeamsEvaluationsStatus) ? (
+                        <LoadingSpinner size={50} />
+                      ) : !hasMore ? (
+                        <Typography>No more submissions found</Typography>
+                      ) : null}
+                    </Box>
+                  </>
+                ) : (
+                  <>
+                    <EvaluationsActionRow
+                      selectedEvaluationsDeadline={null}
+                      handleSelectedEvaluationsDeadlineChange={
+                        handleSelectedEvaluationsDeadlineChange
+                      }
+                      selectedSubmissionStatus={SUBMISSION_STATUS.ALL}
+                      handleSubmissionStatusChange={
+                        handleSubmissionStatusChange
+                      }
+                      searchTextInput={searchTextInput}
+                      handleSearchInputChange={handleSearchInputChange}
+                      evaluationsDeadlines={evaluationDeadlines}
+                      viewHasDropped={viewHasDropped}
+                      handleToggleViewDropped={handleToggleViewDropped}
+                      selectedCohortYear={selectedCohortYear}
+                      selectedEvaluatorType={selectedEvaluatorType}
+                      handleEvaluatorTypeChange={handleEvaluatorTypeChange}
+                    />
+                    <EvaluationsTable
+                      submissions={allTeamsEvaluations}
+                      mutate={mutateRelations}
+                      projects={projectsResponse?.projects ?? []}
+                      showAdviserColumn
+                      deadline={null}
+                      evaluationDeadlines={evaluationDeadlines}
+                    />
+                    <div ref={bottomOfPageRef} />
+                    <Box
+                      sx={{
+                        display: "grid",
+                        placeItems: "center",
+                        height: "100px",
+                      }}
+                    >
+                      {isFetching(fetchAllTeamsEvaluationsStatus) ? (
+                        <LoadingSpinner size={50} />
+                      ) : !hasMore ? (
+                        <Typography>No more submissions found</Typography>
+                      ) : null}
+                    </Box>
+                  </>
                 )}
               </NoDataWrapper>
             </Stack>

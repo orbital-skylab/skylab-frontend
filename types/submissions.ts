@@ -37,6 +37,7 @@ export type PossibleSubmission = {
   toUser?: User;
   submission?: Submission[];
   deadlineId?: number;
+  relationId?: number; // For evaluations, to link the submission to the evaluation relation
 };
 
 export enum STATUS {
