@@ -501,12 +501,34 @@ const AdministratorDashboard: NextPage = () => {
         </TabPanel>
 
         <TabPanel value={TAB.EVALUATIONS}>
-          <LoadingWrapper isLoading={isFetching(fetchRelationsStatus)}>
-            <Stack>
+          <LoadingWrapper
+            isLoading={
+              isFetching(fetchRelationsStatus) ||
+              isFetching(fetchDeadlinesStatus)
+            }
+          >
+            <Stack gap="0.75rem">
+              <TextField
+                id="project-cohort-select-evaluations"
+                name="cohort"
+                label="Cohort"
+                value={selectedCohortYear}
+                onChange={handleCohortYearChange}
+                select
+                size="small"
+                sx={{ width: "auto", minWidth: "120", alignSelf: "start" }}
+              >
+                {cohorts &&
+                  cohorts.map(({ academicYear }) => (
+                    <MenuItem key={academicYear} value={academicYear}>
+                      {academicYear}
+                    </MenuItem>
+                  ))}
+              </TextField>
               <NoDataWrapper
-                noDataCondition={!relationsResponse?.relations.length}
+                noDataCondition={!evaluationDeadlines.length}
                 fallback={
-                  <NoneFound message="No evaluation relations found." />
+                  <NoneFound message="No evaluation deadlines found. Create one now!" />
                 }
               >
                 {selectedEvaluationsDeadline !== null ? (
