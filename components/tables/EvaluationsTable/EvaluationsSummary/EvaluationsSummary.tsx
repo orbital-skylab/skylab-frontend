@@ -32,13 +32,23 @@ const EvaluationsSummary: FC<Props> = ({
       submittedLate = 0,
       notSubmitted = 0;
 
-    const total = filteredSubmissions.length;
-
     const evalDeadline = evaluationDeadlines.find((d) => d.id === evaluationId);
 
-    if (!evalDeadline) return { submitted, submittedLate, notSubmitted, total };
+    if (!evalDeadline)
+      return { submitted, submittedLate, notSubmitted, total: 0 };
 
     filteredSubmissions.forEach((data) => {
+      const isTeamRow = !!data.fromProject;
+      const isAdviserRow = !!data.fromUser;
+
+      const isApplicable =
+        !evalDeadline.evaluatorType ||
+        evalDeadline.evaluatorType === "Both" ||
+        (evalDeadline.evaluatorType === "Team" && isTeamRow) ||
+        (evalDeadline.evaluatorType === "Adviser" && isAdviserRow);
+
+      if (!isApplicable) return;
+
       const subForThisDeadline = (() => {
         const sub = data.submission;
         if (!sub) {
@@ -66,6 +76,8 @@ const EvaluationsSummary: FC<Props> = ({
         notSubmitted++;
       }
     });
+
+    const total = submitted + submittedLate + notSubmitted;
 
     return { submitted, submittedLate, notSubmitted, total };
   };
