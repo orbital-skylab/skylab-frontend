@@ -30,6 +30,8 @@ import ActionRow from "@/components/tables/AllTeamsMilestoneTable/ActionRow";
 import EvaluationsActionRow from "@/components/tables/EvaluationsTable/EvaluationsActionRow";
 import MilestoneSummary from "@/components/tables/AllTeamsMilestoneTable/MilestoneSummary";
 import EvaluationsTable from "@/components/tables/EvaluationsTable";
+import EvaluationsSummary from "@/components/tables/EvaluationsTable/EvaluationsSummary/EvaluationsSummary";
+
 // Hooks
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import useCohort from "@/contexts/useCohort";
@@ -190,28 +192,28 @@ const AdministratorDashboard: NextPage = () => {
     ]
   );
 
-  // /** Infinite fetching of all teams evaluations submissions without limit */
-  // const memoEvaluationsQueryParamsSummary = useMemo(
-  //   () => ({
-  //     cohortYear: selectedCohortYear,
-  //     deadlineId: selectedEvaluationsDeadline
-  //       ? selectedEvaluationsDeadline.id
-  //       : undefined,
-  //     search: querySearch,
-  //     submissionStatus:
-  //       selectedSubmissionStatus === SUBMISSION_STATUS.ALL
-  //         ? undefined
-  //         : selectedSubmissionStatus,
-  //     dropped: viewHasDropped,
-  //   }),
-  //   [
-  //     selectedCohortYear,
-  //     selectedEvaluationsDeadline,
-  //     querySearch,
-  //     selectedSubmissionStatus,
-  //     viewHasDropped,
-  //   ]
-  // );
+  /** Infinite fetching of all teams evaluations submissions without limit */
+  const memoEvaluationsQueryParamsSummary = useMemo(
+    () => ({
+      cohortYear: selectedCohortYear,
+      deadlineId: selectedEvaluationsDeadline
+        ? selectedEvaluationsDeadline.id
+        : undefined,
+      search: querySearch,
+      submissionStatus:
+        selectedSubmissionStatus === SUBMISSION_STATUS.ALL
+          ? undefined
+          : selectedSubmissionStatus,
+      dropped: viewHasDropped,
+    }),
+    [
+      selectedCohortYear,
+      selectedEvaluationsDeadline,
+      querySearch,
+      selectedSubmissionStatus,
+      viewHasDropped,
+    ]
+  );
 
   const {
     data: allTeamsMilestones,
@@ -250,13 +252,13 @@ const AdministratorDashboard: NextPage = () => {
       enabled: Boolean(selectedCohortYear),
     });
 
-  // const { data: allTeamsEvaluationsSummary } =
-  //   useFetch<GetAdministratorAllTeamMilestoneSubmissionsResponse>({
-  //     endpoint: `/dashboard/administrator/evaluations`,
-  //     queryParams: memoEvaluationsQueryParamsSummary,
-  //     requiresAuthorization: true,
-  //     enabled: Boolean(selectedCohortYear),
-  //   });
+  const { data: allTeamsEvaluationsSummary } =
+    useFetch<GetAdministratorAllTeamMilestoneSubmissionsResponse>({
+      endpoint: `/dashboard/administrator/evaluations`,
+      queryParams: memoEvaluationsQueryParamsSummary,
+      requiresAuthorization: true,
+      enabled: Boolean(selectedCohortYear),
+    });
 
   const { data: projectsResponse } = useFetch<GetProjectsResponse>({
     endpoint: `/projects/lean?cohortYear=${selectedCohortYear}`,
@@ -527,6 +529,14 @@ const AdministratorDashboard: NextPage = () => {
                       selectedEvaluatorType={selectedEvaluatorType}
                       handleEvaluatorTypeChange={handleEvaluatorTypeChange}
                     />
+                    <EvaluationsSummary
+                      deadline={selectedEvaluationsDeadline}
+                      submissions={
+                        allTeamsEvaluationsSummary?.submissions ?? []
+                      }
+                      evaluationDeadlines={evaluationDeadlines}
+                      evaluatorTypeFilter={selectedEvaluatorType}
+                    />
                     <EvaluationsTable
                       submissions={allTeamsEvaluations}
                       mutate={mutateRelations}
@@ -569,6 +579,14 @@ const AdministratorDashboard: NextPage = () => {
                       selectedCohortYear={selectedCohortYear}
                       selectedEvaluatorType={selectedEvaluatorType}
                       handleEvaluatorTypeChange={handleEvaluatorTypeChange}
+                    />
+                    <EvaluationsSummary
+                      deadline={selectedEvaluationsDeadline}
+                      submissions={
+                        allTeamsEvaluationsSummary?.submissions ?? []
+                      }
+                      evaluationDeadlines={evaluationDeadlines}
+                      evaluatorTypeFilter={selectedEvaluatorType}
                     />
                     <EvaluationsTable
                       submissions={allTeamsEvaluations}
