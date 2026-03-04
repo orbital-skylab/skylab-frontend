@@ -71,7 +71,7 @@ const EvaluationsActionRow: FC<Props> = ({
     setIsExporting(true);
     setCsvData([]);
     try {
-      const fetchAllTeamsMilestones = new ApiServiceBuilder({
+      const fetchAllTeamsEvaluations = new ApiServiceBuilder({
         method: HTTP_METHOD.GET,
         endpoint: `/dashboard/administrator/evaluations`,
         queryParams: {
@@ -85,12 +85,12 @@ const EvaluationsActionRow: FC<Props> = ({
         },
         requiresAuthorization: true,
       }).build();
-      const res = await fetchAllTeamsMilestones();
+      const res = await fetchAllTeamsEvaluations();
       const data: GetAdministratorAllTeamMilestoneSubmissionsResponse =
         await res.json();
 
       if (!data || !data.submissions) {
-        throw new Error("No team milestone submission data found");
+        throw new Error("No team evaluation submission data found");
       }
       const csvEvaluations = selectedEvaluationsDeadline
         ? [selectedEvaluationsDeadline]
