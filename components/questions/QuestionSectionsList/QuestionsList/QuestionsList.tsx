@@ -17,6 +17,40 @@ type Props = {
 };
 
 /**
+ * Get the question identifier based on the `accessAnswersWithQuestionIndex` flag. If the flag is false, the identifier is the question ID; if true, the identifier is the question index (offset by `indexOffset` if provided).
+ * @param question The question object
+ * @param idx The index of the question in the list
+ * @param accessByIndex Whether to access answers by index instead of question ID
+ * @param offset The offset to apply to the index if accessing by index
+ * @returns The question identifier (either question ID or index) or null if there's an error in configuration
+ */
+const getQuestionIdentifier = (
+  question: Question | LeanQuestion,
+  idx: number,
+  accessByIndex: boolean,
+  offset?: number
+): number | null => {
+  if (!accessByIndex) {
+    if (!isQuestion(question)) {
+      console.error(
+        "`accessAnswersWithQuestionIndex` cannot be false if questions lack an ID."
+      );
+      return null;
+    }
+    return question.id;
+  }
+
+  if (offset === undefined) {
+    console.error(
+      "`accessAnswersWithQuestionIndex` is enabled, but `indexOffset` is undefined."
+    );
+    return null;
+  }
+
+  return offset + idx;
+};
+
+/**
  * Render a list of questions that users can interact with (i.e. can input answers)
  * @param param0.questions List of questions to render
  * @param param0.answers Object of answers where key is (question ID OR question index) and value is the answer to the question.
@@ -45,33 +79,24 @@ const QuestionsList: FC<Props> = ({
          * Else it is stored and accessed via its questionId.
          * (The index is offset as )
          */
-        let questionIdOrIdx: number;
-        if (!accessAnswersWithQuestionIndex) {
-          if (isQuestion(question)) {
-            questionIdOrIdx = question.id;
-          } else {
-            return alert(
-              "You should not enable the `accessAnswersWithQuestionIndex` flag if the questions do not have an ID. (i.e. edit deadline questions page)"
-            );
-          }
-        } else {
-          if (indexOffset !== undefined) {
-            questionIdOrIdx = indexOffset + idx;
-          } else {
-            return alert(
-              "You should not enable the `accessAnswersWithQuestionIndex` flag without providing the indexOffset"
-            );
-          }
+        const questionIdOrIdx = getQuestionIdentifier(
+          question,
+          idx,
+          accessAnswersWithQuestionIndex,
+          indexOffset
+        );
+
+        if (questionIdOrIdx === null) {
+          return null; // Skip rendering this question due to configuration error
         }
 
         const answer = answers.get(questionIdOrIdx);
         const setAnswer = generateSetAnswer
           ? generateSetAnswer(questionIdOrIdx)
           : undefined;
-
         return (
           <QuestionCard
-            key={idx}
+            key={questionIdOrIdx}
             idx={idx}
             question={question}
             answer={answer}
