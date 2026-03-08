@@ -1,21 +1,17 @@
 // Components
 import NoneFound from "@/components/emptyStates/NoneFound";
 import Body from "@/components/layout/Body";
-import QuestionSectionsList from "@/components/questions/QuestionSectionsList";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import UnauthorizedWrapper from "@/components/wrappers/UnauthorizedWrapper";
 import { Box, Stack, Typography } from "@mui/material";
 import GoBackButton from "@/components/buttons/GoBackButton";
+import AnonymousQuestionSectionsList from "@/components/questions/AnonymousQuestionSectionsList";
 // Hooks
 import useAuth from "@/contexts/useAuth";
-import useAnswers from "@/hooks/useAnswers";
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 // Types
 import { GetSubmissionsAnonymousQuestions } from "@/types/api";
-import { Section } from "@/types/deadlines";
-import { Answer } from "@/types/submissions";
 import type { NextPage } from "next";
 
 const AnonymousSubmissionsAdviser: NextPage = () => {
@@ -72,35 +68,3 @@ const AnonymousSubmissionsAdviser: NextPage = () => {
   );
 };
 export default AnonymousSubmissionsAdviser;
-
-const AnonymousQuestionSectionsList = ({
-  questionSections,
-  answersArray,
-}: {
-  questionSections: Section[];
-  answersArray: Answer[];
-}) => {
-  const { answers, actions } = useAnswers();
-  const [hasLoadedAnswers, setHasLoadedAnswers] = useState(false);
-
-  useEffect(() => {
-    if (!hasLoadedAnswers && answersArray && answersArray.length > 0) {
-      actions.setAnswersFromArray(answersArray);
-      setHasLoadedAnswers(true);
-    }
-  }, [actions, answersArray, hasLoadedAnswers]);
-
-  if (!hasLoadedAnswers) {
-    return null;
-  }
-
-  return (
-    <QuestionSectionsList
-      questionSections={questionSections}
-      answers={answers}
-      includeAnonymousQuestions
-      isReadonly={true}
-      answersActions={actions}
-    />
-  );
-};
