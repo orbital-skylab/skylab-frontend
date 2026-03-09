@@ -31,7 +31,7 @@ const ImageCard: FC<Props> = ({
   hoverEffect = true,
   priority = false,
 }) => {
-  const thumbnailUrl = getThumbnailUrl(imageSrc, 400, 20);
+  const thumbnailUrl = getThumbnailUrl(imageSrc, 500, 20);
 
   return (
     <Card
