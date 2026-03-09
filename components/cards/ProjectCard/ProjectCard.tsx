@@ -12,9 +12,10 @@ import ImageCard from "@/components/cards/ImageCard/ImageCard";
 
 type Props = {
   project: Project;
+  priority: boolean;
 };
 
-const ProjectCard: FC<Props> = ({ project }) => {
+const ProjectCard: FC<Props> = ({ project, priority = false }) => {
   return (
     <ImageCard
       id={project.id.toString()}
@@ -22,6 +23,7 @@ const ProjectCard: FC<Props> = ({ project }) => {
       title={project.teamName}
       imageSrc={project.posterUrl}
       imgAlt={`${project.name} Poster`}
+      priority={priority}
       cardClasses={`${project.achievement.toLowerCase()} ${
         project.cohortYear
       } project-card`}

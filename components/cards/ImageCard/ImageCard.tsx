@@ -1,13 +1,7 @@
 import { noImageAvailableSrc } from "@/helpers/errors";
+import { getThumbnailUrl } from "@/helpers/images";
 import { A4_ASPECT_RATIO, BASE_TRANSITION } from "@/styles/constants";
-import {
-  Box,
-  Card,
-  CardContent,
-  Stack,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Card, CardContent, Stack, Typography } from "@mui/material";
 import React, { FC } from "react";
 
 type Props = {
@@ -21,6 +15,7 @@ type Props = {
   cardClasses?: string;
   imgAlt?: string;
   hoverEffect?: boolean;
+  priority?: boolean;
 };
 
 const ImageCard: FC<Props> = ({
@@ -34,7 +29,10 @@ const ImageCard: FC<Props> = ({
   cardClasses,
   imgAlt,
   hoverEffect = true,
+  priority = false,
 }) => {
+  const thumbnailUrl = getThumbnailUrl(imageSrc, 400, 20);
+
   return (
     <Card
       id={id}
@@ -91,34 +89,36 @@ const ImageCard: FC<Props> = ({
           >
             {title}
           </Typography>
-          <Tooltip title="Click to view full image in new tab" placement="top">
-            <Box
-              sx={{
+          <div
+            title="Click to view full image in new tab"
+            style={{
+              width: "100%",
+              aspectRatio: A4_ASPECT_RATIO,
+              display: "flex",
+              justifyContent: "center",
+              alignSelf: "center",
+              overflow: "hidden",
+              borderRadius: "0.5rem",
+              marginTop: "auto",
+              backgroundColor: "black",
+            }}
+            onClick={() => {
+              window.open(imageSrc ?? noImageAvailableSrc, "_blank");
+            }}
+          >
+            <img
+              src={thumbnailUrl ?? noImageAvailableSrc}
+              alt={imgAlt}
+              loading={priority ? "eager" : "lazy"}
+              {...{ fetchpriority: priority ? "high" : "low" }}
+              style={{
                 width: "100%",
-                aspectRatio: A4_ASPECT_RATIO,
-                display: "flex",
-                justifyContent: "bottom",
-                overflow: "hidden",
-                borderRadius: "0.5rem",
-                marginTop: "auto",
-                cursor: "pointer",
+                height: "100%",
+                objectFit: "cover",
+                display: "block",
               }}
-              onClick={() => {
-                window.open(imageSrc ?? noImageAvailableSrc, "_blank");
-              }}
-            >
-              <Box
-                component="img"
-                src={imageSrc ?? noImageAvailableSrc}
-                alt={imgAlt}
-                sx={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                }}
-              />
-            </Box>
-          </Tooltip>
+            />
+          </div>
           {extraContent}
           <Stack direction={{ xs: "column-reverse", md: "row" }} gap="0.5rem">
             {actionButton}

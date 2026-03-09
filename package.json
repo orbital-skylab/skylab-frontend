@@ -45,6 +45,7 @@
     "@mui/icons-material": "^5.6.2",
     "@mui/lab": "^5.0.0-alpha.84",
     "@mui/material": "^5.7.0",
+    "@next/bundle-analyzer": "^16.1.4",
     "@xstate/test": "^0.5.1",
     "cypress": "^13.2.0",
     "date-fns": "^2.30.0",
