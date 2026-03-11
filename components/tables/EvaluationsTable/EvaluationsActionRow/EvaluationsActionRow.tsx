@@ -12,6 +12,8 @@ import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { CSVDownload } from "react-csv";
 import { LoadingButton } from "@mui/lab";
 import SearchIcon from "@mui/icons-material/Search";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import SendEvaluationReminderModal from "@/components/modals/SendEvaluationReminderModal";
 // Hooks
 import useCohort from "@/contexts/useCohort";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
@@ -59,6 +61,7 @@ const EvaluationsActionRow: FC<Props> = ({
   evaluationsDeadlines,
   viewHasDropped,
   handleToggleViewDropped,
+  selectedCohortYear,
   selectedEvaluatorType,
   handleEvaluatorTypeChange,
 }) => {
@@ -66,6 +69,7 @@ const EvaluationsActionRow: FC<Props> = ({
   const { setError } = useSnackbarAlert();
   const [isExporting, setIsExporting] = useState(false);
   const [csvData, setCsvData] = useState<Record<string, string | number>[]>([]);
+  const [open, setOpen] = useState(false);
 
   const exportCsv = async () => {
     setIsExporting(true);
@@ -183,7 +187,21 @@ const EvaluationsActionRow: FC<Props> = ({
             marginLeft: "auto",
           }}
         />
+        <LoadingButton
+          variant="outlined"
+          onClick={() => setOpen(true)}
+          startIcon={<MailOutlineIcon />}
+        >
+          Send Reminders
+        </LoadingButton>
 
+        <SendEvaluationReminderModal
+          open={open}
+          setOpen={setOpen}
+          evaluationDeadlines={evaluationsDeadlines}
+          selectedCohortYear={selectedCohortYear}
+          evaluatorTypeFilter={selectedEvaluatorType}
+        />
         <LoadingButton
           variant="outlined"
           loading={isExporting}

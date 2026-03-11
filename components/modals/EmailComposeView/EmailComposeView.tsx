@@ -12,6 +12,7 @@ import {
 
 interface EmailComposeViewProps {
   selectedTeamsCount: number;
+  recipientLabel?: string;
   ccs: string;
   setCcs: (ccs: string) => void;
   subject: string;
@@ -22,6 +23,7 @@ interface EmailComposeViewProps {
 
 export default function EmailComposeView({
   selectedTeamsCount,
+  recipientLabel = "teams",
   ccs,
   setCcs,
   subject,
@@ -42,7 +44,6 @@ export default function EmailComposeView({
         border: "1px solid #dadce0",
       }}
     >
-      {/* Header */}
       <AppBar
         position="static"
         color="default"
@@ -66,7 +67,7 @@ export default function EmailComposeView({
             fullWidth
             label="To"
             variant="standard"
-            value={`${selectedTeamsCount} teams`}
+            value={`${selectedTeamsCount} ${recipientLabel}`}
             disabled
             InputProps={{ disableUnderline: true }}
           />
