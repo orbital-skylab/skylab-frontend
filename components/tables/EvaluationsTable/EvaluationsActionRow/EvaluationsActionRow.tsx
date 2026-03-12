@@ -20,7 +20,7 @@ import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 // Helpers
 import { ApiServiceBuilder } from "@/helpers/api";
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
-import { mapData } from "./EvaluationsActionRow.helpers";
+import { mapEvaluationData } from "./EvaluationsActionRow.helpers";
 // Types
 import {
   GetAdministratorAllTeamMilestoneSubmissionsResponse,
@@ -99,7 +99,7 @@ const EvaluationsActionRow: FC<Props> = ({
       const csvEvaluations = selectedEvaluationsDeadline
         ? [selectedEvaluationsDeadline]
         : evaluationsDeadlines;
-      const mappedData = mapData(data.submissions, csvEvaluations);
+      const mappedData = mapEvaluationData(data.submissions, csvEvaluations);
       setCsvData(mappedData);
     } catch (error) {
       setError(error);

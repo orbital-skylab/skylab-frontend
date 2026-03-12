@@ -13,49 +13,84 @@ const getStatusText = (status: STATUS): string => {
   }
 };
 
-export const mapData = (
-  submissions: PossibleSubmission[],
+export const mapEvaluationData = (
+  evaluations: PossibleSubmission[],
   csvEvaluations: Deadline[]
 ) => {
-  return submissions.map((submission) => {
-    const evaluatorType = submission.fromProject ? "Team" : "Adviser";
-    const evaluatorName =
-      submission.fromProject?.name || submission.fromUser?.name || "N/A";
-    const adviserName = submission.fromProject?.adviser?.name || "N/A"; // If it's an adviser evaluating, they don't have an "adviser"
+  return evaluations.map((res) => {
+    const evaluatorProject = res.fromProject;
+    const evaluatorUser = res.fromUser;
+    const evaluateeProject = res.toProject;
+
+    const evaluatorStudents = evaluatorProject?.students ?? [];
+    const evaluateeStudents = evaluateeProject?.students ?? [];
+
+    const evaluatorTeam = evaluatorProject?.teamName ?? "N/A";
+    const evaluatorName1 = evaluatorUser
+      ? evaluatorUser.name
+      : evaluatorStudents[0]?.name ?? "";
+    const evaluatorEmail1 = evaluatorUser
+      ? evaluatorUser.email
+      : evaluatorStudents[0]?.email ?? "";
+    const evaluatorName2 = evaluatorUser
+      ? ""
+      : evaluatorStudents[1]?.name ?? "";
+    const evaluatorEmail2 = evaluatorUser
+      ? ""
+      : evaluatorStudents[1]?.email ?? "";
 
     const baseData = {
-      "Relation Id": submission.relationId ?? "",
-      "Evaluator Type": evaluatorType,
-      "Evaluator Name": evaluatorName,
-      "Evaluatee Name": submission.toProject?.name ?? "",
-      "Adviser Name": adviserName,
+      "Relation ID": res.relationId,
+      "Evaluator Type": evaluatorUser ? "Adviser" : "Team",
+
+      // Evaluator Info
+      "Evaluator Team": evaluatorTeam,
+      "Evaluator Student 1": evaluatorName1,
+      "Evaluator Email 1": evaluatorEmail1,
+      "Evaluator Student 2": evaluatorName2,
+      "Evaluator Email 2": evaluatorEmail2,
+
+      // Evaluatee Info
+      "Evaluatee Team": evaluateeProject?.teamName ?? "N/A",
+      "Evaluatee Student 1": evaluateeStudents[0]?.name ?? "",
+      "Evaluatee Student 2": evaluateeStudents[1]?.name ?? "",
     };
 
     if (csvEvaluations.length === 1) {
-      const selectedEvaluationsDeadline = csvEvaluations[0];
+      const selectedEvaluationDeadline = csvEvaluations[0];
+      const sub = Array.isArray(res.submission)
+        ? res.submission[0]
+        : res.submission;
       const submissionStatus = generateSubmissionStatus({
-        submissionId: submission.id,
+        submissionId: sub?.id,
         isDraft: false,
-        updatedAt: submission.updatedAt,
-        dueBy: selectedEvaluationsDeadline.dueBy,
+        updatedAt: sub?.updatedAt,
+        dueBy: selectedEvaluationDeadline.dueBy,
       });
 
       return {
         ...baseData,
-        "Submission ID": submission.id ?? "",
-        "Submission Updated At": submission.updatedAt ?? "",
-        "Submission Status": getStatusText(submissionStatus),
+        [`${selectedEvaluationDeadline.name} Submission Updated At`]:
+          sub?.updatedAt ?? "",
+        [`${selectedEvaluationDeadline.name} Status`]:
+          getStatusText(submissionStatus),
       };
     } else {
-      const evaluationStatuses = csvEvaluations.map((evaluation, index) => {
-        const sub = submission.submission?.find(
+      const evaluationStatuses = csvEvaluations.map((evaluation) => {
+        const submissionsArray = Array.isArray(res.submission)
+          ? res.submission
+          : res.submission
+          ? [res.submission]
+          : [];
+
+        const sub = submissionsArray.find(
           (sub) => sub.deadlineId === evaluation.id
         );
+
         if (!sub) {
           return {
-            [`Evaluation ${index + 1} Submission ID`]: "",
-            [`Evaluation ${index + 1} Submission Updated At`]: "",
-            [`Evaluation ${index + 1}`]: "NOT_SUBMITTED",
+            [`${evaluation.name} Submission Updated At`]: "",
+            [`${evaluation.name} Status`]: "NOT_SUBMITTED",
           };
         }
         const submissionStatus = generateSubmissionStatus({
@@ -64,11 +99,10 @@ export const mapData = (
           updatedAt: sub.updatedAt,
           dueBy: evaluation.dueBy,
         });
+
         return {
-          [`Evaluation ${index + 1} Submission ID`]: sub.id ?? "",
-          [`Evaluation ${index + 1} Submission Updated At`]:
-            sub.updatedAt ?? "",
-          [`Evaluation ${index + 1}`]: getStatusText(submissionStatus),
+          [`${evaluation.name} Submission Updated At`]: sub.updatedAt ?? "",
+          [`${evaluation.name} Status`]: getStatusText(submissionStatus),
         };
       });
 
