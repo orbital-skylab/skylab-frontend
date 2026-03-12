@@ -45,7 +45,7 @@ export const mapData = (
         ...baseData,
         [`${selectedMilestoneDeadline.name} Submission Updated At`]:
           submission.updatedAt ?? "",
-        [`${selectedMilestoneDeadline.name} Submission Status`]:
+        [`${selectedMilestoneDeadline.name} Status`]:
           getStatusText(submissionStatus),
       };
     } else {
@@ -56,7 +56,7 @@ export const mapData = (
         if (!sub) {
           return {
             [`${milestone.name} Submission Updated At`]: "",
-            [`${milestone.name} Statuss`]: "NOT_SUBMITTED",
+            [`${milestone.name} Status`]: "NOT_SUBMITTED",
           };
         }
         const submissionStatus = generateSubmissionStatus({
