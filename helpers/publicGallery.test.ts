@@ -80,8 +80,7 @@ describe("Public Gallery Helpers", () => {
         LEVELS_OF_ACHIEVEMENT.ARTEMIS,
         2024
       );
-      expect(result).toHaveLength(1);
-      expect(result[0].id).toBe(1);
+      expect(result).toMatchObject([{ id: 1 }]);
     });
 
     it("excludes dropped projects", () => {
@@ -113,8 +112,7 @@ describe("Public Gallery Helpers", () => {
         LEVELS_OF_ACHIEVEMENT.APOLLO,
         ""
       );
-      expect(result).toHaveLength(1);
-      expect(result[0].id).toBe(2);
+      expect(result).toMatchObject([{ id: 2 }]);
     });
 
     it("filters Gemini projects correctly", () => {
@@ -123,8 +121,7 @@ describe("Public Gallery Helpers", () => {
         LEVELS_OF_ACHIEVEMENT.GEMINI,
         2024
       );
-      expect(result).toHaveLength(1);
-      expect(result[0].id).toBe(4);
+      expect(result).toMatchObject([{ id: 4 }]);
     });
 
     it("filters Vostok projects correctly", () => {
@@ -133,8 +130,7 @@ describe("Public Gallery Helpers", () => {
         LEVELS_OF_ACHIEVEMENT.VOSTOK,
         2022
       );
-      expect(result).toHaveLength(1);
-      expect(result[0].id).toBe(5);
+      expect(result).toMatchObject([{ id: 5 }]);
     });
   });
 
