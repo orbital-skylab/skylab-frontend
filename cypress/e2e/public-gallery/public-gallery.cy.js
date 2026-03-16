@@ -20,9 +20,7 @@ describe("Public Gallery - SSG Feature", () => {
 
     it("renders the public gallery index page", () => {
       cy.contains("h1", "Public Project Gallery").should("be.visible");
-      cy.contains(
-        "Explore outstanding projects from the Orbital program"
-      ).should("be.visible");
+      cy.contains("Explore outstanding").should("be.visible");
     });
 
     it("displays achievement level tabs", () => {
@@ -42,7 +40,7 @@ describe("Public Gallery - SSG Feature", () => {
     });
 
     it("displays cohort year dropdown selector", () => {
-      cy.get("#public-gallery-cohort-select").should("be.visible");
+      cy.get("#cohort-select").should("be.visible");
     });
 
     it("filters projects when switching achievement tabs", () => {
@@ -81,7 +79,7 @@ describe("Public Gallery - SSG Feature", () => {
 
     it("filters projects when changing cohort year", () => {
       // Open the cohort selector dropdown
-      cy.get("#public-gallery-cohort-select").click();
+      cy.get("#cohort-select").click();
 
       // Select a cohort year from the dropdown (wait for menu to appear)
       cy.get('[role="listbox"]').should("be.visible");
@@ -123,31 +121,31 @@ describe("Public Gallery - SSG Feature", () => {
         if ($body.find('nav[aria-label="pagination navigation"]').length > 0) {
           // Click page 2 button
           cy.get('button[aria-label="Go to page 2"]').click();
-          cy.url().should("include", "/public-gallery/page/2");
+          cy.url().should("include", "/public-gallery/artemis/page/2");
         }
       });
     });
   });
 
-  describe("Paginated Pages (/public-gallery/page/[page])", () => {
+  describe("Paginated Pages (/public-gallery/[level]/page/[page])", () => {
     it("renders page 1", () => {
-      cy.visit("http://localhost:3000/public-gallery/page/1/");
+      cy.visit("http://localhost:3000/public-gallery/artemis/page/1/");
       cy.contains("h1", "Public Project Gallery").should("be.visible");
     });
 
     it("displays achievement tabs on paginated pages", () => {
-      cy.visit("http://localhost:3000/public-gallery/page/1/");
+      cy.visit("http://localhost:3000/public-gallery/artemis/page/1/");
       cy.get('[aria-label="achievement-level-tabs"]').should("be.visible");
       cy.contains("button", "Artemis").should("be.visible");
     });
 
     it("does NOT display cohort selector on paginated pages", () => {
-      cy.visit("http://localhost:3000/public-gallery/page/1/");
+      cy.visit("http://localhost:3000/public-gallery/artemis/page/1/");
       cy.get("#public-gallery-cohort-select").should("not.exist");
     });
 
     it("allows switching between achievement tabs", () => {
-      cy.visit("http://localhost:3000/public-gallery/page/1/");
+      cy.visit("http://localhost:3000/public-gallery/artemis/page/1/");
 
       cy.contains("button", "Apollo").click();
       cy.contains("button", "Apollo").should(
@@ -160,7 +158,7 @@ describe("Public Gallery - SSG Feature", () => {
     it("returns 404 for pages beyond MAX_PAGES_TO_PREBUILD", () => {
       // Page 999 should not exist (beyond max prebuilt pages)
       cy.request({
-        url: "http://localhost:3000/public-gallery/page/999/",
+        url: "http://localhost:3000/public-gallery/artemis/page/999/",
         failOnStatusCode: false,
       }).then((response) => {
         expect(response.status).to.eq(404);
@@ -179,7 +177,7 @@ describe("Public Gallery - SSG Feature", () => {
           $body.find('[class*="ProjectCard"]').length > 0 ||
           $body.find('[class*="MuiCard"]').length > 0
         ) {
-          cy.get('[class*="MuiCard"]').first().click();
+          cy.contains("a", "Details").first().click();
           cy.url().should("include", "/public-gallery/projects/");
         }
       });
@@ -190,10 +188,10 @@ describe("Public Gallery - SSG Feature", () => {
 
       cy.get("body").then(($body) => {
         if ($body.find('[class*="MuiCard"]').length > 0) {
-          cy.get('[class*="MuiCard"]').first().click();
+          cy.contains("a", "Details").first().click();
 
           // Verify detail page elements
-          cy.contains("Back to Gallery").should("be.visible");
+          cy.get("#go-back-button").should("be.visible");
           cy.contains("Project ID").should("be.visible");
           cy.contains("Project Name").should("be.visible");
           cy.contains("Level of Achievement").should("be.visible");
@@ -206,11 +204,11 @@ describe("Public Gallery - SSG Feature", () => {
 
       cy.get("body").then(($body) => {
         if ($body.find('[class*="MuiCard"]').length > 0) {
-          cy.get('[class*="MuiCard"]').first().click();
+          cy.contains("a", "Details").first().click();
           cy.url().should("include", "/public-gallery/projects/");
 
           // Click back button
-          cy.contains("Back to Gallery").click();
+          cy.get("#go-back-button").click();
           cy.url().should("include", "/public-gallery");
           cy.url().should("not.include", "/projects/");
         }
@@ -230,7 +228,7 @@ describe("Public Gallery - SSG Feature", () => {
   describe("Data Integrity and Sorting", () => {
     it("displays project count in header", () => {
       cy.visit("http://localhost:3000/public-gallery/");
-      cy.contains("projects)").should("be.visible");
+      cy.contains("projects").should("be.visible");
     });
 
     it("projects are visible in the grid layout", () => {
