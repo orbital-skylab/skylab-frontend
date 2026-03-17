@@ -55,6 +55,12 @@ export enum QUESTION_TYPE {
   RICH_TEXT_EDITOR = "RichTextEditor",
 }
 
+export enum URL_TYPE {
+  VIDEO = "Video",
+  IMAGE = "Image",
+  GENERIC = "Generic",
+}
+
 export type Question = {
   id: number;
   sectionId: number;
@@ -62,6 +68,7 @@ export type Question = {
   question: string;
   desc?: string;
   type: QUESTION_TYPE;
+  url_type?: URL_TYPE; // Only exists when type is QUESTION_TYPE.URL
   options?: Option[];
   isAnonymous?: boolean;
   isRequired?: boolean;

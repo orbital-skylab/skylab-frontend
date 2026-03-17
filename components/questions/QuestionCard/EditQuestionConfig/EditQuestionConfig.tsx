@@ -13,7 +13,7 @@ import {
 // Helpers
 import { splitOnCapital } from "@/helpers/string";
 // Types
-import { LeanQuestion, QUESTION_TYPE } from "@/types/deadlines";
+import { LeanQuestion, QUESTION_TYPE, URL_TYPE } from "@/types/deadlines";
 
 type Props = {
   question: LeanQuestion;
@@ -22,8 +22,28 @@ type Props = {
 
 const EditQuestionConfig: FC<Props> = ({ question, setQuestion }) => {
   const handleTypeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const newQuestion: LeanQuestion = { ...question };
-    newQuestion.type = e.target.value as QUESTION_TYPE;
+    const newType = e.target.value as QUESTION_TYPE;
+
+    const newQuestion: LeanQuestion = {
+      ...question,
+      type: newType,
+      url_type:
+        newType === QUESTION_TYPE.URL
+          ? question.url_type ?? URL_TYPE.GENERIC
+          : undefined,
+    };
+
+    setQuestion(newQuestion);
+  };
+
+  const handleUrlTypeChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const newUrlType = e.target.value as URL_TYPE;
+
+    const newQuestion: LeanQuestion = {
+      ...question,
+      url_type: newUrlType,
+    };
+
     setQuestion(newQuestion);
   };
 
@@ -44,7 +64,7 @@ const EditQuestionConfig: FC<Props> = ({ question, setQuestion }) => {
   };
 
   return (
-    <Stack sx={{ width: "40%" }}>
+    <Stack sx={{ width: "40%" }} gap={2}>
       <TextField
         className="question-type-select"
         label="Question Type"
@@ -60,6 +80,24 @@ const EditQuestionConfig: FC<Props> = ({ question, setQuestion }) => {
           </MenuItem>
         ))}
       </TextField>
+
+      {question.type === QUESTION_TYPE.URL && (
+        <TextField
+          className="url-type-select"
+          label="URL Type"
+          value={question.url_type ?? URL_TYPE.GENERIC}
+          onChange={handleUrlTypeChange}
+          select
+          size="small"
+          fullWidth
+        >
+          {Object.values(URL_TYPE).map((urlType) => (
+            <MenuItem key={urlType} value={urlType}>
+              {splitOnCapital(urlType)}
+            </MenuItem>
+          ))}
+        </TextField>
+      )}
 
       <Stack
         justifyContent="space-between"
