@@ -68,7 +68,7 @@ export type Question = {
   question: string;
   desc?: string;
   type: QUESTION_TYPE;
-  url_type?: URL_TYPE; // Only exists when type is QUESTION_TYPE.URL
+  urlType?: URL_TYPE; // Only exists when type is QUESTION_TYPE.URL
   options?: Option[];
   isAnonymous?: boolean;
   isRequired?: boolean;
