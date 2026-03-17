@@ -5,7 +5,6 @@ import {
   Toolbar,
   Typography,
   Container,
-  useScrollTrigger,
   Box,
   Stack,
 } from "@mui/material";
@@ -30,7 +29,6 @@ const Navbar: FC = () => {
     signOut: userSignOut,
     externalVoterSignOut,
   } = useAuth();
-  const trigger = useScrollTrigger({ threshold: 0 });
 
   const signOut = user ? userSignOut : externalVoterSignOut;
 
@@ -58,7 +56,7 @@ const Navbar: FC = () => {
       id="auth-nav-bar"
       position="fixed"
       color="transparent"
-      elevation={trigger ? 4 : 0}
+      variant="outlined"
       sx={{
         backdropFilter: "blur(0.3rem)",
         height: NAVBAR_HEIGHT_REM,

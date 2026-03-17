@@ -8,8 +8,10 @@ import {
 } from "@/types/api";
 import {
   AddOutlined,
+  ArrowDownwardOutlined,
   ArrowUpwardOutlined,
   KeyboardVoiceOutlined,
+  MoreHorizOutlined,
 } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -18,28 +20,22 @@ import remarkGfm from "remark-gfm";
 import rehypeSanitize from "rehype-sanitize";
 import { FaqMessage } from "@/types/ai";
 import useAutoScroll from "@/hooks/useAutoScroll";
-import {
-  Box,
-  Button,
-  IconButton,
-  Input,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, Button, IconButton, Input, Tooltip } from "@mui/material";
 import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 
 const INPUT_WARNING_LIMIT = 3000;
 const INPUT_EXCEEDED_LIMIT = 4000;
+const SHOW_SCROLL_DOWN_BUTTON_THRESHOLD = 350;
 
 const Conversation = () => {
   const router = useRouter();
   const { draft, conversationId } = router.query;
-
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [tempUserMessage, setTempUserMessage] = useState("");
   const [messages, setMessages] = useState<FaqMessage[]>([]);
   const [tempAssistantMessage, setTempAssistantMessage] = useState("");
+  const [showScrollDownButton, setShowScrollDownButton] = useState(false);
   const charCount = input.length;
   const isInputLimitExceeded = charCount > INPUT_EXCEEDED_LIMIT;
 
@@ -121,8 +117,32 @@ const Conversation = () => {
     setMessages(conversationResponse?.faqConversation?.messages || []);
   }, [conversationId, conversationResponse]);
 
+  useEffect(() => {
+    const el = document.scrollingElement;
+    if (!el) return;
+
+    const onScroll = () => {
+      const distanceFromBottom =
+        el.scrollHeight - el.scrollTop - el.clientHeight;
+
+      setShowScrollDownButton(
+        distanceFromBottom > SHOW_SCROLL_DOWN_BUTTON_THRESHOLD
+      );
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  if (!conversationResponse) {
+    return null;
+  }
+
   return (
     <FaqLayout>
+      <ConversationHeader
+        title={conversationResponse?.faqConversation?.title ?? undefined}
+      />
       {/* --- MESSAGE AREA --- */}
       <Box
         ref={containerRef}
@@ -259,20 +279,45 @@ const Conversation = () => {
           >
             {charCount} / {INPUT_EXCEEDED_LIMIT}
             {charCount <= INPUT_EXCEEDED_LIMIT && (
-              <Typography component="span" sx={{ marginLeft: 1 }}>
+              <Box component="span" sx={{ marginLeft: 6 }}>
                 · Consider shortening for clearer answers
-              </Typography>
+              </Box>
             )}
             {charCount > INPUT_EXCEEDED_LIMIT && (
-              <Typography
-                component="span"
-                sx={{ marginLeft: 1, color: "error.main" }}
-              >
+              <Box component="span" sx={{ marginLeft: 6 }}>
                 · Message is too long, please shorten it
-              </Typography>
+              </Box>
             )}
           </Box>
         )}
+      </Box>
+      <Box
+        sx={{
+          width: "100%",
+          position: "fixed",
+          bottom: "110px",
+          textAlign: "center",
+        }}
+      >
+        <IconButton
+          onClick={() =>
+            bottomRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "end",
+            })
+          }
+          sx={{
+            background: "rgba(235, 235, 235, 0.9)",
+            color: "#2b2b2b",
+            border: "1px solid rgba(0, 0, 0, 0.18)",
+            zIndex: 1000,
+            pointerEvents: showScrollDownButton ? "auto" : "none",
+            opacity: showScrollDownButton ? 1 : 0,
+            transition: "opacity 0.2s ease",
+          }}
+        >
+          <ArrowDownwardOutlined />
+        </IconButton>
       </Box>
     </FaqLayout>
   );
@@ -331,7 +376,7 @@ const Message = ({ content, isUser }: MessageProps) => {
                   sx={{
                     border: "1px solid #ddd",
                     padding: "8px",
-                    backgroundColor: "#f5f5f5",
+                    background: "#f5f5f5",
                     fontWeight: 600,
                     textAlign: "left",
                   }}
@@ -362,11 +407,10 @@ const Message = ({ content, isUser }: MessageProps) => {
                   <Box
                     component="code"
                     sx={{
-                      backgroundColor: "#eaeaea",
+                      background: "#eaeaea",
                       padding: "0.2em 0.4em",
                       borderRadius: "4px",
                       fontSize: "0.85em",
-                      fontFamily: "monospace",
                     }}
                   >
                     {children}
@@ -378,13 +422,12 @@ const Message = ({ content, isUser }: MessageProps) => {
                 <Box
                   component="pre"
                   sx={{
-                    backgroundColor: "#1e1e1e",
+                    background: "#1e1e1e",
                     color: "#fff",
                     padding: "1rem",
                     borderRadius: "8px",
                     overflowX: "auto",
                     fontSize: "0.85em",
-                    margin: "0.75rem 0",
                   }}
                 >
                   <Box component="code">{children}</Box>
@@ -398,7 +441,6 @@ const Message = ({ content, isUser }: MessageProps) => {
                 </Box>
               );
             },
-
             ol({ children }) {
               return (
                 <Box component="ol" sx={{ paddingLeft: "1.2rem" }}>
@@ -406,12 +448,11 @@ const Message = ({ content, isUser }: MessageProps) => {
                 </Box>
               );
             },
-
             p({ children }) {
               return (
-                <Typography component="p" sx={{ margin: "0.4rem 0" }}>
+                <Box component="p" sx={{ margin: "0.4rem 0" }}>
                   {children}
-                </Typography>
+                </Box>
               );
             },
           }}
@@ -419,6 +460,42 @@ const Message = ({ content, isUser }: MessageProps) => {
           {content}
         </ReactMarkdown>
       </Box>
+    </Box>
+  );
+};
+
+const ConversationHeader = ({ title }: { title?: string }) => {
+  return (
+    <Box
+      sx={{
+        position: "sticky",
+        top: "4rem",
+        zIndex: 10,
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        pointerEvents: "none",
+        padding: "0.6rem 1.1rem",
+        color: "#5f5f5f",
+      }}
+    >
+      <Box
+        sx={{
+          fontSize: "0.95rem",
+          fontWeight: 600,
+
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          pointerEvents: "auto",
+        }}
+      >
+        {title ?? "Untitled Conversation"}
+      </Box>
+      <IconButton color="inherit" sx={{ pointerEvents: "auto" }}>
+        <MoreHorizOutlined />
+      </IconButton>
     </Box>
   );
 };

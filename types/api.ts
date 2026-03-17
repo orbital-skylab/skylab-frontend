@@ -380,6 +380,7 @@ export type GetVoteEventResultsResponse = {
  */
 export type GetFaqConversationsResponse = {
   faqConversations: FaqConversation[];
+  hasMore: boolean;
 };
 export type GetFaqConversationResponse = {
   faqConversation: FaqConversation;
