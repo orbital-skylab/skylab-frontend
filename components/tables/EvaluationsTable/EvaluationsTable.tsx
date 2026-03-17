@@ -10,15 +10,10 @@ import {
 } from "@mui/material";
 import EvaluationsRow from "./EvaluationsRow";
 // Types
-import { Mutate } from "@/hooks/useFetch";
-import { GetRelationsResponse } from "@/types/api";
-import { Project } from "@/types/projects";
 import { Deadline } from "@/types/deadlines";
 import { PossibleSubmission } from "@/types/submissions";
 
 type Props = {
-  mutate: Mutate<GetRelationsResponse>;
-  projects: Project[];
   showAdviserColumn?: boolean;
   deadline: Deadline | null;
   evaluationDeadlines: Deadline[];
@@ -26,7 +21,6 @@ type Props = {
 };
 
 const EvaluationsTable: FC<Props> = ({
-  projects,
   showAdviserColumn,
   deadline,
   evaluationDeadlines,
@@ -73,8 +67,6 @@ const EvaluationsTable: FC<Props> = ({
             <EvaluationsRow
               key={data.relationId} // Unique key that supports both Relations and Advisers
               data={data}
-              projects={projects}
-              showAdviserColumn={showAdviserColumn ?? false}
               deadline={deadline}
               evaluationDeadlines={evaluationDeadlines}
             />
