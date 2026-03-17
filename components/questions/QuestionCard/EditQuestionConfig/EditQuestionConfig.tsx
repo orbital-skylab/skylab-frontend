@@ -27,9 +27,9 @@ const EditQuestionConfig: FC<Props> = ({ question, setQuestion }) => {
     const newQuestion: LeanQuestion = {
       ...question,
       type: newType,
-      url_type:
+      urlType:
         newType === QUESTION_TYPE.URL
-          ? question.url_type ?? URL_TYPE.GENERIC
+          ? question.urlType ?? URL_TYPE.GENERIC
           : undefined,
     };
 
@@ -41,7 +41,7 @@ const EditQuestionConfig: FC<Props> = ({ question, setQuestion }) => {
 
     const newQuestion: LeanQuestion = {
       ...question,
-      url_type: newUrlType,
+      urlType: newUrlType,
     };
 
     setQuestion(newQuestion);
@@ -85,7 +85,7 @@ const EditQuestionConfig: FC<Props> = ({ question, setQuestion }) => {
         <TextField
           className="url-type-select"
           label="URL Type"
-          value={question.url_type ?? URL_TYPE.GENERIC}
+          value={question.urlType ?? URL_TYPE.GENERIC}
           onChange={handleUrlTypeChange}
           select
           size="small"
