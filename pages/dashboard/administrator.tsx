@@ -30,7 +30,7 @@ import ActionRow from "@/components/tables/AllTeamsMilestoneTable/ActionRow";
 import EvaluationsActionRow from "@/components/tables/EvaluationsTable/EvaluationsActionRow";
 import MilestoneSummary from "@/components/tables/AllTeamsMilestoneTable/MilestoneSummary";
 import EvaluationsTable from "@/components/tables/EvaluationsTable";
-import EvaluationsSummary from "@/components/tables/EvaluationsTable/EvaluationsSummary/EvaluationsSummary";
+import EvaluationsSummary from "@/components/tables/EvaluationsTable/EvaluationsSummary";
 
 // Hooks
 import useFetch, { isFetching } from "@/hooks/useFetch";
@@ -92,17 +92,13 @@ const AdministratorDashboard: NextPage = () => {
           (deadline) => deadline.type === DEADLINE_TYPE.MILESTONE
         );
 
-        if (milestoneDeadline) {
-          setSelectedMilestoneDeadline(milestoneDeadline);
-        }
+        setSelectedMilestoneDeadline(milestoneDeadline ?? null);
 
         const evaluationDeadline = response.deadlines.find(
           (deadline) => deadline.type === DEADLINE_TYPE.EVALUATION
         );
 
-        if (evaluationDeadline) {
-          setSelectedEvaluationsDeadline(evaluationDeadline);
-        }
+        setSelectedEvaluationsDeadline(evaluationDeadline ?? null);
       },
     });
 
@@ -215,10 +211,22 @@ const AdministratorDashboard: NextPage = () => {
     ]
   );
 
+  const [evaluationsPage, setEvaluationsPage] = useState(0);
+  useEffect(() => {
+    // Reset evaluations pagination when its filters change
+    setEvaluationsPage(0);
+  }, [
+    selectedCohortYear,
+    selectedEvaluationsDeadline,
+    querySearch,
+    selectedSubmissionStatus,
+    viewHasDropped,
+  ]);
+
   const {
     data: allTeamsMilestones,
     status: fetchAllTeamsMilestonesStatus,
-    hasMore,
+    hasMore: hasMoreMilestones,
   } = useInfiniteFetch<
     GetAdministratorAllTeamMilestoneSubmissionsResponse,
     PossibleSubmission
@@ -226,23 +234,26 @@ const AdministratorDashboard: NextPage = () => {
     endpoint: `/dashboard/administrator/team-submissions`,
     queryParams: memoMilestoneQueryParams,
     requiresAuthorization: true,
-    page,
+    page: evaluationsPage,
     responseToData: (response) => response.submissions,
     enabled: Boolean(selectedCohortYear),
   });
 
-  const { data: allTeamsEvaluations, status: fetchAllTeamsEvaluationsStatus } =
-    useInfiniteFetch<
-      GetAdministratorAllTeamMilestoneSubmissionsResponse,
-      PossibleSubmission
-    >({
-      endpoint: `/dashboard/administrator/evaluations`,
-      queryParams: memoEvaluationsQueryParams,
-      requiresAuthorization: true,
-      page,
-      responseToData: (response) => response.submissions,
-      enabled: Boolean(selectedCohortYear),
-    });
+  const {
+    data: allTeamsEvaluations,
+    status: fetchAllTeamsEvaluationsStatus,
+    hasMore: hasMoreEvaluations,
+  } = useInfiniteFetch<
+    GetAdministratorAllTeamMilestoneSubmissionsResponse,
+    PossibleSubmission
+  >({
+    endpoint: `/dashboard/administrator/evaluations`,
+    queryParams: memoEvaluationsQueryParams,
+    requiresAuthorization: true,
+    page,
+    responseToData: (response) => response.submissions,
+    enabled: Boolean(selectedCohortYear),
+  });
 
   const { data: allTeamsMilestonesSummary } =
     useFetch<GetAdministratorAllTeamMilestoneSubmissionsResponse>({
@@ -279,9 +290,17 @@ const AdministratorDashboard: NextPage = () => {
   const observer = useRef<IntersectionObserver | null>(null);
   const bottomOfPageRef = createBottomOfPageRef(
     isFetching(fetchAllTeamsMilestonesStatus),
-    hasMore,
+    hasMoreMilestones,
     setPage,
     observer
+  );
+
+  const evaluationsObserver = useRef<IntersectionObserver | null>(null);
+  const evaluationsBottomOfPageRef = createBottomOfPageRef(
+    isFetching(fetchAllTeamsEvaluationsStatus),
+    hasMoreEvaluations,
+    setEvaluationsPage,
+    evaluationsObserver
   );
 
   /** Helper functions */
@@ -388,7 +407,7 @@ const AdministratorDashboard: NextPage = () => {
                 onChange={handleCohortYearChange}
                 select
                 size="small"
-                sx={{ width: "auto", minWidth: "120", alignSelf: "start" }}
+                sx={{ width: "auto", minWidth: 120, alignSelf: "start" }}
               >
                 {cohorts &&
                   cohorts.map(({ academicYear }) => (
@@ -446,7 +465,7 @@ const AdministratorDashboard: NextPage = () => {
                     >
                       {isFetching(fetchAllTeamsMilestonesStatus) ? (
                         <LoadingSpinner size={50} />
-                      ) : !hasMore ? (
+                      ) : !hasMoreMilestones ? (
                         <Typography>No more submissions found</Typography>
                       ) : null}
                     </Box>
@@ -489,7 +508,7 @@ const AdministratorDashboard: NextPage = () => {
                     >
                       {isFetching(fetchAllTeamsMilestonesStatus) ? (
                         <LoadingSpinner size={50} />
-                      ) : !hasMore ? (
+                      ) : !hasMoreMilestones ? (
                         <Typography>No more submissions found</Typography>
                       ) : null}
                     </Box>
@@ -501,12 +520,7 @@ const AdministratorDashboard: NextPage = () => {
         </TabPanel>
 
         <TabPanel value={TAB.EVALUATIONS}>
-          <LoadingWrapper
-            isLoading={
-              isFetching(fetchRelationsStatus) ||
-              isFetching(fetchDeadlinesStatus)
-            }
-          >
+          <LoadingWrapper isLoading={isFetching(fetchDeadlinesStatus)}>
             <Stack gap="0.75rem">
               <TextField
                 id="project-cohort-select-evaluations"
@@ -516,7 +530,7 @@ const AdministratorDashboard: NextPage = () => {
                 onChange={handleCohortYearChange}
                 select
                 size="small"
-                sx={{ width: "auto", minWidth: "120", alignSelf: "start" }}
+                sx={{ width: "auto", minWidth: 120, alignSelf: "start" }}
               >
                 {cohorts &&
                   cohorts.map(({ academicYear }) => (
@@ -561,13 +575,11 @@ const AdministratorDashboard: NextPage = () => {
                     />
                     <EvaluationsTable
                       submissions={allTeamsEvaluations}
-                      mutate={mutateRelations}
-                      projects={projectsResponse?.projects ?? []}
                       showAdviserColumn
                       deadline={selectedEvaluationsDeadline}
                       evaluationDeadlines={evaluationDeadlines}
                     />
-                    <div ref={bottomOfPageRef} />
+                    <div ref={evaluationsBottomOfPageRef} />
                     <Box
                       sx={{
                         display: "grid",
@@ -577,7 +589,7 @@ const AdministratorDashboard: NextPage = () => {
                     >
                       {isFetching(fetchAllTeamsEvaluationsStatus) ? (
                         <LoadingSpinner size={50} />
-                      ) : !hasMore ? (
+                      ) : !hasMoreEvaluations ? (
                         <Typography>No more submissions found</Typography>
                       ) : null}
                     </Box>
@@ -612,13 +624,11 @@ const AdministratorDashboard: NextPage = () => {
                     />
                     <EvaluationsTable
                       submissions={allTeamsEvaluations}
-                      mutate={mutateRelations}
-                      projects={projectsResponse?.projects ?? []}
                       showAdviserColumn
                       deadline={null}
                       evaluationDeadlines={evaluationDeadlines}
                     />
-                    <div ref={bottomOfPageRef} />
+                    <div ref={evaluationsBottomOfPageRef} />
                     <Box
                       sx={{
                         display: "grid",
@@ -628,7 +638,7 @@ const AdministratorDashboard: NextPage = () => {
                     >
                       {isFetching(fetchAllTeamsEvaluationsStatus) ? (
                         <LoadingSpinner size={50} />
-                      ) : !hasMore ? (
+                      ) : !hasMoreEvaluations ? (
                         <Typography>No more submissions found</Typography>
                       ) : null}
                     </Box>

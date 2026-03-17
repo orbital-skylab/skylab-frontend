@@ -1,2 +1,2 @@
-import MilestoneSummary from "./EvaluationsSummary";
-export default MilestoneSummary;
+import EvaluationsSummary from "./EvaluationsSummary";
+export default EvaluationsSummary;

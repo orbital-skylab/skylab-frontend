@@ -7,14 +7,11 @@ import { PAGES } from "@/helpers/navigation";
 import { generateSubmissionStatus } from "@/helpers/submissions";
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
 // Types
-import { Project } from "@/types/projects";
 import { PossibleSubmission, STATUS } from "@/types/submissions";
 import { Deadline } from "@/types/deadlines";
 
 type Props = {
   data: PossibleSubmission;
-  projects: Project[];
-  showAdviserColumn: boolean;
   evaluationDeadlines: Deadline[];
   deadline: Deadline | null;
 };
