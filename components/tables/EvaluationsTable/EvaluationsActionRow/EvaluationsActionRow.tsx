@@ -75,11 +75,16 @@ const EvaluationsActionRow: FC<Props> = ({
     setIsExporting(true);
     setCsvData([]);
     try {
+      const cohortYearForExport =
+        selectedCohortYear && typeof selectedCohortYear === "number"
+          ? selectedCohortYear
+          : currentCohortYear;
+
       const fetchAllTeamsEvaluations = new ApiServiceBuilder({
         method: HTTP_METHOD.GET,
         endpoint: `/dashboard/administrator/evaluations`,
         queryParams: {
-          cohortYear: currentCohortYear,
+          cohortYear: cohortYearForExport,
           deadlineId: selectedEvaluationsDeadline?.id,
           dropped: viewHasDropped,
           evaluatorTypeFilter: selectedEvaluatorType,
