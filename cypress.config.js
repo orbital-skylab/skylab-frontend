@@ -17,6 +17,7 @@ module.exports = defineConfig({
       return config;
     },
     testIsolation: false,
+    scrollBehavior: "bottom",
   },
 
   component: {
