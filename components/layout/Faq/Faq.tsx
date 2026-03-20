@@ -190,16 +190,18 @@ const FaqLayoutInner = ({ children }: FaqLayoutProps) => {
                       "&:hover": { backgroundColor: "#eeeeee" },
                     }}
                   >
-                    <Box component="span" sx={{
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                      width: "100%",
-                      textAlign: "left",
-                    }}>
+                    <Box
+                      component="span"
+                      sx={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        width: "100%",
+                        textAlign: "left",
+                      }}
+                    >
                       {conv.title ?? "Untitled Conversation"}
                     </Box>
-
                   </Button>
                 );
               })}
