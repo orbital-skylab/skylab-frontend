@@ -26,6 +26,7 @@ const MultipleChoiceQuestion: FC<Props> = ({
   isReadonly,
 }) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (isReadonly) return;
     setAnswer(e.target.value);
   };
 
@@ -41,12 +42,7 @@ const MultipleChoiceQuestion: FC<Props> = ({
                   className="mcq-option"
                   key={idx}
                   value={option}
-                  control={
-                    <Radio
-                      sx={{ flex: "0 0 fit-content" }}
-                      readOnly={isReadonly}
-                    />
-                  }
+                  control={<Radio sx={{ flex: "0 0 fit-content" }} />}
                   label={option ? option : `<Empty Option ${idx + 1}>`}
                 />
               ))}

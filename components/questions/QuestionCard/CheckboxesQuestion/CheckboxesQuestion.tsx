@@ -36,6 +36,7 @@ const CheckboxesQuestion: FC<Props> = ({
 
   const generateToggle = (option: string) => {
     const toggleCheck = () => {
+      if (isReadonly) return;
       let answerObject;
       try {
         answerObject = JSON.parse(answer);
@@ -69,12 +70,7 @@ const CheckboxesQuestion: FC<Props> = ({
                   className="checkbox-option"
                   key={idx}
                   label={option ? option : `<Empty Option ${idx + 1}>`}
-                  control={
-                    <Checkbox
-                      checked={isChecked(option)}
-                      readOnly={isReadonly}
-                    />
-                  }
+                  control={<Checkbox checked={isChecked(option)} />}
                   onClick={generateToggle(option)}
                 />
               ))}
