@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import VotingCard from "@/components/cards/VotingCard";
+import { getThumbnailUrl } from "@/helpers/images";
 import { Project } from "@/types/projects";
 import { mount } from "cypress/react18";
 
@@ -30,7 +31,11 @@ describe("<VotingCard />", () => {
     cy.contains(candidate.name).should("be.visible");
 
     // assert image
-    cy.get("img").should("have.attr", "src", candidate.posterUrl);
+    cy.get("img").should(
+      "have.attr",
+      "src",
+      getThumbnailUrl(candidate.posterUrl, 500, 20)
+    );
   });
 
   it("should be able to toggle selected state", () => {
