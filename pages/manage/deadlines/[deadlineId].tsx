@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 // Components
 import GoBackButton from "@/components/buttons/GoBackButton";
 import Body from "@/components/layout/Body";
@@ -37,22 +37,30 @@ const DeadlineQuestions: NextPage = () => {
   const { answers, actions: answersActions } = useAnswers();
   const { clearAnswers, setEmptyAnswers } = answersActions;
 
-  const { data: deadlineDetailsResponse, status: fetchDeadlineDetailsStatus } =
-    useFetch<GetDeadlineDetailsResponse>({
-      endpoint: `/deadlines/${deadlineId}/questions`,
-      onFetch: (deadlineDetailsResponse) => {
-        setDeadlineDescription(deadlineDetailsResponse.deadline.desc ?? "");
-        if (
-          deadlineDetailsResponse.sections &&
-          deadlineDetailsResponse.sections.length
-        ) {
-          setSections(stripSections(deadlineDetailsResponse.sections));
-        } else {
-          addSection();
-        }
-      },
-      enabled: !!deadlineId,
-    });
+  const {
+    data: deadlineDetailsResponse,
+    status: fetchDeadlineDetailsStatus,
+    refetch: refetchDeadlineDetails,
+  } = useFetch<GetDeadlineDetailsResponse>({
+    endpoint: `/deadlines/${deadlineId}/questions`,
+    onFetch: (deadlineDetailsResponse) => {
+      setDeadlineDescription(deadlineDetailsResponse.deadline.desc ?? "");
+      if (
+        deadlineDetailsResponse.sections &&
+        deadlineDetailsResponse.sections.length
+      ) {
+        setSections(stripSections(deadlineDetailsResponse.sections));
+      } else {
+        addSection();
+      }
+    },
+    enabled: !!deadlineId,
+  });
+
+  const processedSections = useMemo(
+    () => processSections(sections),
+    [sections]
+  );
 
   const saveQuestionSections = useApiCall({
     method: HTTP_METHOD.PUT,
@@ -69,11 +77,14 @@ const DeadlineQuestions: NextPage = () => {
   const saveQuestionSectionsAndDescription = async () => {
     try {
       await Promise.all([
-        saveQuestionSections.call({ sections: processSections(sections) }),
+        saveQuestionSections.call({ sections: processedSections }),
         saveDeadlineDescription.call({
           deadline: { desc: deadlineDescription },
         }),
       ]);
+      await refetchDeadlineDetails();
+      setIsPreviewMode(false);
+      clearAnswers();
       setSuccess(
         `Successfully updated ${deadlineDetailsResponse?.deadline.name}'s description and questions!`
       );
@@ -89,7 +100,7 @@ const DeadlineQuestions: NextPage = () => {
       clearAnswers();
     } else {
       setIsPreviewMode(true);
-      setEmptyAnswers(sections, true);
+      setEmptyAnswers(processedSections, true);
     }
   };
 
@@ -105,7 +116,7 @@ const DeadlineQuestions: NextPage = () => {
       deadlineDetailsResponse.sections &&
       deadlineDetailsResponse.sections.length
     ) {
-      setSections(deadlineDetailsResponse.sections);
+      setSections(stripSections(deadlineDetailsResponse.sections));
     } else {
       clearSections();
       addSection();
@@ -151,7 +162,7 @@ const DeadlineQuestions: NextPage = () => {
           />
         ) : (
           <QuestionSectionsList
-            questionSections={sections}
+            questionSections={processedSections}
             answers={answers}
             answersActions={answersActions}
             accessAnswersWithQuestionIndex
