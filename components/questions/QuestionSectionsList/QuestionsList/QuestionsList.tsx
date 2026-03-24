@@ -1,8 +1,8 @@
 import { FC } from "react";
 import { Stack } from "@mui/material";
-import { LeanQuestion, Question, QUESTION_TYPE } from "@/types/deadlines";
+import { LeanQuestion, Question } from "@/types/deadlines";
 import { Answer } from "@/types/submissions";
-import UrlQuestion from "../../../questions/QuestionCard/UrlQuestion";
+import QuestionCard from "../../../questions/QuestionCard";
 import { isQuestion } from "@/helpers/types";
 import {
   QuestionErrorState,
@@ -55,28 +55,23 @@ const QuestionsList: FC<Props> = ({
         const questionError = errors[String(questionKey)];
         const verificationResult = verificationResults[String(questionKey)];
 
-        switch (question.type) {
-          case QUESTION_TYPE.URL:
-            return (
-              <UrlQuestion
-                key={String(questionKey)}
-                question={question}
-                answer={answer}
-                setAnswer={setAnswer}
-                isReadonly={isReadonly}
-                hasError={Boolean(questionError?.hasError)}
-                errorMessage={questionError?.message}
-                onClearError={() => onClearError?.(questionKey)}
-                verificationResult={verificationResult}
-                setVerificationResult={(result) =>
-                  setVerificationResult?.(questionKey, result)
-                }
-              />
-            );
-
-          default:
-            return null;
-        }
+        return (
+          <QuestionCard
+            key={String(questionKey)}
+            question={question}
+            idx={accessAnswersWithQuestionIndex ? indexOffset + idx : idx}
+            answer={answer}
+            setAnswer={setAnswer}
+            isReadonly={isReadonly}
+            hasError={Boolean(questionError?.hasError)}
+            errorMessage={questionError?.message}
+            onClearError={() => onClearError?.(questionKey)}
+            verificationResult={verificationResult}
+            setVerificationResult={(result) =>
+              setVerificationResult?.(questionKey, result)
+            }
+          />
+        );
       })}
     </Stack>
   );
