@@ -97,14 +97,16 @@ const InputBar = ({ isLoadingMessage, onSend, position = "fixed" }: Props) => {
                   formik={formik}
                   placeholder="Ask a question"
                   disabled={isLoadingMessage}
-                  onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                  onKeyDown={(
+                    e: React.KeyboardEvent<
+                      HTMLInputElement | HTMLTextAreaElement
+                    >
+                  ) => {
                     if (e.key !== "Enter" || e.shiftKey || !canSend) {
                       return;
                     }
                     e.preventDefault();
-                    (e.target as HTMLInputElement).form?.dispatchEvent(
-                      new Event("submit", { bubbles: true, cancelable: true })
-                    );
+                    formik.submitForm();
                   }}
                   fullWidth
                   multiline
