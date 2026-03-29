@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useRouter } from "next/router";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { Add, Search, ChevronLeft, ChevronRight } from "@mui/icons-material";
 import {
   Box,
@@ -25,45 +26,23 @@ type FaqLayoutProps = {
   children: React.ReactNode;
 };
 
-const SCROLL_THRESHOLD = 120;
-
 /* ---------------- INNER LAYOUT ---------------- */
 const FaqLayoutInner = ({ children }: FaqLayoutProps) => {
   const router = useRouter();
   const { conversationId } = router.query;
 
-  const conversationDivRef = useRef<HTMLDivElement | null>(null);
   const [collapsed, setCollapsed] = useState(false);
 
   const { conversations, isFetching, hasMore, loadMore } = useFaq();
   const recentConversations = useMemo(() => {
     return [...conversations].sort(
-      (a, b) =>
-        dayjs(b.updatedAt ?? 0).valueOf() - dayjs(a.updatedAt ?? 0).valueOf()
+      (a, b) => +dayjs(b.updatedAt) - +dayjs(a.updatedAt)
     );
   }, [conversations]);
 
   const sidebarWidth = collapsed
     ? SIDEBAR_COLLAPSED_WIDTH
     : SIDEBAR_EXPANDED_WIDTH;
-
-  // Infinite scroll
-  useEffect(() => {
-    const el = conversationDivRef.current;
-    if (!el) return;
-
-    const onScroll = () => {
-      if (!hasMore || isFetching) return;
-
-      const { scrollTop, scrollHeight, clientHeight } = el;
-      if (scrollHeight - scrollTop - clientHeight < SCROLL_THRESHOLD) {
-        loadMore();
-      }
-    };
-
-    el.addEventListener("scroll", onScroll);
-    return () => el.removeEventListener("scroll", onScroll);
-  }, [hasMore, isFetching, loadMore]);
 
   return (
     <Box sx={{ minHeight: "100dvh", fontFamily: "Inter, sans-serif" }}>
@@ -148,12 +127,12 @@ const FaqLayoutInner = ({ children }: FaqLayoutProps) => {
         {!collapsed && (
           <NoDataWrapper
             noDataCondition={
-              recentConversations?.length === 0 && !isFetching && !hasMore
+              recentConversations.length === 0 && !isFetching && !hasMore
             }
             fallback={<NoneFound title="No Conversations Yet" message="" />}
           >
             <Box
-              ref={conversationDivRef}
+              id="conversation-scroll"
               sx={{
                 flex: 1,
                 overflowY: "auto",
@@ -174,43 +153,55 @@ const FaqLayoutInner = ({ children }: FaqLayoutProps) => {
                 Recent Conversations
               </Typography>
 
-              {recentConversations.map((conv) => {
-                const isActive = Number(conversationId) === conv.id;
-                return (
-                  <Button
-                    key={conv.id}
-                    onClick={() => router.push(`${PAGES.FAQ}/${conv.id}`)}
-                    fullWidth
-                    sx={{
-                      justifyContent: "flex-start",
-                      textTransform: "none",
-                      borderRadius: 2,
-                      px: "0.7rem",
-                      backgroundColor: isActive ? "#e5e5e5" : "transparent",
-                      "&:hover": { backgroundColor: "#eeeeee" },
-                    }}
-                  >
-                    <Box
-                      component="span"
+              <InfiniteScroll
+                dataLength={recentConversations.length}
+                next={loadMore}
+                hasMore={hasMore}
+                loader={
+                  <Box py={1} display="flex" justifyContent="center">
+                    <LoadingSpinner size={30} />
+                  </Box>
+                }
+                scrollableTarget="conversation-scroll"
+                style={{ display: "flex", flexDirection: "column" }}
+              >
+                {recentConversations.map((conv) => {
+                  const isActive = Number(conversationId) === conv.id;
+                  return (
+                    <Button
+                      key={conv.id}
+                      onClick={() => router.push(`${PAGES.FAQ}/${conv.id}`)}
+                      fullWidth
                       sx={{
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        width: "100%",
-                        textAlign: "left",
+                        justifyContent: "flex-start",
+                        textTransform: "none",
+                        borderRadius: 2,
+                        px: "0.7rem",
+                        backgroundColor: isActive ? "#e5e5e5" : "transparent",
+                        "&:hover": { backgroundColor: "#eeeeee" },
                       }}
                     >
-                      {conv.title ?? "Untitled Conversation"}
-                    </Box>
-                  </Button>
-                );
-              })}
+                      <Box
+                        component="span"
+                        sx={{
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          width: "100%",
+                          textAlign: "left",
+                        }}
+                      >
+                        {conv.title ?? "Untitled Conversation"}
+                      </Box>
+                    </Button>
+                  );
+                })}
+              </InfiniteScroll>
 
-              <Box py={1} display="flex" justifyContent="center">
-                {isFetching && hasMore && <LoadingSpinner size={30} />}
-                {!isFetching && !hasMore && (
+              {!isFetching && !hasMore && (
+                <Box py={1} display="flex" justifyContent="center">
                   <Box textAlign="center" width="100%">
-                    <Divider sx={{ my: 1 }} />{" "}
+                    <Divider sx={{ my: 1 }} />
                     <Typography
                       color="text.secondary"
                       sx={{ fontSize: "0.9rem" }}
@@ -218,8 +209,8 @@ const FaqLayoutInner = ({ children }: FaqLayoutProps) => {
                       No more conversations
                     </Typography>
                   </Box>
-                )}
-              </Box>
+                </Box>
+              )}
             </Box>
           </NoDataWrapper>
         )}
