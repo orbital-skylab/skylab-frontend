@@ -92,7 +92,7 @@ const InputBar = ({ isLoadingMessage, onSend, position = "fixed" }: Props) => {
                   </IconButton>
                 </Tooltip>
                 <TextInput
-                  ref={inputRef}
+                  inputRef={inputRef}
                   name="input"
                   formik={formik}
                   placeholder="Ask a question"
