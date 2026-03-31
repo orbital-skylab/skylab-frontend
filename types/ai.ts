@@ -5,14 +5,15 @@ export interface FaqMessage {
   conversationId: number;
   role: MessageRole;
   content: string;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export interface FaqConversation {
   id: number;
   userId: string;
   title?: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   messages: FaqMessage[];
+  messageCount: number;
 }

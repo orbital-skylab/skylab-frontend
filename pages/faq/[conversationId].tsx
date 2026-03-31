@@ -6,47 +6,44 @@ import {
   HTTP_METHOD,
   PostFaqMessageResponse,
 } from "@/types/api";
-import {
-  AddOutlined,
-  ArrowDownwardOutlined,
-  ArrowUpwardOutlined,
-  KeyboardVoiceOutlined,
-  MoreHorizOutlined,
-} from "@mui/icons-material";
+import { ArrowDownwardOutlined } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeSanitize from "rehype-sanitize";
 import { FaqMessage } from "@/types/ai";
 import useAutoScroll from "@/hooks/useAutoScroll";
-import { Box, Button, IconButton, Input, Tooltip } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
+import Body from "@/components/layout/Body";
+import CustomHead from "@/components/layout/CustomHead";
+import ConversationHeader from "@/components/faq/ConversationHeader";
+import Message from "@/components/faq/Message";
+import InputBar from "@/components/faq/InputBar";
+import useFaq from "@/contexts/useFaq";
+import { PAGES } from "@/helpers/navigation";
 
-const INPUT_WARNING_LIMIT = 3000;
-const INPUT_EXCEEDED_LIMIT = 4000;
 const SHOW_SCROLL_DOWN_BUTTON_THRESHOLD = 350;
 
-const Conversation = () => {
+const FaqConversation = () => {
+  const { removeConversation } = useFaq();
   const router = useRouter();
+  const hasSentDraftRef = useRef(false);
   const { draft, conversationId } = router.query;
-  const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [tempUserMessage, setTempUserMessage] = useState("");
   const [messages, setMessages] = useState<FaqMessage[]>([]);
+  const [isLoadingMessage, setIsLoadingMessage] = useState(false);
   const [tempAssistantMessage, setTempAssistantMessage] = useState("");
   const [showScrollDownButton, setShowScrollDownButton] = useState(false);
-  const charCount = input.length;
-  const isInputLimitExceeded = charCount > INPUT_EXCEEDED_LIMIT;
 
   const { data: conversationResponse } = useFetch<GetFaqConversationResponse>({
     endpoint: `/ai/faq/${conversationId}`,
-    enabled: true,
+    enabled: !!conversationId,
   });
   const { containerRef, bottomRef } = useAutoScroll<HTMLDivElement>(
-    [messages, tempAssistantMessage, isLoading],
+    [messages, tempAssistantMessage, isLoadingMessage],
     { threshold: 150 }
   );
+  const conversationTitle =
+    conversationResponse?.faqConversation?.title ?? undefined;
 
   const appendToken = (chunk: string) => {
     setTempAssistantMessage((prev) => prev + chunk);
@@ -54,7 +51,7 @@ const Conversation = () => {
 
   const finaliseMessage = (data: PostFaqMessageResponse) => {
     const { userMessage, assistantMessage } = data;
-    setIsLoading(false);
+    setIsLoadingMessage(false);
 
     setMessages((prevMessages) => [
       ...prevMessages,
@@ -66,11 +63,10 @@ const Conversation = () => {
     setTempAssistantMessage("");
   };
 
-  const postMessage = useCallback(
+  const sendMessage = useCallback(
     async (content: string) => {
-      setInput("");
       setTempAssistantMessage("");
-      setIsLoading(true);
+      setIsLoadingMessage(true);
       setTempUserMessage(content);
 
       const apiService = new ApiServiceBuilder({
@@ -88,15 +84,19 @@ const Conversation = () => {
         onDone: finaliseMessage,
         onError: (err) => {
           console.error("Streaming error:", err);
-          setIsLoading(false);
+          setIsLoadingMessage(false);
         },
       });
     },
     [conversationId]
   );
 
-  const hasSentDraftRef = useRef(false);
+  const handleDeleteConversation = async () => {
+    await removeConversation(Number(conversationId));
+    router.replace(PAGES.FAQ);
+  };
 
+  // Send draft message if it exists
   useEffect(() => {
     if (
       hasSentDraftRef.current ||
@@ -107,16 +107,19 @@ const Conversation = () => {
     }
 
     hasSentDraftRef.current = true;
-
-    postMessage(draft.trim());
+    sendMessage(draft.trim());
 
     router.replace(`/faq/${conversationId}`, undefined, { shallow: true });
-  }, [draft, conversationId, postMessage, router]);
+  }, [draft, conversationId, sendMessage, router]);
 
+  // Load initial messages when conversationResponse changes
   useEffect(() => {
-    setMessages(conversationResponse?.faqConversation?.messages || []);
+    if (conversationResponse?.faqConversation?.messages?.length) {
+      setMessages(conversationResponse.faqConversation.messages);
+    }
   }, [conversationId, conversationResponse]);
 
+  // Show/hide scroll down button based on scroll position
   useEffect(() => {
     const el = document.scrollingElement;
     if (!el) return;
@@ -134,14 +137,32 @@ const Conversation = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  if (!conversationResponse) {
+  if (
+    !conversationResponse?.faqConversation ||
+    typeof conversationId !== "string"
+  ) {
     return null;
   }
 
   return (
-    <FaqLayout>
+    <Body
+      isLoading={false}
+      sx={{
+        position: "relative",
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <CustomHead
+        title={conversationTitle}
+        description={`A conversation about ${conversationTitle} with Skylab's AI-Powered FAQ Assistant`}
+      />
       <ConversationHeader
-        title={conversationResponse?.faqConversation?.title ?? undefined}
+        title={conversationTitle}
+        onDelete={handleDeleteConversation}
       />
       {/* --- MESSAGE AREA --- */}
       <Box
@@ -161,136 +182,18 @@ const Conversation = () => {
           const isUser = msg.role === "USER";
           return <Message key={msg.id} content={msg.content} isUser={isUser} />;
         })}
-
-        {/* Temporary user message */}
+        {/* --- TEMPORARY USER MESSAGE --- */}
         {tempUserMessage && <Message isUser content={tempUserMessage} />}
-        {/* Temporary assistant message */}
+        {/* --- TEMPORARY ASSISTANT MESSAGE --- */}
         {tempAssistantMessage && (
           <Message isUser={false} content={tempAssistantMessage} />
         )}
-        {isLoading && <LoadingSpinner size={40} />}
+        {isLoadingMessage && <LoadingSpinner size={35} />}
       </Box>
       <Box ref={bottomRef} />
       {/* --- INPUT BAR --- */}
-      <Box
-        sx={{
-          position: "fixed",
-          bottom: "24px",
-          left: "300px",
-          right: 0,
-          display: "flex",
-          justifyContent: "center",
-          pointerEvents: "none",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Box
-          sx={{
-            width: "100%",
-            maxWidth: "760px",
-            borderRadius: "999px",
-            padding: "0.7rem",
-            display: "flex",
-            gap: "0.5rem",
-            alignItems: "center",
-            background: "#f5f5f5",
-            boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.08)",
-            pointerEvents: "auto",
-            border: "1px solid #e0e0e0",
-          }}
-        >
-          <Tooltip title="Add attachments">
-            <IconButton>
-              <AddOutlined />
-            </IconButton>
-          </Tooltip>
-          <Input
-            type="text"
-            placeholder="Ask a question"
-            value={input}
-            disabled={isLoading}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && input.trim()) {
-                postMessage(input);
-                setInput("");
-              }
-            }}
-            sx={{
-              flexGrow: 1,
-              border: "none",
-              outline: "none",
-              fontSize: "1rem",
-              background: "transparent",
-            }}
-          />
-
-          <Tooltip title="Voice">
-            <IconButton>
-              <KeyboardVoiceOutlined />
-            </IconButton>
-          </Tooltip>
-          <Button
-            type="submit"
-            variant="contained"
-            disabled={isLoading || !input.trim() || isInputLimitExceeded}
-            onClick={() => {
-              postMessage(input);
-            }}
-            sx={{
-              minWidth: 40,
-              width: 40,
-              height: 40,
-              borderRadius: "50%",
-              padding: 0,
-              // enabled
-              bgcolor: "#000",
-              color: "#fff",
-
-              "&:hover": {
-                bgcolor: "#000",
-              },
-
-              // disabled
-              "&.Mui-disabled": {
-                bgcolor: "#e0e0e0",
-                color: "#9e9e9e",
-              },
-            }}
-          >
-            <ArrowUpwardOutlined />
-          </Button>
-        </Box>
-        {charCount > INPUT_WARNING_LIMIT && (
-          <Box
-            sx={{
-              marginTop: "6px",
-              marginLeft: "32px",
-              width: "100%",
-              maxWidth: "760px",
-              textAlign: "left",
-              fontSize: "0.80rem",
-              fontWeight: 500,
-              color: charCount > INPUT_EXCEEDED_LIMIT ? "#d32f2f" : "#515151",
-              paddingRight: "12px",
-              pointerEvents: "auto",
-            }}
-          >
-            {charCount} / {INPUT_EXCEEDED_LIMIT}
-            {charCount <= INPUT_EXCEEDED_LIMIT && (
-              <Box component="span" sx={{ marginLeft: 6 }}>
-                · Consider shortening for clearer answers
-              </Box>
-            )}
-            {charCount > INPUT_EXCEEDED_LIMIT && (
-              <Box component="span" sx={{ marginLeft: 6 }}>
-                · Message is too long, please shorten it
-              </Box>
-            )}
-          </Box>
-        )}
-      </Box>
+      <InputBar isLoadingMessage={isLoadingMessage} onSend={sendMessage} />
+      {/* --- SCROLL DOWN BUTTON --- */}
       <Box
         sx={{
           width: "100%",
@@ -319,183 +222,12 @@ const Conversation = () => {
           <ArrowDownwardOutlined />
         </IconButton>
       </Box>
-    </FaqLayout>
+    </Body>
   );
 };
 
-export default Conversation;
+FaqConversation.getLayout = (page: React.ReactNode) => (
+  <FaqLayout>{page}</FaqLayout>
+);
 
-interface MessageProps {
-  content: string;
-  isUser: boolean;
-}
-const Message = ({ content, isUser }: MessageProps) => {
-  return (
-    <Box
-      sx={{
-        width: isUser ? "auto" : "100%",
-        alignSelf: isUser ? "flex-end" : "stretch",
-        display: "flex",
-        justifyContent: isUser ? "flex-end" : "flex-start",
-      }}
-    >
-      <Box
-        sx={{
-          background: isUser ? "#111" : "transparent",
-          color: isUser ? "#fff" : "#111",
-          padding: isUser ? "0.4rem 0.9rem" : "0",
-          borderRadius: isUser ? "20px" : 0,
-          fontSize: "0.95rem",
-          lineHeight: 1.5,
-          whiteSpace: "pre-wrap",
-        }}
-      >
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
-          rehypePlugins={[rehypeSanitize]}
-          components={{
-            table({ children }) {
-              return (
-                <Box
-                  component="table"
-                  sx={{
-                    width: "100%",
-                    borderCollapse: "collapse",
-                    margin: "0.75rem 0",
-                    fontSize: "0.9rem",
-                  }}
-                >
-                  {children}
-                </Box>
-              );
-            },
-            th({ children }) {
-              return (
-                <Box
-                  component="th"
-                  sx={{
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                    background: "#f5f5f5",
-                    fontWeight: 600,
-                    textAlign: "left",
-                  }}
-                >
-                  {children}
-                </Box>
-              );
-            },
-            td({ children }) {
-              return (
-                <Box
-                  component="td"
-                  sx={{
-                    border: "1px solid #ddd",
-                    padding: "8px",
-                    verticalAlign: "top",
-                  }}
-                >
-                  {children}
-                </Box>
-              );
-            },
-
-            // existing renderers
-            code({ inline, children }) {
-              if (inline) {
-                return (
-                  <Box
-                    component="code"
-                    sx={{
-                      background: "#eaeaea",
-                      padding: "0.2em 0.4em",
-                      borderRadius: "4px",
-                      fontSize: "0.85em",
-                    }}
-                  >
-                    {children}
-                  </Box>
-                );
-              }
-
-              return (
-                <Box
-                  component="pre"
-                  sx={{
-                    background: "#1e1e1e",
-                    color: "#fff",
-                    padding: "1rem",
-                    borderRadius: "8px",
-                    overflowX: "auto",
-                    fontSize: "0.85em",
-                  }}
-                >
-                  <Box component="code">{children}</Box>
-                </Box>
-              );
-            },
-            ul({ children }) {
-              return (
-                <Box component="ul" sx={{ paddingLeft: "1.2rem" }}>
-                  {children}
-                </Box>
-              );
-            },
-            ol({ children }) {
-              return (
-                <Box component="ol" sx={{ paddingLeft: "1.2rem" }}>
-                  {children}
-                </Box>
-              );
-            },
-            p({ children }) {
-              return (
-                <Box component="p" sx={{ margin: "0.4rem 0" }}>
-                  {children}
-                </Box>
-              );
-            },
-          }}
-        >
-          {content}
-        </ReactMarkdown>
-      </Box>
-    </Box>
-  );
-};
-
-const ConversationHeader = ({ title }: { title?: string }) => {
-  return (
-    <Box
-      sx={{
-        position: "sticky",
-        top: "4rem",
-        zIndex: 10,
-        width: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        pointerEvents: "none",
-        padding: "0.6rem 1.1rem",
-        color: "#5f5f5f",
-      }}
-    >
-      <Box
-        sx={{
-          fontSize: "0.95rem",
-          fontWeight: 600,
-
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          pointerEvents: "auto",
-        }}
-      >
-        {title ?? "Untitled Conversation"}
-      </Box>
-      <IconButton color="inherit" sx={{ pointerEvents: "auto" }}>
-        <MoreHorizOutlined />
-      </IconButton>
-    </Box>
-  );
-};
+export default FaqConversation;

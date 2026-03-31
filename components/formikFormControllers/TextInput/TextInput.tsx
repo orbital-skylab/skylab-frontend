@@ -1,3 +1,4 @@
+import React from "react";
 import { TextField } from "@mui/material";
 import { FormikProps } from "formik";
 
@@ -9,8 +10,14 @@ type Props<FormValuesType> = {
   formik: FormikProps<FormValuesType>;
   multiline?: boolean;
   minRows?: number;
+  maxRows?: number;
   size?: "medium" | "small";
   disabled?: boolean;
+  placeholder?: string;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  fullWidth?: boolean;
+  bordered?: boolean;
+  inputRef?: React.Ref<HTMLInputElement | HTMLTextAreaElement>;
 };
 
 function TextInput<FormValuesType>({
@@ -21,32 +28,50 @@ function TextInput<FormValuesType>({
   formik,
   multiline = false,
   minRows = 3,
+  maxRows,
   size = "medium",
   disabled = false,
+  placeholder,
+  onKeyDown,
+  fullWidth,
+  bordered = true,
+  inputRef,
 }: Props<FormValuesType>) {
   const { values, errors, handleChange, handleBlur, touched } = formik;
 
-  return (
-    <TextField
-      label={label}
-      hiddenLabel={label === ""}
-      type={type}
-      value={values[name]}
-      name={name as string}
-      onChange={handleChange}
-      onBlur={handleBlur}
-      error={!!errors[name] && !!touched[name]}
-      helperText={!!touched[name] && errors[name]}
-      multiline={multiline}
-      minRows={minRows}
-      size={size}
-      InputLabelProps={{
-        shrink: type === "datetime-local" ? true : undefined,
-      }}
-      id={id}
-      disabled={disabled}
-    />
-  );
+  const commonProps = {
+    label,
+    hiddenLabel: label === "",
+    type,
+    value: values[name],
+    name: name as string,
+    onChange: handleChange,
+    onBlur: handleBlur,
+    error: !!errors[name] && !!touched[name],
+    helperText: !!touched[name] && errors[name],
+    multiline,
+    minRows,
+    maxRows,
+    size,
+    id,
+    disabled,
+    placeholder,
+    onKeyDown,
+    fullWidth,
+    inputRef,
+  };
+
+  if (!bordered) {
+    return (
+      <TextField
+        {...commonProps}
+        variant="standard"
+        InputProps={{ disableUnderline: true }}
+      />
+    );
+  }
+
+  return <TextField {...commonProps} variant="outlined" />;
 }
 
 export default TextInput;
