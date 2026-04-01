@@ -27,7 +27,8 @@ type Props = {
 
 const IMAGE_VALIDATION_MODE = {
   NONE: "NONE",
-  A1_OR_A4: "A1_OR_A4",
+  A1: "A1",
+  A4: "A4",
 } as const;
 
 type ImageValidationMode =
@@ -37,21 +38,20 @@ const getImageValidationMode = (
   allowedPaperFormats?: PAPER_FORMAT[]
 ): ImageValidationMode => {
   if (!allowedPaperFormats?.length) return IMAGE_VALIDATION_MODE.NONE;
-  if (
-    allowedPaperFormats.includes(PAPER_FORMAT.A1) &&
-    allowedPaperFormats.includes(PAPER_FORMAT.A4)
-  ) {
-    return IMAGE_VALIDATION_MODE.A1_OR_A4;
+  if (allowedPaperFormats.includes(PAPER_FORMAT.A1)) {
+    return IMAGE_VALIDATION_MODE.A1;
   }
-  return IMAGE_VALIDATION_MODE.A1_OR_A4;
+  return IMAGE_VALIDATION_MODE.A4;
 };
 
 const getAllowedPaperFormatsForMode = (
   mode: ImageValidationMode
 ): PAPER_FORMAT[] => {
   switch (mode) {
-    case IMAGE_VALIDATION_MODE.A1_OR_A4:
-      return [PAPER_FORMAT.A1, PAPER_FORMAT.A4];
+    case IMAGE_VALIDATION_MODE.A1:
+      return [PAPER_FORMAT.A1];
+    case IMAGE_VALIDATION_MODE.A4:
+      return [PAPER_FORMAT.A4];
     default:
       return [];
   }
@@ -301,13 +301,12 @@ const EditQuestionConfig: FC<Props> = ({ question, setQuestion }) => {
                         <MenuItem value={IMAGE_VALIDATION_MODE.NONE}>
                           No validation
                         </MenuItem>
-                        <MenuItem value={IMAGE_VALIDATION_MODE.A1_OR_A4}>
-                          A1/A4
-                        </MenuItem>
+                        <MenuItem value={IMAGE_VALIDATION_MODE.A1}>A1</MenuItem>
+                        <MenuItem value={IMAGE_VALIDATION_MODE.A4}>A4</MenuItem>
                       </TextField>
 
                       <Tooltip
-                        title="Use A1/A4 to require image files that match A-series poster format. Choose No validation to accept any image file. The link still needs to be readable and downloadable."
+                        title="Choose A1 or A4 to require image files that match that A-series poster format. Choose No validation to accept any image file. The link still needs to be readable and downloadable."
                         placement="top"
                       >
                         <IconButton
