@@ -27,4 +27,5 @@ export enum PAGES {
   ANONYMOUS_QUESTIONS_STUDENT = "/submissions/student",
   ANONYMOUS_QUESTIONS_ADVISER = "/submissions/adviser",
   VOTE_EVENTS = "/vote-events",
+  FAQ = "/faq",
 }

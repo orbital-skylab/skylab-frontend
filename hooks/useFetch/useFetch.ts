@@ -76,6 +76,7 @@ const useFetch = <T>({
     }
   };
 
+  const queryKey = JSON.stringify(queryParams ?? {});
   useEffect(() => {
     let cancelRequest = false;
 
@@ -87,7 +88,7 @@ const useFetch = <T>({
       cancelRequest = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [endpoint, requiresAuthorization, queryParams]);
+  }, [endpoint, requiresAuthorization, queryKey]);
 
   /* Mutate function to modify the state of the fetched data directly. */
   const mutate: Mutate<T> = async (mutator) => {

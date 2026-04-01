@@ -12,3 +12,5 @@ export const ABSOLUTE_CENTER = {
   left: "50%",
   transform: "translate(-50%, -50%)",
 };
+export const SIDEBAR_EXPANDED_WIDTH = 300;
+export const SIDEBAR_COLLAPSED_WIDTH = 64;
