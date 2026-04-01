@@ -22,7 +22,7 @@ describe("<ImageCard />", () => {
       id: "test-card-id",
       idDisplay: "1",
       title: "Test Card Title",
-      imageSrc: "https://via.placeholder.com/150",
+      imageSrc: "/images/no-image-available.png",
       actionButton: <button>Action</button>,
       extraContent: <div>Extra Content</div>,
       onCardClick: cy.stub().as("cardClick"),
