@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import ImageCard from "@/components/cards/ImageCard/ImageCard";
+import { getThumbnailUrl } from "@/helpers/images";
 import { mount } from "cypress/react18";
 
 describe("<ImageCard />", () => {
@@ -33,9 +34,11 @@ describe("<ImageCard />", () => {
   it("should render card with correct content", () => {
     mount(<ImageCard {...cardProps} />);
 
+    const expectedThumb = getThumbnailUrl(cardProps.imageSrc, 500, 20);
+
     cy.contains(cardProps.idDisplay).should("be.visible");
     cy.contains(cardProps.title).should("be.visible");
-    cy.get("img").should("have.attr", "src", cardProps.imageSrc);
+    cy.get("img").should("have.attr", "src", expectedThumb);
     cy.get("img").should("have.attr", "alt", cardProps.imgAlt);
     cy.contains("Extra Content").should("be.visible");
   });

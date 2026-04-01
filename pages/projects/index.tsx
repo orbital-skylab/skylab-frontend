@@ -117,6 +117,9 @@ const Projects: NextPage = () => {
     observer
   );
 
+  /** Number of projects fetched eagerly */
+  const numOfEagerLoadedProjects = 4;
+
   useEffect(() => {
     if (currentCohortYear) {
       setSelectedCohortYear(currentCohortYear);
@@ -202,10 +205,13 @@ const Projects: NextPage = () => {
           >
             <Grid container spacing={{ xs: 2, md: 4 }}>
               {projects
-                ? projects.map((project) => {
+                ? projects.map((project, index) => {
                     return (
                       <Grid item key={project.id} xs={12 / 2} md={12 / 4}>
-                        <ProjectCard project={project} />
+                        <ProjectCard
+                          project={project}
+                          priority={index < numOfEagerLoadedProjects}
+                        />
                       </Grid>
                     );
                   })
