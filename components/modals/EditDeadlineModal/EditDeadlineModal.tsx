@@ -76,8 +76,18 @@ const EditDeadlineModal: FC<Props> = ({
     actions: FormikHelpers<EditDeadlineFormValuesType>
   ) => {
     const processedValues = {
-      ...values,
+      name: values.name,
       dueBy: dateTimeLocalInputToIsoDate(values.dueBy),
+      type: values.type,
+      evaluatingMilestoneId:
+        values.type === DEADLINE_TYPE.EVALUATION &&
+        values.evaluatingMilestoneId !== ""
+          ? Number(values.evaluatingMilestoneId)
+          : undefined,
+      evaluatorType:
+        values.type === DEADLINE_TYPE.EVALUATION && values.evaluatorType !== ""
+          ? values.evaluatorType
+          : undefined,
     };
 
     try {
