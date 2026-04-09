@@ -170,33 +170,72 @@ const buildProps = (overrides?: Partial<Props>): Props => ({
   ...overrides,
 });
 
+const buildAnonymousMilestoneProps = (): Props =>
+  buildProps({
+    collated: [
+      {
+        deadline: milestoneDeadline,
+        questions: [
+          {
+            questionId: 31,
+            sectionId: 3,
+            sectionName: "Anonymous Section",
+            sectionNumber: 1,
+            questionNumber: 1,
+            question: "Anonymous reflection",
+            description: "",
+            isAnonymous: true,
+            isRequired: true,
+            type: QUESTION_TYPE.PARAGRAPH,
+            responses: [
+              {
+                projectId: 101,
+                teamName: "Team Atlas",
+                projectName: "Atlas",
+                submissionId: 901,
+                submittedAt: "2026-02-20T10:00:00.000Z",
+                answer: "Private milestone answer",
+              },
+              {
+                projectId: 102,
+                teamName: "Team Nova",
+                projectName: "Nova",
+                answer: "",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    evaluationCollated: [],
+    viewAnonymousAnswers: true,
+  });
+
 describe("<CollatedMilestoneResponsesTable />", () => {
   it("renders formatted milestone and evaluation answers", () => {
     mount(<CollatedMilestoneResponsesTable {...buildProps()} />);
 
-    cy.contains("Team Atlas").should("be.visible");
-    cy.contains("Atlas").should("be.visible");
-    cy.contains("Alpha, Gamma").should("be.visible");
-    cy.contains("Hello team").should("be.visible");
-    cy.contains("Response 1: Well done").should("be.visible");
-    cy.contains("No submission").should("be.visible");
-    cy.contains("a", "https://example.com/demo").should(
-      "have.attr",
-      "href",
-      "https://example.com/demo"
-    );
+    cy.get("thead").contains("Team Name").should("be.visible");
+    cy.get("thead").contains("Project Name").should("be.visible");
+    cy.get("tbody").contains("Team Atlas").should("be.visible");
+    cy.get("tbody").contains("Atlas").should("be.visible");
+    cy.get("tbody").contains("Alpha, Gamma").should("be.visible");
+    cy.get("tbody").contains("Hello team").should("be.visible");
+    cy.get("tbody").contains("Response 1: Well done").should("be.visible");
+    cy.get("tbody").contains("No submission").should("be.visible");
+    cy.get('a[href="https://example.com/demo"]').should("be.visible");
   });
 
   it("switches to anonymous milestone mode and hides evaluation columns", () => {
     mount(
-      <CollatedMilestoneResponsesTable
-        {...buildProps({ viewAnonymousAnswers: true })}
-      />
+      <CollatedMilestoneResponsesTable {...buildAnonymousMilestoneProps()} />
     );
 
-    cy.contains("Response").should("be.visible");
-    cy.contains("Response 1").should("be.visible");
-    cy.contains("Team Atlas").should("not.exist");
-    cy.contains("from team").should("not.exist");
+    cy.get("thead").contains("Response").should("be.visible");
+    cy.get("thead").contains("Team Name").should("not.exist");
+    cy.get("thead").contains("Project Name").should("not.exist");
+    cy.get("tbody").contains("Response 1").should("be.visible");
+    cy.get("tbody").contains("Private milestone answer").should("be.visible");
+    cy.contains("Milestone 1 Peer Review").should("not.exist");
   });
 });
