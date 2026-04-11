@@ -219,11 +219,25 @@ describe("<CollatedMilestoneResponsesTable />", () => {
     cy.get("thead").contains("Project Name").should("be.visible");
     cy.get("tbody").contains("Team Atlas").should("be.visible");
     cy.get("tbody").contains("Atlas").should("be.visible");
-    cy.get("tbody").contains("Alpha, Gamma").should("be.visible");
-    cy.get("tbody").contains("Hello team").should("be.visible");
-    cy.get("tbody").contains("Response 1: Well done").should("be.visible");
-    cy.get("tbody").contains("No submission").should("be.visible");
-    cy.get('a[href="https://example.com/demo"]').should("be.visible");
+    cy.get("tbody")
+      .contains("Alpha, Gamma")
+      .scrollIntoView()
+      .should("be.visible");
+    cy.get("tbody")
+      .contains("Hello team")
+      .scrollIntoView()
+      .should("be.visible");
+    cy.get("tbody")
+      .contains("Response 1: Well done")
+      .scrollIntoView()
+      .should("be.visible");
+    cy.get("tbody")
+      .contains("No submission")
+      .scrollIntoView()
+      .should("be.visible");
+    cy.get('a[href="https://example.com/demo"]')
+      .scrollIntoView()
+      .should("be.visible");
   });
 
   it("switches to anonymous milestone mode and hides evaluation columns", () => {
