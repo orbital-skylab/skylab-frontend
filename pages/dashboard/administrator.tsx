@@ -87,18 +87,9 @@ const AdministratorDashboard: NextPage = () => {
       endpoint: `/deadlines?cohortYear=${selectedCohortYear}`,
       enabled: Boolean(selectedCohortYear),
       requiresAuthorization: true,
-      onFetch: (response) => {
-        const milestoneDeadline = response.deadlines.find(
-          (deadline) => deadline.type === DEADLINE_TYPE.MILESTONE
-        );
-
-        setSelectedMilestoneDeadline(milestoneDeadline ?? null);
-
-        const evaluationDeadline = response.deadlines.find(
-          (deadline) => deadline.type === DEADLINE_TYPE.EVALUATION
-        );
-
-        setSelectedEvaluationsDeadline(evaluationDeadline ?? null);
+      onFetch: () => {
+        setSelectedMilestoneDeadline(null);
+        setSelectedEvaluationsDeadline(null);
       },
     });
 
@@ -575,7 +566,6 @@ const AdministratorDashboard: NextPage = () => {
                     />
                     <EvaluationsTable
                       submissions={allTeamsEvaluations}
-                      showAdviserColumn
                       deadline={selectedEvaluationsDeadline}
                       evaluationDeadlines={evaluationDeadlines}
                     />
@@ -624,7 +614,6 @@ const AdministratorDashboard: NextPage = () => {
                     />
                     <EvaluationsTable
                       submissions={allTeamsEvaluations}
-                      showAdviserColumn
                       deadline={null}
                       evaluationDeadlines={evaluationDeadlines}
                     />
