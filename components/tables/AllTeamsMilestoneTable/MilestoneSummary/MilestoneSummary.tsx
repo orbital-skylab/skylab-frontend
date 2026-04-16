@@ -57,7 +57,13 @@ const MilestoneSummary: FC<Props> = ({
       const milestoneSubmissions = new Map<number, { status: STATUS }[]>();
 
       submissions.forEach((sub) => {
-        if (!sub.submission || sub.submission.length === 0) {
+        const submissionArray = Array.isArray(sub.submission)
+          ? sub.submission
+          : sub.submission
+          ? [sub.submission]
+          : [];
+
+        if (submissionArray.length === 0) {
           // No submissions at all for this team → mark as missing for all milestones
           milestoneDeadlines.forEach((m) => {
             const list = milestoneSubmissions.get(m.id) || [];
@@ -66,7 +72,7 @@ const MilestoneSummary: FC<Props> = ({
           });
         } else {
           milestoneDeadlines.forEach((m) => {
-            const subForThisMilestone = sub.submission?.find(
+            const subForThisMilestone = submissionArray.find(
               (teamSubmission) => teamSubmission.deadlineId === m.id
             );
             const list = milestoneSubmissions.get(m.id) || [];

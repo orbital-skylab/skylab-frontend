@@ -146,6 +146,12 @@ const AllTeamsMilestoneRow: FC<Props> = ({
     }
   };
 
+  const submissionArray = Array.isArray(submission.submission)
+    ? submission.submission
+    : submission.submission
+    ? [submission.submission]
+    : [];
+
   return (
     <>
       <TableRow>
@@ -189,7 +195,7 @@ const AllTeamsMilestoneRow: FC<Props> = ({
           </>
         ) : (
           milestoneDeadlines.map((milestone) => {
-            const sub = submission.submission?.find(
+            const sub = submissionArray.find(
               (sub) => sub.deadlineId === milestone.id
             );
             const status = sub

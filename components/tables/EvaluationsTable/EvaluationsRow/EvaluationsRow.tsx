@@ -7,7 +7,7 @@ import { PAGES } from "@/helpers/navigation";
 import { generateSubmissionStatus } from "@/helpers/submissions";
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
 // Types
-import { PossibleSubmission, STATUS } from "@/types/submissions";
+import { PossibleSubmission, STATUS, Submission } from "@/types/submissions";
 import { Deadline } from "@/types/deadlines";
 
 type Props = {
@@ -17,21 +17,16 @@ type Props = {
 };
 
 const EvaluationsRow: FC<Props> = ({ data, evaluationDeadlines, deadline }) => {
-  const getSubForDeadline = (deadlineId: number): PossibleSubmission | null => {
+  const getSubForDeadline = (deadlineId: number): Submission | null => {
     const sub = data.submission;
 
     if (!sub) return null;
 
     if (Array.isArray(sub)) {
-      return (
-        (sub as PossibleSubmission[]).find(
-          (s) => s.deadlineId === deadlineId
-        ) || null
-      );
+      return sub.find((s) => s.deadlineId === deadlineId) || null;
     }
 
-    const singleSub = sub as PossibleSubmission;
-    return singleSub.deadlineId === deadlineId ? singleSub : null;
+    return sub.deadlineId === deadlineId ? sub : null;
   };
 
   const singleSub = deadline ? getSubForDeadline(deadline.id) : null;
