@@ -57,8 +57,7 @@ const EvaluationsSummary: FC<Props> = ({
         if (Array.isArray(sub)) {
           return sub.find((s) => s.deadlineId === evaluationId) || null;
         }
-        const singleSub = sub as PossibleSubmission;
-        return singleSub.deadlineId === evaluationId ? singleSub : null;
+        return sub.deadlineId === evaluationId ? sub : null;
       })();
 
       const status = generateSubmissionStatus({

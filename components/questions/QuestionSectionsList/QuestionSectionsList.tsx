@@ -4,6 +4,7 @@ import QuestionsList from "./QuestionsList";
 import { Card, CardContent, Stack, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 // Helpers
+import { validateUrl } from "@/helpers/string";
 import { isSection, isQuestion } from "@/helpers/types";
 import { generateIndexOffset } from "@/hooks/useAnswers/useAnswers.helpers";
 // Types
@@ -267,6 +268,45 @@ const QuestionSectionsList: FC<Props> = ({
         const remainingCount = missingItems.length - 3;
         setError(
           `Please fill in: ${firstFewNames} and ${remainingCount} others.`
+        );
+      }
+      return;
+    }
+
+    const invalidUrlItems = visibleQuestions.filter(({ question, key }) => {
+      if (key === null || question.type !== QUESTION_TYPE.URL) return false;
+
+      const answer = String(answers.get(key) ?? "").trim();
+      if (answer === "") return false;
+
+      return !validateUrl(answer);
+    });
+
+    if (invalidUrlItems.length > 0) {
+      const newErrors: Record<string, QuestionErrorState> = {};
+
+      invalidUrlItems.forEach(({ key }) => {
+        if (key !== null) {
+          newErrors[String(key)] = {
+            hasError: true,
+            message: "Please enter a valid URL",
+          };
+        }
+      });
+
+      setQuestionErrors(newErrors);
+
+      const firstFewNames = invalidUrlItems
+        .slice(0, 3)
+        .map(({ question }) => `"${getQuestionLabel(question)}"`)
+        .join(", ");
+
+      if (invalidUrlItems.length <= 3) {
+        setError(`Please fix the URL format for: ${firstFewNames}`);
+      } else {
+        const remainingCount = invalidUrlItems.length - 3;
+        setError(
+          `Please fix the URL format for: ${firstFewNames} and ${remainingCount} others.`
         );
       }
       return;
