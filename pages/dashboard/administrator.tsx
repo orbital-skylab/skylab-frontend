@@ -84,6 +84,15 @@ const AdministratorDashboard: NextPage = () => {
   const [searchTextInput, setSearchTextInput] = useState(""); // The input value
   const [querySearch, setQuerySearch] = useState(""); // The debounced input value for searching
   const [selectedEvaluatorType, setSelectedEvaluatorType] = useState("All");
+  const resetMilestonesPagination = useCallback(() => setPage(0), []);
+  const resetEvaluationsPagination = useCallback(
+    () => setEvaluationsPage(0),
+    []
+  );
+  const resetSubmissionPaginations = useCallback(() => {
+    resetMilestonesPagination();
+    resetEvaluationsPagination();
+  }, [resetEvaluationsPagination, resetMilestonesPagination]);
 
   /** Fetching deadlines where type === Milestone and type === Evaluation */
   const { data: deadlinesResponse, status: fetchDeadlinesStatus } =
@@ -216,6 +225,7 @@ const AdministratorDashboard: NextPage = () => {
     querySearch,
     selectedSubmissionStatus,
     viewHasDropped,
+    selectedEvaluatorType,
   ]);
 
   const {
@@ -229,7 +239,7 @@ const AdministratorDashboard: NextPage = () => {
     endpoint: `/dashboard/administrator/team-submissions`,
     queryParams: memoMilestoneQueryParams,
     requiresAuthorization: true,
-    page: evaluationsPage,
+    page,
     responseToData: (response) => response.submissions,
     enabled: Boolean(selectedCohortYear),
   });
@@ -245,7 +255,7 @@ const AdministratorDashboard: NextPage = () => {
     endpoint: `/dashboard/administrator/evaluations`,
     queryParams: memoEvaluationsQueryParams,
     requiresAuthorization: true,
-    page,
+    page: evaluationsPage,
     responseToData: (response) => response.submissions,
     enabled: Boolean(selectedCohortYear),
   });
@@ -342,7 +352,7 @@ const AdministratorDashboard: NextPage = () => {
   const debouncedSetQuerySearch = useCallback(
     debounce((val) => {
       setQuerySearch(val);
-      setPage(0);
+      resetSubmissionPaginations();
     }, 500),
     []
   );
@@ -354,12 +364,12 @@ const AdministratorDashboard: NextPage = () => {
     setSelectedMilestoneDeadline(
       newValue !== "0" ? (JSON.parse(newValue) as Deadline) : null
     );
-    setPage(0);
+    resetMilestonesPagination();
   };
 
   const handleEvaluatorTypeChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSelectedEvaluatorType(e.target.value);
-    setPage(0);
+    resetEvaluationsPagination();
   };
 
   const handleSelectedEvaluationsDeadlineChange = (
@@ -369,7 +379,7 @@ const AdministratorDashboard: NextPage = () => {
     setSelectedEvaluationsDeadline(
       newValue !== "0" ? (JSON.parse(newValue) as Deadline) : null
     );
-    setPage(0);
+    resetEvaluationsPagination();
   };
 
   const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -379,32 +389,32 @@ const AdministratorDashboard: NextPage = () => {
 
   const handleSubmissionStatusChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSelectedSubmissionStatus(e.target.value as SUBMISSION_STATUS);
-    setPage(0);
+    resetSubmissionPaginations();
   };
 
   const handleCohortYearChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSelectedCohortYear(Number(e.target.value) as Cohort["academicYear"]);
-    setPage(0);
+    resetSubmissionPaginations();
   };
 
   const handleToggleViewDropped = () => {
     setViewHasDropped(!viewHasDropped);
-    setPage(0);
+    resetSubmissionPaginations();
   };
 
   const handleToggleViewAnonymousAnswers = () => {
     setViewAnonymousAnswers((previousValue) => !previousValue);
     setSearchTextInput("");
     setQuerySearch("");
-    setPage(0);
+    resetMilestonesPagination();
   };
 
   useEffect(() => {
     if (currentCohortYear) {
       setSelectedCohortYear(currentCohortYear);
-      setPage(0);
+      resetSubmissionPaginations();
     }
-  }, [currentCohortYear]);
+  }, [currentCohortYear, resetSubmissionPaginations]);
 
   return (
     <Body authorizedRoles={[ROLES.ADMINISTRATORS]}>
