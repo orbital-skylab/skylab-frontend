@@ -14,18 +14,41 @@ import { Deadline } from "@/types/deadlines";
 import { PossibleSubmission } from "@/types/submissions";
 
 type Props = {
-  showAdviserColumn?: boolean;
   deadline: Deadline | null;
   evaluationDeadlines: Deadline[];
   submissions: PossibleSubmission[];
 };
 
 const EvaluationsTable: FC<Props> = ({
-  showAdviserColumn,
   deadline,
   evaluationDeadlines,
   submissions,
 }) => {
+  const getEvaluationRowKey = (data: PossibleSubmission, index: number) => {
+    if (data.relationId !== undefined && data.relationId !== null) {
+      return data.relationId;
+    }
+
+    const evaluatorKey = data.fromProject
+      ? `project-${data.fromProject.id}`
+      : data.fromUser
+      ? `user-${data.fromUser.id}`
+      : "unknown-evaluator";
+
+    const evaluateeKey = data.toProject
+      ? `project-${data.toProject.id}`
+      : data.toUser
+      ? `user-${data.toUser.id}`
+      : "unknown-evaluatee";
+
+    const deadlineKey = deadline?.id ?? data.deadline?.id ?? "all";
+    const submissionKey = Array.isArray(data.submission)
+      ? data.submission.map((submission) => submission.id).join("-")
+      : data.id ?? index;
+
+    return `${evaluatorKey}-${evaluateeKey}-${deadlineKey}-${submissionKey}`;
+  };
+
   const columnHeadings: { heading: string; align: "left" | "right" }[] = [
     { heading: "Relation ID", align: "left" },
     { heading: "Evaluator Type", align: "left" },
@@ -41,21 +64,12 @@ const EvaluationsTable: FC<Props> = ({
     columnHeadings.push({ heading: "Status", align: "left" });
   }
 
-  const filteredColumnHeadings = columnHeadings.filter(({ heading }) => {
-    switch (heading) {
-      case "Adviser":
-        return Boolean(showAdviserColumn);
-      default:
-        return true;
-    }
-  });
-
   return (
     <TableContainer>
       <Table>
         <TableHead>
           <TableRow>
-            {filteredColumnHeadings.map(({ heading, align }) => (
+            {columnHeadings.map(({ heading, align }) => (
               <TableCell key={heading} align={align}>
                 {heading}
               </TableCell>
@@ -63,9 +77,9 @@ const EvaluationsTable: FC<Props> = ({
           </TableRow>
         </TableHead>
         <TableBody>
-          {submissions.map((data) => (
+          {submissions.map((data, index) => (
             <EvaluationsRow
-              key={data.relationId} // Unique key that supports both Relations and Advisers
+              key={getEvaluationRowKey(data, index)}
               data={data}
               deadline={deadline}
               evaluationDeadlines={evaluationDeadlines}
