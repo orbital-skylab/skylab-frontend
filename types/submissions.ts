@@ -34,7 +34,7 @@ export type PossibleSubmission = {
   fromUser?: User;
   toProject?: Project;
   toUser?: User;
-  submission?: Submission[];
+  submission?: Submission | Submission[];
   deadlineId?: number;
   relationId?: number | string;
 };

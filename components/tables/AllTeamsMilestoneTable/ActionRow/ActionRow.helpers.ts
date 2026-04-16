@@ -19,6 +19,11 @@ export const mapData = (
 ) => {
   return submissions.map((submission) => {
     const students = submission.fromProject?.students ?? [];
+    const submissionArray = Array.isArray(submission.submission)
+      ? submission.submission
+      : submission.submission
+      ? [submission.submission]
+      : [];
     const baseData = {
       "Project Id": submission.fromProject?.id ?? "",
       "Project Name": submission.fromProject?.name ?? "",
@@ -50,7 +55,7 @@ export const mapData = (
       };
     } else {
       const milestoneStatuses = csvMilestones.map((milestone) => {
-        const sub = submission.submission?.find(
+        const sub = submissionArray.find(
           (sub) => sub.deadlineId === milestone.id
         );
         if (!sub) {
