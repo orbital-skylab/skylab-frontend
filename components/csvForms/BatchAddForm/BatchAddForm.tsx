@@ -20,7 +20,7 @@ import {
   Alert,
 } from "@mui/material";
 // Helpers
-import Papa from "papaparse";
+import { parse } from "papaparse";
 import { ACCEPTED_FILE_TYPES, checkValidity } from "@/helpers/batchForms";
 // Hooks
 import useAlert from "@/hooks/useAlert";
@@ -83,8 +83,7 @@ const BatchAddForm: FC<Props> = ({
         return;
       }
       setFileDetails(file);
-      // eslint-disable-next-line import/no-named-as-default-member
-      Papa.parse(file, {
+      parse(file, {
         header: true,
         dynamicTyping: true,
         complete: function (results) {
