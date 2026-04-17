@@ -211,6 +211,11 @@ const buildAnonymousMilestoneProps = (): Props =>
     viewAnonymousAnswers: true,
   });
 
+const selectMuiOption = (buttonText: string, optionText: string) => {
+  cy.contains('[role="button"]', buttonText).click();
+  cy.contains('[role="option"]', optionText).click();
+};
+
 describe("<CollatedMilestoneResponsesTable />", () => {
   it("renders formatted milestone and evaluation answers", () => {
     mount(<CollatedMilestoneResponsesTable {...buildProps()} />);
@@ -240,11 +245,39 @@ describe("<CollatedMilestoneResponsesTable />", () => {
       .should("be.visible");
   });
 
+  it("wires the milestone, search, submission-status, and toggle controls", () => {
+    mount(<CollatedMilestoneResponsesTable {...buildProps()} />);
+
+    cy.contains("label", "Search Project Name")
+      .invoke("attr", "for")
+      .then((inputId) => {
+        cy.get(`input[id="${inputId}"]`).type("Atlas");
+      });
+    cy.get("@searchSpy").should("have.been.called");
+
+    selectMuiOption("1: Milestone 1", "All Milestones");
+    cy.get("@milestoneChangeSpy").should("have.been.called");
+
+    selectMuiOption("All Submissions", "Submitted Late");
+    cy.get("@submissionStatusSpy").should("have.been.called");
+
+    cy.contains("label", "View Anonymous Answers").click();
+    cy.get("@anonymousSpy").should("have.been.calledOnce");
+
+    cy.contains("label", "View Dropped Teams").click();
+    cy.get("@droppedSpy").should("have.been.calledOnce");
+  });
+
   it("switches to anonymous milestone mode and hides evaluation columns", () => {
     mount(
       <CollatedMilestoneResponsesTable {...buildAnonymousMilestoneProps()} />
     );
 
+    cy.contains("label", "Search Project Name")
+      .invoke("attr", "for")
+      .then((inputId) => {
+        cy.get(`input[id="${inputId}"]`).should("be.disabled");
+      });
     cy.get("thead").contains("Response").should("be.visible");
     cy.get("thead").contains("Team Name").should("not.exist");
     cy.get("thead").contains("Project Name").should("not.exist");
