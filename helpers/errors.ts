@@ -8,3 +8,7 @@ export enum ERRORS {
 }
 
 export const noImageAvailableSrc = "/images/no-image-available.png";
+
+export const getImageOrDefault = (imageUrl?: string | null): string => {
+  return imageUrl || noImageAvailableSrc;
+};
