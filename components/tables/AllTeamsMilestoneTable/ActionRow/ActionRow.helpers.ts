@@ -2,6 +2,14 @@ import { generateSubmissionStatus } from "@/helpers/submissions";
 import { Deadline } from "@/types/deadlines";
 import { PossibleSubmission, STATUS } from "@/types/submissions";
 
+export const getSubmissionArray = (submission: PossibleSubmission) => {
+  if (Array.isArray(submission.submission)) {
+    return submission.submission;
+  }
+
+  return submission.submission ? [submission.submission] : [];
+};
+
 const getStatusText = (status: STATUS): string => {
   switch (status) {
     case STATUS.SUBMITTED:
@@ -19,11 +27,7 @@ export const mapData = (
 ) => {
   return submissions.map((submission) => {
     const students = submission.fromProject?.students ?? [];
-    const submissionArray = Array.isArray(submission.submission)
-      ? submission.submission
-      : submission.submission
-      ? [submission.submission]
-      : [];
+    const submissionArray = getSubmissionArray(submission);
     const baseData = {
       "Project Id": submission.fromProject?.id ?? "",
       "Project Name": submission.fromProject?.name ?? "",
