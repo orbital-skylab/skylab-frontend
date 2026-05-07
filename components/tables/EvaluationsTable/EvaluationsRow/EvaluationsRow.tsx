@@ -1,86 +1,174 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 // Components
 import HoverLink from "@/components/typography/HoverLink";
-import DeleteRelationModal from "@/components/modals/DeleteRelationModal";
 import { Box, TableCell, TableRow } from "@mui/material";
-import EditRelationModal from "@/components/modals/EditRelationModal";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
+import { generateSubmissionStatus } from "@/helpers/submissions";
+import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
 // Types
-import { Mutate } from "@/hooks/useFetch";
-import { GetRelationsResponse } from "@/types/api";
-import { EvaluationRelation } from "@/types/relations";
-import { Project } from "@/types/projects";
+import { PossibleSubmission, STATUS } from "@/types/submissions";
+import { Deadline } from "@/types/deadlines";
 
 type Props = {
-  relation: EvaluationRelation;
-  mutate: Mutate<GetRelationsResponse>;
-  projects: Project[];
-  showAdviserColumn: boolean;
+  data: PossibleSubmission;
+  evaluationDeadlines: Deadline[];
+  deadline: Deadline | null;
 };
 
-const EvaluationsRow: FC<Props> = ({
-  relation,
-  mutate,
-  projects,
-  showAdviserColumn,
-}) => {
-  const [isEditRelationOpen, setIsEditRelationOpen] = useState(false);
-  const [isDeleteRelationOpen, setIsDeleteRelationOpen] = useState(false);
+const EvaluationsRow: FC<Props> = ({ data, evaluationDeadlines, deadline }) => {
+  const getSubForDeadline = (deadlineId: number): PossibleSubmission | null => {
+    const sub = data.submission;
+
+    if (!sub) return null;
+
+    if (Array.isArray(sub)) {
+      return (
+        (sub as PossibleSubmission[]).find(
+          (s) => s.deadlineId === deadlineId
+        ) || null
+      );
+    }
+
+    const singleSub = sub as PossibleSubmission;
+    return singleSub.deadlineId === deadlineId ? singleSub : null;
+  };
+
+  const singleSub = deadline ? getSubForDeadline(deadline.id) : null;
+
+  const status = generateSubmissionStatus({
+    submissionId: singleSub?.id,
+    isDraft: false,
+    updatedAt: singleSub?.updatedAt,
+    dueBy: deadline?.dueBy || "",
+  });
+
+  const generateStatusCell = (
+    status: STATUS,
+    updatedAt: string | undefined,
+    submissionId: number | undefined
+  ) => {
+    const dateOn = updatedAt
+      ? `on ${isoDateToLocaleDateWithTime(updatedAt)}`
+      : "";
+
+    switch (status) {
+      case STATUS.NOT_YET_STARTED:
+        return (
+          <Box component="span" sx={{ color: "gray" }}>
+            Not yet submitted
+          </Box>
+        );
+      case STATUS.SAVED_DRAFT:
+        return "In Progress";
+      case STATUS.SUBMITTED:
+        return (
+          <HoverLink
+            href={`${PAGES.SUBMISSIONS}/${submissionId}`}
+            wrap={true}
+            variant="body2"
+          >
+            <Box component="span" sx={{ color: "success.main" }}>
+              Submitted {dateOn}
+            </Box>
+          </HoverLink>
+        );
+      case STATUS.SUBMITTED_LATE:
+        return (
+          <Box component="span" sx={{ color: "error.main" }}>
+            Submitted late {dateOn}
+          </Box>
+        );
+      default:
+        return "Error";
+    }
+  };
 
   return (
-    <>
-      <EditRelationModal
-        open={isEditRelationOpen}
-        setOpen={setIsEditRelationOpen}
-        relation={relation}
-        mutate={mutate}
-        projects={projects}
-      />
-      <DeleteRelationModal
-        open={isDeleteRelationOpen}
-        setOpen={setIsDeleteRelationOpen}
-        relation={relation}
-        mutate={mutate}
-      />
-      <TableRow>
-        <TableCell>{relation.id}</TableCell>
-        <TableCell>
-          <HoverLink href={`${PAGES.PROJECTS}/${relation.fromProjectId}`}>
-            {relation.fromProject?.name}
+    <TableRow>
+      {/* Relation ID Column */}
+      <TableCell>{data.relationId}</TableCell>
+
+      {/* Evaluator Type Column */}
+      <TableCell>
+        <Box
+          component="span"
+          sx={{
+            color: data.fromProject ? "primary.main" : "secondary.main",
+            fontWeight: 600,
+          }}
+        >
+          {data.fromProject ? "Team" : "Adviser"}
+        </Box>
+      </TableCell>
+
+      {/* Evaluator Name Column */}
+      <TableCell>
+        {data.fromProject ? (
+          <HoverLink href={`${PAGES.PROJECTS}/${data.fromProject.id}`}>
+            {data.fromProject.teamName || data.fromProject.name}
           </HoverLink>
-        </TableCell>
-        <TableCell>
-          <HoverLink href={`${PAGES.PROJECTS}/${relation.toProjectId}`}>
-            {relation.toProject?.name}
+        ) : (
+          <HoverLink href={`${PAGES.USERS}/${data.fromUser?.id}`}>
+            {data.fromUser?.name}
           </HoverLink>
-        </TableCell>
-        {showAdviserColumn && (
-          <TableCell>
-            {relation.adviser && (
-              <HoverLink href={`${PAGES.USERS}/${relation.adviser.adviserId}`}>
-                {relation.adviser.name}
-              </HoverLink>
-            )}
-          </TableCell>
         )}
+      </TableCell>
+
+      {/* Evaluatee Name Column */}
+      <TableCell>
+        <HoverLink href={`${PAGES.PROJECTS}/${data.toProject?.id}`}>
+          {data.toProject?.teamName || data.toProject?.name}
+        </HoverLink>
+      </TableCell>
+
+      {/* Status Column(s) */}
+      {deadline ? (
         <TableCell>
-          <Box component="span" sx={{ color: "gray" }}>
-            Not yet submitted
-          </Box>
+          {generateStatusCell(status, singleSub?.updatedAt, singleSub?.id)}
         </TableCell>
-        <TableCell>
-          <Box component="span" sx={{ color: "gray" }}>
-            Not yet submitted
-          </Box>
-        </TableCell>
-        <TableCell>
-          <Box component="span" sx={{ color: "gray" }}>
-            Not yet submitted
-          </Box>
-        </TableCell>
-      </TableRow>
-    </>
+      ) : (
+        evaluationDeadlines.map((evalDeadline) => {
+          const isTeamRow = !!data.fromProject;
+          const isAdviserRow = !!data.fromUser;
+
+          const isApplicable =
+            !evalDeadline.evaluatorType ||
+            evalDeadline.evaluatorType === "Both" ||
+            (evalDeadline.evaluatorType === "Team" && isTeamRow) ||
+            (evalDeadline.evaluatorType === "Adviser" && isAdviserRow);
+
+          if (!isApplicable) {
+            return (
+              <TableCell key={evalDeadline.id}>
+                <Box
+                  component="span"
+                  sx={{ color: "text.disabled", fontStyle: "italic" }}
+                >
+                  N/A
+                </Box>
+              </TableCell>
+            );
+          }
+
+          const sub = getSubForDeadline(evalDeadline.id);
+          const cellStatus = sub
+            ? generateSubmissionStatus({
+                submissionId: sub.id,
+                isDraft: false,
+                updatedAt: sub.updatedAt,
+                dueBy: evalDeadline.dueBy,
+              })
+            : STATUS.NOT_YET_STARTED;
+
+          return (
+            <TableCell key={evalDeadline.id}>
+              {generateStatusCell(cellStatus, sub?.updatedAt, sub?.id)}
+            </TableCell>
+          );
+        })
+      )}
+    </TableRow>
   );
 };
 

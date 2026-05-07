@@ -119,7 +119,7 @@ const MilestoneSummary: FC<Props> = ({
               <CardContent>
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                   <Typography variant="h5" gutterBottom>
-                    Milestone {milestone.id}
+                    {milestone.name}
                   </Typography>
                   <Chip
                     label={`${submissionRate.toFixed(0)}% Complete`}

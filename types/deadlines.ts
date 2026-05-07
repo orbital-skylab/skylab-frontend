@@ -10,6 +10,12 @@ export enum DEADLINE_TYPE {
   APPLICATION = "Application", // TODO: Not implemented yet
 }
 
+export enum EVALUATOR_TYPE {
+  ADVISER = "Adviser",
+  TEAM = "Team",
+  BOTH = "Both",
+}
+
 export type Deadline = {
   id: number;
   cohortYear: Cohort["academicYear"];
@@ -20,6 +26,7 @@ export type Deadline = {
   createdAt: string;
   updatedAt: string;
   evaluating?: Deadline;
+  evaluatorType?: EVALUATOR_TYPE;
 };
 
 export type Section = {
