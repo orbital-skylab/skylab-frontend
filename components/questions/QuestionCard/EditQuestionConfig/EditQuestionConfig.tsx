@@ -1,4 +1,4 @@
-import { ChangeEvent, FC } from "react";
+import { ChangeEvent, FC, useCallback } from "react";
 import { Delete, InfoOutlined } from "@mui/icons-material";
 import {
   TextField,
@@ -103,17 +103,18 @@ const EditQuestionConfig: FC<Props> = ({ question, setQuestion }) => {
     });
   };
 
-  const updateUrlValidationRules = (
-    patch: Partial<NonNullable<LeanQuestion["urlValidationRules"]>>
-  ) => {
-    setQuestion({
-      ...question,
-      urlValidationRules: {
-        ...(question.urlValidationRules ?? {}),
-        ...patch,
-      },
-    });
-  };
+  const updateUrlValidationRules = useCallback(
+    (patch: Partial<NonNullable<LeanQuestion["urlValidationRules"]>>) => {
+      setQuestion({
+        ...question,
+        urlValidationRules: {
+          ...(question.urlValidationRules ?? {}),
+          ...patch,
+        },
+      });
+    },
+    [question, setQuestion]
+  );
 
   const handleTypeChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newType = e.target.value as QUESTION_TYPE;

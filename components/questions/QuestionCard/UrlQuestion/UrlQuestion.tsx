@@ -54,21 +54,16 @@ type DriveFormatCheckResult = {
   message: string;
 };
 
+const GOOGLE_DRIVE_FILE_ID_REGEX = new RegExp(
+  [
+    "drive\\.google\\.com/file/d/",
+    "docs\\.google\\.com/[^/]+/d/",
+    "[?&]id=",
+  ].join("|") + "([a-zA-Z0-9_-]+)"
+);
+
 const extractGoogleDriveFileId = (url: string): string | null => {
-  const patterns = [
-    /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/,
-    /[?&]id=([a-zA-Z0-9_-]+)/,
-    /docs\.google\.com\/[^/]+\/d\/([a-zA-Z0-9_-]+)/,
-  ];
-
-  for (const pattern of patterns) {
-    const match = url.match(pattern);
-    if (match?.[1]) {
-      return match[1];
-    }
-  }
-
-  return null;
+  return url.match(GOOGLE_DRIVE_FILE_ID_REGEX)?.[1] ?? null;
 };
 
 const isGoogleDriveUrl = (url: string): boolean => {
