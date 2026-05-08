@@ -251,6 +251,59 @@ export type GetAdministratorAllTeamMilestoneSubmissionsResponse = {
   submissions: PossibleSubmission[];
 };
 
+export type GetAdministratorCollatedMilestoneSubmissionsResponse = {
+  collated: {
+    deadline: Deadline;
+    questions: {
+      questionId: number;
+      sectionId: number;
+      sectionName: string;
+      sectionNumber: number;
+      questionNumber: number;
+      question: string;
+      description: string;
+      isAnonymous: boolean;
+      isRequired: boolean;
+      type: string;
+      urlType?: string | null;
+      responses: {
+        projectId: number;
+        teamName: string;
+        projectName: string;
+        submissionId?: number;
+        submittedAt?: string;
+        answer?: string;
+      }[];
+    }[];
+  }[];
+  evaluationCollated: {
+    deadline: Deadline;
+    questions: {
+      questionId: number;
+      sectionId: number;
+      sectionName: string;
+      sectionNumber: number;
+      questionNumber: number;
+      question: string;
+      description: string;
+      isAnonymous: boolean;
+      isRequired: boolean;
+      type: string;
+      urlType?: string | null;
+      responses: {
+        responseId: string;
+        evaluateeProjectId: number;
+        evaluatorType: "Team" | "Adviser";
+        evaluatorName: string;
+        evaluateeName: string;
+        submissionId?: number;
+        submittedAt?: string;
+        answer?: string;
+      }[];
+    }[];
+  }[];
+};
+
 /**
  * Evaluation Relations Endpoints:
  * https://github.om/orbital-skylab/skylab-backend/wiki/Evaluation-Relationships-Endpoints

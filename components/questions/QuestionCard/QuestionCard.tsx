@@ -22,17 +22,21 @@ import MultipleChoiceQuestion from "./MultipleChoiceQuestion";
 import CheckboxesQuestion from "./CheckboxesQuestion";
 import DropdownQuestion from "./DropdownQuestion";
 import RichTextEditorQuestion from "./RichTextEditorQuestion";
+import { QuestionVerificationState } from "../QuestionSectionsList/QuestionSectionsList";
 
 type Props = {
   isEditMode?: boolean;
-  isShowingSettings?: boolean; // Only valid when isEditMode === true
+  isShowingSettings?: boolean;
   question: LeanQuestion | Question;
-  idx?: number; // Used to generate the question number if not provided. Only valid when editing Deadline questions
-  setQuestion?: (question?: LeanQuestion) => void; // Only valid when isEditMode === true
-  answer?: Option; // Only valid when isEditMode === false
+  idx?: number;
+  setQuestion?: (question?: LeanQuestion) => void;
+  answer?: Option;
   setAnswer?: (newAnswer: string) => void;
-  isReadonly?: boolean; // Only valid when isEditMode === false
+  isReadonly?: boolean;
   hasError?: boolean;
+  errorMessage?: string;
+  verificationResult?: QuestionVerificationState;
+  setVerificationResult?: (result: QuestionVerificationState) => void;
   onClearError?: () => void;
 };
 
@@ -51,6 +55,9 @@ const QuestionCard: FC<Props> = ({
   setAnswer,
   isReadonly,
   hasError = false,
+  errorMessage,
+  verificationResult,
+  setVerificationResult,
   onClearError,
 }) => {
   const getQuestionNumber = () => {
@@ -63,7 +70,6 @@ const QuestionCard: FC<Props> = ({
     }
   };
 
-  /** Render Question Content */
   const renderContent = () => {
     if (isEditMode) {
       if (!setQuestion) {
@@ -76,6 +82,7 @@ const QuestionCard: FC<Props> = ({
         question: question as LeanQuestion,
         setQuestion,
       };
+
       switch ((question as LeanQuestion).type) {
         case QUESTION_TYPE.SHORT_ANSWER:
         case QUESTION_TYPE.PARAGRAPH:
@@ -91,6 +98,7 @@ const QuestionCard: FC<Props> = ({
               )}
             </>
           );
+
         case QUESTION_TYPE.MULTIPLE_CHOICE:
         case QUESTION_TYPE.CHECKBOXES:
         case QUESTION_TYPE.DROPDOWN:
@@ -105,58 +113,78 @@ const QuestionCard: FC<Props> = ({
               )}
             </>
           );
-      }
-    } else {
-      if (answer === undefined) {
-        return alert(
-          `Error with question: ${getQuestionNumber()}: The answer at the questionIdOrIdx is undefined`
-        );
-      }
 
-      if (!setAnswer) {
-        return alert(
-          `Error with question: ${getQuestionNumber()}: A answer setter is not provided`
-        );
+        default:
+          return null;
       }
+    }
 
-      const questionProps = {
-        question,
-        answer,
-        setAnswer,
-        isReadonly: Boolean(isReadonly),
-        hasError,
-        onClearError,
-      };
-      switch (question.type) {
-        case QUESTION_TYPE.SHORT_ANSWER:
-          return <ShortAnswerQuestion {...questionProps} />;
-        case QUESTION_TYPE.PARAGRAPH:
-          return <ParagraphQuestion {...questionProps} />;
-        case QUESTION_TYPE.URL:
-          return <UrlQuestion {...questionProps} />;
-        case QUESTION_TYPE.DATE:
-          return <DateQuestion {...questionProps} />;
-        case QUESTION_TYPE.TIME:
-          return <TimeQuestion {...questionProps} />;
-        case QUESTION_TYPE.MULTIPLE_CHOICE:
-          return <MultipleChoiceQuestion {...questionProps} />;
-        case QUESTION_TYPE.CHECKBOXES:
-          return <CheckboxesQuestion {...questionProps} />;
-        case QUESTION_TYPE.DROPDOWN:
-          return <DropdownQuestion {...questionProps} />;
-        case QUESTION_TYPE.RICH_TEXT_EDITOR:
-          return <RichTextEditorQuestion {...questionProps} />;
-      }
+    if (answer === undefined) {
+      return alert(
+        `Error with question: ${getQuestionNumber()}: The answer at the questionIdOrIdx is undefined`
+      );
+    }
+
+    if (!setAnswer) {
+      return alert(
+        `Error with question: ${getQuestionNumber()}: An answer setter is not provided`
+      );
+    }
+
+    const questionProps = {
+      question,
+      answer,
+      setAnswer,
+      isReadonly: Boolean(isReadonly),
+      hasError,
+      errorMessage,
+      onClearError,
+    };
+
+    switch (question.type) {
+      case QUESTION_TYPE.SHORT_ANSWER:
+        return <ShortAnswerQuestion {...questionProps} />;
+
+      case QUESTION_TYPE.PARAGRAPH:
+        return <ParagraphQuestion {...questionProps} />;
+
+      case QUESTION_TYPE.URL:
+        return (
+          <UrlQuestion
+            {...questionProps}
+            verificationResult={verificationResult}
+            setVerificationResult={setVerificationResult}
+          />
+        );
+
+      case QUESTION_TYPE.DATE:
+        return <DateQuestion {...questionProps} />;
+
+      case QUESTION_TYPE.TIME:
+        return <TimeQuestion {...questionProps} />;
+
+      case QUESTION_TYPE.MULTIPLE_CHOICE:
+        return <MultipleChoiceQuestion {...questionProps} />;
+
+      case QUESTION_TYPE.CHECKBOXES:
+        return <CheckboxesQuestion {...questionProps} />;
+
+      case QUESTION_TYPE.DROPDOWN:
+        return <DropdownQuestion {...questionProps} />;
+
+      case QUESTION_TYPE.RICH_TEXT_EDITOR:
+        return <RichTextEditorQuestion {...questionProps} />;
+
+      default:
+        return null;
     }
   };
 
   return (
     <Card>
       <CardContent sx={{ display: "flex", gap: "1rem" }}>
-        {/* Question Number */}
         <Typography
           sx={{
-            // To offset the TextField size while editing
             paddingTop: isEditMode ? "0.5rem" : "",
             marginRight: "-0.5rem",
           }}
@@ -165,10 +193,10 @@ const QuestionCard: FC<Props> = ({
           {getQuestionNumber()}.
         </Typography>
 
-        {/* Question Content */}
         {renderContent()}
       </CardContent>
     </Card>
   );
 };
+
 export default QuestionCard;

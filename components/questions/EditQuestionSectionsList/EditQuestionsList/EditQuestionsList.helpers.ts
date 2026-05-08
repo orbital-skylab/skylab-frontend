@@ -60,13 +60,28 @@ export const processSections = (sections: LeanSection[]): LeanSection[] => {
    */
   const stripOptions = (questions: LeanQuestion[]): LeanQuestion[] => {
     const strippedQuestions = questions.map((question) => {
+      const normalizedQuestion: LeanQuestion = { ...question };
+
+      if (normalizedQuestion.type === QUESTION_TYPE.URL) {
+        if (normalizedQuestion.urlType == null) {
+          delete normalizedQuestion.urlType;
+        }
+
+        if (normalizedQuestion.urlValidationRules == null) {
+          delete normalizedQuestion.urlValidationRules;
+        }
+      } else {
+        delete normalizedQuestion.urlType;
+        delete normalizedQuestion.urlValidationRules;
+      }
+
       switch (question.type) {
         case QUESTION_TYPE.SHORT_ANSWER:
         case QUESTION_TYPE.PARAGRAPH:
         case QUESTION_TYPE.URL:
         case QUESTION_TYPE.DATE:
         case QUESTION_TYPE.TIME: {
-          const strippedQuestion: LeanQuestion = { ...question };
+          const strippedQuestion: LeanQuestion = { ...normalizedQuestion };
           delete strippedQuestion.options;
           return strippedQuestion;
         }
@@ -74,10 +89,10 @@ export const processSections = (sections: LeanSection[]): LeanSection[] => {
         case QUESTION_TYPE.MULTIPLE_CHOICE:
         case QUESTION_TYPE.CHECKBOXES:
         case QUESTION_TYPE.DROPDOWN:
-          return question;
+          return normalizedQuestion;
 
         default:
-          return question;
+          return normalizedQuestion;
       }
     });
 

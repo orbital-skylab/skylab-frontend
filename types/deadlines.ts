@@ -55,6 +55,24 @@ export enum QUESTION_TYPE {
   RICH_TEXT_EDITOR = "RichTextEditor",
 }
 
+export enum URL_TYPE {
+  VIDEO = "Video",
+  IMAGE = "Image",
+  GENERIC = "Generic",
+}
+
+export enum PAPER_FORMAT {
+  A1 = "A1",
+  A4 = "A4",
+}
+
+export type UrlValidationRules = {
+  maxFileSizeBytes?: number;
+  allowedPaperFormats?: PAPER_FORMAT[];
+  minDurationSeconds?: number;
+  maxDurationSeconds?: number;
+};
+
 export type Question = {
   id: number;
   sectionId: number;
@@ -62,6 +80,8 @@ export type Question = {
   question: string;
   desc?: string;
   type: QUESTION_TYPE;
+  urlType?: URL_TYPE; // Only exists when type is QUESTION_TYPE.URL
+  urlValidationRules?: UrlValidationRules; // Only exists when type is QUESTION_TYPE.URL
   options?: Option[];
   isAnonymous?: boolean;
   isRequired?: boolean;

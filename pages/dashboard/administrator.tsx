@@ -31,6 +31,7 @@ import EvaluationsActionRow from "@/components/tables/EvaluationsTable/Evaluatio
 import MilestoneSummary from "@/components/tables/AllTeamsMilestoneTable/MilestoneSummary";
 import EvaluationsTable from "@/components/tables/EvaluationsTable";
 import EvaluationsSummary from "@/components/tables/EvaluationsTable/EvaluationsSummary";
+import CollatedMilestoneResponsesTable from "@/components/tables/CollatedMilestoneResponsesTable";
 
 // Hooks
 import useFetch, { isFetching } from "@/hooks/useFetch";
@@ -40,6 +41,7 @@ import type { NextPage } from "next";
 import { ROLES } from "@/types/roles";
 import {
   GetAdministratorAllTeamMilestoneSubmissionsResponse,
+  GetAdministratorCollatedMilestoneSubmissionsResponse,
   GetDeadlinesResponse,
   GetProjectsResponse,
   GetRelationsResponse,
@@ -56,6 +58,7 @@ import { Cohort } from "@/types/cohorts";
 enum TAB {
   SUBMISSIONS = "All Teams' Milestone Submissions",
   EVALUATIONS = "All Teams' Evaluations",
+  COLLATED = "Collated Responses",
   MANAGE_RELATIONSHIPS = "Manage Evaluation Relations",
 }
 
@@ -77,9 +80,19 @@ const AdministratorDashboard: NextPage = () => {
   );
   const [page, setPage] = useState(0);
   const [viewHasDropped, setViewHasDropped] = useState(false);
+  const [viewAnonymousAnswers, setViewAnonymousAnswers] = useState(false);
   const [searchTextInput, setSearchTextInput] = useState(""); // The input value
   const [querySearch, setQuerySearch] = useState(""); // The debounced input value for searching
   const [selectedEvaluatorType, setSelectedEvaluatorType] = useState("All");
+  const resetMilestonesPagination = useCallback(() => setPage(0), []);
+  const resetEvaluationsPagination = useCallback(
+    () => setEvaluationsPage(0),
+    []
+  );
+  const resetSubmissionPaginations = useCallback(() => {
+    resetMilestonesPagination();
+    resetEvaluationsPagination();
+  }, [resetEvaluationsPagination, resetMilestonesPagination]);
 
   /** Fetching deadlines where type === Milestone and type === Evaluation */
   const { data: deadlinesResponse, status: fetchDeadlinesStatus } =
@@ -212,6 +225,7 @@ const AdministratorDashboard: NextPage = () => {
     querySearch,
     selectedSubmissionStatus,
     viewHasDropped,
+    selectedEvaluatorType,
   ]);
 
   const {
@@ -225,7 +239,7 @@ const AdministratorDashboard: NextPage = () => {
     endpoint: `/dashboard/administrator/team-submissions`,
     queryParams: memoMilestoneQueryParams,
     requiresAuthorization: true,
-    page: evaluationsPage,
+    page,
     responseToData: (response) => response.submissions,
     enabled: Boolean(selectedCohortYear),
   });
@@ -241,7 +255,7 @@ const AdministratorDashboard: NextPage = () => {
     endpoint: `/dashboard/administrator/evaluations`,
     queryParams: memoEvaluationsQueryParams,
     requiresAuthorization: true,
-    page,
+    page: evaluationsPage,
     responseToData: (response) => response.submissions,
     enabled: Boolean(selectedCohortYear),
   });
@@ -253,6 +267,41 @@ const AdministratorDashboard: NextPage = () => {
       requiresAuthorization: true,
       enabled: Boolean(selectedCohortYear),
     });
+
+  const memoCollatedMilestoneQueryParams = useMemo(
+    () => ({
+      cohortYear: selectedCohortYear,
+      deadlineId: selectedMilestoneDeadline
+        ? selectedMilestoneDeadline.id
+        : undefined,
+      search: viewAnonymousAnswers ? undefined : querySearch,
+      includeAnonymous: viewAnonymousAnswers,
+      submissionStatus:
+        selectedMilestoneDeadline &&
+        selectedSubmissionStatus !== SUBMISSION_STATUS.ALL
+          ? selectedSubmissionStatus
+          : undefined,
+      dropped: viewHasDropped,
+    }),
+    [
+      selectedCohortYear,
+      selectedMilestoneDeadline,
+      querySearch,
+      selectedSubmissionStatus,
+      viewAnonymousAnswers,
+      viewHasDropped,
+    ]
+  );
+
+  const {
+    data: collatedMilestoneResponses,
+    status: fetchCollatedMilestoneResponsesStatus,
+  } = useFetch<GetAdministratorCollatedMilestoneSubmissionsResponse>({
+    endpoint: `/dashboard/administrator/team-submissions/collated`,
+    queryParams: memoCollatedMilestoneQueryParams,
+    requiresAuthorization: true,
+    enabled: Boolean(selectedCohortYear),
+  });
 
   const { data: allTeamsEvaluationsSummary } =
     useFetch<GetAdministratorAllTeamMilestoneSubmissionsResponse>({
@@ -303,7 +352,7 @@ const AdministratorDashboard: NextPage = () => {
   const debouncedSetQuerySearch = useCallback(
     debounce((val) => {
       setQuerySearch(val);
-      setPage(0);
+      resetSubmissionPaginations();
     }, 500),
     []
   );
@@ -315,12 +364,12 @@ const AdministratorDashboard: NextPage = () => {
     setSelectedMilestoneDeadline(
       newValue !== "0" ? (JSON.parse(newValue) as Deadline) : null
     );
-    setPage(0);
+    resetMilestonesPagination();
   };
 
   const handleEvaluatorTypeChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSelectedEvaluatorType(e.target.value);
-    setPage(0);
+    resetEvaluationsPagination();
   };
 
   const handleSelectedEvaluationsDeadlineChange = (
@@ -330,7 +379,7 @@ const AdministratorDashboard: NextPage = () => {
     setSelectedEvaluationsDeadline(
       newValue !== "0" ? (JSON.parse(newValue) as Deadline) : null
     );
-    setPage(0);
+    resetEvaluationsPagination();
   };
 
   const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -340,25 +389,32 @@ const AdministratorDashboard: NextPage = () => {
 
   const handleSubmissionStatusChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSelectedSubmissionStatus(e.target.value as SUBMISSION_STATUS);
-    setPage(0);
+    resetSubmissionPaginations();
   };
 
   const handleCohortYearChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSelectedCohortYear(Number(e.target.value) as Cohort["academicYear"]);
-    setPage(0);
+    resetSubmissionPaginations();
   };
 
   const handleToggleViewDropped = () => {
     setViewHasDropped(!viewHasDropped);
-    setPage(0);
+    resetSubmissionPaginations();
+  };
+
+  const handleToggleViewAnonymousAnswers = () => {
+    setViewAnonymousAnswers((previousValue) => !previousValue);
+    setSearchTextInput("");
+    setQuerySearch("");
+    resetMilestonesPagination();
   };
 
   useEffect(() => {
     if (currentCohortYear) {
       setSelectedCohortYear(currentCohortYear);
-      setPage(0);
+      resetSubmissionPaginations();
     }
-  }, [currentCohortYear]);
+  }, [currentCohortYear, resetSubmissionPaginations]);
 
   return (
     <Body authorizedRoles={[ROLES.ADMINISTRATORS]}>
@@ -390,34 +446,34 @@ const AdministratorDashboard: NextPage = () => {
         <TabPanel value={TAB.SUBMISSIONS}>
           <LoadingWrapper isLoading={isFetching(fetchDeadlinesStatus)}>
             <Stack gap="0.75rem">
-              <TextField
-                id="project-cohort-select"
-                name="cohort"
-                label="Cohort"
-                value={selectedCohortYear}
-                onChange={handleCohortYearChange}
-                select
-                size="small"
-                sx={{ width: "auto", minWidth: 120, alignSelf: "start" }}
-              >
-                {cohorts &&
-                  cohorts.map(({ academicYear }) => (
-                    <MenuItem
-                      id={`${academicYear}-projects-option`}
-                      key={academicYear}
-                      value={academicYear}
-                    >
-                      {academicYear}
-                    </MenuItem>
-                  ))}
-              </TextField>
-
               <NoDataWrapper
                 noDataCondition={!milestoneDeadlines.length}
                 fallback={
                   <NoneFound message="No milestone deadlines found. Create one now!" />
                 }
               >
+                <TextField
+                  id="project-cohort-select"
+                  name="cohort"
+                  label="Cohort"
+                  value={selectedCohortYear}
+                  onChange={handleCohortYearChange}
+                  select
+                  size="small"
+                  sx={{ width: "auto", minWidth: 120, alignSelf: "start" }}
+                >
+                  {cohorts &&
+                    cohorts.map(({ academicYear }) => (
+                      <MenuItem
+                        id={`${academicYear}-projects-option`}
+                        key={academicYear}
+                        value={academicYear}
+                      >
+                        {academicYear}
+                      </MenuItem>
+                    ))}
+                </TextField>
+
                 {selectedMilestoneDeadline !== null ? (
                   <>
                     <ActionRow
@@ -633,6 +689,67 @@ const AdministratorDashboard: NextPage = () => {
                     </Box>
                   </>
                 )}
+              </NoDataWrapper>
+            </Stack>
+          </LoadingWrapper>
+        </TabPanel>
+
+        <TabPanel value={TAB.COLLATED}>
+          <LoadingWrapper isLoading={isFetching(fetchDeadlinesStatus)}>
+            <Stack gap="0.75rem">
+              <NoDataWrapper
+                noDataCondition={!milestoneDeadlines.length}
+                fallback={
+                  <NoneFound message="No milestone deadlines found. Create one now!" />
+                }
+              >
+                <TextField
+                  id="project-cohort-select-collated"
+                  name="cohort"
+                  label="Cohort"
+                  value={selectedCohortYear}
+                  onChange={handleCohortYearChange}
+                  select
+                  size="small"
+                  sx={{ width: "auto", minWidth: 120, alignSelf: "start" }}
+                >
+                  {cohorts &&
+                    cohorts.map(({ academicYear }) => (
+                      <MenuItem
+                        id={`${academicYear}-collated-option`}
+                        key={academicYear}
+                        value={academicYear}
+                      >
+                        {academicYear}
+                      </MenuItem>
+                    ))}
+                </TextField>
+
+                <CollatedMilestoneResponsesTable
+                  key={`${
+                    selectedMilestoneDeadline?.id ?? "all"
+                  }-${selectedSubmissionStatus}-${viewAnonymousAnswers}-${viewHasDropped}-${querySearch}`}
+                  collated={collatedMilestoneResponses?.collated ?? []}
+                  evaluationCollated={
+                    collatedMilestoneResponses?.evaluationCollated ?? []
+                  }
+                  milestoneDeadlines={milestoneDeadlines}
+                  selectedMilestoneDeadline={selectedMilestoneDeadline}
+                  handleSelectedMilestoneDeadlineChange={
+                    handleSelectedMilestoneDeadlineChange
+                  }
+                  selectedSubmissionStatus={selectedSubmissionStatus}
+                  handleSubmissionStatusChange={handleSubmissionStatusChange}
+                  searchTextInput={searchTextInput}
+                  handleSearchInputChange={handleSearchInputChange}
+                  viewAnonymousAnswers={viewAnonymousAnswers}
+                  handleToggleViewAnonymousAnswers={
+                    handleToggleViewAnonymousAnswers
+                  }
+                  isLoading={isFetching(fetchCollatedMilestoneResponsesStatus)}
+                  viewHasDropped={viewHasDropped}
+                  handleToggleViewDropped={handleToggleViewDropped}
+                />
               </NoDataWrapper>
             </Stack>
           </LoadingWrapper>

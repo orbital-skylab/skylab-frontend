@@ -11,6 +11,7 @@ import { PossibleSubmission, STATUS } from "@/types/submissions";
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
 import { Deadline } from "@/types/deadlines";
 import { LEVELS_OF_ACHIEVEMENT } from "@/types/projects";
+import { getSubmissionArray } from "../ActionRow/ActionRow.helpers";
 
 type Props = {
   deadline: Deadline | null;
@@ -146,6 +147,8 @@ const AllTeamsMilestoneRow: FC<Props> = ({
     }
   };
 
+  const submissionArray = getSubmissionArray(submission);
+
   return (
     <>
       <TableRow>
@@ -189,7 +192,7 @@ const AllTeamsMilestoneRow: FC<Props> = ({
           </>
         ) : (
           milestoneDeadlines.map((milestone) => {
-            const sub = submission.submission?.find(
+            const sub = submissionArray.find(
               (sub) => sub.deadlineId === milestone.id
             );
             const status = sub
