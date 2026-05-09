@@ -55,11 +55,11 @@ type DriveFormatCheckResult = {
 };
 
 const GOOGLE_DRIVE_FILE_ID_REGEX = new RegExp(
-  [
+  `(?:${[
     "drive\\.google\\.com/file/d/",
     "docs\\.google\\.com/[^/]+/d/",
     "[?&]id=",
-  ].join("|") + "([a-zA-Z0-9_-]+)"
+  ].join("|")})([a-zA-Z0-9_-]+)`
 );
 
 const extractGoogleDriveFileId = (url: string): string | null => {
