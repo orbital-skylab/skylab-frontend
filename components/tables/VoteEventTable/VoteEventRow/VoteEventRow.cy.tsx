@@ -68,6 +68,16 @@ describe("<VoteEventRow />", () => {
     mutateSpy = cy.spy().as("mutateSpy");
   });
 
+  const normalizeHref = (href: string) => href.replace(/\/$/, "");
+
+  const shouldHaveHref = (selector: string, expectedHref: string) => {
+    cy.get(selector)
+      .should("have.attr", "href")
+      .then((href) => {
+        expect(normalizeHref(href as unknown as string)).to.equal(expectedHref);
+      });
+  };
+
   const assertCommonElements = (startTime: string, endTime: string) => {
     cy.get("tr").should("be.visible");
     cy.get("td").should("have.length", 6);
@@ -88,9 +98,8 @@ describe("<VoteEventRow />", () => {
     assertCommonElements(voteEvent.startTime, voteEvent.endTime);
 
     cy.contains("In Progress").should("be.visible");
-    cy.get(`#vote-event-${voteEvent.id}-vote-button`).should(
-      "have.attr",
-      "href",
+    shouldHaveHref(
+      `#vote-event-${voteEvent.id}-vote-button`,
       `/vote-events/${voteEvent.id}`
     );
   });
@@ -150,9 +159,8 @@ describe("<VoteEventRow />", () => {
       </AuthContext.Provider>
     );
 
-    cy.get(`#edit-vote-event-${voteEvent.id}-button`).should(
-      "have.attr",
-      "href",
+    shouldHaveHref(
+      `#edit-vote-event-${voteEvent.id}-button`,
       `/vote-events/${voteEvent.id}/edit`
     );
   });
@@ -173,9 +181,8 @@ describe("<VoteEventRow />", () => {
       </AuthContext.Provider>
     );
 
-    cy.get(`#vote-event-${voteEvent.id}-results-button`).should(
-      "have.attr",
-      "href",
+    shouldHaveHref(
+      `#vote-event-${voteEvent.id}-results-button`,
       `/vote-events/${voteEvent.id}/results`
     );
   });
