@@ -5,6 +5,7 @@ import { Deadline } from "@/types/deadlines";
 import { generateSubmissionStatus } from "@/helpers/submissions";
 import CalendarIcon from "@mui/icons-material/CalendarToday";
 import LinearProgress from "@mui/material/LinearProgress";
+import { getSubmissionArray } from "../ActionRow/ActionRow.helpers";
 
 interface Props {
   deadline: Deadline | null;
@@ -57,7 +58,9 @@ const MilestoneSummary: FC<Props> = ({
       const milestoneSubmissions = new Map<number, { status: STATUS }[]>();
 
       submissions.forEach((sub) => {
-        if (!sub.submission || sub.submission.length === 0) {
+        const submissionArray = getSubmissionArray(sub);
+
+        if (submissionArray.length === 0) {
           // No submissions at all for this team → mark as missing for all milestones
           milestoneDeadlines.forEach((m) => {
             const list = milestoneSubmissions.get(m.id) || [];
@@ -66,7 +69,7 @@ const MilestoneSummary: FC<Props> = ({
           });
         } else {
           milestoneDeadlines.forEach((m) => {
-            const subForThisMilestone = sub.submission?.find(
+            const subForThisMilestone = submissionArray.find(
               (teamSubmission) => teamSubmission.deadlineId === m.id
             );
             const list = milestoneSubmissions.get(m.id) || [];
@@ -119,7 +122,7 @@ const MilestoneSummary: FC<Props> = ({
               <CardContent>
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                   <Typography variant="h5" gutterBottom>
-                    Milestone {milestone.id}
+                    {milestone.name}
                   </Typography>
                   <Chip
                     label={`${submissionRate.toFixed(0)}% Complete`}

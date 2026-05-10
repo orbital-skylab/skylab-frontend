@@ -7,6 +7,28 @@ import { User } from "@/types/users";
 import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
+const PREVIEW_STORAGE_KEY = "auth-preview-state";
+
+type StoredPreviewState = {
+  previewUser: User;
+  backupUser?: User;
+};
+
+const getStoredPreviewState = (): StoredPreviewState | null => {
+  if (typeof window === "undefined") return null;
+
+  const storedPreviewState = window.sessionStorage.getItem(PREVIEW_STORAGE_KEY);
+
+  if (!storedPreviewState) return null;
+
+  try {
+    return JSON.parse(storedPreviewState) as StoredPreviewState;
+  } catch {
+    window.sessionStorage.removeItem(PREVIEW_STORAGE_KEY);
+    return null;
+  }
+};
+
 export const AuthContext = createContext<IAuth>({
   user: undefined,
   isExternalVoter: false,
@@ -29,6 +51,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [backupUser, setBackupUser] = useState<User | undefined>(undefined);
   const [isExternalVoter, setIsExternalVoter] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasCheckedPreviewState, setHasCheckedPreviewState] = useState(false);
 
   const fetchUserInfo = async () => {
     setIsLoading(true);
@@ -70,6 +93,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   useEffect(() => {
+    const storedPreviewState = getStoredPreviewState();
+
+    if (!storedPreviewState) {
+      setHasCheckedPreviewState(true);
+      return;
+    }
+
+    setUser(storedPreviewState.previewUser);
+    setBackupUser(storedPreviewState.backupUser);
+    setPreviewMode(true);
+    setHasCheckedPreviewState(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hasCheckedPreviewState) return;
+
     if (!user) {
       fetchUserInfo();
 
@@ -77,7 +116,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         fetchExternalVoterAuth();
       }
     }
-  }, [user, isExternalVoter]);
+  }, [user, isExternalVoter, hasCheckedPreviewState]);
 
   const signIn = async (email: string, password: string) => {
     const signInApiService = new ApiServiceBuilder({
@@ -132,6 +171,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       throw new Error(error.message);
     }
 
+    if (typeof window !== "undefined") {
+      window.sessionStorage.removeItem(PREVIEW_STORAGE_KEY);
+    }
+
     setUser(undefined);
     router.push(PAGES.LANDING);
   };
@@ -147,6 +190,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     if (!externalVoterSignOutResponse.ok) {
       const error = await externalVoterSignOutResponse.json();
       throw new Error(error.message);
+    }
+
+    if (typeof window !== "undefined") {
+      window.sessionStorage.removeItem(PREVIEW_STORAGE_KEY);
     }
 
     setIsExternalVoter(false);
@@ -199,17 +246,33 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setBackupUser(user);
     setUser(userToPreviewAs);
     setPreviewMode(true);
+
+    if (typeof window !== "undefined") {
+      const previewState: StoredPreviewState = {
+        previewUser: userToPreviewAs,
+        backupUser: user,
+      };
+
+      window.sessionStorage.setItem(
+        PREVIEW_STORAGE_KEY,
+        JSON.stringify(previewState)
+      );
+    }
   };
 
   const stopPreview = () => {
     setPreviewMode(false);
     setUser(backupUser);
+
+    if (typeof window !== "undefined") {
+      window.sessionStorage.removeItem(PREVIEW_STORAGE_KEY);
+    }
   };
 
   const memoedValue = useMemo(
     () => ({
       user,
-      isLoading,
+      isLoading: isLoading || !hasCheckedPreviewState,
       isPreviewMode,
       isExternalVoter,
       signIn,
@@ -222,7 +285,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       stopPreview,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [user, isPreviewMode, isLoading]
+    [user, isPreviewMode, isLoading, isExternalVoter, hasCheckedPreviewState]
   );
 
   return (

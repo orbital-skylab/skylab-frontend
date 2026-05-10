@@ -34,4 +34,4 @@ export type Project = {
   groupId?: number; // TODO: Convert to relationships
 };
 
-export type LeanProject = Pick<Project, "id" | "name">;
+export type LeanProject = Pick<Project, "id" | "name" | "teamName">;

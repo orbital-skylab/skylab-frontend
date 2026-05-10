@@ -87,6 +87,8 @@ const DeadlineDeliverableRow: FC<Props> = ({
         }
 
         if (deadlineDeliverable.toProject) {
+          const isEvaluation =
+            deadlineDeliverable.deadline.type === DEADLINE_TYPE.EVALUATION;
           return (
             <Stack
               className="deadline-deliverable-row"
@@ -99,11 +101,16 @@ const DeadlineDeliverableRow: FC<Props> = ({
                 variant="outlined"
                 size="small"
                 disabled={
-                  !deadlineDeliverable.toProjectSubmission ||
-                  !deadlineDeliverable.toProjectSubmission.id ||
-                  deadlineDeliverable.toProjectSubmission.isDraft
+                  isEvaluation &&
+                  (!deadlineDeliverable.toProjectSubmission ||
+                    !deadlineDeliverable.toProjectSubmission.id ||
+                    deadlineDeliverable.toProjectSubmission.isDraft)
                 }
-                href={`${PAGES.SUBMISSIONS}/${deadlineDeliverable.toProjectSubmission?.id}`}
+                href={
+                  isEvaluation
+                    ? `${PAGES.SUBMISSIONS}/${deadlineDeliverable.toProjectSubmission?.id}`
+                    : `${PAGES.PROJECTS}/${deadlineDeliverable.toProject.id}`
+                }
               >
                 {deadlineDeliverable.toProject.name}
               </Button>
@@ -151,7 +158,7 @@ const DeadlineDeliverableRow: FC<Props> = ({
         );
       }
       case STATUS.SAVED_DRAFT: {
-        return "Saved Draft";
+        return "In Progress";
       }
       case STATUS.SUBMITTED: {
         return (
@@ -177,6 +184,8 @@ const DeadlineDeliverableRow: FC<Props> = ({
     status: STATUS,
     deadlineDeliverable: DeadlineDeliverable
   ) => {
+    const isEvaluation =
+      deadlineDeliverable.deadline.type === DEADLINE_TYPE.EVALUATION;
     switch (status) {
       case STATUS.NOT_YET_STARTED: {
         return (
@@ -184,8 +193,8 @@ const DeadlineDeliverableRow: FC<Props> = ({
             id="start-deadline-button"
             loading={isCalling(createSubmission.status)}
             onClick={handleClickStart}
-            // Disabled if toProject exists AND (toProjectSubmission doesn't exists OR toProjectSubmission exists and is a draft)
             disabled={
+              isEvaluation &&
               deadlineDeliverable.toProject &&
               (!deadlineDeliverable.toProjectSubmission ||
                 deadlineDeliverable.toProjectSubmission.isDraft)
