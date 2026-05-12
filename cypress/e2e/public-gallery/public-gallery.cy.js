@@ -13,6 +13,10 @@
  */
 
 describe("Public Gallery - SSG Feature", () => {
+  const getSelectedCohortYear = () => {
+    return cy.get('input[name="cohort"]').invoke("val");
+  };
+
   describe("Index Page", () => {
     beforeEach(() => {
       cy.visit("http://localhost:3000/public-gallery/");
@@ -130,11 +134,12 @@ describe("Public Gallery - SSG Feature", () => {
   describe("Paginated Pages (/public-gallery/[cohortYear]/[level]/page/[page])", () => {
     it("renders page 1", () => {
       cy.visit("http://localhost:3000/public-gallery/");
-      cy.location("pathname").should(
-        "match",
-        /\/public-gallery\/\d+\/artemis\/page\/1\//
-      );
-      cy.contains("h1", "Public Project Gallery").should("be.visible");
+      getSelectedCohortYear().then((cohortYear) => {
+        cy.visit(
+          `http://localhost:3000/public-gallery/${cohortYear}/artemis/page/1/`
+        );
+        cy.contains("h1", "Public Project Gallery").should("be.visible");
+      });
     });
 
     it("displays achievement tabs on paginated pages", () => {
@@ -157,12 +162,15 @@ describe("Public Gallery - SSG Feature", () => {
         "aria-selected",
         "true"
       );
+      cy.location("pathname").should(
+        "match",
+        /\/public-gallery\/\d+\/apollo\/page\/1\//
+      );
     });
 
-    it("returns 404 for pages beyond MAX_PAGES_TO_PREBUILD", () => {
+    it("returns 404 for pages beyond generated static pages", () => {
       cy.visit("http://localhost:3000/public-gallery/");
-      cy.location("pathname").then((pathname) => {
-        const cohortYear = pathname.split("/")[2];
+      getSelectedCohortYear().then((cohortYear) => {
         cy.request({
           url: `http://localhost:3000/public-gallery/${cohortYear}/artemis/page/999/`,
           failOnStatusCode: false,

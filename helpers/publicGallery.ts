@@ -1,5 +1,27 @@
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
 
+export type PublicGalleryPageProps = {
+  projects: Project[];
+  currentPage: number;
+  totalPages: number;
+  total: number;
+  level: string;
+  cohortYear: number;
+  cohortYears: number[];
+};
+
+export const slugToLevel = (slug: string): LEVELS_OF_ACHIEVEMENT => {
+  const pascalCase = slug.charAt(0).toUpperCase() + slug.slice(1).toLowerCase();
+  const matchingLevel = Object.values(LEVELS_OF_ACHIEVEMENT).find(
+    (level) => level === pascalCase
+  );
+  return matchingLevel || LEVELS_OF_ACHIEVEMENT.ARTEMIS;
+};
+
+export const levelToSlug = (level: LEVELS_OF_ACHIEVEMENT): string => {
+  return level.toLowerCase();
+};
+
 /**
  * Filters projects by achievement level and cohort year for public gallery display
  */

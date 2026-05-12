@@ -1,37 +1,65 @@
 /* eslint-disable react/prop-types */
 import { GetStaticProps } from "next";
 import type { NextPage } from "next";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { Box, Container, Typography } from "@mui/material";
+import CustomHead from "@/components/layout/CustomHead";
+import PublicGalleryPage from "@/components/publicGallery/PublicGalleryPage";
+import { PublicGalleryPageProps } from "@/helpers/publicGallery";
 import { fetchPublicProjectCohorts } from "@/lib/api/projectsApi";
+import { buildPublicGalleryPageProps } from "@/ssg/publicGallery";
 
 type Props = {
-  latestCohortYear: number | null;
+  galleryProps: PublicGalleryPageProps | null;
 };
 
 /**
  * Public gallery index page
- * This page routes to the newest cohort's Artemis page on the client.
+ * This page statically renders the newest cohort's Artemis page.
  */
-const PublicGalleryIndex: NextPage<Props> = ({ latestCohortYear }) => {
-  const router = useRouter();
+const PublicGalleryIndex: NextPage<Props> = ({ galleryProps }) => {
+  if (galleryProps) {
+    return <PublicGalleryPage {...galleryProps} />;
+  }
 
-  useEffect(() => {
-    if (latestCohortYear) {
-      router.replace(`/public-gallery/${latestCohortYear}/artemis/page/1/`);
-    }
-  }, [latestCohortYear, router]);
-
-  return null;
+  return (
+    <>
+      <CustomHead title="Public Project Gallery" />
+      <Container maxWidth="xl" sx={{ py: 4 }}>
+        <Box>
+          <Typography variant="h3" component="h1" gutterBottom>
+            Public Project Gallery
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            No public projects found
+          </Typography>
+        </Box>
+      </Container>
+    </>
+  );
 };
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const cohortYears = await fetchPublicProjectCohorts();
   const latestCohortYear = cohortYears[0];
 
+  if (!latestCohortYear) {
+    return {
+      props: {
+        galleryProps: null,
+      },
+    };
+  }
+
+  const result = await buildPublicGalleryPageProps({
+    cohortYear: latestCohortYear,
+    level: "artemis",
+    page: 1,
+    cohortYears,
+  });
+
   return {
     props: {
-      latestCohortYear: latestCohortYear || null,
+      galleryProps: "props" in result ? result.props : null,
     },
   };
 };

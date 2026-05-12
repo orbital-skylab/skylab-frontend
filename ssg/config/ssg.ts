@@ -12,16 +12,16 @@
 export const PAGE_SIZE = 28;
 
 /**
- * Maximum number of pages to prebuild during static generation
- * Limits build time while covering most projects (10 pages × 28 = 280 projects)
- */
-export const MAX_PAGES_TO_PREBUILD = 10;
-
-/**
  * Page size used when fetching all project IDs for detail page generation
  * Larger size reduces API calls during build
  */
 export const PROJECT_PATHS_PAGE_SIZE = 100;
+
+/**
+ * Page size used when fetching all projects for a statically generated gallery page
+ * Larger size reduces API calls during build while rendered pages still use PAGE_SIZE
+ */
+export const PUBLIC_GALLERY_BUILD_PAGE_SIZE = 100;
 
 /**
  * Default page number when none is specified

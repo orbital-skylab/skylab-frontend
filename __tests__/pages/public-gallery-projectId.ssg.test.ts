@@ -77,7 +77,6 @@ jest.mock("@/lib/api/projectsApi", () => {
 jest.mock("@/ssg/config/ssg", () => ({
   PROJECT_PATHS_PAGE_SIZE: 100,
   PAGE_SIZE: 28,
-  MAX_PAGES_TO_PREBUILD: 10,
   DEFAULT_PAGE: 1,
   getApiUrl: () => "http://localhost:4000/api",
 }));

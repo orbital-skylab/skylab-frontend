@@ -25,7 +25,7 @@ jest.mock("@/styles/constants", () => ({}));
 
 jest.mock("@/ssg/config/ssg", () => ({
   PAGE_SIZE: 28,
-  MAX_PAGES_TO_PREBUILD: 10,
+  PUBLIC_GALLERY_BUILD_PAGE_SIZE: 100,
   DEFAULT_PAGE: 1,
   getApiUrl: () => "http://localhost:4000/api",
 }));
@@ -47,17 +47,18 @@ import {
   getStaticPaths,
   getStaticProps,
 } from "../../pages/public-gallery/[cohortYear]/[level]/page/[page]";
+import { getStaticProps as getIndexStaticProps } from "../../pages/public-gallery";
 
 beforeEach(() => {
   jest.clearAllMocks();
 });
 
 describe("getStaticPaths", () => {
-  it("generates paths for each public cohort, level, and page", async () => {
+  it("generates all paths for each public cohort, level, and page", async () => {
     mockFetchPublicProjectCohortsFn.mockResolvedValue([2026, 2025]);
     mockFetchPublicProjectsCountFn.mockResolvedValue({
-      total: 56,
-      totalPages: 2,
+      total: 336,
+      totalPages: 12,
     });
 
     const result = await getStaticPaths({});
@@ -73,9 +74,9 @@ describe("getStaticPaths", () => {
       params: { cohortYear: "2026", level: "artemis", page: "1" },
     });
     expect(result.paths).toContainEqual({
-      params: { cohortYear: "2025", level: "vostok", page: "2" },
+      params: { cohortYear: "2025", level: "vostok", page: "12" },
     });
-    expect(result.paths.length).toBe(16);
+    expect(result.paths.length).toBe(96);
     expect(result.fallback).toBe(false);
   });
 
@@ -117,7 +118,7 @@ describe("getStaticProps", () => {
     ],
     total: 50,
     page: 1,
-    pageSize: 28,
+    pageSize: 100,
     totalPages: 2,
   };
 
@@ -134,7 +135,7 @@ describe("getStaticProps", () => {
     ],
     total: 50,
     page: 2,
-    pageSize: 28,
+    pageSize: 100,
     totalPages: 2,
   };
 
@@ -152,14 +153,14 @@ describe("getStaticProps", () => {
     expect(mockFetchPublicProjectsFn).toHaveBeenNthCalledWith(
       1,
       1,
-      28,
+      100,
       "Artemis",
       2026
     );
     expect(mockFetchPublicProjectsFn).toHaveBeenNthCalledWith(
       2,
       2,
-      28,
+      100,
       "Artemis",
       2026
     );
@@ -199,6 +200,15 @@ describe("getStaticProps", () => {
     expect(mockFetchPublicProjectsFn).not.toHaveBeenCalled();
   });
 
+  it("returns notFound for invalid page params", async () => {
+    const result = await getStaticProps({
+      params: { cohortYear: "2026", level: "gemini", page: "-1" },
+    } as any);
+
+    expect(result).toEqual({ notFound: true });
+    expect(mockFetchPublicProjectsFn).not.toHaveBeenCalled();
+  });
+
   it("fails the build when public project fetching fails", async () => {
     mockFetchPublicProjectCohortsFn.mockResolvedValue([2026]);
     mockFetchPublicProjectsFn.mockRejectedValue(new Error("Backend down"));
@@ -208,5 +218,63 @@ describe("getStaticProps", () => {
         params: { cohortYear: "2026", level: "vostok", page: "1" },
       } as any)
     ).rejects.toThrow("Backend down");
+  });
+});
+
+describe("index getStaticProps", () => {
+  const project = {
+    id: 1,
+    name: "Project 1",
+    teamName: "Team 1",
+    achievement: "Artemis",
+    cohortYear: 2026,
+    hasDropped: false,
+  };
+
+  it("renders the latest cohort Artemis gallery as static props", async () => {
+    mockFetchPublicProjectCohortsFn.mockResolvedValue([2026, 2025]);
+    mockFetchPublicProjectsFn.mockResolvedValue({
+      projects: [project],
+      total: 1,
+      page: 1,
+      pageSize: 100,
+      totalPages: 1,
+    });
+
+    const result = await getIndexStaticProps({} as any);
+
+    expect(mockFetchPublicProjectCohortsFn).toHaveBeenCalledTimes(1);
+    expect(mockFetchPublicProjectsFn).toHaveBeenCalledWith(
+      1,
+      100,
+      "Artemis",
+      2026
+    );
+    expect(result).toEqual({
+      props: {
+        galleryProps: {
+          projects: [project],
+          currentPage: 1,
+          totalPages: 1,
+          total: 1,
+          level: "artemis",
+          cohortYear: 2026,
+          cohortYears: [2026, 2025],
+        },
+      },
+    });
+  });
+
+  it("renders a static empty state when no public cohorts exist", async () => {
+    mockFetchPublicProjectCohortsFn.mockResolvedValue([]);
+
+    const result = await getIndexStaticProps({} as any);
+
+    expect(mockFetchPublicProjectsFn).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      props: {
+        galleryProps: null,
+      },
+    });
   });
 });
