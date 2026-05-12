@@ -7,7 +7,7 @@
  * 1. Static page rendering and navigation
  * 2. Pagination functionality
  * 3. Achievement level tab filtering (Artemis, Apollo, Gemini, Vostok)
- * 4. Cohort year dropdown filtering (index page only)
+ * 4. Cohort year dropdown routing
  * 5. Project detail page navigation and content
  * 6. Edge cases: empty states, 404 pages
  */
@@ -121,31 +121,35 @@ describe("Public Gallery - SSG Feature", () => {
         if ($body.find('nav[aria-label="pagination navigation"]').length > 0) {
           // Click page 2 button
           cy.get('button[aria-label="Go to page 2"]').click();
-          cy.url().should("include", "/public-gallery/artemis/page/2");
+          cy.url().should("include", "/artemis/page/2");
         }
       });
     });
   });
 
-  describe("Paginated Pages (/public-gallery/[level]/page/[page])", () => {
+  describe("Paginated Pages (/public-gallery/[cohortYear]/[level]/page/[page])", () => {
     it("renders page 1", () => {
-      cy.visit("http://localhost:3000/public-gallery/artemis/page/1/");
+      cy.visit("http://localhost:3000/public-gallery/");
+      cy.location("pathname").should(
+        "match",
+        /\/public-gallery\/\d+\/artemis\/page\/1\//
+      );
       cy.contains("h1", "Public Project Gallery").should("be.visible");
     });
 
     it("displays achievement tabs on paginated pages", () => {
-      cy.visit("http://localhost:3000/public-gallery/artemis/page/1/");
+      cy.visit("http://localhost:3000/public-gallery/");
       cy.get('[aria-label="achievement-level-tabs"]').should("be.visible");
       cy.contains("button", "Artemis").should("be.visible");
     });
 
-    it("does NOT display cohort selector on paginated pages", () => {
-      cy.visit("http://localhost:3000/public-gallery/artemis/page/1/");
-      cy.get("#public-gallery-cohort-select").should("not.exist");
+    it("displays cohort selector on paginated pages", () => {
+      cy.visit("http://localhost:3000/public-gallery/");
+      cy.get("#cohort-select").should("be.visible");
     });
 
     it("allows switching between achievement tabs", () => {
-      cy.visit("http://localhost:3000/public-gallery/artemis/page/1/");
+      cy.visit("http://localhost:3000/public-gallery/");
 
       cy.contains("button", "Apollo").click();
       cy.contains("button", "Apollo").should(
@@ -156,12 +160,15 @@ describe("Public Gallery - SSG Feature", () => {
     });
 
     it("returns 404 for pages beyond MAX_PAGES_TO_PREBUILD", () => {
-      // Page 999 should not exist (beyond max prebuilt pages)
-      cy.request({
-        url: "http://localhost:3000/public-gallery/artemis/page/999/",
-        failOnStatusCode: false,
-      }).then((response) => {
-        expect(response.status).to.eq(404);
+      cy.visit("http://localhost:3000/public-gallery/");
+      cy.location("pathname").then((pathname) => {
+        const cohortYear = pathname.split("/")[2];
+        cy.request({
+          url: `http://localhost:3000/public-gallery/${cohortYear}/artemis/page/999/`,
+          failOnStatusCode: false,
+        }).then((response) => {
+          expect(response.status).to.eq(404);
+        });
       });
     });
   });
