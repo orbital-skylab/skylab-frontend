@@ -26,7 +26,7 @@ const MilestoneSummary: FC<Props> = ({
       notSubmitted = 0,
       total = 0;
 
-    if (milestones.length === 1) {
+    if (deadline) {
       const selectedDeadline =
         deadline ?? milestoneDeadlines.find((d) => d.id === milestoneId);
 
