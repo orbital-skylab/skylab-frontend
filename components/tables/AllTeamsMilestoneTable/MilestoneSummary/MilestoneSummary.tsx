@@ -26,11 +26,12 @@ const MilestoneSummary: FC<Props> = ({
       notSubmitted = 0,
       total = 0;
 
-    if (milestones.length === 1) {
-      const deadline = milestoneDeadlines.find((d) => d.id === milestoneId);
+    if (deadline) {
+      const selectedDeadline =
+        deadline ?? milestoneDeadlines.find((d) => d.id === milestoneId);
 
       submissions.forEach((sub) => {
-        if (sub.id !== milestoneId) {
+        if (!sub.id || !sub.updatedAt) {
           notSubmitted++;
           return;
         }
@@ -39,7 +40,7 @@ const MilestoneSummary: FC<Props> = ({
           submissionId: sub.id,
           isDraft: false,
           updatedAt: sub.updatedAt,
-          dueBy: deadline ? deadline.dueBy : "",
+          dueBy: selectedDeadline ? selectedDeadline.dueBy : "",
         });
 
         if (status === STATUS.SUBMITTED) {
@@ -114,7 +115,9 @@ const MilestoneSummary: FC<Props> = ({
       {milestones.map((milestone) => {
         const stats = countStatuses(milestone.id);
         const submissionRate =
-          ((stats.submitted + stats.submittedLate) / stats.total) * 100;
+          stats.total === 0
+            ? 0
+            : ((stats.submitted + stats.submittedLate) / stats.total) * 100;
 
         return (
           <Grid item xs={12} sm={6} md={4} key={milestone.id}>
