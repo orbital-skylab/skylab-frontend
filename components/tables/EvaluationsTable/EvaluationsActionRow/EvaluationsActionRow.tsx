@@ -104,7 +104,11 @@ const EvaluationsActionRow: FC<Props> = ({
       const csvEvaluations = selectedEvaluationsDeadline
         ? [selectedEvaluationsDeadline]
         : evaluationsDeadlines;
-      const mappedData = mapEvaluationData(data.submissions, csvEvaluations);
+      const mappedData = mapEvaluationData(
+        data.submissions,
+        csvEvaluations,
+        Boolean(selectedEvaluationsDeadline)
+      );
       setCsvData(mappedData);
     } catch (error) {
       setError(error);
