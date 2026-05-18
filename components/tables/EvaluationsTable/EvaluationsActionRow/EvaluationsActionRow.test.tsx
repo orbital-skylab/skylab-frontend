@@ -54,8 +54,16 @@ jest.mock("react-csv", () => ({
 }));
 
 jest.mock("./EvaluationsActionRow.helpers", () => ({
-  mapEvaluationData: (evaluations: unknown[], csvEvaluations: unknown[]) =>
-    mockMapEvaluationData(evaluations, csvEvaluations),
+  mapEvaluationData: (
+    evaluations: unknown[],
+    csvEvaluations: unknown[],
+    isSelectedEvaluationExport: boolean
+  ) =>
+    mockMapEvaluationData(
+      evaluations,
+      csvEvaluations,
+      isSelectedEvaluationExport
+    ),
 }));
 
 jest.mock("@/helpers/api", () => ({
@@ -192,7 +200,8 @@ describe("EvaluationsActionRow", () => {
     await waitFor(() => {
       expect(mockMapEvaluationData).toHaveBeenCalledWith(
         [{ relationId: 1 }],
-        [evaluationOne]
+        [evaluationOne],
+        true
       );
     });
 
