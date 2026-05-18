@@ -3,7 +3,6 @@ import { describe, expect, it } from "@jest/globals";
 
 import { DEADLINE_TYPE, Deadline } from "@/types/deadlines";
 import { LEVELS_OF_ACHIEVEMENT } from "@/types/projects";
-import { PossibleSubmission } from "@/types/submissions";
 import { mapData } from "./ActionRow.helpers";
 
 const liftOffDeadline: Deadline = {
