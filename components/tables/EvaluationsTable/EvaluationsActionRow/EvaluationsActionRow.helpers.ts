@@ -15,7 +15,8 @@ const getStatusText = (status: STATUS): string => {
 
 export const mapEvaluationData = (
   evaluations: PossibleSubmission[],
-  csvEvaluations: Deadline[]
+  csvEvaluations: Deadline[],
+  isSelectedEvaluationExport = false
 ) => {
   return evaluations.map((res) => {
     const evaluatorProject = res.fromProject;
@@ -56,7 +57,7 @@ export const mapEvaluationData = (
       "Evaluatee Student 2": evaluateeStudents[1]?.name ?? "",
     };
 
-    if (csvEvaluations.length === 1) {
+    if (isSelectedEvaluationExport) {
       const selectedEvaluationDeadline = csvEvaluations[0];
       const sub = Array.isArray(res.submission)
         ? res.submission[0]
