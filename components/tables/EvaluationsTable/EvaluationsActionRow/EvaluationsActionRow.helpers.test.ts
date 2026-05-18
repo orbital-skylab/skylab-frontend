@@ -134,10 +134,11 @@ const adviserEvaluation = {
 };
 
 describe("mapEvaluationData", () => {
-  it("maps adviser exports with evaluator and evaluatee details", () => {
+  it("uses nested submissions for a single-evaluation all export", () => {
     const [result] = mapEvaluationData(
       [adviserEvaluation],
-      [adviserEvaluationDeadline]
+      [adviserEvaluationDeadline],
+      false
     );
 
     expect(result).toMatchObject({
@@ -149,6 +150,27 @@ describe("mapEvaluationData", () => {
       "Evaluatee Team": "Team Atlas",
       "Evaluatee Student 1": "Alice",
       "Evaluatee Student 2": "Bob",
+      "Adviser Feedback Review Status": "SUBMITTED_LATE",
+    });
+  });
+
+  it("uses the selected evaluation submission for a selected evaluation export", () => {
+    const [result] = mapEvaluationData(
+      [
+        {
+          ...adviserEvaluation,
+          submission: adviserEvaluation.submission[0],
+        },
+      ],
+      [adviserEvaluationDeadline],
+      true
+    );
+
+    expect(result).toMatchObject({
+      "Relation ID": "A-102",
+      "Evaluator Type": "Adviser",
+      "Adviser Feedback Review Submission Updated At":
+        "2026-03-08T10:00:00.000Z",
       "Adviser Feedback Review Status": "SUBMITTED_LATE",
     });
   });
