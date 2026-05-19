@@ -23,7 +23,8 @@ const getStatusText = (status: STATUS): string => {
 
 export const mapData = (
   submissions: PossibleSubmission[],
-  csvMilestones: Deadline[]
+  csvMilestones: Deadline[],
+  isSelectedMilestoneExport = false
 ) => {
   return submissions.map((submission) => {
     const students = submission.fromProject?.students ?? [];
@@ -41,7 +42,7 @@ export const mapData = (
       "Student 2 Email": students[1]?.email ?? "",
     };
 
-    if (csvMilestones.length === 1) {
+    if (isSelectedMilestoneExport) {
       const selectedMilestoneDeadline = csvMilestones[0];
       const submissionStatus = generateSubmissionStatus({
         submissionId: submission.id,

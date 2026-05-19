@@ -129,6 +129,7 @@ const AdministratorDashboard: NextPage = () => {
       search: querySearch,
       limit: LIMIT,
       submissionStatus:
+        !selectedMilestoneDeadline ||
         selectedSubmissionStatus === SUBMISSION_STATUS.ALL
           ? undefined
           : selectedSubmissionStatus,
@@ -153,6 +154,7 @@ const AdministratorDashboard: NextPage = () => {
       search: querySearch,
       limit: LIMIT,
       submissionStatus:
+        !selectedEvaluationsDeadline ||
         selectedSubmissionStatus === SUBMISSION_STATUS.ALL
           ? undefined
           : selectedSubmissionStatus,
@@ -178,6 +180,7 @@ const AdministratorDashboard: NextPage = () => {
         : undefined,
       search: querySearch,
       submissionStatus:
+        !selectedMilestoneDeadline ||
         selectedSubmissionStatus === SUBMISSION_STATUS.ALL
           ? undefined
           : selectedSubmissionStatus,
@@ -201,6 +204,7 @@ const AdministratorDashboard: NextPage = () => {
         : undefined,
       search: querySearch,
       submissionStatus:
+        !selectedEvaluationsDeadline ||
         selectedSubmissionStatus === SUBMISSION_STATUS.ALL
           ? undefined
           : selectedSubmissionStatus,

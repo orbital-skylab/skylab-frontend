@@ -92,7 +92,11 @@ const ActionRow: FC<Props> = ({
       const csvMilestones = selectedMilestoneDeadline
         ? [selectedMilestoneDeadline]
         : milestoneDeadlines;
-      const mappedData = mapData(data.submissions, csvMilestones);
+      const mappedData = mapData(
+        data.submissions,
+        csvMilestones,
+        Boolean(selectedMilestoneDeadline)
+      );
       setCsvData(mappedData);
     } catch (error) {
       setError(error);
