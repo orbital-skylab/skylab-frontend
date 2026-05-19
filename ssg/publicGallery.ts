@@ -1,6 +1,10 @@
 import { GetStaticPropsResult } from "next";
 import { PublicGalleryPageProps, slugToLevel } from "@/helpers/publicGallery";
-import { PAGE_SIZE, PUBLIC_GALLERY_BUILD_PAGE_SIZE } from "@/ssg/config/ssg";
+import {
+  isPublicGallerySsgOffline,
+  PAGE_SIZE,
+  PUBLIC_GALLERY_BUILD_PAGE_SIZE,
+} from "@/ssg/config/ssg";
 import {
   fetchPublicProjectCohorts,
   fetchPublicProjects,
@@ -16,6 +20,10 @@ type BuildPublicGalleryPagePropsParams = {
 };
 
 export const getPublicGalleryStaticPaths = async () => {
+  if (isPublicGallerySsgOffline()) {
+    return [];
+  }
+
   const cohortYears = await fetchPublicProjectCohorts();
   const levels = Object.values(LEVELS_OF_ACHIEVEMENT).map((l) =>
     l.toLowerCase()

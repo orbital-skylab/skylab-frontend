@@ -37,3 +37,11 @@ export const getApiUrl = (): string => {
     process.env.NEXT_PUBLIC_BASE_DEV_API_URL || "http://localhost:4000/api"
   );
 };
+
+/**
+ * Allows frontend-only CI builds to complete without a backend SSG data source.
+ * Production-style builds should leave this unset so missing backend data fails fast.
+ */
+export const isPublicGallerySsgOffline = (): boolean => {
+  return process.env.PUBLIC_GALLERY_SSG_OFFLINE === "true";
+};
