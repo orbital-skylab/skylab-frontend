@@ -2,7 +2,7 @@ import { noImageAvailableSrc } from "@/helpers/errors";
 import { getThumbnailUrl } from "@/helpers/images";
 import { A4_ASPECT_RATIO, BASE_TRANSITION } from "@/styles/constants";
 import { Card, CardContent, Stack, Typography } from "@mui/material";
-import React, { FC } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 
 type Props = {
   id: string;
@@ -31,7 +31,34 @@ const ImageCard: FC<Props> = ({
   hoverEffect = true,
   priority = false,
 }) => {
-  const thumbnailUrl = getThumbnailUrl(imageSrc, 500, 20);
+  const thumbnailUrl = useMemo(
+    () => getThumbnailUrl(imageSrc, 500, 20),
+    [imageSrc]
+  );
+  const [currentImageSrc, setCurrentImageSrc] = useState(
+    thumbnailUrl || noImageAvailableSrc
+  );
+  const [fallbackStage, setFallbackStage] = useState<
+    "thumbnail" | "original" | "default"
+  >(thumbnailUrl ? "thumbnail" : "default");
+
+  useEffect(() => {
+    setCurrentImageSrc(thumbnailUrl || noImageAvailableSrc);
+    setFallbackStage(thumbnailUrl ? "thumbnail" : "default");
+  }, [thumbnailUrl]);
+
+  const handleImageError = () => {
+    if (fallbackStage === "thumbnail" && imageSrc) {
+      setCurrentImageSrc(imageSrc);
+      setFallbackStage("original");
+      return;
+    }
+
+    if (fallbackStage !== "default") {
+      setCurrentImageSrc(noImageAvailableSrc);
+      setFallbackStage("default");
+    }
+  };
 
   return (
     <Card
@@ -107,9 +134,10 @@ const ImageCard: FC<Props> = ({
             }}
           >
             <img
-              src={thumbnailUrl ?? noImageAvailableSrc}
+              src={currentImageSrc}
               alt={imgAlt}
               loading={priority ? "eager" : "lazy"}
+              onError={handleImageError}
               {...{ fetchpriority: priority ? "high" : "low" }}
               style={{
                 width: "100%",

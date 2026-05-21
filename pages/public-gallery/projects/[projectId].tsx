@@ -14,7 +14,10 @@ import GoBackButton from "@/components/buttons/GoBackButton";
 import Body from "@/components/layout/Body";
 import { Project } from "@/types/projects";
 import { noImageAvailableSrc } from "@/helpers/errors";
-import { PROJECT_PATHS_PAGE_SIZE } from "@/ssg/config/ssg";
+import {
+  isPublicGallerySsgOffline,
+  PROJECT_PATHS_PAGE_SIZE,
+} from "@/ssg/config/ssg";
 import {
   fetchAllPublicProjectIds,
   fetchProjectById,
@@ -148,6 +151,13 @@ const PublicProjectDetail: NextPage<Props> = ({ project }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  if (isPublicGallerySsgOffline()) {
+    return {
+      paths: [],
+      fallback: false,
+    };
+  }
+
   try {
     // Use helper function to fetch all project IDs (SRP principle)
     const projectIds = await fetchAllPublicProjectIds(PROJECT_PATHS_PAGE_SIZE);

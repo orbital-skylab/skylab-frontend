@@ -6,6 +6,7 @@ import CustomHead from "@/components/layout/CustomHead";
 import PublicGalleryPage from "@/components/publicGallery/PublicGalleryPage";
 import { PublicGalleryPageProps } from "@/helpers/publicGallery";
 import { fetchPublicProjectCohorts } from "@/lib/api/projectsApi";
+import { isPublicGallerySsgOffline } from "@/ssg/config/ssg";
 import { buildPublicGalleryPageProps } from "@/ssg/publicGallery";
 
 type Props = {
@@ -39,6 +40,14 @@ const PublicGalleryIndex: NextPage<Props> = ({ galleryProps }) => {
 };
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
+  if (isPublicGallerySsgOffline()) {
+    return {
+      props: {
+        galleryProps: null,
+      },
+    };
+  }
+
   const cohortYears = await fetchPublicProjectCohorts();
   const latestCohortYear = cohortYears[0];
 

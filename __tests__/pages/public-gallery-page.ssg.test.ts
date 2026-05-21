@@ -28,6 +28,8 @@ jest.mock("@/ssg/config/ssg", () => ({
   PUBLIC_GALLERY_BUILD_PAGE_SIZE: 100,
   DEFAULT_PAGE: 1,
   getApiUrl: () => "http://localhost:4000/api",
+  isPublicGallerySsgOffline: () =>
+    process.env.PUBLIC_GALLERY_SSG_OFFLINE === "true",
 }));
 
 const mockFetchPublicProjectCohortsFn = jest.fn();
@@ -50,7 +52,12 @@ import {
 import { getStaticProps as getIndexStaticProps } from "../../pages/public-gallery";
 
 beforeEach(() => {
+  delete process.env.PUBLIC_GALLERY_SSG_OFFLINE;
   jest.clearAllMocks();
+});
+
+afterEach(() => {
+  delete process.env.PUBLIC_GALLERY_SSG_OFFLINE;
 });
 
 describe("getStaticPaths", () => {
@@ -101,6 +108,19 @@ describe("getStaticPaths", () => {
     );
 
     await expect(getStaticPaths({})).rejects.toThrow("Connection refused");
+  });
+
+  it("returns no paths in offline SSG mode without API calls", async () => {
+    process.env.PUBLIC_GALLERY_SSG_OFFLINE = "true";
+
+    const result = await getStaticPaths({});
+
+    expect(mockFetchPublicProjectCohortsFn).not.toHaveBeenCalled();
+    expect(mockFetchPublicProjectsCountFn).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      paths: [],
+      fallback: false,
+    });
   });
 });
 
@@ -270,6 +290,20 @@ describe("index getStaticProps", () => {
 
     const result = await getIndexStaticProps({} as any);
 
+    expect(mockFetchPublicProjectsFn).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      props: {
+        galleryProps: null,
+      },
+    });
+  });
+
+  it("renders a static empty state in offline SSG mode without API calls", async () => {
+    process.env.PUBLIC_GALLERY_SSG_OFFLINE = "true";
+
+    const result = await getIndexStaticProps({} as any);
+
+    expect(mockFetchPublicProjectCohortsFn).not.toHaveBeenCalled();
     expect(mockFetchPublicProjectsFn).not.toHaveBeenCalled();
     expect(result).toEqual({
       props: {
