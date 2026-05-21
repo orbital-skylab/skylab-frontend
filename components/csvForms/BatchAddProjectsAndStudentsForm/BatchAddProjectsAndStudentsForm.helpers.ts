@@ -107,7 +107,7 @@ export const ADD_PROJECTS_AND_STUDENTS_CSV_DESCRIPTION: WithDescriptionExampleVa
       description: "The first student's NUSNET ID.",
       example: "E0123456",
       validator: (val: string) => {
-        const schema = z.string().min(1);
+        const schema = z.string().trim().min(1);
         const result = schema.safeParse(val);
         if (result.success) {
           return true;
@@ -159,7 +159,7 @@ export const ADD_PROJECTS_AND_STUDENTS_CSV_DESCRIPTION: WithDescriptionExampleVa
       description: "The second student's NUSNET ID.",
       example: "E0234567",
       validator: (val: string) => {
-        const schema = z.string().min(1);
+        const schema = z.string().trim().min(1);
         const result = schema.safeParse(val);
         if (result.success) {
           return true;
