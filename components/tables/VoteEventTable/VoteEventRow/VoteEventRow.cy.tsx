@@ -98,9 +98,10 @@ describe("<VoteEventRow />", () => {
     assertCommonElements(voteEvent.startTime, voteEvent.endTime);
 
     cy.contains("In Progress").should("be.visible");
-    shouldHaveHref(
-      `#vote-event-${voteEvent.id}-vote-button`,
-      `/vote-events/${voteEvent.id}`
+    cy.get(`#vote-event-${voteEvent.id}-vote-button`).should(
+      "have.attr",
+      "href",
+      `/vote-events/${voteEvent.id}/`
     );
   });
 
@@ -159,9 +160,10 @@ describe("<VoteEventRow />", () => {
       </AuthContext.Provider>
     );
 
-    shouldHaveHref(
-      `#edit-vote-event-${voteEvent.id}-button`,
-      `/vote-events/${voteEvent.id}/edit`
+    cy.get(`#edit-vote-event-${voteEvent.id}-button`).should(
+      "have.attr",
+      "href",
+      `/vote-events/${voteEvent.id}/edit/`
     );
   });
 
@@ -181,9 +183,10 @@ describe("<VoteEventRow />", () => {
       </AuthContext.Provider>
     );
 
-    shouldHaveHref(
-      `#vote-event-${voteEvent.id}-results-button`,
-      `/vote-events/${voteEvent.id}/results`
+    cy.get(`#vote-event-${voteEvent.id}-results-button`).should(
+      "have.attr",
+      "href",
+      `/vote-events/${voteEvent.id}/results/`
     );
   });
 
