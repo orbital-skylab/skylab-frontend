@@ -4,6 +4,7 @@ import {
   Checkbox,
   FormControl,
   FormControlLabel,
+  FormHelperText,
   FormGroup,
   Stack,
   Typography,
@@ -17,6 +18,8 @@ type Props = {
   answer: Option;
   setAnswer: (newAnswer: string) => void;
   isReadonly: boolean;
+  hasError?: boolean;
+  onClearError?: () => void;
 };
 
 const CheckboxesQuestion: FC<Props> = ({
@@ -24,6 +27,8 @@ const CheckboxesQuestion: FC<Props> = ({
   answer,
   setAnswer,
   isReadonly,
+  hasError = false,
+  onClearError,
 }) => {
   const isChecked = (option: string) => {
     try {
@@ -49,6 +54,9 @@ const CheckboxesQuestion: FC<Props> = ({
         answerObject[option] = true;
       }
       setAnswer(JSON.stringify(answerObject));
+      if (hasError && onClearError) {
+        onClearError();
+      }
     };
     return toggleCheck;
   };
@@ -60,7 +68,17 @@ const CheckboxesQuestion: FC<Props> = ({
       sx={{ width: "100%" }}
     >
       <QuestionAndDesc question={question} questionType="Checkboxes" />
-      <FormControl>
+      <FormControl
+        error={hasError}
+        sx={{
+          width: "100%",
+          border: hasError ? "1px solid" : "1px solid transparent",
+          borderColor: hasError ? "error.main" : "transparent",
+          borderRadius: "4px",
+          padding: "0.5rem",
+          marginLeft: "-0.5rem",
+        }}
+      >
         <FormGroup>
           {question.options ? (
             <>
@@ -83,6 +101,7 @@ const CheckboxesQuestion: FC<Props> = ({
             <Typography>No options were provided</Typography>
           )}
         </FormGroup>
+        {hasError && <FormHelperText>This field is required</FormHelperText>}
       </FormControl>
     </Stack>
   );

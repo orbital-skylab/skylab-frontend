@@ -2,6 +2,14 @@ import { generateSubmissionStatus } from "@/helpers/submissions";
 import { Deadline } from "@/types/deadlines";
 import { PossibleSubmission, STATUS } from "@/types/submissions";
 
+export const getSubmissionArray = (submission: PossibleSubmission) => {
+  if (Array.isArray(submission.submission)) {
+    return submission.submission;
+  }
+
+  return submission.submission ? [submission.submission] : [];
+};
+
 const getStatusText = (status: STATUS): string => {
   switch (status) {
     case STATUS.SUBMITTED:
@@ -15,18 +23,26 @@ const getStatusText = (status: STATUS): string => {
 
 export const mapData = (
   submissions: PossibleSubmission[],
-  csvMilestones: Deadline[]
+  csvMilestones: Deadline[],
+  isSelectedMilestoneExport = false
 ) => {
   return submissions.map((submission) => {
+    const students = submission.fromProject?.students ?? [];
+    const submissionArray = getSubmissionArray(submission);
     const baseData = {
       "Project Id": submission.fromProject?.id ?? "",
       "Project Name": submission.fromProject?.name ?? "",
+      "Team Name": submission.fromProject?.teamName ?? "",
       "Level of Achievement": submission.fromProject?.achievement ?? "",
       "Adviser Name": submission.fromProject?.adviser?.name ?? "",
       "Mentor Name": submission.fromProject?.mentor?.name ?? "",
+      "Student 1 Name": students[0]?.name ?? "",
+      "Student 1 Email": students[0]?.email ?? "",
+      "Student 2 Name": students[1]?.name ?? "",
+      "Student 2 Email": students[1]?.email ?? "",
     };
 
-    if (csvMilestones.length === 1) {
+    if (isSelectedMilestoneExport) {
       const selectedMilestoneDeadline = csvMilestones[0];
       const submissionStatus = generateSubmissionStatus({
         submissionId: submission.id,
@@ -37,20 +53,20 @@ export const mapData = (
 
       return {
         ...baseData,
-        "Submission ID": submission.id ?? "",
-        "Submission Updated At": submission.updatedAt ?? "",
-        "Submission Status": getStatusText(submissionStatus),
+        [`${selectedMilestoneDeadline.name} Submission Updated At`]:
+          submission.updatedAt ?? "",
+        [`${selectedMilestoneDeadline.name} Status`]:
+          getStatusText(submissionStatus),
       };
     } else {
-      const milestoneStatuses = csvMilestones.map((milestone, index) => {
-        const sub = submission.submission?.find(
+      const milestoneStatuses = csvMilestones.map((milestone) => {
+        const sub = submissionArray.find(
           (sub) => sub.deadlineId === milestone.id
         );
         if (!sub) {
           return {
-            [`Milestone ${index + 1} Submission ID`]: "",
-            [`Milestone ${index + 1} Submission Updated At`]: "",
-            [`Milestone ${index + 1}`]: "NOT_SUBMITTED",
+            [`${milestone.name} Submission Updated At`]: "",
+            [`${milestone.name} Status`]: "NOT_SUBMITTED",
           };
         }
         const submissionStatus = generateSubmissionStatus({
@@ -60,9 +76,8 @@ export const mapData = (
           dueBy: milestone.dueBy,
         });
         return {
-          [`Milestone ${index + 1} Submission ID`]: sub.id ?? "",
-          [`Milestone ${index + 1} Submission Updated At`]: sub.updatedAt ?? "",
-          [`Milestone ${index + 1}`]: getStatusText(submissionStatus),
+          [`${milestone.name} Submission Updated At`]: sub.updatedAt ?? "",
+          [`${milestone.name} Status`]: getStatusText(submissionStatus),
         };
       });
 
