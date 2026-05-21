@@ -26,7 +26,7 @@ import {
   CheckCircle as CheckCircleIcon,
   Warning as WarningIcon,
 } from "@mui/icons-material";
-import EmailComposeView from "./EmailComposeView";
+import EmailComposeView from "@/components/modals/EmailComposeView";
 // Hooks
 import useFetch from "@/hooks/useFetch";
 // Types

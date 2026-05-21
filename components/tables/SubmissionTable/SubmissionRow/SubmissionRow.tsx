@@ -102,7 +102,7 @@ const SubmissionRow: FC<Props> = ({
         );
       }
       case STATUS.SAVED_DRAFT: {
-        return "Saved Draft";
+        return "In Progress";
       }
       case STATUS.SUBMITTED: {
         return (

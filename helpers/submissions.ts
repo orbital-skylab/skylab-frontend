@@ -24,7 +24,7 @@ export const generateSubmissionStatus = ({
   }
   const updatedAtDate = new Date(updatedAt);
   const dueByDate = new Date(dueBy);
-  if (updatedAtDate < dueByDate) {
+  if (updatedAtDate <= dueByDate) {
     return STATUS.SUBMITTED;
   } else {
     return STATUS.SUBMITTED_LATE;

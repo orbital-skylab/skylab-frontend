@@ -22,13 +22,14 @@ import {
   GetDeadlinesResponse,
   EditDeadlineResponse,
 } from "@/types/api";
-import { Deadline, DEADLINE_TYPE } from "@/types/deadlines";
+import { Deadline, DEADLINE_TYPE, EVALUATOR_TYPE } from "@/types/deadlines";
 import { Mutate } from "@/hooks/useFetch";
 interface EditDeadlineFormValuesType {
   name: string;
   dueBy: string;
   type: DEADLINE_TYPE;
   evaluatingMilestoneId?: number | "";
+  evaluatorType?: EVALUATOR_TYPE | "";
 }
 
 type Props = {
@@ -67,6 +68,7 @@ const EditDeadlineModal: FC<Props> = ({
     dueBy: isoDateToDateTimeLocalInput(deadline.dueBy),
     type: deadline.type,
     evaluatingMilestoneId: deadline.evaluating?.id ?? "",
+    evaluatorType: deadline.evaluatorType ?? "",
   };
 
   const handleSubmit = async (
@@ -74,8 +76,18 @@ const EditDeadlineModal: FC<Props> = ({
     actions: FormikHelpers<EditDeadlineFormValuesType>
   ) => {
     const processedValues = {
-      ...values,
+      name: values.name,
       dueBy: dateTimeLocalInputToIsoDate(values.dueBy),
+      type: values.type,
+      evaluatingMilestoneId:
+        values.type === DEADLINE_TYPE.EVALUATION &&
+        values.evaluatingMilestoneId !== ""
+          ? Number(values.evaluatingMilestoneId)
+          : undefined,
+      evaluatorType:
+        values.type === DEADLINE_TYPE.EVALUATION && values.evaluatorType !== ""
+          ? values.evaluatorType
+          : undefined,
     };
 
     try {
@@ -133,25 +145,38 @@ const EditDeadlineModal: FC<Props> = ({
                   })}
                 />
                 {formik.values.type === DEADLINE_TYPE.EVALUATION && (
-                  <Dropdown
-                    label="Evaluating Milestone"
-                    name="evaluatingMilestoneId"
-                    formik={formik}
-                    options={
-                      deadlines
-                        ? deadlines
-                            .filter(
-                              ({ type }) => type === DEADLINE_TYPE.MILESTONE
-                            )
-                            .map((deadline) => {
-                              return {
-                                label: `${deadline.id}: ${deadline.name}`,
-                                value: deadline.id,
-                              };
-                            })
-                        : []
-                    }
-                  />
+                  <>
+                    <Dropdown
+                      label="Evaluating Milestone"
+                      name="evaluatingMilestoneId"
+                      formik={formik}
+                      options={
+                        deadlines
+                          ? deadlines
+                              .filter(
+                                ({ type }) => type === DEADLINE_TYPE.MILESTONE
+                              )
+                              .map((deadline) => {
+                                return {
+                                  label: `${deadline.id}: ${deadline.name}`,
+                                  value: deadline.id,
+                                };
+                              })
+                          : []
+                      }
+                    />
+
+                    <Dropdown
+                      label="Evaluator Type"
+                      name="evaluatorType"
+                      formik={formik}
+                      options={[
+                        { label: "Adviser", value: EVALUATOR_TYPE.ADVISER },
+                        { label: "Team", value: EVALUATOR_TYPE.TEAM },
+                        { label: "Both", value: EVALUATOR_TYPE.BOTH },
+                      ]}
+                    />
+                  </>
                 )}
               </Stack>
               <Stack
@@ -187,6 +212,10 @@ const editDeadlineValidationSchema = Yup.object().shape({
   dueBy: Yup.string().required(ERRORS.REQUIRED),
   type: Yup.string().required(ERRORS.REQUIRED),
   evaluatingMilestoneId: Yup.string().when("type", {
+    is: DEADLINE_TYPE.EVALUATION,
+    then: Yup.string().required(ERRORS.REQUIRED),
+  }),
+  evaluatorType: Yup.string().when("type", {
     is: DEADLINE_TYPE.EVALUATION,
     then: Yup.string().required(ERRORS.REQUIRED),
   }),

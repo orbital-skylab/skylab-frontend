@@ -28,15 +28,15 @@ export type Submission = {
  */
 export type PossibleSubmission = {
   deadline: Deadline;
-  // If the submission does not exist, these two fields do not exist
   id?: number;
   updatedAt?: string;
   fromProject?: Project;
   fromUser?: User;
   toProject?: Project;
   toUser?: User;
-  submission?: Submission[];
+  submission?: Submission | Submission[];
   deadlineId?: number;
+  relationId?: number | string;
 };
 
 export enum STATUS {

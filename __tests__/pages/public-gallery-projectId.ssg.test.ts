@@ -77,9 +77,10 @@ jest.mock("@/lib/api/projectsApi", () => {
 jest.mock("@/ssg/config/ssg", () => ({
   PROJECT_PATHS_PAGE_SIZE: 100,
   PAGE_SIZE: 28,
-  MAX_PAGES_TO_PREBUILD: 10,
   DEFAULT_PAGE: 1,
   getApiUrl: () => "http://localhost:4000/api",
+  isPublicGallerySsgOffline: () =>
+    process.env.PUBLIC_GALLERY_SSG_OFFLINE === "true",
 }));
 
 import {
@@ -89,8 +90,13 @@ import {
 import { ApiError } from "@/lib/api/projectsApi";
 
 beforeEach(() => {
+  delete process.env.PUBLIC_GALLERY_SSG_OFFLINE;
   jest.clearAllMocks();
   jest.spyOn(console, "error").mockImplementation(() => null);
+});
+
+afterEach(() => {
+  delete process.env.PUBLIC_GALLERY_SSG_OFFLINE;
 });
 
 describe("getStaticPaths", () => {
@@ -127,6 +133,18 @@ describe("getStaticPaths", () => {
     const result = await getStaticPaths({});
 
     expect(result.paths).toEqual([]);
+  });
+
+  it("returns empty paths in offline SSG mode without API calls", async () => {
+    process.env.PUBLIC_GALLERY_SSG_OFFLINE = "true";
+
+    const result = await getStaticPaths({});
+
+    expect(mockFetchAllPublicProjectIds).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      paths: [],
+      fallback: false,
+    });
   });
 
   it("logs error with context on ApiError", async () => {

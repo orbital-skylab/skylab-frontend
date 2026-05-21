@@ -1,20 +1,17 @@
 // Components
 import NoneFound from "@/components/emptyStates/NoneFound";
 import Body from "@/components/layout/Body";
-import QuestionSectionsList from "@/components/questions/QuestionSectionsList";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import UnauthorizedWrapper from "@/components/wrappers/UnauthorizedWrapper";
 import { Box, Stack, Typography } from "@mui/material";
 import GoBackButton from "@/components/buttons/GoBackButton";
+import AnonymousQuestionSectionsList from "@/components/questions/AnonymousQuestionSectionsList";
 // Hooks
 import useAuth from "@/contexts/useAuth";
-import useAnswers from "@/hooks/useAnswers";
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import { useRouter } from "next/router";
 // Types
 import { GetSubmissionsAnonymousQuestions } from "@/types/api";
-import { Section } from "@/types/deadlines";
-import { Answer } from "@/types/submissions";
 import type { NextPage } from "next";
 
 const AnonymousSubmissionsStudent: NextPage = () => {
@@ -72,22 +69,3 @@ const AnonymousSubmissionsStudent: NextPage = () => {
 };
 
 export default AnonymousSubmissionsStudent;
-
-const AnonymousQuestionSectionsList = ({
-  questionSections,
-  answersArray,
-}: {
-  questionSections: Section[];
-  answersArray: Answer[];
-}) => {
-  const { answers, actions } = useAnswers();
-  actions.setAnswersFromArray(answersArray);
-
-  return (
-    <QuestionSectionsList
-      questionSections={questionSections}
-      answers={answers}
-      includeAnonymousQuestions
-    />
-  );
-};

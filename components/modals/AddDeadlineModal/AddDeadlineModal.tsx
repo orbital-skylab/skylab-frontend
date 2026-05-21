@@ -22,7 +22,7 @@ import {
   GetDeadlinesResponse,
   CreateDeadlineResponse,
 } from "@/types/api";
-import { Deadline, DEADLINE_TYPE } from "@/types/deadlines";
+import { Deadline, DEADLINE_TYPE, EVALUATOR_TYPE } from "@/types/deadlines";
 import { Mutate } from "@/hooks/useFetch";
 
 interface AddDeadlineFormValuesType {
@@ -30,6 +30,7 @@ interface AddDeadlineFormValuesType {
   dueBy: string;
   type: DEADLINE_TYPE;
   evaluatingMilestoneId?: number | "";
+  evaluatorType?: EVALUATOR_TYPE;
 }
 
 type Props = {
@@ -66,6 +67,7 @@ const AddDeadlineModal: FC<Props> = ({
     dueBy: isoDateToDateTimeLocalInput(getTodayAtTimeIso(23, 59)),
     type: DEADLINE_TYPE.MILESTONE,
     evaluatingMilestoneId: "",
+    evaluatorType: EVALUATOR_TYPE.BOTH,
   };
 
   const handleSubmit = async (
@@ -135,25 +137,40 @@ const AddDeadlineModal: FC<Props> = ({
                   })}
                 />
                 {formik.values.type === DEADLINE_TYPE.EVALUATION && (
-                  <Dropdown
-                    label="Evaluating Milestone"
-                    name="evaluatingMilestoneId"
-                    formik={formik}
-                    options={
-                      deadlines
-                        ? deadlines
-                            .filter(
-                              ({ type }) => type === DEADLINE_TYPE.MILESTONE
-                            )
-                            .map((deadline) => {
-                              return {
-                                label: `${deadline.id}: ${deadline.name}`,
-                                value: deadline.id,
-                              };
-                            })
-                        : []
-                    }
-                  />
+                  <>
+                    <Dropdown
+                      label="Evaluating Milestone"
+                      name="evaluatingMilestoneId"
+                      formik={formik}
+                      options={
+                        deadlines
+                          ? deadlines
+                              .filter(
+                                ({ type }) => type === DEADLINE_TYPE.MILESTONE
+                              )
+                              .map((deadline) => {
+                                return {
+                                  label: `${deadline.id}: ${deadline.name}`,
+                                  value: deadline.id,
+                                };
+                              })
+                          : []
+                      }
+                    />
+
+                    <Dropdown
+                      label="Evaluator Type"
+                      name="evaluatorType"
+                      formik={formik}
+                      options={
+                        [
+                          { label: "Adviser", value: EVALUATOR_TYPE.ADVISER },
+                          { label: "Team", value: EVALUATOR_TYPE.TEAM },
+                          { label: "Both", value: EVALUATOR_TYPE.BOTH },
+                        ] as { label: string; value: EVALUATOR_TYPE }[]
+                      }
+                    />
+                  </>
                 )}
               </Stack>
               <Stack
@@ -188,6 +205,10 @@ const addDeadlineValidationSchema = Yup.object().shape({
   dueBy: Yup.string().required(ERRORS.REQUIRED),
   type: Yup.string().required(ERRORS.REQUIRED),
   evaluatingMilestoneId: Yup.string().when("type", {
+    is: DEADLINE_TYPE.EVALUATION,
+    then: Yup.string().required(ERRORS.REQUIRED),
+  }),
+  evaluatorType: Yup.string().when("type", {
     is: DEADLINE_TYPE.EVALUATION,
     then: Yup.string().required(ERRORS.REQUIRED),
   }),

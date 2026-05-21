@@ -7,6 +7,28 @@ import { User } from "@/types/users";
 import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
+const PREVIEW_STORAGE_KEY = "auth-preview-state";
+
+type StoredPreviewState = {
+  previewUser: User;
+  backupUser?: User;
+};
+
+const getStoredPreviewState = (): StoredPreviewState | null => {
+  if (typeof window === "undefined") return null;
+
+  const storedPreviewState = window.sessionStorage.getItem(PREVIEW_STORAGE_KEY);
+
+  if (!storedPreviewState) return null;
+
+  try {
+    return JSON.parse(storedPreviewState) as StoredPreviewState;
+  } catch {
+    window.sessionStorage.removeItem(PREVIEW_STORAGE_KEY);
+    return null;
+  }
+};
+
 export const AuthContext = createContext<IAuth>({
   user: undefined,
   isExternalVoter: false,
@@ -22,6 +44,8 @@ export const AuthContext = createContext<IAuth>({
   stopPreview: () => {},
 });
 
+let authFetched = false;
+
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const router = useRouter();
   const [isPreviewMode, setPreviewMode] = useState(false);
@@ -29,6 +53,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [backupUser, setBackupUser] = useState<User | undefined>(undefined);
   const [isExternalVoter, setIsExternalVoter] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasCheckedPreviewState, setHasCheckedPreviewState] = useState(false);
 
   const fetchUserInfo = async () => {
     setIsLoading(true);
@@ -64,20 +89,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       return;
     }
 
-    const { isExternalVoter } = await response.json();
-    setIsExternalVoter(isExternalVoter);
+    const { isExternalVoter: fetchedIsExternalVoter } = await response.json();
+    setIsExternalVoter(fetchedIsExternalVoter);
     setIsLoading(false);
   };
 
   useEffect(() => {
-    if (!user) {
+    if (!authFetched) {
       fetchUserInfo();
-
-      if (!isExternalVoter) {
-        fetchExternalVoterAuth();
-      }
+      fetchExternalVoterAuth();
+      authFetched = true;
     }
-  }, [user, isExternalVoter]);
+  }, []);
 
   const signIn = async (email: string, password: string) => {
     const signInApiService = new ApiServiceBuilder({
@@ -89,9 +112,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const signInResponse = await signInApiService();
 
-    /**
-     * Unsuccessful user login
-     */
     if (!signInResponse.ok) {
       const error = await signInResponse.json();
       throw new Error(error.message);
@@ -132,6 +152,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       throw new Error(error.message);
     }
 
+    if (typeof window !== "undefined") {
+      window.sessionStorage.removeItem(PREVIEW_STORAGE_KEY);
+    }
+
     setUser(undefined);
     router.push(PAGES.LANDING);
   };
@@ -147,6 +171,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     if (!externalVoterSignOutResponse.ok) {
       const error = await externalVoterSignOutResponse.json();
       throw new Error(error.message);
+    }
+
+    if (typeof window !== "undefined") {
+      window.sessionStorage.removeItem(PREVIEW_STORAGE_KEY);
     }
 
     setIsExternalVoter(false);
@@ -199,17 +227,33 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setBackupUser(user);
     setUser(userToPreviewAs);
     setPreviewMode(true);
+
+    if (typeof window !== "undefined") {
+      const previewState: StoredPreviewState = {
+        previewUser: userToPreviewAs,
+        backupUser: user,
+      };
+
+      window.sessionStorage.setItem(
+        PREVIEW_STORAGE_KEY,
+        JSON.stringify(previewState)
+      );
+    }
   };
 
   const stopPreview = () => {
     setPreviewMode(false);
     setUser(backupUser);
+
+    if (typeof window !== "undefined") {
+      window.sessionStorage.removeItem(PREVIEW_STORAGE_KEY);
+    }
   };
 
   const memoedValue = useMemo(
     () => ({
       user,
-      isLoading,
+      isLoading: isLoading || !hasCheckedPreviewState,
       isPreviewMode,
       isExternalVoter,
       signIn,
@@ -222,7 +266,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       stopPreview,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [user, isPreviewMode, isLoading]
+    [user, isPreviewMode, isLoading, isExternalVoter]
   );
 
   return (

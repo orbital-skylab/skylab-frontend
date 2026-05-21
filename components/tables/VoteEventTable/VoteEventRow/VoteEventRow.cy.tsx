@@ -68,6 +68,16 @@ describe("<VoteEventRow />", () => {
     mutateSpy = cy.spy().as("mutateSpy");
   });
 
+  const normalizeHref = (href: string) => href.replace(/\/$/, "");
+
+  const shouldHaveHref = (selector: string, expectedHref: string) => {
+    cy.get(selector)
+      .should("have.attr", "href")
+      .then((href) => {
+        expect(normalizeHref(href as unknown as string)).to.equal(expectedHref);
+      });
+  };
+
   const assertCommonElements = (startTime: string, endTime: string) => {
     cy.get("tr").should("be.visible");
     cy.get("td").should("have.length", 6);

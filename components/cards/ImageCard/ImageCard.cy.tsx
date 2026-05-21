@@ -1,15 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import ImageCard from "@/components/cards/ImageCard/ImageCard";
+import { noImageAvailableSrc } from "@/helpers/errors";
 import { getThumbnailUrl } from "@/helpers/images";
 import { mount } from "cypress/react18";
 
 describe("<ImageCard />", () => {
+  const triggerImageError = () => {
+    cy.get("img").then(($img) => {
+      $img[0].dispatchEvent(new Event("error"));
+    });
+  };
+
   let cardProps: {
     id: string;
     idDisplay: string;
     title: string;
-    imageSrc: string;
+    imageSrc?: string;
     actionButton?: React.ReactNode;
     extraContent?: React.ReactNode;
     onCardClick?: () => void;
@@ -22,7 +29,7 @@ describe("<ImageCard />", () => {
       id: "test-card-id",
       idDisplay: "1",
       title: "Test Card Title",
-      imageSrc: "https://via.placeholder.com/150",
+      imageSrc: "https://example.com/poster.jpg",
       actionButton: <button>Action</button>,
       extraContent: <div>Extra Content</div>,
       onCardClick: cy.stub().as("cardClick"),
@@ -41,6 +48,32 @@ describe("<ImageCard />", () => {
     cy.get("img").should("have.attr", "src", expectedThumb);
     cy.get("img").should("have.attr", "alt", cardProps.imgAlt);
     cy.contains("Extra Content").should("be.visible");
+  });
+
+  it("should fall back to the original image when the thumbnail proxy fails", () => {
+    mount(<ImageCard {...cardProps} />);
+
+    triggerImageError();
+
+    cy.get("img").should("have.attr", "src", cardProps.imageSrc);
+  });
+
+  it("should fall back to the default image when the original image also fails", () => {
+    mount(<ImageCard {...cardProps} />);
+
+    triggerImageError();
+    triggerImageError();
+
+    cy.get("img").should("have.attr", "src", noImageAvailableSrc);
+  });
+
+  it("should render the default image when no image source is provided", () => {
+    const propsWithoutImage = { ...cardProps };
+    delete propsWithoutImage.imageSrc;
+
+    mount(<ImageCard {...propsWithoutImage} />);
+
+    cy.get("img").should("have.attr", "src", noImageAvailableSrc);
   });
 
   it("should render action button correctly", () => {

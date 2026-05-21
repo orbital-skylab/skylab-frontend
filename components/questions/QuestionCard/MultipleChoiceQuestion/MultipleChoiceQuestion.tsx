@@ -3,6 +3,7 @@ import { ChangeEvent, FC } from "react";
 import {
   FormControl,
   FormControlLabel,
+  FormHelperText,
   Radio,
   RadioGroup,
   Stack,
@@ -17,6 +18,8 @@ type Props = {
   answer: Option;
   setAnswer: (newAnswer: string) => void;
   isReadonly: boolean;
+  hasError?: boolean;
+  onClearError?: () => void;
 };
 
 const MultipleChoiceQuestion: FC<Props> = ({
@@ -24,15 +27,30 @@ const MultipleChoiceQuestion: FC<Props> = ({
   answer,
   setAnswer,
   isReadonly,
+  hasError = false,
+  onClearError,
 }) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAnswer(e.target.value);
+    if (hasError && onClearError) {
+      onClearError();
+    }
   };
 
   return (
     <Stack className="mcq-question" spacing="0.5rem" sx={{ width: "100%" }}>
       <QuestionAndDesc question={question} questionType="Multiple Choice" />
-      <FormControl>
+      <FormControl
+        error={hasError}
+        sx={{
+          width: "100%",
+          border: hasError ? "1px solid" : "1px solid transparent",
+          borderColor: hasError ? "error.main" : "transparent",
+          borderRadius: "4px",
+          padding: "0.5rem",
+          marginLeft: "-0.5rem",
+        }}
+      >
         <RadioGroup value={answer} onChange={handleChange}>
           {question.options ? (
             <>
@@ -55,6 +73,7 @@ const MultipleChoiceQuestion: FC<Props> = ({
             <Typography>No options were provided</Typography>
           )}
         </RadioGroup>
+        {hasError && <FormHelperText>This field is required</FormHelperText>}
       </FormControl>
     </Stack>
   );

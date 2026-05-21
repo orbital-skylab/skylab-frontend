@@ -4,9 +4,7 @@
  */
 
 import { Project } from "@/types/projects";
-import { PAGE_SIZE } from "@/ssg/config/ssg";
-import { ApiServiceBuilder } from "@/helpers/api";
-import { HTTP_METHOD } from "@/types/api";
+import { getApiUrl, PAGE_SIZE } from "@/ssg/config/ssg";
 
 /**
  * Response shape from GET /projects/public
@@ -25,6 +23,13 @@ export interface PaginatedProjectsResponse {
 export interface ProjectsCountResponse {
   total: number;
   totalPages: number;
+}
+
+/**
+ * Response shape from GET /projects/public/cohorts
+ */
+export interface PublicProjectCohortsResponse {
+  cohortYears: number[];
 }
 
 /**
@@ -48,6 +53,40 @@ export class ApiError extends Error {
   }
 }
 
+function buildUrl(
+  endpoint: string,
+  queryParams: Record<string, string | number | undefined> = {}
+) {
+  const baseUrl = getApiUrl().replace(/\/$/, "");
+  const url = new URL(`${baseUrl}${endpoint}`);
+
+  Object.entries(queryParams).forEach(([key, value]) => {
+    if (value !== undefined && value !== "") {
+      url.searchParams.set(key, String(value));
+    }
+  });
+
+  return url.toString();
+}
+
+async function fetchJson<T>(
+  endpoint: string,
+  queryParams: Record<string, string | number | undefined> = {}
+): Promise<T> {
+  const url = buildUrl(endpoint, queryParams);
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new ApiError(
+      `Failed to fetch ${endpoint}: ${response.statusText}`,
+      response.status,
+      url
+    );
+  }
+
+  return response.json();
+}
+
 /**
  * Fetch paginated public projects
  *
@@ -60,32 +99,15 @@ export class ApiError extends Error {
 export async function fetchPublicProjects(
   page = 1,
   limit = PAGE_SIZE,
-  achievement?: string
+  achievement?: string,
+  cohortYear?: number
 ): Promise<PaginatedProjectsResponse> {
-  const queryParams: Record<string, string | number> = { page, limit };
-  if (achievement) {
-    queryParams.achievement = achievement;
-  }
-
-  const apiService = new ApiServiceBuilder({
-    method: HTTP_METHOD.GET,
-    endpoint: "/projects/public",
-    queryParams,
-  }).build();
-
-  const response = await apiService();
-
-  if (!response.ok) {
-    throw new ApiError(
-      `Failed to fetch public projects: ${response.statusText}`,
-      response.status,
-      `/projects/public?page=${page}&limit=${limit}${
-        achievement ? `&achievement=${achievement}` : ""
-      }`
-    );
-  }
-
-  return response.json();
+  return fetchJson<PaginatedProjectsResponse>("/projects/public", {
+    page,
+    limit,
+    achievement,
+    cohortYear,
+  });
 }
 
 /**
@@ -99,30 +121,24 @@ export async function fetchPublicProjects(
  */
 export async function fetchPublicProjectsCount(
   limit: number = PAGE_SIZE,
-  achievement?: string
+  achievement?: string,
+  cohortYear?: number
 ): Promise<ProjectsCountResponse> {
-  const queryParams: Record<string, string | number> = { limit };
-  if (achievement) {
-    queryParams.achievement = achievement;
-  }
+  return fetchJson<ProjectsCountResponse>("/projects/public/count", {
+    limit,
+    achievement,
+    cohortYear,
+  });
+}
 
-  const apiService = new ApiServiceBuilder({
-    method: HTTP_METHOD.GET,
-    endpoint: "/projects/public/count",
-    queryParams,
-  }).build();
-
-  const response = await apiService();
-
-  if (!response.ok) {
-    throw new ApiError(
-      `Failed to fetch projects count: ${response.statusText}`,
-      response.status,
-      `/projects/public/count?limit=${limit}`
-    );
-  }
-
-  return response.json();
+/**
+ * Fetch cohort years that have public projects
+ */
+export async function fetchPublicProjectCohorts(): Promise<number[]> {
+  const response = await fetchJson<PublicProjectCohortsResponse>(
+    "/projects/public/cohorts"
+  );
+  return response.cohortYears;
 }
 
 /**
@@ -135,22 +151,7 @@ export async function fetchPublicProjectsCount(
 export async function fetchProjectById(
   projectId: string | number
 ): Promise<ProjectResponse> {
-  const apiService = new ApiServiceBuilder({
-    method: HTTP_METHOD.GET,
-    endpoint: `/projects/${projectId}`,
-  }).build();
-
-  const response = await apiService();
-
-  if (!response.ok) {
-    throw new ApiError(
-      `Failed to fetch project ${projectId}: ${response.statusText}`,
-      response.status,
-      `/projects/${projectId}`
-    );
-  }
-
-  return response.json();
+  return fetchJson<ProjectResponse>(`/projects/${projectId}`);
 }
 
 /**
