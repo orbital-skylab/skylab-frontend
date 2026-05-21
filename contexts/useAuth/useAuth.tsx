@@ -44,6 +44,8 @@ export const AuthContext = createContext<IAuth>({
   stopPreview: () => {},
 });
 
+let authFetched = false;
+
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const router = useRouter();
   const [isPreviewMode, setPreviewMode] = useState(false);
@@ -87,36 +89,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       return;
     }
 
-    const { isExternalVoter } = await response.json();
-    setIsExternalVoter(isExternalVoter);
+    const { isExternalVoter: fetchedIsExternalVoter } = await response.json();
+    setIsExternalVoter(fetchedIsExternalVoter);
     setIsLoading(false);
   };
 
   useEffect(() => {
-    const storedPreviewState = getStoredPreviewState();
-
-    if (!storedPreviewState) {
-      setHasCheckedPreviewState(true);
-      return;
-    }
-
-    setUser(storedPreviewState.previewUser);
-    setBackupUser(storedPreviewState.backupUser);
-    setPreviewMode(true);
-    setHasCheckedPreviewState(true);
-  }, []);
-
-  useEffect(() => {
-    if (!hasCheckedPreviewState) return;
-
-    if (!user) {
+    if (!authFetched) {
       fetchUserInfo();
-
-      if (!isExternalVoter) {
-        fetchExternalVoterAuth();
-      }
+      fetchExternalVoterAuth();
+      authFetched = true;
     }
-  }, [user, isExternalVoter, hasCheckedPreviewState]);
+  }, []);
 
   const signIn = async (email: string, password: string) => {
     const signInApiService = new ApiServiceBuilder({
@@ -128,9 +112,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const signInResponse = await signInApiService();
 
-    /**
-     * Unsuccessful user login
-     */
     if (!signInResponse.ok) {
       const error = await signInResponse.json();
       throw new Error(error.message);
@@ -285,7 +266,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       stopPreview,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [user, isPreviewMode, isLoading, isExternalVoter, hasCheckedPreviewState]
+    [user, isPreviewMode, isLoading, isExternalVoter]
   );
 
   return (
