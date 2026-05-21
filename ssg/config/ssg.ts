@@ -33,9 +33,7 @@ export const DEFAULT_PAGE = 1;
  * Uses environment variable with fallback for local development
  */
 export const getApiUrl = (): string => {
-  return (
-    process.env.NEXT_PUBLIC_BASE_DEV_API_URL || "http://localhost:4000/api"
-  );
+  return "http://localhost:4000/api";
 };
 
 /**
