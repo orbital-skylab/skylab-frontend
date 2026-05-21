@@ -34,7 +34,7 @@ export const DEFAULT_PAGE = 1;
  */
 export const getApiUrl = (): string => {
   return (
-    process.env.NEXT_PUBLIC_BASE_DEV_API_URL || "http://localhost:4000/api"
+    "http://localhost:4000/api"
   );
 };
 
