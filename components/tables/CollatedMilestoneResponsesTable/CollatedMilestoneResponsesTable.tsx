@@ -506,8 +506,9 @@ const CollatedMilestoneResponsesTable: FC<Props> = ({
         if (viewAnonymousAnswers) {
           csvRow.response = `Response ${index + 1}`;
         } else {
-          csvRow.teamName = row.teamName;
-          csvRow.projectName = row.projectName;
+          csvRow["Project Id"] = row.projectId;
+          csvRow["Team Name"] = row.teamName;
+          csvRow["Project Name"] = row.projectName;
         }
 
         milestoneColumns.forEach(({ key, deadlineName, question }) => {
@@ -965,6 +966,7 @@ const CollatedMilestoneResponsesTable: FC<Props> = ({
                   <TableCell>Response</TableCell>
                 ) : (
                   <>
+                    <TableCell>Project Id</TableCell>
                     <TableCell>Team Name</TableCell>
                     <TableCell>Project Name</TableCell>
                   </>
@@ -1020,6 +1022,7 @@ const CollatedMilestoneResponsesTable: FC<Props> = ({
                     <TableCell>{`Response ${index + 1}`}</TableCell>
                   ) : (
                     <>
+                      <TableCell>{row.projectId}</TableCell>
                       <TableCell>{row.teamName}</TableCell>
                       <TableCell>{row.projectName}</TableCell>
                     </>
