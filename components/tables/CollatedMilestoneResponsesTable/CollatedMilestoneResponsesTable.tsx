@@ -499,8 +499,8 @@ const CollatedMilestoneResponsesTable: FC<Props> = ({
     setCsvData(
       displayRows.map((row, index) => {
         const csvRow: Record<string, string | number> = {
-          milestoneId: row.milestoneId,
-          milestoneName: row.milestoneName,
+          "Milestone Id": row.milestoneId,
+          "Milestone Name": row.milestoneName,
         };
 
         if (viewAnonymousAnswers) {
