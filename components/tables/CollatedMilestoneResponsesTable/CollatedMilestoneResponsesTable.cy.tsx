@@ -221,7 +221,9 @@ describe("<CollatedMilestoneResponsesTable />", () => {
     mount(<CollatedMilestoneResponsesTable {...buildProps()} />);
 
     cy.get("thead").contains("Team Name").should("be.visible");
+    cy.get("thead").contains("Project Id").should("be.visible");
     cy.get("thead").contains("Project Name").should("be.visible");
+    cy.get("tbody").contains("101").should("be.visible");
     cy.get("tbody").contains("Team Atlas").should("be.visible");
     cy.get("tbody").contains("Atlas").should("be.visible");
     cy.get("tbody")
@@ -279,6 +281,7 @@ describe("<CollatedMilestoneResponsesTable />", () => {
         cy.get(`input[id="${inputId}"]`).should("be.disabled");
       });
     cy.get("thead").contains("Response").should("be.visible");
+    cy.get("thead").contains("Project Id").should("not.exist");
     cy.get("thead").contains("Team Name").should("not.exist");
     cy.get("thead").contains("Project Name").should("not.exist");
     cy.get("tbody").contains("Response 1").should("be.visible");
