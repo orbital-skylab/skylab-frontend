@@ -68,7 +68,7 @@ const RelationByTeamRow: FC<Props> = ({
         {showAdviserColumn && (
           <TableCell>
             {team.adviser && (
-              <HoverLink href={`${PAGES.USERS}/${team.adviser.adviserId}`}>
+              <HoverLink href={`${PAGES.USERS}/${team.adviser.id}`}>
                 {team.adviser.name}
               </HoverLink>
             )}
