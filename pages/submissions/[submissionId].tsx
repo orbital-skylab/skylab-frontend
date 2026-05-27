@@ -154,7 +154,7 @@ const Submission: NextPage = () => {
               )}
               {submissionResponse?.submission.toUser?.id && (
                 <HoverLink
-                  href={`${PAGES.USERS}/${submissionResponse?.submission.fromUser?.id}`}
+                  href={`${PAGES.USERS}/${submissionResponse?.submission.toUser.id}`}
                 >
                   {`To: ${submissionResponse?.submission.toUser.name}`}
                 </HoverLink>
