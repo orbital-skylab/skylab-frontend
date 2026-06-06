@@ -91,7 +91,7 @@ describe("<VoteEventRow />", () => {
     cy.get(`#vote-event-${voteEvent.id}-vote-button`).should(
       "have.attr",
       "href",
-      `/vote-events/${voteEvent.id}/`
+      `/vote-events/${voteEvent.id}`
     );
   });
 
@@ -153,7 +153,7 @@ describe("<VoteEventRow />", () => {
     cy.get(`#edit-vote-event-${voteEvent.id}-button`).should(
       "have.attr",
       "href",
-      `/vote-events/${voteEvent.id}/edit/`
+      `/vote-events/${voteEvent.id}/edit`
     );
   });
 
@@ -176,7 +176,7 @@ describe("<VoteEventRow />", () => {
     cy.get(`#vote-event-${voteEvent.id}-results-button`).should(
       "have.attr",
       "href",
-      `/vote-events/${voteEvent.id}/results/`
+      `/vote-events/${voteEvent.id}/results`
     );
   });
 
