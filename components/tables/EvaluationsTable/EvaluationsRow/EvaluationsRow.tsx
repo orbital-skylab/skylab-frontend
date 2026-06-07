@@ -70,9 +70,15 @@ const EvaluationsRow: FC<Props> = ({ data, evaluationDeadlines, deadline }) => {
         );
       case STATUS.SUBMITTED_LATE:
         return (
-          <Box component="span" sx={{ color: "error.main" }}>
-            Submitted late {dateOn}
-          </Box>
+          <HoverLink
+            href={`${PAGES.SUBMISSIONS}/${submissionId}`}
+            wrap={true}
+            variant="body2"
+          >
+            <Box component="span" sx={{ color: "error.main" }}>
+              Submitted late {dateOn}
+            </Box>
+          </HoverLink>
         );
       default:
         return "Error";
