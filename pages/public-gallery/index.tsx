@@ -8,6 +8,7 @@ import { PublicGalleryPageProps } from "@/helpers/publicGallery";
 import { fetchPublicProjectCohorts } from "@/lib/api/projectsApi";
 import { isPublicGallerySsgOffline } from "@/ssg/config/ssg";
 import { buildPublicGalleryPageProps } from "@/ssg/publicGallery";
+import { NAVBAR_HEIGHT_REM } from "@/styles/constants";
 
 type Props = {
   galleryProps: PublicGalleryPageProps | null;
@@ -25,7 +26,10 @@ const PublicGalleryIndex: NextPage<Props> = ({ galleryProps }) => {
   return (
     <>
       <CustomHead title="Public Project Gallery" />
-      <Container maxWidth="xl" sx={{ py: 4 }}>
+      <Container
+        maxWidth="xl"
+        sx={{ pt: `calc(${NAVBAR_HEIGHT_REM} + 2rem)`, pb: 4 }}
+      >
         <Box>
           <Typography variant="h3" component="h1" gutterBottom>
             Public Project Gallery

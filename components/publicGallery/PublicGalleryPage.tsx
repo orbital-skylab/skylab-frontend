@@ -17,6 +17,7 @@ import Fuse from "fuse.js";
 import ProjectCard from "@/components/cards/ProjectCard/ProjectCard";
 import CustomHead from "@/components/layout/CustomHead";
 import SearchInput from "@/components/search/SearchInput/SearchInput";
+import { NAVBAR_HEIGHT_REM } from "@/styles/constants";
 import { LEVELS_OF_ACHIEVEMENT } from "@/types/projects";
 import { PAGE_SIZE } from "@/ssg/config/ssg";
 import {
@@ -121,7 +122,10 @@ const PublicGalleryPage = ({
       <CustomHead
         title={`${cohortYear} ${selectedLevel} Projects - Public Gallery - Page ${clientPage}`}
       />
-      <Container maxWidth="xl" sx={{ py: 4 }}>
+      <Container
+        maxWidth="xl"
+        sx={{ pt: `calc(${NAVBAR_HEIGHT_REM} + 2rem)`, pb: 4 }}
+      >
         <Box
           sx={{
             mb: 4,
