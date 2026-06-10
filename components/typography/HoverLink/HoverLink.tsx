@@ -23,6 +23,7 @@ const HoverLink: FC<Props> = ({ href, wrap, variant, children }) => {
   return (
     <Link href={href} passHref>
       <Typography
+        component="a"
         variant={variant}
         sx={{
           whiteSpace: wrap ? undefined : "nowrap",
