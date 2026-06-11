@@ -26,6 +26,9 @@ const HoverLink: FC<Props> = ({ href, wrap, variant, children }) => {
         component="a"
         variant={variant}
         sx={{
+          color: "inherit",
+          display: "block",
+          textDecoration: "none",
           whiteSpace: wrap ? undefined : "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
