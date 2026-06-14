@@ -116,6 +116,7 @@ const EditDeadlineModal: FC<Props> = ({
       >
         <Formik
           initialValues={initialValues}
+          enableReinitialize
           onSubmit={handleSubmit}
           validationSchema={editDeadlineValidationSchema}
         >

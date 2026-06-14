@@ -150,8 +150,9 @@ describe("EvaluationsRow", () => {
     expect(evaluatorLink.getAttribute("href")).toBe("/users/301");
 
     expect(screen.getByText("N/A")).toBeTruthy();
-    expect(
-      screen.getByText("Submitted late on 16 Apr 2026, 10:00")
-    ).toBeTruthy();
+    const lateSubmissionLink = screen.getByRole("link", {
+      name: "Submitted late on 16 Apr 2026, 10:00",
+    });
+    expect(lateSubmissionLink.getAttribute("href")).toBe("/submissions/601");
   });
 });

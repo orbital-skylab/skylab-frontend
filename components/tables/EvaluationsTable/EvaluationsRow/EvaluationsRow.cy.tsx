@@ -124,6 +124,8 @@ describe("<EvaluationsRow />", () => {
     cy.contains("td", "Adviser").should("be.visible");
     cy.contains("Prof Oak").should("be.visible");
     cy.contains("td", "N/A").should("be.visible");
-    cy.contains("Submitted late").should("be.visible");
+    cy.contains("a", "Submitted late")
+      .should("be.visible")
+      .and("have.attr", "href", "/submissions/601");
   });
 });
