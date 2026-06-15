@@ -1,5 +1,4 @@
 import type { NextPage } from "next";
-// Components
 import Body from "@/components/layout/Body";
 import TextInput from "@/components/formikFormControllers/TextInput";
 import {
@@ -7,7 +6,9 @@ import {
   Card,
   CardContent,
   Container,
+  FormControlLabel,
   Stack,
+  Switch as MUISwitch,
   Typography,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
@@ -17,21 +18,17 @@ import MultiDropdown from "@/components/formikFormControllers/MultiDropdown";
 import NoneFound from "@/components/emptyStates/NoneFound";
 import NoDataWrapper from "@/components/wrappers/NoDataWrapper";
 import UnauthorizedWrapper from "@/components/wrappers/UnauthorizedWrapper";
-// Hooks
 import useApiCall from "@/hooks/useApiCall";
 import useSnackbarAlert from "@/contexts/useSnackbarAlert";
 import { useRouter } from "next/router";
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import useAuth from "@/contexts/useAuth";
-// Helpers
 import { Formik } from "formik";
 import { areAllEmptyValues, stripEmptyStrings } from "@/helpers/forms";
 import { checkIfProjectsAdviser, userHasRole } from "@/helpers/roles";
-// Types
 import { GetProjectResponse, GetUsersResponse, HTTP_METHOD } from "@/types/api";
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
 import { ROLES } from "@/types/roles";
-import Switch from "@/components/formikFormControllers/Switch";
 
 type EditProjectFormValues = Pick<
   Project,
@@ -72,7 +69,6 @@ const EditProject: NextPage = () => {
     videoUrl: project?.videoUrl ?? "",
   };
 
-  /** Fetching student, adviser and mentor IDs and names for the dropdown select */
   const { data: studentsResponse } = useFetch<GetUsersResponse>({
     endpoint: `/users/lean?cohortYear=${project?.cohortYear}&role=Student`,
     enabled: Boolean(!!project && project.cohortYear),
@@ -236,13 +232,21 @@ const EditProject: NextPage = () => {
                             label="Video URL"
                             formik={formik}
                           />
-                          <Switch
-                            name="hasDropped"
-                            label="Has Dropped"
-                            formik={formik}
-                            isDisabled={
-                              !userHasRole(user, ROLES.ADMINISTRATORS)
+                          <FormControlLabel
+                            control={
+                              <MUISwitch
+                                color="secondary"
+                                size="small"
+                                name="hasDropped"
+                                checked={Boolean(formik.values.hasDropped)}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                disabled={
+                                  !userHasRole(user, ROLES.ADMINISTRATORS)
+                                }
+                              />
                             }
+                            label="Has Dropped"
                           />
 
                           <Stack direction="row" justifyContent="end">
