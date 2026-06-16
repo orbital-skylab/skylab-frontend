@@ -25,6 +25,8 @@ jobs:
       # Run Build
       - name: Build
         run: npm run build
+        env:
+          PUBLIC_GALLERY_SSG_OFFLINE: "true"
 
       # Run ESLint
       - name: ESLint Check
