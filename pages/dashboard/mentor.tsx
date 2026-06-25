@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // Components
 import Body from "@/components/layout/Body";
 import { Box, Stack, Tab, Tabs, tabsClasses, Typography } from "@mui/material";
@@ -12,7 +12,7 @@ import ProjectTable from "@/components/tables/ProjectTable";
 import useFetch, { isFetching } from "@/hooks/useFetch";
 import useAuth from "@/contexts/useAuth";
 // Helpers
-import { transformTabNameIntoId } from "@/helpers/dashboard";
+import { getTabFromQuery, transformTabNameIntoId } from "@/helpers/dashboard";
 // Type
 import type { NextPage } from "next";
 import { ROLES } from "@/types/roles";
@@ -20,13 +20,20 @@ import {
   GetMentorTeamSubmissionsResponse,
   GetProjectsResponse,
 } from "@/types/api";
+import { useRouter } from "next/router";
 
 enum TAB {
   SUBMISSIONS = "Your Teams' Submissions",
   VIEW_TEAMS = "View Your Teams",
 }
 
+const TAB_QUERY_VALUES: Record<TAB, string> = {
+  [TAB.SUBMISSIONS]: "submissions",
+  [TAB.VIEW_TEAMS]: "teams",
+};
+
 const MentorDashboard: NextPage = () => {
+  const router = useRouter();
   const { user } = useAuth();
   const [selectedTab, setSelectedTab] = useState<TAB>(TAB.SUBMISSIONS);
 
@@ -43,9 +50,23 @@ const MentorDashboard: NextPage = () => {
     });
 
   /** Helper functions */
-  const handleTabChange = (event: React.SyntheticEvent, newValue: TAB) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: TAB) => {
     setSelectedTab(newValue);
+    router.replace(
+      {
+        pathname: router.pathname,
+        query: { ...router.query, tab: TAB_QUERY_VALUES[newValue] },
+      },
+      undefined,
+      { shallow: true }
+    );
   };
+
+  useEffect(() => {
+    setSelectedTab(
+      getTabFromQuery(router.query.tab, TAB_QUERY_VALUES, TAB.SUBMISSIONS)
+    );
+  }, [router.query.tab]);
 
   return (
     <Body authorizedRoles={[ROLES.MENTORS]}>

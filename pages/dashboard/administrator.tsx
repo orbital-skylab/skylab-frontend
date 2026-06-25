@@ -52,8 +52,9 @@ import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
 import useInfiniteFetch, {
   createBottomOfPageRef,
 } from "@/hooks/useInfiniteFetch";
-import { transformTabNameIntoId } from "@/helpers/dashboard";
+import { getTabFromQuery, transformTabNameIntoId } from "@/helpers/dashboard";
 import { Cohort } from "@/types/cohorts";
+import { useRouter } from "next/router";
 
 enum TAB {
   SUBMISSIONS = "All Teams' Milestone Submissions",
@@ -62,9 +63,17 @@ enum TAB {
   MANAGE_RELATIONSHIPS = "Manage Evaluation Relations",
 }
 
+const TAB_QUERY_VALUES: Record<TAB, string> = {
+  [TAB.SUBMISSIONS]: "submissions",
+  [TAB.EVALUATIONS]: "evaluations",
+  [TAB.COLLATED]: "collated",
+  [TAB.MANAGE_RELATIONSHIPS]: "relations",
+};
+
 const LIMIT = 50;
 
 const AdministratorDashboard: NextPage = () => {
+  const router = useRouter();
   const { cohorts, currentCohortYear } = useCohort();
   const [selectedCohortYear, setSelectedCohortYear] = useState<
     Cohort["academicYear"] | ""
@@ -348,9 +357,23 @@ const AdministratorDashboard: NextPage = () => {
   );
 
   /** Helper functions */
-  const handleTabChange = (event: React.SyntheticEvent, newValue: TAB) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: TAB) => {
     setSelectedTab(newValue);
+    router.replace(
+      {
+        pathname: router.pathname,
+        query: { ...router.query, tab: TAB_QUERY_VALUES[newValue] },
+      },
+      undefined,
+      { shallow: true }
+    );
   };
+
+  useEffect(() => {
+    setSelectedTab(
+      getTabFromQuery(router.query.tab, TAB_QUERY_VALUES, TAB.SUBMISSIONS)
+    );
+  }, [router.query.tab]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSetQuerySearch = useCallback(
