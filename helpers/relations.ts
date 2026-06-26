@@ -70,6 +70,15 @@ export const generateGroupRelations = (
   return relations;
 };
 
+export const getRelationsWithDroppedTeams = (
+  relations: EvaluationRelation[]
+) => {
+  return relations.filter(
+    (relation) =>
+      relation.fromProject?.hasDropped || relation.toProject?.hasDropped
+  );
+};
+
 export const groupRelationsByTeam = (relations: EvaluationRelation[]) => {
   const groupedRelations: Record<
     number,

@@ -1,11 +1,12 @@
 import { Dispatch, FC, SetStateAction } from "react";
 // Components
 import HoverLink from "@/components/typography/HoverLink";
-import { Checkbox, TableCell, TableRow } from "@mui/material";
+import { Box, Checkbox, TableCell, TableRow } from "@mui/material";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
 // Types
 import { EvaluationRelation } from "@/types/relations";
+import { Project } from "@/types/projects";
 
 type Props = {
   relation: EvaluationRelation;
@@ -34,6 +35,18 @@ const RelationCheckmarkRow: FC<Props> = ({
     });
   };
 
+  const renderProjectLink = (project: Project) => (
+    <Box
+      key={project.id}
+      component="span"
+      sx={{ color: project.hasDropped ? "red" : "inherit" }}
+    >
+      <HoverLink href={`${PAGES.PROJECTS}/${project.id}`}>
+        {project.teamName}
+      </HoverLink>
+    </Box>
+  );
+
   return (
     <>
       <TableRow>
@@ -46,14 +59,10 @@ const RelationCheckmarkRow: FC<Props> = ({
         </TableCell>
         <TableCell>{relation.id}</TableCell>
         <TableCell>
-          <HoverLink href={`${PAGES.PROJECTS}/${relation.fromProjectId}`}>
-            {relation.fromProject?.teamName}
-          </HoverLink>
+          {relation.fromProject && renderProjectLink(relation.fromProject)}
         </TableCell>
         <TableCell>
-          <HoverLink href={`${PAGES.PROJECTS}/${relation.toProjectId}`}>
-            {relation.toProject?.teamName}
-          </HoverLink>
+          {relation.toProject && renderProjectLink(relation.toProject)}
         </TableCell>
         {showAdviserColumn && (
           <TableCell>

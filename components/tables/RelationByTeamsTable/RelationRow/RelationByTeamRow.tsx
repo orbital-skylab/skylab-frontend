@@ -1,7 +1,7 @@
 import { FC } from "react";
 // Components
 import HoverLink from "@/components/typography/HoverLink";
-import { TableCell, TableRow } from "@mui/material";
+import { Box, TableCell, TableRow } from "@mui/material";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
 // Types
@@ -33,6 +33,18 @@ const RelationByTeamRow: FC<Props> = ({
     return null;
   }
 
+  const renderProjectLink = (project: Project) => (
+    <Box
+      key={project.id}
+      component="span"
+      sx={{ color: project.hasDropped ? "red" : "inherit" }}
+    >
+      <HoverLink href={`${PAGES.PROJECTS}/${project.id}`}>
+        {project.teamName}
+      </HoverLink>
+    </Box>
+  );
+
   return (
     <>
       <TableRow
@@ -40,30 +52,12 @@ const RelationByTeamRow: FC<Props> = ({
           background: doesTeamFulfilRequirement ? "" : "#FFE4E4",
         }}
       >
+        <TableCell>{renderProjectLink(team)}</TableCell>
         <TableCell>
-          <HoverLink href={`${PAGES.PROJECTS}/${team.id}`}>
-            {team.teamName}
-          </HoverLink>
+          {evaluatees.map((evaluatee) => renderProjectLink(evaluatee))}
         </TableCell>
         <TableCell>
-          {evaluatees.map((evaluatee) => (
-            <HoverLink
-              key={evaluatee.id}
-              href={`${PAGES.PROJECTS}/${evaluatee.id}`}
-            >
-              {evaluatee.teamName}
-            </HoverLink>
-          ))}
-        </TableCell>
-        <TableCell>
-          {evaluators.map((evaluator) => (
-            <HoverLink
-              key={evaluator.id}
-              href={`${PAGES.PROJECTS}/${evaluator.id}`}
-            >
-              {evaluator.teamName}
-            </HoverLink>
-          ))}
+          {evaluators.map((evaluator) => renderProjectLink(evaluator))}
         </TableCell>
         {showAdviserColumn && (
           <TableCell>

@@ -1,7 +1,11 @@
 /* eslint-disable no-undef */
 import { describe, expect } from "@jest/globals";
-import { generateRoundRobinRelations } from "./relations";
+import {
+  generateRoundRobinRelations,
+  getRelationsWithDroppedTeams,
+} from "./relations";
 import { LEVELS_OF_ACHIEVEMENT, Project } from "@/types/projects";
+import { EvaluationRelation } from "@/types/relations";
 
 const createProject = (id: number, hasDropped = false): Project => ({
   id,
@@ -54,5 +58,41 @@ describe("#generateRoundRobinRelations", () => {
           fromProjectId === 2 || toProjectId === 2
       )
     ).toBe(false);
+  });
+});
+
+describe("#getRelationsWithDroppedTeams", () => {
+  it("can find relations that include dropped teams", () => {
+    const activeProject = createProject(1);
+    const droppedProject = createProject(2, true);
+    const otherActiveProject = createProject(3);
+
+    const relations = [
+      {
+        id: 1,
+        fromProjectId: activeProject.id,
+        toProjectId: droppedProject.id,
+        fromProject: activeProject,
+        toProject: droppedProject,
+      },
+      {
+        id: 2,
+        fromProjectId: activeProject.id,
+        toProjectId: otherActiveProject.id,
+        fromProject: activeProject,
+        toProject: otherActiveProject,
+      },
+      {
+        id: 3,
+        fromProjectId: droppedProject.id,
+        toProjectId: otherActiveProject.id,
+        fromProject: droppedProject,
+        toProject: otherActiveProject,
+      },
+    ] as EvaluationRelation[];
+
+    expect(getRelationsWithDroppedTeams(relations).map(({ id }) => id)).toEqual(
+      [1, 3]
+    );
   });
 });
