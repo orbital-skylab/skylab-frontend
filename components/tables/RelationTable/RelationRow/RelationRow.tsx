@@ -40,7 +40,6 @@ const RelationRow: FC<Props> = ({
   const renderProjectLink = (project: Project) => (
     <Box
       key={project.id}
-      component="span"
       sx={{ color: project.hasDropped ? "red" : "inherit" }}
     >
       <HoverLink href={`${PAGES.PROJECTS}/${project.id}`}>
