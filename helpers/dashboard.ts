@@ -8,9 +8,9 @@ export const getTabFromQuery = <T extends string>(
   fallbackTab: T
 ) => {
   const queryValue = Array.isArray(tab) ? tab[0] : tab;
-  const matchingTab = Object.entries(tabQueryValues).find(
-    ([, tabQueryValue]) => tabQueryValue === queryValue
+  const matchingTab = (Object.keys(tabQueryValues) as T[]).find(
+    (key) => tabQueryValues[key] === queryValue
   );
 
-  return (matchingTab?.[0] as T | undefined) ?? fallbackTab;
+  return matchingTab ?? fallbackTab;
 };
