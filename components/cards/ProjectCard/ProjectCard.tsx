@@ -21,6 +21,7 @@ const ProjectCard: FC<Props> = ({ project, priority = false }) => {
       id={project.id.toString()}
       idDisplay={project.id.toString()}
       title={project.teamName}
+      titleHref={`${PAGES.PROJECTS}/${project.id}`}
       imageSrc={project.posterUrl}
       imgAlt={`${project.name} Poster`}
       priority={priority}

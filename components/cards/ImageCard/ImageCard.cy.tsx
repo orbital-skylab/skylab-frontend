@@ -9,6 +9,7 @@ describe("<ImageCard />", () => {
     id: string;
     idDisplay: string;
     title: string;
+    titleHref: string;
     imageSrc: string;
     actionButton?: React.ReactNode;
     extraContent?: React.ReactNode;
@@ -22,6 +23,7 @@ describe("<ImageCard />", () => {
       id: "test-card-id",
       idDisplay: "1",
       title: "Test Card Title",
+      titleHref: "/projects/1",
       imageSrc: "/images/no-image-available.png",
       actionButton: <button>Action</button>,
       extraContent: <div>Extra Content</div>,

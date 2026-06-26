@@ -1,4 +1,5 @@
 import ImageCard from "@/components/cards/ImageCard/ImageCard";
+import { PAGES } from "@/helpers/navigation";
 import { Project } from "@/types/projects";
 import { Button } from "@mui/material";
 import { Dispatch, FC, SetStateAction } from "react";
@@ -28,6 +29,7 @@ const VotingCard: FC<Props> = ({
       id={`${candidate.id}-candidate-card`}
       idDisplay={candidate.id.toString()}
       title={candidate.name}
+      titleHref={`${PAGES.PROJECTS}/${candidate.id}`}
       imageSrc={candidate.posterUrl}
       imgAlt={`${candidate.name} Poster`}
       hoverEffect={false}
