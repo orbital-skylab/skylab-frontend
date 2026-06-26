@@ -74,8 +74,10 @@ const ImageCard: FC<Props> = ({
         <Stack sx={{ height: "100%", gap: "0.5rem" }}>
           <Link href={titleHref} passHref>
             <Typography
+              component="a"
               align="center"
               fontWeight={600}
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
               sx={{
                 paddingX: "1.5rem",
                 whiteSpace: "normal", // Allow text to wrap
@@ -83,6 +85,8 @@ const ImageCard: FC<Props> = ({
                 textOverflow: "ellipsis",
                 cursor: "pointer",
                 transition: BASE_TRANSITION,
+                color: "inherit",
+                textDecoration: "none",
                 "&:hover": {
                   textDecoration: "underline",
                   color: "secondary.main",

@@ -51,6 +51,16 @@ describe("<ImageCard />", () => {
     cy.contains("Action").should("be.visible");
   });
 
+  it("should render title as a link without triggering card click", () => {
+    mount(<ImageCard {...cardProps} />);
+
+    cy.contains("a", cardProps.title)
+      .should("be.visible")
+      .and("have.attr", "href", cardProps.titleHref)
+      .click({ ctrlKey: true });
+    cy.get("@cardClick").should("not.have.been.called");
+  });
+
   it("should call onCardClick when card is clicked", () => {
     mount(<ImageCard {...cardProps} />);
 
