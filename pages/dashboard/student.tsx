@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // Components
 import Body from "@/components/layout/Body";
 import {
@@ -22,7 +22,7 @@ import useFetch, { isFetching } from "@/hooks/useFetch";
 import useAuth from "@/contexts/useAuth";
 // Helpers
 import { isFuture } from "@/helpers/dates";
-import { transformTabNameIntoId } from "@/helpers/dashboard";
+import { getTabFromQuery, transformTabNameIntoId } from "@/helpers/dashboard";
 // Type
 import type { NextPage } from "next";
 import { ROLES } from "@/types/roles";
@@ -32,13 +32,20 @@ import {
 } from "@/types/api";
 import { VIEWER_ROLE } from "@/types/deadlines";
 import { PAGES } from "@/helpers/navigation";
+import { useRouter } from "next/router";
 
 enum TAB {
   DEADLINES = "Upcoming Deadlines",
   EVALUATIONS = "Received Evaluations",
 }
 
+const TAB_QUERY_VALUES: Record<TAB, string> = {
+  [TAB.DEADLINES]: "deadlines",
+  [TAB.EVALUATIONS]: "evaluations",
+};
+
 const StudentDashboard: NextPage = () => {
+  const router = useRouter();
   const { user } = useAuth();
   const [selectedTab, setSelectedTab] = useState<TAB>(TAB.DEADLINES);
 
@@ -57,9 +64,23 @@ const StudentDashboard: NextPage = () => {
   });
 
   /** Helper functions */
-  const handleTabChange = (event: React.SyntheticEvent, newValue: TAB) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: TAB) => {
     setSelectedTab(newValue);
+    router.replace(
+      {
+        pathname: router.pathname,
+        query: { ...router.query, tab: TAB_QUERY_VALUES[newValue] },
+      },
+      undefined,
+      { shallow: true }
+    );
   };
+
+  useEffect(() => {
+    setSelectedTab(
+      getTabFromQuery(router.query.tab, TAB_QUERY_VALUES, TAB.DEADLINES)
+    );
+  }, [router.query.tab]);
 
   const hasUpcomingDeadlines = deadlinesResponse?.deadlines.some(
     (deadlineDeliverable) => isFuture(deadlineDeliverable.deadline.dueBy)
