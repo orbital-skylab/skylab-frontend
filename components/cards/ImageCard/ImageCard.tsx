@@ -2,12 +2,14 @@ import { noImageAvailableSrc } from "@/helpers/errors";
 import { getThumbnailUrl } from "@/helpers/images";
 import { A4_ASPECT_RATIO, BASE_TRANSITION } from "@/styles/constants";
 import { Card, CardContent, Stack, Typography } from "@mui/material";
+import Link from "next/link";
 import React, { FC } from "react";
 
 type Props = {
   id: string;
   idDisplay: string;
   title: string;
+  titleHref: string;
   imageSrc?: string;
   actionButton?: React.ReactNode;
   extraContent?: React.ReactNode;
@@ -22,6 +24,7 @@ const ImageCard: FC<Props> = ({
   id,
   idDisplay,
   title,
+  titleHref,
   imageSrc,
   actionButton,
   extraContent,
@@ -69,26 +72,32 @@ const ImageCard: FC<Props> = ({
         }}
       >
         <Stack sx={{ height: "100%", gap: "0.5rem" }}>
-          <Typography
-            align="center"
-            fontWeight={600}
-            sx={{
-              paddingX: "1.5rem",
-              whiteSpace: "normal", // Allow text to wrap
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              cursor: "pointer",
-              transition: BASE_TRANSITION,
-              "&:hover": {
-                textDecoration: "underline",
-                color: "secondary.main",
-              },
-              // Responsive font size
-              fontSize: { xs: "1rem", sm: "1.2rem", md: "1.4rem" },
-            }}
-          >
-            {title}
-          </Typography>
+          <Link href={titleHref} passHref>
+            <Typography
+              component="a"
+              align="center"
+              fontWeight={600}
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
+              sx={{
+                paddingX: "1.5rem",
+                whiteSpace: "normal", // Allow text to wrap
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                cursor: "pointer",
+                transition: BASE_TRANSITION,
+                color: "inherit",
+                textDecoration: "none",
+                "&:hover": {
+                  textDecoration: "underline",
+                  color: "secondary.main",
+                },
+                // Responsive font size
+                fontSize: { xs: "1rem", sm: "1.2rem", md: "1.4rem" },
+              }}
+            >
+              {title}
+            </Typography>
+          </Link>
           <div
             title="Click to view full image in new tab"
             style={{

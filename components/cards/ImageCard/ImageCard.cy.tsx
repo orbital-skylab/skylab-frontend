@@ -9,6 +9,7 @@ describe("<ImageCard />", () => {
     id: string;
     idDisplay: string;
     title: string;
+    titleHref: string;
     imageSrc: string;
     actionButton?: React.ReactNode;
     extraContent?: React.ReactNode;
@@ -22,6 +23,7 @@ describe("<ImageCard />", () => {
       id: "test-card-id",
       idDisplay: "1",
       title: "Test Card Title",
+      titleHref: "/projects/1",
       imageSrc: "/images/no-image-available.png",
       actionButton: <button>Action</button>,
       extraContent: <div>Extra Content</div>,
@@ -47,6 +49,16 @@ describe("<ImageCard />", () => {
     mount(<ImageCard {...cardProps} />);
 
     cy.contains("Action").should("be.visible");
+  });
+
+  it("should render title as a link without triggering card click", () => {
+    mount(<ImageCard {...cardProps} />);
+
+    cy.contains("a", cardProps.title)
+      .should("be.visible")
+      .and("have.attr", "href", cardProps.titleHref)
+      .click({ ctrlKey: true });
+    cy.get("@cardClick").should("not.have.been.called");
   });
 
   it("should call onCardClick when card is clicked", () => {
