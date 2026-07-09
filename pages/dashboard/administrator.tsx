@@ -54,6 +54,7 @@ import useInfiniteFetch, {
 } from "@/hooks/useInfiniteFetch";
 import { getTabFromQuery, transformTabNameIntoId } from "@/helpers/dashboard";
 import { Cohort } from "@/types/cohorts";
+import { getRelationsWithDroppedTeams } from "@/helpers/relations";
 import { useRouter } from "next/router";
 
 enum TAB {
@@ -338,6 +339,9 @@ const AdministratorDashboard: NextPage = () => {
     endpoint: `/relations`,
     requiresAuthorization: true,
   });
+  const droppedTeamRelations = getRelationsWithDroppedTeams(
+    relationsResponse?.relations ?? []
+  );
 
   /** To fetch more projects when the bottom of the page is reached */
   const observer = useRef<IntersectionObserver | null>(null);
@@ -796,12 +800,21 @@ const AdministratorDashboard: NextPage = () => {
                 }
               >
                 {relationsResponse && relationsResponse.relations && (
-                  <RelationTable
-                    relations={relationsResponse.relations}
-                    mutate={mutateRelations}
-                    projects={projectsResponse?.projects ?? []}
-                    showAdviserColumn
-                  />
+                  <Stack gap="1rem">
+                    {droppedTeamRelations.length > 0 && (
+                      <Typography fontWeight="bold" color="red">{`${
+                        droppedTeamRelations.length
+                      } evaluation relation${
+                        droppedTeamRelations.length > 1 ? "s" : ""
+                      } include removed teams. Delete or update the affected relations to avoid assigning evaluations to removed teams.`}</Typography>
+                    )}
+                    <RelationTable
+                      relations={relationsResponse.relations}
+                      mutate={mutateRelations}
+                      projects={projectsResponse?.projects ?? []}
+                      showAdviserColumn
+                    />
+                  </Stack>
                 )}
               </NoDataWrapper>
             </Stack>

@@ -21,7 +21,8 @@ export const generateRoundRobinRelations = (
   projects: Project[]
 ): Partial<EvaluationRelation>[] => {
   const relations: Partial<EvaluationRelation>[] = [];
-  const numberOfProjects = projects.length;
+  const activeProjects = projects.filter((project) => !project.hasDropped);
+  const numberOfProjects = activeProjects.length;
 
   const numberOfEvaluations = Math.min(
     numberOfProjects - 1,
@@ -30,8 +31,8 @@ export const generateRoundRobinRelations = (
 
   for (let i = 0; i < numberOfProjects; i++) {
     for (let j = 1; j <= numberOfEvaluations; j++) {
-      const fromProject = projects[i];
-      const toProject = projects[(i + j) % numberOfProjects];
+      const fromProject = activeProjects[i];
+      const toProject = activeProjects[(i + j) % numberOfProjects];
       relations.push({
         fromProject,
         toProject,
@@ -67,6 +68,15 @@ export const generateGroupRelations = (
   }
 
   return relations;
+};
+
+export const getRelationsWithDroppedTeams = (
+  relations: EvaluationRelation[]
+) => {
+  return relations.filter(
+    (relation) =>
+      relation.fromProject?.hasDropped || relation.toProject?.hasDropped
+  );
 };
 
 export const groupRelationsByTeam = (relations: EvaluationRelation[]) => {

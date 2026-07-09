@@ -2,7 +2,7 @@ import { FC, useState } from "react";
 // Components
 import HoverLink from "@/components/typography/HoverLink";
 import DeleteRelationModal from "@/components/modals/DeleteRelationModal";
-import { Button, Stack, TableCell, TableRow } from "@mui/material";
+import { Box, Button, Stack, TableCell, TableRow } from "@mui/material";
 import EditRelationModal from "@/components/modals/EditRelationModal";
 // Helpers
 import { PAGES } from "@/helpers/navigation";
@@ -37,6 +37,17 @@ const RelationRow: FC<Props> = ({
     setIsDeleteRelationOpen(true);
   };
 
+  const renderProjectLink = (project: Project) => (
+    <Box
+      key={project.id}
+      sx={{ color: project.hasDropped ? "red" : "inherit" }}
+    >
+      <HoverLink href={`${PAGES.PROJECTS}/${project.id}`}>
+        {project.name}
+      </HoverLink>
+    </Box>
+  );
+
   return (
     <>
       <EditRelationModal
@@ -55,14 +66,10 @@ const RelationRow: FC<Props> = ({
       <TableRow>
         <TableCell>{relation.id}</TableCell>
         <TableCell>
-          <HoverLink href={`${PAGES.PROJECTS}/${relation.fromProjectId}`}>
-            {relation.fromProject?.name}
-          </HoverLink>
+          {relation.fromProject && renderProjectLink(relation.fromProject)}
         </TableCell>
         <TableCell>
-          <HoverLink href={`${PAGES.PROJECTS}/${relation.toProjectId}`}>
-            {relation.toProject?.name}
-          </HoverLink>
+          {relation.toProject && renderProjectLink(relation.toProject)}
         </TableCell>
         {showAdviserColumn && (
           <TableCell>

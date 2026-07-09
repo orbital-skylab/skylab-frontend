@@ -21,6 +21,7 @@ import { FC, useState } from "react";
 import SidebarActions from "./SidebarActions/SidebarActions";
 import {
   NUMBER_OF_EVALUATIONS_PER_TEAM,
+  getRelationsWithDroppedTeams,
   groupRelationsByTeam,
 } from "@/helpers/relations";
 
@@ -80,6 +81,7 @@ const AdviserManageRelationsContent: FC<Props> = ({
 
   const { teamsThatDoNotSatisfy, satisfies } =
     checkIfAllTeamsSatisfyRequirements();
+  const droppedTeamRelations = getRelationsWithDroppedTeams(relations);
 
   return (
     <>
@@ -88,6 +90,13 @@ const AdviserManageRelationsContent: FC<Props> = ({
           Summary
         </Typography>
         <Typography>{`You are currently assigned to ${projects.length} teams`}</Typography>
+        {droppedTeamRelations.length > 0 && (
+          <Typography fontWeight="bold" color="red">{`${
+            droppedTeamRelations.length
+          } evaluation relation${
+            droppedTeamRelations.length > 1 ? "s" : ""
+          } include removed teams. Delete or update the affected relations to avoid assigning evaluations to removed teams.`}</Typography>
+        )}
         {satisfies ? (
           <Typography
             fontWeight="bold"
