@@ -132,10 +132,7 @@ export const mapEvaluationData = (
 
     if (isSelectedEvaluationExport) {
       const selectedEvaluationDeadline = csvEvaluations[0];
-      const sub = getSubmissionForDeadline(
-        res,
-        selectedEvaluationDeadline.id
-      );
+      const sub = getSubmissionForDeadline(res, selectedEvaluationDeadline.id);
       const submissionStatus = generateSubmissionStatus({
         submissionId: sub?.id,
         isDraft: false,

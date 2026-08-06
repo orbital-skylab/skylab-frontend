@@ -375,8 +375,7 @@ const AdministratorDashboard: NextPage = () => {
     requiresAuthorization: true,
     page: feedbackPage,
     responseToData: (response) => response.submissions,
-    enabled:
-      Boolean(selectedCohortYear) && selectedTab === TAB.FEEDBACK,
+    enabled: Boolean(selectedCohortYear) && selectedTab === TAB.FEEDBACK,
   });
 
   const { data: allTeamsMilestonesSummary } =
@@ -435,8 +434,7 @@ const AdministratorDashboard: NextPage = () => {
       endpoint: `/dashboard/administrator/feedback`,
       queryParams: memoFeedbackQueryParamsSummary,
       requiresAuthorization: true,
-      enabled:
-        Boolean(selectedCohortYear) && selectedTab === TAB.FEEDBACK,
+      enabled: Boolean(selectedCohortYear) && selectedTab === TAB.FEEDBACK,
     });
 
   const { data: projectsResponse } = useFetch<GetProjectsResponse>({
