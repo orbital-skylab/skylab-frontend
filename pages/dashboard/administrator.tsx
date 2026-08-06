@@ -60,6 +60,7 @@ import { useRouter } from "next/router";
 enum TAB {
   SUBMISSIONS = "All Teams' Milestone Submissions",
   EVALUATIONS = "All Teams' Evaluations",
+  FEEDBACK = "All Teams' Feedback",
   COLLATED = "Collated Responses",
   MANAGE_RELATIONSHIPS = "Manage Evaluation Relations",
 }
@@ -67,6 +68,7 @@ enum TAB {
 const TAB_QUERY_VALUES: Record<TAB, string> = {
   [TAB.SUBMISSIONS]: "submissions",
   [TAB.EVALUATIONS]: "evaluations",
+  [TAB.FEEDBACK]: "feedback",
   [TAB.COLLATED]: "collated",
   [TAB.MANAGE_RELATIONSHIPS]: "relations",
 };
@@ -85,6 +87,8 @@ const AdministratorDashboard: NextPage = () => {
     useState<Deadline | null>(null);
   const [selectedEvaluationsDeadline, setSelectedEvaluationsDeadline] =
     useState<Deadline | null>(null);
+  const [selectedFeedbackDeadline, setSelectedFeedbackDeadline] =
+    useState<Deadline | null>(null);
   const [selectedSubmissionStatus, setSelectedSubmissionStatus] = useState(
     SUBMISSION_STATUS.ALL
   );
@@ -94,15 +98,23 @@ const AdministratorDashboard: NextPage = () => {
   const [searchTextInput, setSearchTextInput] = useState(""); // The input value
   const [querySearch, setQuerySearch] = useState(""); // The debounced input value for searching
   const [selectedEvaluatorType, setSelectedEvaluatorType] = useState("All");
+  const [selectedFeedbackEvaluatorType, setSelectedFeedbackEvaluatorType] =
+    useState("All");
   const resetMilestonesPagination = useCallback(() => setPage(0), []);
   const resetEvaluationsPagination = useCallback(
     () => setEvaluationsPage(0),
     []
   );
+  const resetFeedbackPagination = useCallback(() => setFeedbackPage(0), []);
   const resetSubmissionPaginations = useCallback(() => {
     resetMilestonesPagination();
     resetEvaluationsPagination();
-  }, [resetEvaluationsPagination, resetMilestonesPagination]);
+    resetFeedbackPagination();
+  }, [
+    resetEvaluationsPagination,
+    resetFeedbackPagination,
+    resetMilestonesPagination,
+  ]);
 
   /** Fetching deadlines where type === Milestone and type === Evaluation */
   const { data: deadlinesResponse, status: fetchDeadlinesStatus } =
@@ -113,6 +125,7 @@ const AdministratorDashboard: NextPage = () => {
       onFetch: () => {
         setSelectedMilestoneDeadline(null);
         setSelectedEvaluationsDeadline(null);
+        setSelectedFeedbackDeadline(null);
       },
     });
 
@@ -125,6 +138,14 @@ const AdministratorDashboard: NextPage = () => {
     const filtered =
       deadlinesResponse?.deadlines.filter(
         (deadline) => deadline.type === DEADLINE_TYPE.EVALUATION
+      ) ?? [];
+    return [...filtered].sort((a, b) => a.id - b.id);
+  }, [deadlinesResponse]);
+
+  const feedbackDeadlines = useMemo(() => {
+    const filtered =
+      deadlinesResponse?.deadlines.filter(
+        (deadline) => deadline.type === DEADLINE_TYPE.FEEDBACK
       ) ?? [];
     return [...filtered].sort((a, b) => a.id - b.id);
   }, [deadlinesResponse]);
@@ -181,6 +202,33 @@ const AdministratorDashboard: NextPage = () => {
     ]
   );
 
+  /** Infinite fetching of all teams feedback submissions */
+  const memoFeedbackQueryParams = useMemo(
+    () => ({
+      cohortYear: selectedCohortYear,
+      deadlineId: selectedFeedbackDeadline
+        ? selectedFeedbackDeadline.id
+        : undefined,
+      search: querySearch,
+      limit: LIMIT,
+      submissionStatus:
+        !selectedFeedbackDeadline ||
+        selectedSubmissionStatus === SUBMISSION_STATUS.ALL
+          ? undefined
+          : selectedSubmissionStatus,
+      dropped: viewHasDropped,
+      evaluatorTypeFilter: selectedFeedbackEvaluatorType,
+    }),
+    [
+      selectedCohortYear,
+      selectedFeedbackDeadline,
+      querySearch,
+      selectedSubmissionStatus,
+      viewHasDropped,
+      selectedFeedbackEvaluatorType,
+    ]
+  );
+
   /** Infinite fetching of all teams milestone submissions without limit */
   const memoMilestoneQueryParamsSummary = useMemo(
     () => ({
@@ -219,6 +267,7 @@ const AdministratorDashboard: NextPage = () => {
           ? undefined
           : selectedSubmissionStatus,
       dropped: viewHasDropped,
+      evaluatorTypeFilter: selectedEvaluatorType,
     }),
     [
       selectedCohortYear,
@@ -226,10 +275,38 @@ const AdministratorDashboard: NextPage = () => {
       querySearch,
       selectedSubmissionStatus,
       viewHasDropped,
+      selectedEvaluatorType,
+    ]
+  );
+
+  /** Fetching of all teams feedback submissions without limit */
+  const memoFeedbackQueryParamsSummary = useMemo(
+    () => ({
+      cohortYear: selectedCohortYear,
+      deadlineId: selectedFeedbackDeadline
+        ? selectedFeedbackDeadline.id
+        : undefined,
+      search: querySearch,
+      submissionStatus:
+        !selectedFeedbackDeadline ||
+        selectedSubmissionStatus === SUBMISSION_STATUS.ALL
+          ? undefined
+          : selectedSubmissionStatus,
+      dropped: viewHasDropped,
+      evaluatorTypeFilter: selectedFeedbackEvaluatorType,
+    }),
+    [
+      selectedCohortYear,
+      selectedFeedbackDeadline,
+      querySearch,
+      selectedSubmissionStatus,
+      viewHasDropped,
+      selectedFeedbackEvaluatorType,
     ]
   );
 
   const [evaluationsPage, setEvaluationsPage] = useState(0);
+  const [feedbackPage, setFeedbackPage] = useState(0);
   useEffect(() => {
     // Reset evaluations pagination when its filters change
     setEvaluationsPage(0);
@@ -240,6 +317,17 @@ const AdministratorDashboard: NextPage = () => {
     selectedSubmissionStatus,
     viewHasDropped,
     selectedEvaluatorType,
+  ]);
+
+  useEffect(() => {
+    setFeedbackPage(0);
+  }, [
+    selectedCohortYear,
+    selectedFeedbackDeadline,
+    querySearch,
+    selectedSubmissionStatus,
+    viewHasDropped,
+    selectedFeedbackEvaluatorType,
   ]);
 
   const {
@@ -272,6 +360,23 @@ const AdministratorDashboard: NextPage = () => {
     page: evaluationsPage,
     responseToData: (response) => response.submissions,
     enabled: Boolean(selectedCohortYear),
+  });
+
+  const {
+    data: allTeamsFeedback,
+    status: fetchAllTeamsFeedbackStatus,
+    hasMore: hasMoreFeedback,
+  } = useInfiniteFetch<
+    GetAdministratorAllTeamMilestoneSubmissionsResponse,
+    PossibleSubmission
+  >({
+    endpoint: `/dashboard/administrator/feedback`,
+    queryParams: memoFeedbackQueryParams,
+    requiresAuthorization: true,
+    page: feedbackPage,
+    responseToData: (response) => response.submissions,
+    enabled:
+      Boolean(selectedCohortYear) && selectedTab === TAB.FEEDBACK,
   });
 
   const { data: allTeamsMilestonesSummary } =
@@ -325,6 +430,15 @@ const AdministratorDashboard: NextPage = () => {
       enabled: Boolean(selectedCohortYear),
     });
 
+  const { data: allTeamsFeedbackSummary } =
+    useFetch<GetAdministratorAllTeamMilestoneSubmissionsResponse>({
+      endpoint: `/dashboard/administrator/feedback`,
+      queryParams: memoFeedbackQueryParamsSummary,
+      requiresAuthorization: true,
+      enabled:
+        Boolean(selectedCohortYear) && selectedTab === TAB.FEEDBACK,
+    });
+
   const { data: projectsResponse } = useFetch<GetProjectsResponse>({
     endpoint: `/projects/lean?cohortYear=${selectedCohortYear}`,
     enabled: Boolean(selectedCohortYear),
@@ -360,8 +474,19 @@ const AdministratorDashboard: NextPage = () => {
     evaluationsObserver
   );
 
+  const feedbackObserver = useRef<IntersectionObserver | null>(null);
+  const feedbackBottomOfPageRef = createBottomOfPageRef(
+    isFetching(fetchAllTeamsFeedbackStatus),
+    hasMoreFeedback,
+    setFeedbackPage,
+    feedbackObserver
+  );
+
   /** Helper functions */
   const handleTabChange = (_event: React.SyntheticEvent, newValue: TAB) => {
+    if (newValue === TAB.FEEDBACK) {
+      resetFeedbackPagination();
+    }
     setSelectedTab(newValue);
     router.replace(
       {
@@ -403,6 +528,13 @@ const AdministratorDashboard: NextPage = () => {
     resetEvaluationsPagination();
   };
 
+  const handleFeedbackEvaluatorTypeChange = (
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
+    setSelectedFeedbackEvaluatorType(e.target.value);
+    resetFeedbackPagination();
+  };
+
   const handleSelectedEvaluationsDeadlineChange = (
     e: ChangeEvent<HTMLInputElement>
   ) => {
@@ -411,6 +543,16 @@ const AdministratorDashboard: NextPage = () => {
       newValue !== "0" ? (JSON.parse(newValue) as Deadline) : null
     );
     resetEvaluationsPagination();
+  };
+
+  const handleSelectedFeedbackDeadlineChange = (
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
+    const newValue = e.target.value;
+    setSelectedFeedbackDeadline(
+      newValue !== "0" ? (JSON.parse(newValue) as Deadline) : null
+    );
+    resetFeedbackPagination();
   };
 
   const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -720,6 +862,87 @@ const AdministratorDashboard: NextPage = () => {
                     </Box>
                   </>
                 )}
+              </NoDataWrapper>
+            </Stack>
+          </LoadingWrapper>
+        </TabPanel>
+
+        <TabPanel value={TAB.FEEDBACK}>
+          <LoadingWrapper isLoading={isFetching(fetchDeadlinesStatus)}>
+            <Stack gap="0.75rem">
+              <NoDataWrapper
+                noDataCondition={!feedbackDeadlines.length}
+                fallback={
+                  <NoneFound message="No feedback deadlines found. Create one now!" />
+                }
+              >
+                <TextField
+                  id="project-cohort-select-feedback"
+                  name="cohort"
+                  label="Cohort"
+                  value={selectedCohortYear}
+                  onChange={handleCohortYearChange}
+                  select
+                  size="small"
+                  sx={{ width: "auto", minWidth: 120, alignSelf: "start" }}
+                >
+                  {cohorts &&
+                    cohorts.map(({ academicYear }) => (
+                      <MenuItem
+                        id={`${academicYear}-feedback-option`}
+                        key={academicYear}
+                        value={academicYear}
+                      >
+                        {academicYear}
+                      </MenuItem>
+                    ))}
+                </TextField>
+
+                <EvaluationsActionRow
+                  selectedEvaluationsDeadline={selectedFeedbackDeadline}
+                  handleSelectedEvaluationsDeadlineChange={
+                    handleSelectedFeedbackDeadlineChange
+                  }
+                  selectedSubmissionStatus={
+                    selectedFeedbackDeadline
+                      ? selectedSubmissionStatus
+                      : SUBMISSION_STATUS.ALL
+                  }
+                  handleSubmissionStatusChange={handleSubmissionStatusChange}
+                  searchTextInput={searchTextInput}
+                  handleSearchInputChange={handleSearchInputChange}
+                  evaluationsDeadlines={feedbackDeadlines}
+                  viewHasDropped={viewHasDropped}
+                  handleToggleViewDropped={handleToggleViewDropped}
+                  selectedCohortYear={selectedCohortYear}
+                  selectedEvaluatorType={selectedFeedbackEvaluatorType}
+                  handleEvaluatorTypeChange={handleFeedbackEvaluatorTypeChange}
+                />
+                <EvaluationsSummary
+                  deadline={selectedFeedbackDeadline}
+                  submissions={allTeamsFeedbackSummary?.submissions ?? []}
+                  evaluationDeadlines={feedbackDeadlines}
+                  evaluatorTypeFilter={selectedFeedbackEvaluatorType}
+                />
+                <EvaluationsTable
+                  deadline={selectedFeedbackDeadline}
+                  submissions={allTeamsFeedback}
+                  evaluationDeadlines={feedbackDeadlines}
+                />
+                <div ref={feedbackBottomOfPageRef} />
+                <Box
+                  sx={{
+                    display: "grid",
+                    placeItems: "center",
+                    height: "100px",
+                  }}
+                >
+                  {isFetching(fetchAllTeamsFeedbackStatus) ? (
+                    <LoadingSpinner size={50} />
+                  ) : !hasMoreFeedback ? (
+                    <Typography>No more submissions found</Typography>
+                  ) : null}
+                </Box>
               </NoDataWrapper>
             </Stack>
           </LoadingWrapper>

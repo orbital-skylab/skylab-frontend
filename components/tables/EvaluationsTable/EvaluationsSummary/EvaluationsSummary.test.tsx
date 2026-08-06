@@ -28,6 +28,13 @@ const bothEvaluationDeadline = {
   evaluatorType: EVALUATOR_TYPE.BOTH,
 };
 
+const teamFeedbackDeadline = {
+  ...teamEvaluationDeadline,
+  id: 23,
+  name: "Team Feedback",
+  type: DEADLINE_TYPE.FEEDBACK,
+};
+
 const teamSubmission = {
   relationId: 1,
   deadline: teamEvaluationDeadline,
@@ -150,5 +157,45 @@ describe("EvaluationsSummary", () => {
       expect(teamCard.textContent).toContain("0 total expected");
       expect(bothCard.textContent).toContain("1 total expected");
     }
+  });
+
+  it("counts submitted Team feedback addressed to an adviser", () => {
+    render(
+      <EvaluationsSummary
+        deadline={teamFeedbackDeadline}
+        submissions={[
+          {
+            ...teamSubmission,
+            relationId: "F-A-101",
+            deadline: teamFeedbackDeadline,
+            toProject: undefined,
+            toUser: {
+              id: 301,
+              name: "Prof Oak",
+              email: "oak@example.com",
+            },
+            submission: {
+              id: 904,
+              deadline: teamFeedbackDeadline,
+              deadlineId: teamFeedbackDeadline.id,
+              updatedAt: "2026-03-05T10:00:00.000Z",
+              isDraft: false,
+              answers: [],
+              sections: [],
+            },
+          },
+        ]}
+        evaluationDeadlines={[teamFeedbackDeadline]}
+        evaluatorTypeFilter="Team"
+      />
+    );
+
+    const feedbackCard = screen
+      .getByText("Team Feedback")
+      .closest(".MuiCard-root");
+
+    expect(feedbackCard?.textContent).toContain("100% Complete");
+    expect(feedbackCard?.textContent).toContain("1Submitted");
+    expect(feedbackCard?.textContent).toContain("0Missing");
   });
 });
