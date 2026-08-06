@@ -99,6 +99,7 @@ const EvaluationsActionRow: FC<Props> = ({
           deadlineId: selectedEvaluationsDeadline?.id,
           dropped: viewHasDropped,
           evaluatorTypeFilter: selectedEvaluatorType,
+          includeAnswers: true,
           ...(selectedSubmissionStatus === SUBMISSION_STATUS.ALL
             ? {}
             : { submissionStatus: selectedSubmissionStatus }),

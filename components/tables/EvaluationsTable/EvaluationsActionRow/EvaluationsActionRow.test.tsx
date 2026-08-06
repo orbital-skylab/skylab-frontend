@@ -209,6 +209,7 @@ describe("EvaluationsActionRow", () => {
           deadlineId: evaluationOne.id,
           dropped: true,
           evaluatorTypeFilter: "Team",
+          includeAnswers: true,
           submissionStatus: SUBMISSION_STATUS.SUBMITTED,
         },
         requiresAuthorization: true,

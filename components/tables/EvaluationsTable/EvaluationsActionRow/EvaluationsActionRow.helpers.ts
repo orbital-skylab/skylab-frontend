@@ -1,6 +1,6 @@
 import { generateSubmissionStatus } from "@/helpers/submissions";
 import { Deadline } from "@/types/deadlines";
-import { PossibleSubmission, STATUS } from "@/types/submissions";
+import { PossibleSubmission, STATUS, Submission } from "@/types/submissions";
 
 const getStatusText = (status: STATUS): string => {
   switch (status) {
@@ -13,15 +13,82 @@ const getStatusText = (status: STATUS): string => {
   }
 };
 
+const getAnswerColumn = (
+  deadline: Deadline,
+  answer: Submission["answers"][number]
+) =>
+  `${deadline.name} - Q${
+    answer.question?.questionNumber ?? answer.questionId
+  }: ${answer.question?.question ?? `Question ${answer.questionId}`}`;
+
+const getSubmissionForDeadline = (
+  evaluation: PossibleSubmission,
+  deadlineId: number
+) => {
+  const submission = evaluation.submission;
+  if (Array.isArray(submission)) {
+    return submission.find((item) => item.deadlineId === deadlineId);
+  }
+  return submission?.deadlineId === deadlineId ? submission : undefined;
+};
+
+const isDeadlineApplicable = (
+  deadline: Deadline,
+  evaluation: PossibleSubmission
+) =>
+  !deadline.evaluatorType ||
+  deadline.evaluatorType === "Both" ||
+  (deadline.evaluatorType === "Team" && !!evaluation.fromProject) ||
+  (deadline.evaluatorType === "Adviser" && !!evaluation.fromUser);
+
+const getAnswerColumnsByDeadline = (
+  evaluations: PossibleSubmission[],
+  deadlines: Deadline[]
+) =>
+  new Map(
+    deadlines.map((deadline) => [
+      deadline.id,
+      Array.from(
+        new Set(
+          evaluations.flatMap((evaluation) =>
+            (
+              getSubmissionForDeadline(evaluation, deadline.id)?.answers ?? []
+            ).map((answer) => getAnswerColumn(deadline, answer))
+          )
+        )
+      ),
+    ])
+  );
+
+const mapAnswerColumns = (
+  submission: Submission | undefined,
+  deadline: Deadline,
+  columns: string[]
+) => ({
+  ...Object.fromEntries(columns.map((column) => [column, ""])),
+  ...Object.fromEntries(
+    (submission?.answers ?? []).map((answer) => [
+      getAnswerColumn(deadline, answer),
+      answer.answer ?? "",
+    ])
+  ),
+});
+
 export const mapEvaluationData = (
   evaluations: PossibleSubmission[],
   csvEvaluations: Deadline[],
   isSelectedEvaluationExport = false
 ) => {
+  const answerColumnsByDeadline = getAnswerColumnsByDeadline(
+    evaluations,
+    csvEvaluations
+  );
+
   return evaluations.map((res) => {
     const evaluatorProject = res.fromProject;
     const evaluatorUser = res.fromUser;
     const evaluateeProject = res.toProject;
+    const evaluateeUser = res.toUser;
 
     const evaluatorStudents = evaluatorProject?.students ?? [];
     const evaluateeStudents = evaluateeProject?.students ?? [];
@@ -52,6 +119,12 @@ export const mapEvaluationData = (
       "Evaluator Email 2": evaluatorEmail2,
 
       // Evaluatee Info
+      "Evaluatee Type": evaluateeProject ? "Team" : "Adviser",
+      Evaluatee:
+        evaluateeProject?.teamName ??
+        evaluateeProject?.name ??
+        evaluateeUser?.name ??
+        "N/A",
       "Evaluatee Team": evaluateeProject?.teamName ?? "N/A",
       "Evaluatee Student 1": evaluateeStudents[0]?.name ?? "",
       "Evaluatee Student 2": evaluateeStudents[1]?.name ?? "",
@@ -75,9 +148,26 @@ export const mapEvaluationData = (
           sub?.updatedAt ?? "",
         [`${selectedEvaluationDeadline.name} Status`]:
           getStatusText(submissionStatus),
+        ...mapAnswerColumns(
+          sub,
+          selectedEvaluationDeadline,
+          answerColumnsByDeadline.get(selectedEvaluationDeadline.id) ?? []
+        ),
       };
     } else {
       const evaluationStatuses = csvEvaluations.map((evaluation) => {
+        if (!isDeadlineApplicable(evaluation, res)) {
+          return {
+            [`${evaluation.name} Submission Updated At`]: "",
+            [`${evaluation.name} Status`]: "N/A",
+            ...mapAnswerColumns(
+              undefined,
+              evaluation,
+              answerColumnsByDeadline.get(evaluation.id) ?? []
+            ),
+          };
+        }
+
         const submissionsArray = Array.isArray(res.submission)
           ? res.submission
           : res.submission
@@ -104,6 +194,11 @@ export const mapEvaluationData = (
         return {
           [`${evaluation.name} Submission Updated At`]: sub.updatedAt ?? "",
           [`${evaluation.name} Status`]: getStatusText(submissionStatus),
+          ...mapAnswerColumns(
+            sub,
+            evaluation,
+            answerColumnsByDeadline.get(evaluation.id) ?? []
+          ),
         };
       });
 
