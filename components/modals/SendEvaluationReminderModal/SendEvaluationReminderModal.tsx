@@ -35,7 +35,7 @@ import {
   GetAdministratorAllTeamMilestoneSubmissionsResponse,
   HTTP_METHOD,
 } from "@/types/api";
-import { Deadline } from "@/types/deadlines";
+import { DEADLINE_TYPE, Deadline } from "@/types/deadlines";
 import { Cohort } from "@/types/cohorts";
 import { ApiServiceBuilder } from "@/helpers/api";
 
@@ -93,6 +93,13 @@ const SendEvaluationReminderModal: FC<Props> = ({
   const [selectedEvaluationDeadline, setSelectedEvaluationDeadline] = useState<
     Deadline | undefined
   >(evaluationDeadlines[0]);
+  const isFeedback =
+    (selectedEvaluationDeadline?.type ?? evaluationDeadlines[0]?.type) ===
+    DEADLINE_TYPE.FEEDBACK;
+  const deadlineLabel = isFeedback ? "Feedback" : "Evaluation";
+  const submissionsEndpoint = isFeedback
+    ? "/dashboard/administrator/feedback"
+    : "/dashboard/administrator/evaluations";
   const [sending, setSending] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -301,7 +308,7 @@ const SendEvaluationReminderModal: FC<Props> = ({
 
   const { data: allTeamsEvaluations } =
     useFetch<GetAdministratorAllTeamMilestoneSubmissionsResponse>({
-      endpoint: `/dashboard/administrator/evaluations`,
+      endpoint: submissionsEndpoint,
       queryParams: memoQueryParams,
       requiresAuthorization: true,
     });
@@ -315,12 +322,12 @@ const SendEvaluationReminderModal: FC<Props> = ({
   return (
     <>
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-        <DialogTitle>Send Evaluation Reminders</DialogTitle>
+        <DialogTitle>{`Send ${deadlineLabel} Reminders`}</DialogTitle>
         <DialogContent>
           <DialogContentText sx={{ mb: 2 }}>
             {emailComposeStage
               ? "Review and edit the email before sending"
-              : "Select evaluators (Advisers or Teams) who have incomplete evaluations to send them a reminder."}
+              : `Select evaluators (Advisers or Teams) who have incomplete ${deadlineLabel.toLowerCase()} submissions to send them a reminder.`}
           </DialogContentText>
 
           {emailComposeStage ? (
@@ -358,6 +365,7 @@ const SendEvaluationReminderModal: FC<Props> = ({
                   selectedEvaluators={selectedEvaluators}
                   onSelectEvaluator={handleSelectEvaluator}
                   onSelectAll={handleSelectAll}
+                  deadlineLabel={deadlineLabel}
                 />
               </TabPanel>
             </>
@@ -433,6 +441,7 @@ interface RemindersListProps {
   selectedEvaluators: string[];
   onSelectEvaluator: (id: string) => void;
   onSelectAll: () => void;
+  deadlineLabel: string;
 }
 
 function RemindersList({
@@ -440,6 +449,7 @@ function RemindersList({
   selectedEvaluators,
   onSelectEvaluator,
   onSelectAll,
+  deadlineLabel,
 }: RemindersListProps) {
   const allSelected =
     evaluators.length > 0 && selectedEvaluators.length === evaluators.length;
@@ -458,7 +468,7 @@ function RemindersList({
       >
         <CheckCircleIcon color="success" sx={{ fontSize: 48, mb: 1 }} />
         <Typography variant="h6" gutterBottom>
-          All evaluations have been submitted!
+          {`All ${deadlineLabel.toLowerCase()} submissions have been submitted!`}
         </Typography>
         <Typography variant="body2" color="text.secondary">
           There are no evaluators that need reminders for this deadline.
@@ -572,7 +582,9 @@ function RemindersList({
                       component="span"
                       sx={{ color: "error.main", fontWeight: 500, mt: 0.5 }}
                     >
-                      Missing {evaluator.missingCount} evaluation(s)
+                      {`Missing ${
+                        evaluator.missingCount
+                      } ${deadlineLabel.toLowerCase()} submission(s)`}
                     </Typography>
                   </Box>
                 }
