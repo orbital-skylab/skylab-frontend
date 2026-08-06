@@ -179,6 +179,28 @@ describe("mapEvaluationData", () => {
     });
   });
 
+  it("matches the selected evaluation by deadline id when submissions contain multiple deadlines", () => {
+    const [result] = mapEvaluationData(
+      [
+        {
+          ...adviserEvaluation,
+          submission: [
+            teamEvaluation.submission[0],
+            adviserEvaluation.submission[0],
+          ],
+        },
+      ],
+      [adviserEvaluationDeadline],
+      true
+    );
+
+    expect(result).toMatchObject({
+      "Adviser Feedback Review Submission Updated At":
+        "2026-03-08T10:00:00.000Z",
+      "Adviser Feedback Review Status": "SUBMITTED_LATE",
+    });
+  });
+
   it("adds submitted answers as question columns", () => {
     const [result] = mapEvaluationData(
       [

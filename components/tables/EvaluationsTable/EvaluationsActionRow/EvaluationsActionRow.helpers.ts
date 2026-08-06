@@ -132,9 +132,10 @@ export const mapEvaluationData = (
 
     if (isSelectedEvaluationExport) {
       const selectedEvaluationDeadline = csvEvaluations[0];
-      const sub = Array.isArray(res.submission)
-        ? res.submission[0]
-        : res.submission;
+      const sub = getSubmissionForDeadline(
+        res,
+        selectedEvaluationDeadline.id
+      );
       const submissionStatus = generateSubmissionStatus({
         submissionId: sub?.id,
         isDraft: false,
@@ -168,15 +169,7 @@ export const mapEvaluationData = (
           };
         }
 
-        const submissionsArray = Array.isArray(res.submission)
-          ? res.submission
-          : res.submission
-          ? [res.submission]
-          : [];
-
-        const sub = submissionsArray.find(
-          (sub) => sub.deadlineId === evaluation.id
-        );
+        const sub = getSubmissionForDeadline(res, evaluation.id);
 
         if (!sub) {
           return {
