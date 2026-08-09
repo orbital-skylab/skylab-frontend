@@ -118,9 +118,15 @@ const EvaluationsRow: FC<Props> = ({ data, evaluationDeadlines, deadline }) => {
 
       {/* Evaluatee Name Column */}
       <TableCell>
-        <HoverLink href={`${PAGES.PROJECTS}/${data.toProject?.id}`}>
-          {data.toProject?.teamName || data.toProject?.name}
-        </HoverLink>
+        {data.toProject ? (
+          <HoverLink href={`${PAGES.PROJECTS}/${data.toProject.id}`}>
+            {data.toProject.teamName || data.toProject.name}
+          </HoverLink>
+        ) : (
+          <HoverLink href={`${PAGES.USERS}/${data.toUser?.id}`}>
+            {data.toUser?.name}
+          </HoverLink>
+        )}
       </TableCell>
 
       {/* Status Column(s) */}

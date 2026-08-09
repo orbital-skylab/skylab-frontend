@@ -157,20 +157,23 @@ const AddDeadlineModal: FC<Props> = ({
                           : []
                       }
                     />
-
-                    <Dropdown
-                      label="Evaluator Type"
-                      name="evaluatorType"
-                      formik={formik}
-                      options={
-                        [
-                          { label: "Adviser", value: EVALUATOR_TYPE.ADVISER },
-                          { label: "Team", value: EVALUATOR_TYPE.TEAM },
-                          { label: "Both", value: EVALUATOR_TYPE.BOTH },
-                        ] as { label: string; value: EVALUATOR_TYPE }[]
-                      }
-                    />
                   </>
+                )}
+                {[DEADLINE_TYPE.EVALUATION, DEADLINE_TYPE.FEEDBACK].includes(
+                  formik.values.type
+                ) && (
+                  <Dropdown
+                    label="Evaluator Type"
+                    name="evaluatorType"
+                    formik={formik}
+                    options={
+                      [
+                        { label: "Adviser", value: EVALUATOR_TYPE.ADVISER },
+                        { label: "Team", value: EVALUATOR_TYPE.TEAM },
+                        { label: "Both", value: EVALUATOR_TYPE.BOTH },
+                      ] as { label: string; value: EVALUATOR_TYPE }[]
+                    }
+                  />
                 )}
               </Stack>
               <Stack
@@ -209,7 +212,8 @@ const addDeadlineValidationSchema = Yup.object().shape({
     then: Yup.string().required(ERRORS.REQUIRED),
   }),
   evaluatorType: Yup.string().when("type", {
-    is: DEADLINE_TYPE.EVALUATION,
+    is: (type: DEADLINE_TYPE) =>
+      [DEADLINE_TYPE.EVALUATION, DEADLINE_TYPE.FEEDBACK].includes(type),
     then: Yup.string().required(ERRORS.REQUIRED),
   }),
 });

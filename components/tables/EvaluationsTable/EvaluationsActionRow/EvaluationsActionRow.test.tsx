@@ -96,6 +96,13 @@ const evaluationTwo = {
   evaluatorType: EVALUATOR_TYPE.ADVISER,
 };
 
+const feedbackDeadline = {
+  ...evaluationOne,
+  id: 23,
+  name: "Team Feedback",
+  type: DEADLINE_TYPE.FEEDBACK,
+};
+
 const defaultProps = {
   selectedEvaluationsDeadline: null,
   handleSelectedEvaluationsDeadlineChange: jest.fn(),
@@ -151,6 +158,17 @@ describe("EvaluationsActionRow", () => {
     ).toBe("Adviser-2024");
   });
 
+  it("supports feedback-specific deadline labels", () => {
+    render(
+      <EvaluationsActionRow
+        {...defaultProps}
+        evaluationsDeadlines={[feedbackDeadline]}
+      />
+    );
+
+    expect(screen.getByLabelText("Feedback").textContent).toBe("All Feedback");
+  });
+
   it("exports CSV with the selected filters and renders the mapped download payload", async () => {
     const { ApiServiceBuilder } = jest.requireMock("@/helpers/api") as {
       ApiServiceBuilder: {
@@ -191,6 +209,7 @@ describe("EvaluationsActionRow", () => {
           deadlineId: evaluationOne.id,
           dropped: true,
           evaluatorTypeFilter: "Team",
+          includeAnswers: true,
           submissionStatus: SUBMISSION_STATUS.SUBMITTED,
         },
         requiresAuthorization: true,

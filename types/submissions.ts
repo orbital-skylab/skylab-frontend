@@ -1,10 +1,11 @@
-import { Deadline, Option, Section } from "./deadlines";
+import { Deadline, Option, Question, Section } from "./deadlines";
 import { Project } from "./projects";
 import { User } from "./users";
 
 export type Answer = {
   questionId: number;
   answer: Option;
+  question?: Question;
 };
 
 export type Submission = {

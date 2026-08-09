@@ -26,7 +26,7 @@ import {
   GetAdministratorAllTeamMilestoneSubmissionsResponse,
   HTTP_METHOD,
 } from "@/types/api";
-import { Deadline } from "@/types/deadlines";
+import { DEADLINE_TYPE, Deadline } from "@/types/deadlines";
 import { SUBMISSION_STATUS } from "@/types/submissions";
 import { Cohort } from "@/types/cohorts";
 
@@ -70,6 +70,17 @@ const EvaluationsActionRow: FC<Props> = ({
   const [isExporting, setIsExporting] = useState(false);
   const [csvData, setCsvData] = useState<Record<string, string | number>[]>([]);
   const [open, setOpen] = useState(false);
+  const deadlineType =
+    selectedEvaluationsDeadline?.type ?? evaluationsDeadlines[0]?.type;
+  const isFeedback = deadlineType === DEADLINE_TYPE.FEEDBACK;
+  const deadlineLabel = isFeedback ? "Feedback" : "Evaluation";
+  const allDeadlinesLabel = isFeedback ? "All Feedback" : "All Evaluations";
+  const submissionsEndpoint = isFeedback
+    ? "/dashboard/administrator/feedback"
+    : "/dashboard/administrator/evaluations";
+  const csvErrorMessage = isFeedback
+    ? "No feedback submission data found"
+    : "No team evaluation submission data found";
 
   const exportCsv = async () => {
     setIsExporting(true);
@@ -82,12 +93,13 @@ const EvaluationsActionRow: FC<Props> = ({
 
       const fetchAllTeamsEvaluations = new ApiServiceBuilder({
         method: HTTP_METHOD.GET,
-        endpoint: `/dashboard/administrator/evaluations`,
+        endpoint: submissionsEndpoint,
         queryParams: {
           cohortYear: cohortYearForExport,
           deadlineId: selectedEvaluationsDeadline?.id,
           dropped: viewHasDropped,
           evaluatorTypeFilter: selectedEvaluatorType,
+          includeAnswers: true,
           ...(selectedSubmissionStatus === SUBMISSION_STATUS.ALL
             ? {}
             : { submissionStatus: selectedSubmissionStatus }),
@@ -99,7 +111,7 @@ const EvaluationsActionRow: FC<Props> = ({
         await res.json();
 
       if (!data || !data.submissions) {
-        throw new Error("No team evaluation submission data found");
+        throw new Error(csvErrorMessage);
       }
       const csvEvaluations = selectedEvaluationsDeadline
         ? [selectedEvaluationsDeadline]
@@ -120,7 +132,7 @@ const EvaluationsActionRow: FC<Props> = ({
     <Stack gap="0.5rem">
       <Stack direction="row" gap="0.5rem" alignItems="center">
         <TextField
-          label="Evaluation"
+          label={deadlineLabel}
           value={
             selectedEvaluationsDeadline
               ? JSON.stringify(selectedEvaluationsDeadline)
@@ -130,7 +142,7 @@ const EvaluationsActionRow: FC<Props> = ({
           select
           size="small"
         >
-          <MenuItem value={"0"}>All Evaluations</MenuItem>
+          <MenuItem value={"0"}>{allDeadlinesLabel}</MenuItem>
           {evaluationsDeadlines &&
             evaluationsDeadlines.map((deadline) => (
               <MenuItem key={deadline.id} value={JSON.stringify(deadline)}>

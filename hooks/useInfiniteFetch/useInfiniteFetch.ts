@@ -74,7 +74,7 @@ export default function useInfiniteFetch<U, T>({
       fetchData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [endpoint, queryParams, page]);
+  }, [enabled, endpoint, queryParams, page]);
 
   /* Mutate function to modify the state of the fetched data directly. */
   const mutate: Mutate<T[]> = async (mutator) => {

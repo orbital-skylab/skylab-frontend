@@ -85,7 +85,9 @@ const EditDeadlineModal: FC<Props> = ({
           ? Number(values.evaluatingMilestoneId)
           : undefined,
       evaluatorType:
-        values.type === DEADLINE_TYPE.EVALUATION && values.evaluatorType !== ""
+        [DEADLINE_TYPE.EVALUATION, DEADLINE_TYPE.FEEDBACK].includes(
+          values.type
+        ) && values.evaluatorType !== ""
           ? values.evaluatorType
           : undefined,
     };
@@ -166,18 +168,21 @@ const EditDeadlineModal: FC<Props> = ({
                           : []
                       }
                     />
-
-                    <Dropdown
-                      label="Evaluator Type"
-                      name="evaluatorType"
-                      formik={formik}
-                      options={[
-                        { label: "Adviser", value: EVALUATOR_TYPE.ADVISER },
-                        { label: "Team", value: EVALUATOR_TYPE.TEAM },
-                        { label: "Both", value: EVALUATOR_TYPE.BOTH },
-                      ]}
-                    />
                   </>
+                )}
+                {[DEADLINE_TYPE.EVALUATION, DEADLINE_TYPE.FEEDBACK].includes(
+                  formik.values.type
+                ) && (
+                  <Dropdown
+                    label="Evaluator Type"
+                    name="evaluatorType"
+                    formik={formik}
+                    options={[
+                      { label: "Adviser", value: EVALUATOR_TYPE.ADVISER },
+                      { label: "Team", value: EVALUATOR_TYPE.TEAM },
+                      { label: "Both", value: EVALUATOR_TYPE.BOTH },
+                    ]}
+                  />
                 )}
               </Stack>
               <Stack
@@ -217,7 +222,8 @@ const editDeadlineValidationSchema = Yup.object().shape({
     then: Yup.string().required(ERRORS.REQUIRED),
   }),
   evaluatorType: Yup.string().when("type", {
-    is: DEADLINE_TYPE.EVALUATION,
+    is: (type: DEADLINE_TYPE) =>
+      [DEADLINE_TYPE.EVALUATION, DEADLINE_TYPE.FEEDBACK].includes(type),
     then: Yup.string().required(ERRORS.REQUIRED),
   }),
 });

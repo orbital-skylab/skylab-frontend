@@ -1,7 +1,11 @@
 /* eslint-disable no-undef */
 import { describe, expect, it } from "@jest/globals";
 
-import { DEADLINE_TYPE, EVALUATOR_TYPE } from "@/types/deadlines";
+import {
+  DEADLINE_TYPE,
+  EVALUATOR_TYPE,
+  QUESTION_TYPE,
+} from "@/types/deadlines";
 import { LEVELS_OF_ACHIEVEMENT } from "@/types/projects";
 import { mapEvaluationData } from "./EvaluationsActionRow.helpers";
 
@@ -175,6 +179,92 @@ describe("mapEvaluationData", () => {
     });
   });
 
+  it("matches the selected evaluation by deadline id when submissions contain multiple deadlines", () => {
+    const [result] = mapEvaluationData(
+      [
+        {
+          ...adviserEvaluation,
+          submission: [
+            teamEvaluation.submission[0],
+            adviserEvaluation.submission[0],
+          ],
+        },
+      ],
+      [adviserEvaluationDeadline],
+      true
+    );
+
+    expect(result).toMatchObject({
+      "Adviser Feedback Review Submission Updated At":
+        "2026-03-08T10:00:00.000Z",
+      "Adviser Feedback Review Status": "SUBMITTED_LATE",
+    });
+  });
+
+  it("adds submitted answers as question columns", () => {
+    const [result] = mapEvaluationData(
+      [
+        {
+          ...teamEvaluation,
+          submission: {
+            ...teamEvaluation.submission[0],
+            answers: [
+              {
+                questionId: 91,
+                answer: "Clear and actionable",
+                question: {
+                  id: 91,
+                  sectionId: 9,
+                  questionNumber: 2,
+                  question: "What was useful?",
+                  type: QUESTION_TYPE.PARAGRAPH,
+                },
+              },
+            ],
+          },
+        },
+      ],
+      [teamEvaluationDeadline],
+      true
+    );
+
+    expect(result).toMatchObject({
+      "Peer Critique Round 1 - Q2: What was useful?": "Clear and actionable",
+    });
+  });
+
+  it("keeps answer columns when the first exported row is unsubmitted", () => {
+    const submittedEvaluation = {
+      ...teamEvaluation,
+      submission: {
+        ...teamEvaluation.submission[0],
+        answers: [
+          {
+            questionId: 91,
+            answer: "Useful examples",
+            question: {
+              id: 91,
+              sectionId: 9,
+              questionNumber: 2,
+              question: "What was useful?",
+              type: QUESTION_TYPE.PARAGRAPH,
+            },
+          },
+        ],
+      },
+    };
+    const [unsubmittedResult] = mapEvaluationData(
+      [{ ...teamEvaluation, submission: undefined }, submittedEvaluation],
+      [teamEvaluationDeadline],
+      true
+    );
+
+    expect(unsubmittedResult).toHaveProperty(
+      "Peer Critique Round 1 - Q2: What was useful?",
+      ""
+    );
+  });
+
   it("creates dynamic status columns across multiple evaluation deadlines", () => {
     const [teamResult, adviserResult] = mapEvaluationData(
       [teamEvaluation, adviserEvaluation],
@@ -187,12 +277,12 @@ describe("mapEvaluationData", () => {
       "Evaluator Student 1": "Chloe",
       "Evaluator Email 1": "chloe@example.com",
       "Peer Critique Round 1 Status": "SUBMITTED",
-      "Adviser Feedback Review Status": "NOT_SUBMITTED",
+      "Adviser Feedback Review Status": "N/A",
     });
 
     expect(adviserResult).toMatchObject({
       "Evaluator Type": "Adviser",
-      "Peer Critique Round 1 Status": "NOT_SUBMITTED",
+      "Peer Critique Round 1 Status": "N/A",
       "Adviser Feedback Review Status": "SUBMITTED_LATE",
     });
   });
