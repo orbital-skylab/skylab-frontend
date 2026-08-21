@@ -201,7 +201,7 @@ describe("mapEvaluationData", () => {
     });
   });
 
-  it("adds submitted answers as question columns", () => {
+  it("exports multiline answers on one line", () => {
     const [result] = mapEvaluationData(
       [
         {
@@ -211,7 +211,7 @@ describe("mapEvaluationData", () => {
             answers: [
               {
                 questionId: 91,
-                answer: "Clear and actionable",
+                answer: "Clear\r\nand actionable feedback",
                 question: {
                   id: 91,
                   sectionId: 9,
@@ -229,7 +229,8 @@ describe("mapEvaluationData", () => {
     );
 
     expect(result).toMatchObject({
-      "Peer Critique Round 1 - Q2: What was useful?": "Clear and actionable",
+      "Peer Critique Round 1 - Q2: What was useful?":
+        "Clear and actionable feedback",
     });
   });
 

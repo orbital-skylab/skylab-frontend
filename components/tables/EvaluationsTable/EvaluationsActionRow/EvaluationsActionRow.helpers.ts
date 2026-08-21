@@ -1,4 +1,5 @@
 import { generateSubmissionStatus } from "@/helpers/submissions";
+import { toSingleLineCsvText } from "@/helpers/csv";
 import { Deadline } from "@/types/deadlines";
 import { PossibleSubmission, STATUS, Submission } from "@/types/submissions";
 
@@ -69,7 +70,7 @@ const mapAnswerColumns = (
   ...Object.fromEntries(
     (submission?.answers ?? []).map((answer) => [
       getAnswerColumn(deadline, answer),
-      answer.answer ?? "",
+      toSingleLineCsvText(answer.answer),
     ])
   ),
 });

@@ -30,6 +30,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { CSVDownload } from "react-csv";
 
 import LoadingSpinner from "@/components/emptyStates/LoadingSpinner";
+import { toSingleLineCsvText } from "@/helpers/csv";
 import { isoDateToLocaleDateWithTime } from "@/helpers/dates";
 import { GetAdministratorCollatedMilestoneSubmissionsResponse } from "@/types/api";
 import { Deadline, QUESTION_TYPE } from "@/types/deadlines";
@@ -515,19 +516,22 @@ const CollatedMilestoneResponsesTable: FC<Props> = ({
             collated.length > 1
               ? `Milestone.${deadlineName}\nQ${question.questionNumber}. ${question.question}`
               : `Q${question.questionNumber}. ${question.question}`;
-          csvRow[header] = formatAnswerText(
-            question,
-            row.answers[key] ?? "No answer"
+          csvRow[toSingleLineCsvText(header)] = toSingleLineCsvText(
+            formatAnswerText(question, row.answers[key] ?? "No answer")
           );
         });
 
         evaluationColumns.forEach(
           ({ key, deadlineType, deadlineName, evaluatorType, question }) => {
-            csvRow[
-              `${deadlineType}.${deadlineName}\nQ${question.questionNumber}. ${
-                question.question
-              }.from ${String(evaluatorType ?? "Team").toLowerCase()}`
-            ] = formatAnswerText(question, row.answers[key] ?? "No submission");
+            const header = `${deadlineType}.${deadlineName}\nQ${
+              question.questionNumber
+            }. ${question.question}.from ${String(
+              evaluatorType ?? "Team"
+            ).toLowerCase()}`;
+
+            csvRow[toSingleLineCsvText(header)] = toSingleLineCsvText(
+              formatAnswerText(question, row.answers[key] ?? "No submission")
+            );
           }
         );
 
